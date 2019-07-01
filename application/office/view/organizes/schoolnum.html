@@ -1,0 +1,61 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+<h2>{$Think.lang.organize_schoolnum_num}{$num}个</h2>
+    <form method="post" enctype="multipart/form-data" name="form1" action="">
+        <table class="ds-default-table">
+            <thead>
+            <tr class="thead">
+                <th class="w272">{$Think.lang.ds_number}</th>
+                <th class="w172">{$Think.lang.organize_schoolnum_name}</th>
+                <th class="w272 align-center">{$Think.lang.organize_schoolnum_city}</th>
+                <th class="w172">{$Think.lang.ds_organize_time}</th>
+                <th class="w172">{$Think.lang.ds_organize_remark}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {notempty name="school"}
+            {volist name="school" id="v"}
+            <tr class="hover edit">
+                <td class="sort">{$key+1}</td>
+                <td class="name">{$v.name}</td>
+                <td class="name">{$v.region}</td>
+                <td class="picture">{$v.createtime}</td>
+                <td class="align-center">{$v.desc}</td>
+            </tr>
+            {/volist}
+            {else /}
+            <tr class="no_data">
+                <td colspan="10">{$Think.lang.ds_no_record}</td>
+            </tr>
+            {/notempty}
+            </tbody>
+            <tfoot>
+            {notempty name="organize_list"}
+            <tr colspan="15" class="tfoot">
+                <td colspan="16">
+                    <div class="pagination"> {$page} </div></td>
+            </tr>
+            {/notempty}
+            </tfoot>
+        </table>
+    </form>
+
+</div>
+
+
+
+
+
+
+
+

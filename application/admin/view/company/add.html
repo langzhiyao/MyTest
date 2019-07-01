@@ -1,0 +1,293 @@
+{include file="public/header" /}
+<script src="{$Think.config.url_domain_root}static/common/js/mlselectiones.js"></script>
+<script src="{$Think.config.url_domain_root}static/home/js/common.js"></script>
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<style>
+    .layui-form-label{
+        width: 200px;
+    }
+</style>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>分/子公司管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>添加新的代理商公司</li>
+        </ul>
+    </div>
+    <form id="add_form" method="post" enctype="multipart/form-data" class="layui-form">
+        <div class="ncap-form-default">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.organize_index_title}：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="o_name" name="o_name" class="layui-input">
+                        <span class="err"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.organize_index_role}：</label>
+                    <div class="layui-input-inline">
+                        <select  class="layui-select"  name="o_role" id="o_role">
+                        {volist name="gadmin" id="vo"}
+                        <option value="{$vo.gid}">{$vo.gname}</option>
+                        {/volist}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.organize_index_address}：</label>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select  lay-filter="province"  class="select"  lay-verify="type" name="province" id="province">
+                                <option value="" selected>{$Think.lang.look_address_province}</option>
+                                {volist name="region_list" id="vo"}
+                                <option value="{$vo.area_id}">{$vo.area_name}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                        <div class="layui-input-inline">
+                            <select name="city" lay-filter="city"  class="select"  lay-verify="type"  id="city">
+                                <option value="">{$Think.lang.look_address_city}</option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline">
+                            <select name="area" lay-filter="area"  class="select"  lay-verify="type"  id="area">
+                                <option value="">{$Think.lang.look_address_area}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.address}：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="o_address" name="o_address" class="layui-input">
+                        <span class="err"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.mob_phone}：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="o_phone" name="o_phone" class="layui-input">
+                        <span class="err"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.organize_index_leading}：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="o_leading" name="o_leading" class="layui-input">
+                        <span class="err"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.organize_index_enddate}：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="activity_end_date" name="activity_end_date" class="layui-input date">
+                        <span class="err"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.organize_index_remark}：</label>
+                    <div class="layui-input-inline">
+                        <textarea id="o_remark" name="o_remark" class="layui-text"></textarea>
+                        <span class="err"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label"></label>
+                <div class="layui-input-block">
+                    <a href="JavaScript:void(0);" class="btn" id="submitBtn">确认提交</a>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>
+<script>
+    layui.use(['form','laypage', 'layer'], function(){
+        var form = layui.form,
+            laypage = layui.laypage
+            ,layer = layui.layer;
+        //省 市 区
+        var province = '<?php if(!empty($_GET["province"])){echo $_GET["province"];}?>';
+        var city = '<?php if(!empty($_GET["city"])){echo $_GET["city"];}?>';
+        var area = '<?php if(!empty($_GET["area"])){echo $_GET["area"];}?>';
+        if(province != 0){
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+province+'&city='+city+'&area='+area,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变市区
+                    $('#city').html(data.city);
+                    //改变县区
+                    $('#area').html(data.area);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        }
+
+        //省
+        form.on('select(province)', function(data){
+            //改变市区
+            $('#city').html('<option value="0">{$Think.lang.look_address_city}</option>');
+            //改变县区
+            $('#area').html('<option value="0">{$Think.lang.look_address_area}</option>');
+
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变市区
+                    $('#city').html(data.city);
+                    //改变县区
+                    $('#area').html(data.area);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //市
+        form.on('select(city)', function(data){
+            //改变县区
+            $('#area').html('<option value="0">{$Think.lang.look_address_area}</option>');
+            var province = $('#province').find('option:selected').val();
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+province+'&city='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变县区
+                    $('#area').html(data.area);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //县/区
+        form.on('select(area)', function(data){
+            var province = $('#province').find('option:selected').val();
+            var city = $('#city').find('option:selected').val();
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+province+'&city='+city+'&area='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+
+    });
+    //按钮先执行验证再提交表单
+    $(function(){$("#submitBtn").click(function(){
+        if($("#add_form").valid()){
+            $("#add_form").submit();
+        }
+    });
+    });
+    $(document).ready(function(){
+        $.datepicker.regional["zh-CN"] = { closeText: "关闭", prevText: "&#x3c;上月", nextText: "下月&#x3e;", currentText: "今天", monthNames: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"], monthNamesShort: ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"], dayNames: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"], dayNamesShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"], dayNamesMin: ["日", "一", "二", "三", "四", "五", "六"], weekHeader: "周", dateFormat: "yy-mm-dd", firstDay: 1, isRTL: !1, showMonthAfterYear: !0, yearSuffix: "年" }
+        $.datepicker.setDefaults($.datepicker.regional["zh-CN"]);
+
+        $("#activity_start_date").datepicker({dateFormat: 'yy-mm-dd'});
+        $("#activity_end_date").datepicker({dateFormat: 'yy-mm-dd'});
+        $("#add_form").validate({
+            errorPlacement: function(error, element){
+                error.appendTo(element.parent().parent().prev().find('td:first'));
+            },
+            rules : {
+                o_name: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 20,
+                    remote: {
+                        url: ADMIN_URL+'/Admin/ajax.html?branch=company_admin_name',
+                        type: 'get',
+                        data: {
+                            o_name: function() {
+                                return $('#o_name').val();
+                            }
+                        }
+                    }
+                },
+                o_address: {
+                    required : true
+                },
+                o_leading: {
+                    required : true
+                },
+                o_phone: {
+                    required: true,
+                    minlength: 11,
+                    maxlength: 11
+                },
+                activity_end_date: {
+                    required : true,
+                    date      : false
+                },
+                type_ides : {
+                    required : true
+                }
+            },
+            messages : {
+                o_address: {
+                    required : '{$Think.lang.company_address}'
+                },
+                o_leading: {
+                    required : '{$Think.lang.company_leading}'
+                },
+                o_phone: {
+                    required : '{$Think.lang.company_phone}',
+                    minlength: '{$Think.lang.company_phoneerror}',
+                    maxlength: '{$Think.lang.company_phoneerror}'
+                },
+                o_name: {
+                    required : '{$Think.lang.organize_name_null}',
+                    minlength: '{$Think.lang.company_add_username_max}',
+                    maxlength: '{$Think.lang.company_add_username_max}',
+                    remote: '{$Think.lang.admin_add_admin_not_exists}'
+                },
+                activity_end_date: {
+                    required : '{$Think.lang.organize_new_enddate_null}'
+                },
+                type_ides : {
+                    required :'{$Think.lang.company_area}'
+                }
+            }
+        });
+    });
+    $(function() {
+        regionInit("region");
+    });
+</script>
+
+

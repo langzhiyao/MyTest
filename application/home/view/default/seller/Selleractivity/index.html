@@ -1,0 +1,49 @@
+{include file="public/seller_top" /}
+<div class="seller_main w1200">
+    {include file="public/seller_left" /}
+    <div class="seller_right">
+        <div class="seller_items">
+            {include file="public/seller_items" /}
+        </div>
+
+        <table class="dssc-default-table">
+            {notempty name="list"}
+            <thead>
+            <tr>
+                <th class="w20">&nbsp;</th>
+                <th class="tl w200">{$Think.lang.store_activity_theme}</th>
+                <th class="tl">{$Think.lang.store_activity_intro}</th>
+                <th class="w150">{$Think.lang.store_activity_start_time}</th>
+                <th class="w150">{$Think.lang.store_activity_end_time}</th>
+                <th class="w90">{$Think.lang.ds_handle}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="list" id="v"}
+            <tr>
+                <td></td>
+                <td class="tl"><a target="_blank" href="{:url('activity/index',['activity_id'=>$v.activity_id])}">{$v.activity_title}</a></td>
+                <td class="tl">{$v.activity_desc}</td>
+                <td class="goods-time">{:date('Y-m-d',$v.activity_start_date)}</td>
+                <td class="goods-time">{:date('Y-m-d',$v.activity_end_date)}</td>
+                <td class="nscs-table-handle"><span><a id="a_{$v.activity_id}" href="{:url('Selleractivity/activity_apply',['activity_id'=>$v.activity_id])}"  class="btn-green"><i class="icon-edit"></i>
+        <p>{$Think.lang.store_activity_join}</p>
+        </a></span></td>
+            </tr>
+            {/volist}
+            {else /}
+            <tr>
+                <td colspan="20" class="norecord"><div class="warning-option"><i class="icon-warning-sign"></i><span>{$Think.lang.no_record}</span></div></td>
+            </tr>
+            {/notempty}
+            </tbody>
+            <tfoot>
+            {notempty name="list"}
+            <tr>
+                <td colspan="20"><div class="pagination">{$show_page}</div></td>
+            </tr>
+            {/notempty}
+            </tfoot>
+        </table>
+    </div>
+</div>

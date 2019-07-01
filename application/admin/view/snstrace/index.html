@@ -1,0 +1,135 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>买家动态</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form method="get" name="formSearch">
+        <table class="search-form">
+            <tbody>
+            <tr>
+                <th><label for="search_uname">{$Think.lang.admin_snsstrace_storename}</label></th>
+                <td><input type="text" value="{$Request.get.search_sname}" name="search_sname" id="search_sname" class="txt"></td>
+                <th><label for="search_content">{$Think.lang.admin_snstrace_content}</label></th>
+                <td><input type="text" value="{$Request.get.search_scontent}" name="search_scontent" id="search_scontent" class="txt"></td>
+                <th><label>{$Think.lang.store_sns_trace_type}</label></th>
+                <td><select name="search_type">
+                    <option value=''>{$Think.lang.ds_please_choose}...</option>
+                    <option value="2" {$Request.get.search_type == '2'?'selected="selected"':''}>{$Think.lang.store_sns_normal}</option>
+                    <option value="3" {$Request.get.search_type == '3'?'selected="selected"':''}>{$Think.lang.store_sns_new}</option>
+                    <option value="4" {$Request.get.search_type == '4'?'selected="selected"':''}>{$Think.lang.store_sns_coupon}</option>
+                    <option value="5" {$Request.get.search_type == '5'?'selected="selected"':''}>{$Think.lang.store_sns_xianshi}</option>
+                    <option value="6" {$Request.get.search_type == '6'?'selected="selected"':''}>{$Think.lang.store_sns_mansong}</option>
+                    <option value="7" {$Request.get.search_type == '7'?'selected="selected"':''}>{$Think.lang.store_sns_bundling}</option>
+                    <option value="8" {$Request.get.search_type == '8'?'selected="selected"':''}>{$Think.lang.store_sns_groupbuy}</option>
+                    <option value="9" {$Request.get.search_type == '9'?'selected="selected"':''}>{$Think.lang.store_sns_recommend}</option>
+                    <option value="10" {$Request.get.search_type == '10'?'selected="selected"':''}>{$Think.lang.store_sns_hotsell}</option>
+                </select></td>
+                <th><label for="search_stime">{$Think.lang.admin_snstrace_addtime}</label></th>
+                <td><input type="text" class="txt date" value="{$Request.get.search_stime}" name="search_stime" id="search_stime" class="txt">
+                    <label for="search_etime">~</label>
+                    <input type="text" class="txt date" value="{$Request.get.search_etime}" name="search_etime" id="search_etime" class="txt">
+                </td>
+                <th><a href="javascript:document.formSearch.submit();" class="btn-search " title="{$Think.lang.ds_query}"></a></th>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>{$Think.lang.admin_snstrace_tracelisttip1}</li>
+            <li>{$Think.lang.admin_snstrace_tracelisttip2}</li>
+        </ul>
+    </div>
+
+    
+    <form method='post' id="form_trace" action="">
+        <table class="ds-default-table">
+            <tbody>
+            {notempty name="strace_list"}
+            {volist name="strace_list" id="v"}
+            <tr class="hover edit">
+                <td style="vertical-align:top;"><input type="checkbox" name="st_id[]" value="{$v.strace_id}" class="checkitem"></td>
+                <td class="fd-list">
+                    <!-- 动态列表start -->
+                    <li>
+                        <div class="fd-aside">
+              	<span class="thumb size60">
+					<a href="{:url('home/storesnshome/index',['sid'=>$v.strace_storeid])}" target="_blank">
+						<img onload="javascript:DrawImage(this,60,60);" src="{:getStoreLogo($v.strace_storelogo)}">
+					</a>
+              	</span>
+                        </div>
+                        <dl class="fd-wrap">
+                            <dt>
+                            <h3><a href="{:url('home/storesnshome/index',['sid'=>$v.strace_storeid])}" target="_blank">{$v.strace_storename}</a>{$Think.lang.ds_colon}</h3>
+                            <h5>{:parsesmiles($v.strace_title)}</h5>
+                            </dt>
+                            <dd>
+                                {:parsesmiles($v.strace_content)}
+                            </dd>
+                            <dd>
+                                <span class="fc-time fl">{:date('Y-m-d H:i',$v.strace_time)}</span>
+                                <span class="fr">{$Think.lang.admin_snstrace_forward}&nbsp;|&nbsp;
+                                    <a href="{:url('snsstrace/scomm_list',['st_id'=>$v.strace_id])}">{$Think.lang.admin_snstrace_comment}{$v.strace_comment >0 ? ($v.strace_comment):''}</a>
+                                </span>&nbsp;&nbsp;
+                                {$Think.lang.admin_snstrace_state}{$Think.lang.ds_colon}
+                                {if $v.strace_state ==0}<font style='color:red;'>{$Thinkl.lang.admin_snstrace_statehide}</font>{else}{$Think.lang.admin_snstrace_stateshow}{/if}</span>
+                            </dd>
+                            <div class="clear"></div>
+                        </dl>
+                    </li>
+                    <!-- 动态列表end -->
+                </td>
+            </tr>
+            {/volist}
+            <tfoot>
+            <tr class="tfoot">
+                <td class="w24"><input type="checkbox" class="checkall" id="checkallBottom"></td>
+                <td colspan="16"><label for="checkallBottom">{$Think.lang.ds_select_all}</label>
+                    &nbsp;&nbsp; <a href="JavaScript:void(0);" class="btn" onclick="submit_form('del');"><span>{$Think.lang.ds_del}</span></a> <a href="JavaScript:void(0);" class="btn" onclick="submit_form('hide');"><span>{$Think.lang.admin_snstrace_statehide}</span></a> <a href="JavaScript:void(0);" class="btn" onclick="submit_form('show');"><span>{$Think.lang.admin_snstrace_stateshow}</span></a>
+                    <div class="pagination"> {$show_page} </div></td>
+            </tr>
+            </tfoot>
+            {else /}
+            <tr class="no_data">
+                <td colspan="15">{$Think.lang.ds_no_record}</td>
+            </tr>
+            {/notempty}
+            </tbody>
+        </table>
+    </form>
+
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $('#search_stime').datepicker({dateFormat: 'yy-mm-dd'});
+        $('#search_etime').datepicker({dateFormat: 'yy-mm-dd'});
+    });
+    function submit_form(type){
+        if(type=='del'){
+            if(!confirm('{$Think.lang.ds_ensure_del}')){
+                return false;
+            }
+            $('#form_trace').attr('action','{:url('Snstrace/tracedel')}');
+        }else if(type=='hide'){
+            $('#form_trace').attr('action','{:url('Snstrace/traceedit','type=hide')}');
+        }else{
+            $('#form_trace').attr('action','{:url('Snstrace/traceedit','typr=show')}');
+        }
+        $('#form_trace').submit();
+    }
+</script>

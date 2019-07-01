@@ -1,0 +1,140 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>{$Think.lang.pkgs_edit}</h3>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <div class="fixed-empty"></div>
+    <form id="link_form" enctype="multipart/form-data" method="post">
+        <table class="ncap-form-default">
+            <tbody>
+            <div class="ncap-form-default">
+                <dl>
+                    <dt>{$Think.lang.pkg_name}</dt>
+                    <dd>
+                        <input type="text" name="pkg_name" id="pkg_name" class="input-txt" value="{$pkg_info.pkg_name|default=''}">
+                        <span class="err"></span>
+                        <p class="notic">{$Think.lang.pkg_name_notice}</p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>{$Think.lang.pkg_enabled}</dt>
+                    <dd>
+                        <li>
+                            <input name="pkg_enabled" type="radio" value="1" {if condition="$pkg_info.pkg_enabled eq 1 || $pkg_info.pkg_enabled neq 2"}checked="checked"{/if}>
+                            <label>{$Think.lang.pkg_use_s}</label>
+                        </li>
+                        <li>
+                            <input type="radio" name="pkg_enabled" value="2" {if condition="$pkg_info.pkg_enabled eq 2 "}checked="checked"{/if}>
+                            <label>{$Think.lang.pkg_not_use_s}</label>
+                        </li>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>{$Think.lang.pkg_axis}</dt>
+                    <dd>
+                        <input type="text" onkeyup="this.value=this.value.replace(/[^\d]/g,'') " onafterpaste="this.value=this.value.replace(/[^\d]/g,'') " placeholder="只能输入数字" name="pkg_length" id="pkg_length" value="{$pkg_info.pkg_length|default='1'}"/>
+                        <select name="pkg_axis">
+                            <?php foreach($axis_list as $k => $v){ ?>
+                            <option {if condition="$k eq $pkg_info.pkg_axis  "}selected{/if} value="<?php echo $k;?>"><?php echo $v ; ?></option>
+                            <?php } ?>
+                        </select>
+                        <span class="err"></span>
+                        <p class="notic">套餐时间刻度不能为空</p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>{$Think.lang.pkg_cprice}</dt>
+                    <dd>
+                        <input type="text" name="pkg_cprice" id="pkg_cprice" class="input-txt" value="{$pkg_info.pkg_cprice|default=''}">
+                        <span class="err"></span>
+                        <p class="notic">{$Think.lang.pkg_price_notice}</p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>{$Think.lang.pkg_price}</dt>
+                    <dd>
+                        <input type="text" name="pkg_price" id="pkg_price" class="input-txt" value="{$pkg_info.pkg_price|default=''}">
+                        <span class="err"></span>
+                        <p class="notic">{$Think.lang.pkg_price_notice}</p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>{$Think.lang.pkg_sort}</dt>
+                    <dd>
+                        <input type="text" name="pkg_sort" id="pkg_sort" class="txt" value="{$pkg_info.pkg_sort|default=''}">
+                        <span class="err"></span>
+                        <p class="notic">套餐排序如果为【666】，将会在用户选在购买时展示为【推荐套餐】，请保证只有一个套餐排序为666</p>
+                    </dd>
+                </dl>
+
+                <dl>
+                    <dt>{$Think.lang.pkg_desc}</dt>
+                    <dd>
+                        <textarea name="pkg_desc">{$pkg_info.pkg_desc|default=''}</textarea>
+                        <span class="err"></span>
+                        <p class="notic"></p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt></dt>
+                    <dd>
+                        <a href="JavaScript:void(0);" class="btn" id="submitBtn"><span>{$Think.lang.ds_submit}</span></a>
+                    </dd>
+                </dl>
+            </div>
+
+
+
+            </tbody>
+        </table>
+    </form>
+</div>
+<script>
+    //按钮先执行验证再提交表单
+    $(function () {
+        $("#submitBtn").click(function () {
+            if ($("#link_form").valid()) {
+                $("#link_form").submit();
+            }
+        });
+    });
+    //
+    $(document).ready(function () {
+
+        $('#link_form').validate({
+            errorPlacement: function (error, element) {
+                error.appendTo(element.next());
+            },
+            rules: {
+                pkg_name: {
+                    required: true
+                },
+                pkg_price: {
+                    required: true
+                },
+                pkg_cprice: {
+                    required: true
+                },
+            },
+            messages: {
+                pkg_name: {
+                    required: '{$Think.lang.pkg_name_err}'
+                },
+                pkg_price: {
+                    required: '{$Think.lang.pkg_price_err}',
+                },
+                pkg_cprice: {
+                    required: '{$Think.lang.pkg_cprice_err}',
+                },
+            }
+        });
+    });
+</script>

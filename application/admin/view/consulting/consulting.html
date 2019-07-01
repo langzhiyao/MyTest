@@ -1,0 +1,130 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>咨询管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <div class="fixed-empty"></div>
+    <form method="get" name="formSearch">
+        <table class="search-form">
+            <tbody>
+            <tr>
+                <th><label for="member_name">{$Think.lang.consulting_index_sender}</label></th>
+                <td><input class="txt" type="text" name="member_name" id="member_name" value="{present name="member_name"}{$member_name}{/present}" /></td>
+                <th><label for="consult_content"> {$Think.lang.consulting_index_content}</label></th>
+                <td><input class="txt" type="text" name="consult_content" id="consult_content"
+                           value="{present name="consult_content"}{$consult_content}{/present}" /></td>
+                <td><label for="consult_type">咨询类型</label></td>
+                <td>
+                    <select name="ctid">
+                        <option value="0">全部</option>
+                        {notempty name="consult_type"}
+                        {volist name="consult_type" id="val"}
+                        <option {eq name="ctid" value="val.ct_id" }selected="selected"
+                                {/eq} value="{$val.ct_id}">{$val.ct_name}</option>
+                        {/volist}
+                        {/notempty}
+                    </select>
+                </td>
+                <td><a href="javascript:document.formSearch.submit();" class="btn-search " title="{$Think.lang.ds_query}"></a>
+                    {present name="form_submit"}
+                    {eq name="form_submit" value="ok"}
+                    <a class="btns " href="{:url('consulting/consulting')}"
+                       title="{$Think.lang.ds_cancel_search}"><span>{$Think.lang.ds_cancel_search}</span></a>
+                    {/eq}
+                    {/present}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+    
+  <div class="explanation" id="explanation">
+      <div class="title" id="checkZoom">
+          <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+          <span id="explanationZoom" title="收起提示" class="arrow"></span>
+      </div>
+      <ul>
+          <li>{$Think.lang.consulting_index_help1}</li>
+      </ul>
+  </div>
+    
+    <form method="post" action="{:url('consulting/delete')}"
+          onsubmit="return checkForm() && confirm('{$Think.lang.ds_ensure_del}');" name="form1">
+        <table class="ds-default-table">
+            <tbody>
+            {notempty name="consult_list"}
+            {volist name="consult_list" id="consult"}
+            <tr class="space">
+                <th class="w24"><input type="checkbox" class="checkitem" name="consult_id[]"
+                                       value="{$consult.consult_id}" /></th>
+                <th>
+                    <strong>{$Think.lang.consulting_index_object}:&nbsp;</strong>
+                    <span><a target="_blank"
+                             href="{:url('goods/index',['goods_id'=>$consult.goods_id,'id'=>$consult.store_id])}">{$consult.goods_name}</a></span>
+                </th>
+                <th><strong>{$Think.lang.consulting_index_store_name}:</strong>&nbsp;<a
+                        href="{:url('showstore/index',['store_id'=>$consult.store_id])}" class="normal">{$consult.store_name}</a>
+                </th>
+                <th><strong>{$Think.lang.ds_handle}:</strong>&nbsp;
+                    <a href="javascript:if(confirm('{$Think.lang.sure_drop}'))location.href ='{:url('consulting/delete',['consult_id'=>$consult.consult_id])}'" >{$Think.lang.ds_del}</a>
+                </th>
+            </tr>
+            <tr>
+                <td colspan="12">
+                    <fieldset style="border: 1px dashed #E7E7E7;padding: 0.5em;">
+                        <legend><span><strong>{$Think.lang.consulting_index_sender}:</strong>&nbsp;
+                        {empty name="consult.member_id"}
+                        {$Think.lang.consulting_index_guest}
+                        {else /}
+                        {$consult.member_name}
+                        {/empty}
+              </span>&nbsp;&nbsp;&nbsp;&nbsp;<span><strong>{$Think.lang.consulting_index_time}:</strong>&nbsp;{$consult.consult_addtime|date="Y-m-d H:i:s",###}</span>
+                        </legend>
+                        <div class="formelement" id="hutia_{$key}">{$consult.consult_content}</div>
+                    </fieldset>
+                    <fieldset style="background: none repeat scroll 0 0 #FFFAE3;padding: 0.5em;border: 1px dashed #F1E38B;">
+                        <legend><strong>{$Think.lang.consulting_index_reply}:</strong></legend>
+                        <div class="formelement" id="hutia2_{$key}">
+                            {notempty name="consult.consult_reply"}
+                            {$consult.consult_reply}
+                            {else /}
+                            {$Think.lang.consulting_index_no_reply}
+                           {/notempty}
+                        </div>
+                    </fieldset>
+                </td>
+            </tr>
+           {/volist}
+            {else /}
+            <tr class="no_data">
+                <td colspan="20">{$Think.lang.ds_no_record}</td>
+            </tr>
+            {/notempty}
+            </tbody>
+            <tfoot>
+            {notempty name="output.consult_list"}
+            <tr class="tfoot">
+                <td><input type="checkbox" class="checkall" id="checkallBottom"></td>
+                <td colspan="16"><label for="checkallBottom">{$Think.lang.ds_select_all}</label>
+                    &nbsp;&nbsp;<a href="JavaScript:void(0);" class="btn" onclick="document.form1.submit()"><span>{$Think.lang.ds_del}</span></a>
+                    <div class="pagination">{$show_page}</div>
+                </td>
+            </tr>
+            {/notempty}
+            </tfoot>
+        </table>
+    </form>
+
+
+</div>

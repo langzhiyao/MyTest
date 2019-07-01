@@ -1,0 +1,117 @@
+{include file="public/header" /}
+<script src="{$Think.config.url_domain_root}static/common/js/mlselection_list.js"></script>
+<script src="{$Think.config.url_domain_root}static/home/js/common.js"></script>
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>教师认证申请</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <form method="post" enctype="multipart/form-data" name="form1" action="">
+        <div class="ncap-form-default">
+            <dl>
+                <dt>{$Think.lang.teacher_index_user}：{$teachinfo.member_mobile}</dt>
+            </dl>
+            <dl>
+                <dt>身份证号：{$teachinfo.idcard}</dt>
+            </dl>
+            <dl>
+                <dt>
+                    {$Think.lang.teacher_index_region}：{$teachinfo.region}</dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.teacher_index_regiest}：<?php if(!empty($teachinfo['member_add_time'])){echo  date("Y-m-d H:i:s",$teachinfo['member_add_time']);}else{echo "无录入";} ?><br>
+                    {$Think.lang.teacher_index_certime}：<?php echo date("Y-m-d H:i:s",$teachinfo['createtime']) ?></dt>
+            </dl>
+         <dl>
+             <dt>-----------------------实名认证信息-----------------------</dt>
+         </dl>
+
+            <dl>
+            <dt>身份证号：
+                {if condition="$teachinfo.idcard"}
+                已认证
+                {else}
+                未认证
+                {/if}&nbsp;&nbsp;&nbsp;&nbsp;({$teachinfo.idcard})</dt>
+        </dl>
+            <dl>
+                <dt>{$Think.lang.teacher_index_name}：
+                    {if condition="$teachinfo.username"}
+                    已认证
+                    {else}
+                    未认证
+                    {/if}&nbsp;&nbsp;&nbsp;&nbsp;({$teachinfo.username})</dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.teacher_index_certificateid}：{if condition="$teachinfo.certificate"}
+                    已认证
+                    {else}
+                    未认证
+                    {/if}</dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.teacher_index_cardimg}：<a href="javascript:imageBig({$teachinfo.id},1)"><img src="{$path}{$teachinfo.cardimg}" height="60px"></a>
+                    <a href="javascript:imageBig({$teachinfo.id},2)"><img src="{$path}{$teachinfo.cardimg_fan}" height="60px"></a></dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.teacher_index_certificate}：<a href="javascript:imageBig({$teachinfo.id},3)"><img src="{$path}{$teachinfo.certificate}" height="60px"></a></dt>
+            </dl>
+            <dl>
+                <a href="javascript:dd({$teachinfo.id})" class="layui-btn layui-btn-xs">{$Think.lang.teacher_index_pass}</a>
+            </dl>
+            <dl>说明：点击审核通过或拒绝审核，系统会发送短信给被认证教师进行审核结果的通知。</dl>
+        </div>
+    </form>
+
+    <form class="layui-form" onsubmit="return false;" style="display: none;" id="courForm">
+        &nbsp;&nbsp;&nbsp;&nbsp;拒绝原因：<input type="text" value="" name="fail_reason" id="fail_reason" class="txt" placeholder="控制在30字以内">
+        <input type="hidden" id="role" value="">
+        <input type="hidden" id="mit"  value="{:url('/Office/teachercertify/drop',['teacher_id'=>$teachinfo.id,'status'=>3,'phone'=>$teachinfo.member_mobile,'reason'=>''])}">
+        &nbsp;&nbsp;&nbsp;&nbsp;<a href="{:url('/Office/teachercertify/drop',['teacher_id'=>$teachinfo.id,'member_id'=>$teachinfo.member_id,'status'=>2,'phone'=>$teachinfo.member_mobile])}" class="btn" id="submitBtn">审核通过</a><a href="javascript:da()" class="btn" id="">拒绝审核</a>
+
+    </form>
+
+</div>
+<script type="text/javascript">
+    function da(){
+        $a = $("#fail_reason").val();
+        var str = $("#mit").val()+   $("#fail_reason").val();
+        window.location.href=str;
+    }
+
+    function dd(role){
+        //多窗口模式，层叠置顶
+        layer.open({
+            type: 1,
+            title: '审核',
+            area: ['300px', '150px'],
+            fixed: false, //不固定
+            shadeClose: true,
+            shade: 0.4,
+            maxmin: false, //开启最大化最小化按钮
+            content: $("#courForm")
+        });
+    }
+
+    function imageBig(id,type) {
+        var urls=ADMIN_URL+'teachercertify/view?id='+id+"&type="+type;
+        //多窗口模式，层叠置顶
+        layer.open({
+            type: 2,
+            title: '图片详情',
+            area: ['70%', '80%'],
+            shadeClose: true,
+            shade: 0.4,
+            maxmin: false, //开启最大化最小化按钮
+            content: urls
+        });
+    }
+</script>

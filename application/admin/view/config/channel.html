@@ -1,0 +1,141 @@
+{include file="public/header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<style>
+    .layui-table-tool-self{
+        position: static;
+        float: right;
+        font-size: 24px;
+    }
+</style>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>通用设置/APP</h3>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div class="explanation" id="explanation" style="width:100%;box-sizing: border-box;">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>不要轻易修改渠道 标识及名称，会影响数据统计</li>
+        </ul>
+    </div>
+    <div class="layui-tab">
+        <ul class="layui-tab-title">
+            <li class="layui-this" data-id="1">渠道标识列表</li>
+        </ul>
+
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <form method="get" id='form_admin' class="layui-form">
+                    <table class="layui-table">
+                        <colgroup>
+                            <col >
+                            <col >
+                            <col>
+                        </colgroup>
+                        <thead>
+                        <tr class="thead">
+                            <th colspan="7">
+                                <div class="layui-table-tool-self">
+                                    <a class="layui-btn layui-btn-sm " lay-event="getCheckData" id="send_android">添加渠道标识</a>
+                                </div>
+                            </th>
+                        </tr>
+                        </thead>
+                        <thead>
+                        <tr class="thead">
+                            <th class="align-center">序号</th>
+                            <th class="align-center">渠道名称</th>
+                            <th class="align-center">渠道标识</th>
+                            <th class="align-center">添加/修改时间</th>
+                            <th class="align-center">备注</th>
+                            <th class="align-center">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="html">
+                        </tbody>
+                    </table>
+                    <div style="float: right;">
+                        <tr class="tfoot">
+                            <div id="page"></div>
+                        </tr>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form','laypage', 'layer'], function(){
+        var form = layui.form,
+            laypage = layui.laypage
+            ,layer = layui.layer;
+        //分页
+        laypage.render({
+            elem: 'page'
+            ,count: '<?php echo $list_count;?>'
+            ,limit:10
+            ,layout: ['count', 'prev', 'page', 'next',  'skip']
+            ,jump: function(obj){
+                // console.log(obj);
+                var page = obj.curr,
+                    page_count = obj.limit;
+                $.ajax({
+                    type:'POST',
+                    url:ADMIN_URL+'Config/get_channel_list.html',
+                    success:function(data){
+                        data = jQuery.parseJSON(data);
+                        $('#html').html(data.html);
+                        $('.edit').click(function(){
+                            var id = $(this).attr('data-id');
+                            //页面层
+                            layer.open({
+                                type: 2,
+                                title:'修改渠道标识',
+                                area: ['1000px', '750px'],
+                                fixed: false, //不固定
+                                maxmin: true,
+                                content: ADMIN_URL+'Config/edit_channel.html?id='+id,
+                                end: function () {
+                                    location.reload();
+                                }
+                            });
+                        });
+                    }
+                })
+            }
+        });
+    });
+    $('#send_android').click(function(){
+        //页面层
+        layer.open({
+            type: 2,
+            title:'添加渠道标识',
+            area: ['1000px', '750px'],
+            fixed: false, //不固定
+            maxmin: true,
+            content: ADMIN_URL+'Config/add_channel.html',
+            end: function () {
+                location.reload();
+            }
+        });
+    });
+</script>
+
+
+
+
+
+

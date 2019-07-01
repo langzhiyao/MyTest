@@ -1,0 +1,106 @@
+<!--<div id="friendsShare" class="normal">
+    <div class="outline">
+        <div class="title">
+            <h3>好友动态</h3>
+        </div>
+        <?php if (!empty($follow_list) && is_array($follow_list)) { ?>
+        <div class="dsm-friends-share">
+            <ul id="friendsShareList" class="jcarousel-skin-tango">
+                <?php foreach($follow_list as $k => $v){ ?>
+                <li>
+                    <div class="dsm-friend-avatar"><a href="{:url('/Home/Membersnshome/trace',['mid'=>$v.member_id])}" target="_blank"><img  src="<?php if ($v['member_avatar']!='') { echo UPLOAD_SITE_URL.'/'.ATTACH_AVATAR.DS.$v['member_avatar']; } else { echo UPLOAD_SITE_URL.'/'.ATTACH_COMMON.DS.C('default_user_portrait'); } ?>"></a></div>
+                    <dl>
+                        <dt class="dsm-friend-name"><a href="{:url('/Home/Membersnshome/trace',['mid'=>$v.member_id])}" target="_blank"><?php echo $v['friend_tomname']; ?></a></dt>
+                        <dd>动态<?php echo $tracelist[$v['member_id']];?>条</dd>
+                    </dl>
+                </li>
+                <?php } ?>
+            </ul>
+            <div class="more"><a target="_blank" href="{:url('/Home/Membersnsfriend/follow')}">查看我的全部好友</a></div>
+        </div>
+        <?php } else { ?>
+        <dl class="null-tip">
+            <dt></dt>
+            <dd>
+                <h4>您的好友最近没有什么动静</h4>
+                <h5>关注其他用户成为好友可将您的动态进行分享</h5>
+                <p><a target="_blank" href="{:url('/Home/Membersnsfriend/follow')}" class="dsm-btn-mini" >查看我的全部好友</a></p>
+            </dd>
+        </dl>
+        <?php } ?>  
+    </div>
+</div>
+<div id="circle" class="normal">
+    <div class="outline">
+        <div class="title">
+            <h3>我的圈子</h3>
+        </div>
+        <?php if(!empty($circle_list)){?>
+        <div class="dsm-circle">
+            <ul id="circleList" class="jcarousel-skin-tango">
+                <?php foreach($circle_list as $val){?>
+                <li>
+                    <div class="dsm-circle-pic"><a href="{:url('/Circle/Group/index',['c_id'=>$val.circle_id])}" target="_blank"><img alt="" src="<?php echo circleLogo($val['circle_id']);?>"></a></div>
+                    <dl>
+                        <dt><a href="{:url('/Circle/Group/index',['c_id'=>$val.circle_id])}" target="_blank"><?php echo $val['circle_name']?></a></dt>
+                        <dd><?php echo $val['circle_mcount'];?>个成员</dd>
+                    </dl>
+                </li>
+                <?php } ?>
+            </ul>
+            <div class="more"><a target="_blank" href="{:url('/Circle/Pcenter/my_group')}">查看我的所有圈子</a></div>
+        </div>
+        <?php } else {?>
+        <dl class="null-tip">
+            <dt></dt>
+            <dd>
+                <h4>您还没有自己的圈子</h4>
+                <h5>您可以创建或加入感兴趣的社交圈子</h5>
+                <p><a target="_blank" href="{:url('/Circle/Index/add_group')}" class="dsm-btn-mini">创建圈子</a></p>
+            </dd>
+        </dl>
+        <?php } ?>
+    </div>
+</div>-->
+<div id="browseMark" class="double">
+    <div class="outline">
+        <div class="title">
+            <h3>我的足迹</h3>
+        </div>
+        <?php if (!empty($viewed_goods) && is_array($viewed_goods)) { ?>
+        <div class="dsm-browse-mark">
+            <ul id="browseMarkList" class="jcarousel-skin-tango">
+                <?php foreach($viewed_goods as $goods_id => $goods_info) { ?>
+                <li>
+                    <div class="dsm-goods-pic"><a href="<?php echo $goods_info['url'];?>" target="_blank"><img alt="" src="<?php echo $goods_info['goods_image'];?>"></a></div>
+                    <dl>
+                        <dt class="dsm-goods-name"><a href="<?php echo $goods_info['url'];?>" title="<?php echo $goods_info['goods_name'];?>" target="_blank"><?php echo $goods_info['goods_name'];?></a></dt>
+                        <dd class="dsm-goods-price"><em>￥<?php echo $goods_info['goods_promotion_price'];?></em></dd>
+                    </dl>
+                </li>
+                <?php } ?>
+            </ul>
+            <div class="more"><a href="{:url('/Home/Membergoodsbrowse/listinfo')}" target="_blank">查看所有商品</a></div>
+        </div>
+        <?php } else { ?>
+        <dl class="null-tip">
+            <dt></dt>
+            <dd>
+                <h4>您的商品浏览记录为空</h4>
+                <h5>赶紧去商城看看促销活动吧</h5>
+                <p><a target="_blank" href="{:url('/Home/Index/index')}" class="dsm-btn-mini">浏览商品</a></p>
+            </dd>
+        </dl>
+        <?php } ?>
+    </div>
+</div>
+<script>
+//信息轮换
+    $.getScript("{$Think.config.url_domain_root}static/plugins/js/jcarousel/jquery.jcarousel.min.js", function() {
+        $('#favoritesGoodsList').jcarousel({visible: 4, itemFallbackDimension: 300});
+        $('#favoritesStoreList').jcarousel({visible: 3, itemFallbackDimension: 300});
+        $('#friendsShareList').jcarousel({visible: 3, itemFallbackDimension: 300});
+        $('#circleList').jcarousel({visible: 3, itemFallbackDimension: 300});
+        $('#browseMarkList').jcarousel({visible: 3, itemFallbackDimension: 300});
+    });
+</script>

@@ -1,0 +1,65 @@
+<div class="dsp-member-info">
+  <div class="avatar">
+    <img src="{:getMemberAvatarForID($member_info.member_id)}"/>
+    <div class="frame"></div>
+  </div>
+  <dl>
+    <dt>Hi, {:session('member_name')}</dt>
+    <dd>当前等级：<strong>{$member_info.level_name}</strong></dd>
+    <dd>当前经验值：<strong>{$member_info.member_exppoints}</strong></dd>
+  </dl>
+</div>
+<div class="dsp-member-grade">
+  {if $member_info.level !== '-1'}
+  <div class="progress-bar">
+    <em title="{$member_info.downgrade_name}需经验值{$member_info.downgrade_exppoints}">{$member_info.downgrade_name}</em>
+    <span title="{$member_info.exppoints_rate}%">
+      <i style="width:{$member_info.exppoints_rate}%;"></i>
+    </span>
+    <em title="{$member_info.upgrade_name}需经验值{$member_info.upgrade_exppoints}">{$member_info.upgrade_name}</em>
+  </div>
+  <div class="progress">
+    {if $member_info.less_exppoints > 0}
+    还差<em>{$member_info.less_exppoints}</em>经验值即可升级成为{$member_info.upgrade_name}等级会员
+    {else /}
+    已达到最高会员级别，继续加油保持这份荣誉哦！
+   {/if}
+  </div>
+  {else /}
+  暂无等级
+{/if}
+  <div class="links">
+    <div class="links">
+      <a href="{:url('pointgrade/index')}" target="_blank">我的成长进度</a>
+      <a href="{:url('pointgrade/exppointlog')}" target="_blank">经验值明细</a>
+    </div>
+  </div>
+</div>
+<div class="dsp-member-point">
+  <dl style="border-left: none 0;">
+    <a href="{:url('memberpoints/index')}" target="_blank">
+    <dt><strong>{$member_info.member_points}</strong>分</dt>
+    <dd>我的积分</dd>
+    </a>
+  </dl>
+  {if $setting_config.voucher_allow =='1'}
+  <dl>
+    <a href="{:url('membervoucher/index')}" target="_blank">
+    <dt><strong>{$vouchercount}</strong>张</dt>
+    <dd>可用代金券</dd>
+    </a>
+  </dl>
+  {/if}
+  {if $setting_config.pointprod_isuse =='1'}
+  <dl>
+    <a href="{:url('memberpointorder/orderlist')}" target="_blank">
+    <dt><strong>{$pointordercount}</strong>个</dt>
+    <dd>已兑换礼品</dd>
+    </a>
+  </dl>
+{/if}
+</div>
+{if $setting_config.pointprod_isuse =='1'}
+<div class="dsp-memeber-pointcart">
+  <a href="{:url('pointcart/index')}" class="btn">礼品兑换购物车{if $pointcart_count >0}<em>({$pointcart_count})</em>{/if}</a></div>
+{/if}

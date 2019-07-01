@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="zh">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>{$html_title|default=''}</title>
+        <meta name="renderer" content="webkit|ie-comp|ie-stand">
+        <meta name="keywords" content="{$seo_keywords|default=''}" />
+        <meta name="description" content="{$seo_description|default=''}" />
+        <link rel="stylesheet" href="{$Think.config.url_domain_root}static/store/styles/default/css/base.css">
+        <link rel="stylesheet" href="{$Think.config.url_domain_root}static/store/styles/default/css/shop.css">
+        <script src="{$Think.config.url_domain_root}static/plugins/jquery-2.1.4.min.js"></script>
+    </head>
+
+    <body>
+        <!--showDialog 方法-->
+        <div id="append_parent"></div>
+        <div id="ajaxwaitid"></div>
+        <div class="public-top">
+            <div class="w1200">
+                <span class="top-link">
+                    您好，欢迎来到 <em>{$Think.config.site_name}</em>
+                </span>
+                <ul class="login-regin">
+                    {if $Think.session.member_id}
+                    <li class="line"> <a href="{:url('/Home/Member/index')}">{$Think.session.member_name}</a></li>
+                    <li> <a href="{:url('/Home/Login/Logout')}">退出</a></li>
+                    {else}
+                    <li class="line"> <a href="{:url('/Home/Login/login')}">请登录</a></li>
+                    <li> <a href="{:url('/Home/Login/register')}">免费注册</a></li>
+                    {/if}
+                </ul>
+                <ul class="quick_list">
+                    <li>
+                        <span class="outline"></span>
+                        <span class="blank"></span>
+                        <a href="{:url('/Home/Member/index')}">用户中心<b></b></a>
+                        <div class="dropdown-menu">
+                            <ol>
+                                <li><a href="{:url('/Home/MemberOrder/index')}">已买到的商品</a></li>
+                                <li><a href="{:url('/Home/MemberFavorites/fglist')}">我关注的商品</a></li>
+                                <li><a href="{:url('/Home/MemberFavorites/fslist')}">我关注的店铺</a></li>
+                            </ol>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="outline"></span>
+                        <span class="blank"></span>
+                        <a href="{:url('/Home/Seller/index')}">卖家中心<b></b></a>
+                        <div class="dropdown-menu">
+                            <ol>
+                                <li><a href="{:url('/Home/Showjoinin/index')}">商家入驻</a></li>
+                                <li><a href="{:url('/Home/SellerOrder/index')}">已卖出商品</a></li>
+                                <li><a href="{:url('/Home/sellerGoodsAdd/index')}">发布商品</a></li>
+                                <li><a href="{:url('/Home/sellerGoodsOnline/index')}">管理商品</a></li>
+                            </ol>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="outline"></span>
+                        <span class="blank"></span>
+                        <a href="javascript:void(0)">客户中心<b></b></a>
+                        <div class="dropdown-menu">
+                            <ol>
+                                <li><a href="/Article/Category">帮助中心</a></li>
+                                <li><a href="/OrderRefund">售后服务</a></li>
+                                <li><a href="/OrderComplaint">投诉中心</a></li>
+                            </ol>
+                        </div>
+                    </li>
+                    <li class="moblie-qrcode">
+                        <span class="outline"></span>
+                        <span class="blank"></span>
+                        <a href="javascript:void(0)">微信端</a>
+                        <div class="dropdown-menu">
+                            <img src="{$Think.config.url_attach_common}/{$Think.config.site_logowx}" width="90" height="90" />
+                        </div>
+                    </li>
+                    <li class="app-qrcode">
+                        <span class="outline"></span>
+                        <span class="blank"></span>
+                        <a href="javascript:void(0)">APP</a>
+                        <div class="dropdown-menu">
+                            <img width="90" height="90" src="{$Think.config.url_attach_common}/{$Think.config.site_logowx}" />
+                            <h3>扫描二维码</h3>
+                            <p>下载手机客户端</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="header">
+            <div class="w1200">
+                <div class="logo">
+                    <a href="{:url('/home/index')}">
+                        <img src="{$Think.config.url_attach_common}/{$Think.config.site_logo}"/>
+                    </a>
+                </div>
+                <div class="heade_store_info">
+                    <div class="slogo">
+                        <a href="{:url('/Home/Store/index',['store_id'=>$store_info.store_id])}"  class="store_name">{$store_info.store_name}</a>
+                        <br>
+                        <?php if (!$store_info['is_own_shop']) { ?>
+                        <span class="all-rate"  style="text-align: center;">
+                            <img src="" class="pngFix">
+                        </span>
+                        <?php } ?>
+                    </div>
+                    <div class="pj_info">
+                        <?php  foreach ($store_info['store_credit'] as $value) {?>
+                        <div class="shopdsr_item">
+                            <div class="shopdsr_title"><?php echo $value['text'];?></div>
+                            <div class="shopdsr_score"><?php echo $value['credit'];?></div>
+                        </div>
+                        <?php } ?>
+                    </div>
+                    <div class="sub">
+                        <div class="store-logo"><img src="<?php echo getStoreLogo($store_info['store_logo'],'store_logo');?>" alt="<?php echo $store_info['store_name'];?>" title="<?php echo $store_info['store_name'];?>" /></div>
+                        {include file="store/default/store/store_info"}
+                    </div>
+                </div>
+
+                <div id="search" class="head-search-bar">
+                    <form class="search-form" method="get" action="{:url('/Home/Store/goods_all')}">
+                        <input type="hidden" value="{$Request.param.store_id}" name="store_id">
+                        <input placeholder="请输入您要搜索的商品关键字" name="inkeyword" id="keyword" type="text" class="input-text" value="{$Request.param.inkeyword}" maxlength="60" />
+                        <input type="submit" id="button" value="商城搜索" class="input-submit">
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <!--面包屑导航 BEGIN-->
+        {notempty name="nav_link_list"}
+        <div class="nch-breadcrumb-layout">
+            <div class="nch-breadcrumb w1200"><i class="icon-home"></i>
+                {foreach $nav_link_list as $nav_link} 
+                {empty name="nav_link.link"}
+                <span>{$nav_link.title}</span>
+                {else /}
+                <span><a href="{$nav_link.link}">{$nav_link.title}</a></span><span class="arrow">></span>
+                {/empty}
+                {/foreach}
+            </div>
+        </div>
+        {/notempty}
+        <!--面包屑导航 END-->
+
+
+
+
+
+

@@ -1,0 +1,60 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>防灌水设置</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    
+    <form method="post" enctype="multipart/form-data" name="form1" action="">
+        <div class="ncap-form-default">
+            <dl>
+                <dt>{$Think.lang.allowed_visitors_consult}</dt>
+                <dd>
+                    <div class="onoff">
+                        <label for="guest_comment_show1" class="cb-enable {if condition="$list_config.guest_comment eq 1"}selected{/if}">是</label>
+                        <label for="guest_comment_show0" class="cb-disable {if condition="$list_config.guest_comment eq 0"}selected{/if}">否</label>
+                        <input id="guest_comment_show1" name="guest_comment" value="1" type="radio" {if condition="$list_config.guest_comment eq 1"} checked="checked"{/if} />
+                        <input id="guest_comment_show0" name="guest_comment" value="0" type="radio" {if condition="$list_config.guest_comment eq 0"} checked="checked"{/if} />
+                    </div>
+                    <span class="err"></span>
+                    <p class="notic">{$Think.lang.allowed_visitors_consult_notice}</p>
+                </dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.open_checkcode}</dt>
+                <dd>
+                    <ul class="nofloat">
+                        <li>
+                            <input type="checkbox" value="1" name="captcha_status_login" id="captcha_status1" {if condition="$list_config.captcha_status_login eq 1"}checked="checked"{/if} />
+                                   <label for="captcha_status1">{$Think.lang.front_login}</label>
+                        </li>
+                        <li>
+                            <input type="checkbox" value="1" name="captcha_status_register" id="captcha_status2" {if condition="$list_config.captcha_status_register eq 1"}checked="checked"{/if} />
+                                   <label for="captcha_status2">{$Think.lang.front_regist}</label>
+                        </li>
+                        <li>
+                            <input type="checkbox" value="1" name="captcha_status_goodsqa" id="captcha_status3" {if condition="$list_config.captcha_status_goodsqa eq 1"}checked="checked"{/if} />
+                                   <label for="captcha_status3">{$Think.lang.front_goodsqa}</label>
+                        </li>
+                    </ul>
+                </dd>
+            </dl>
+            <dl>
+                <dt></dt>
+                <dd>
+                    <a href="JavaScript:void(0);" class="btn" onclick="document.form1.submit()">确认提交</a>
+                </dd>
+            </dl>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,114 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+ <link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <table class="layui-table">
+        <tbody>
+          <tr>
+            <td>{$member_name}</td>
+            <td>账户余额         {:ncPriceFormatb($available_predeposit)} 元</td>
+            <td>默认银行卡信息   {$bank_name} {:getHideBankCardNum($bank_card)}</td>
+          </tr>
+          <tr>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="demoTable">
+        <form class="layui-form" onsubmit="return false;">
+            <div class="layui-form-item" >
+                <div class="layui-inline">
+                  <div class="layui-input-inline">
+                    <input type="text" name="desc" lay-verify="required|phone" autocomplete="off" class="layui-input" placeholder="说明相关" id="desc">
+                  </div>
+                  <input type="hidden" name="member_id" class="layui-input" value='<?php echo $_GET["member_id"];?>'>
+                </div>
+                <div class="layui-inline">
+                  <label class="layui-form-label">请选择范围</label>
+                  <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="test16" placeholder="开始 到 结束" name="timearund" >
+                  </div>
+                </div>
+                <button class="layui-btn layui-btn-radius" data-type="reload">搜索</button>
+            </div>
+        </form>
+        <script type="text/javascript">
+            layui.use(['form', 'laydate'], function(){
+                  var form = layui.form
+                  ,laydate = layui.laydate;
+                  laydate.render({
+                    elem: '#test16'
+                    // ,type: 'datetime'
+                    ,range: '/'
+                    ,format: 'yyyy-M-d'
+                  });
+            });
+        </script>
+    </div>
+  
+ </div>
+ 
+<table class="layui-hide" id="LAY_table_user" lay-filter="user"></table> 
+          
+<script>
+layui.use('table', function(){
+  var table = layui.table;
+  var member_id = '<?php echo $_GET["member_id"];?>';
+  var urls=ADMIN_URL+'Membercommon/MemberCapital?member_id='+member_id+'&t=1';
+  //方法级渲染
+  table.render({
+    elem: '#LAY_table_user'
+    ,url: urls
+    ,cols: [[
+      {checkbox: true, fixed: true}
+      ,{field:'lg_id', title: 'ID', width:80, sort: true, fixed: true}
+      ,{field:'lg_add_time', title: '创建时间', width:200, sort: true}
+      ,{field:'lg_av_amountin', title: '收入(元)', width:120}
+      ,{field:'lg_av_amountout', title: '支出(元)', width:120}
+      ,{field:'lg_freeze_amount', title: '冻结(元) ',width:120}
+      ,{field:'lg_desc', title: '变更说明'}
+    ]]
+    ,id: 'testReload'
+    ,page: true
+    ,height: 315
+  });
+  
+  var $ = layui.$, active = {
+    reload: function(){
+      //执行重载
+      table.reload('testReload', {
+        page: {
+          curr: 1 //重新从第 1 页开始
+        }
+        ,where: {
+          timearund:$('#test16').val(),
+          desc:$('#desc').val()
+        }
+      });
+    }
+  };
+  
+  $('.demoTable .layui-btn').on('click', function(){
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+  });
+});
+</script>
+
+</div>
+
+
+
+
+
+
+
+

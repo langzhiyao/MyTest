@@ -1,0 +1,53 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" name="form1" action="">
+        <div class="ncap-form-default">
+            <dl>
+                <dt>{$Think.lang.ds_organize_name}：{$organize_info.o_name}</dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.address}：{$organize_info.o_address}</dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.mob_phone}：{$organize_info.o_phone}</dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.region}：{$organize_info.o_area}</dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.organize_index_leading}：{$organize_info.o_leading}</dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.organize_index_enddate}：{$organize_info.o_enddate}</dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.order_total_price}：</dt>
+            </dl>
+            <dl>
+                <dd>
+                    {$Think.lang.ds_vrsorder}{$num}元&emsp;&emsp;&emsp;&emsp;&emsp;{$Think.lang.ds_revisitorder}0元&emsp;&emsp;&emsp;&emsp;&emsp;{$Think.lang.organize_teaching_child}0元
+                </dd>
+            </dl>
+        </div>
+    </form>
+
+</div>
+
+
+
+
+
+
+
+

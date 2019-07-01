@@ -1,0 +1,111 @@
+{include file="public/seller_top" /}
+
+<div class="seller_main w1200">
+    {include file="public/seller_left" /}
+    <div class="seller_right clearfix">
+        <div class="seller_items">
+            {include file="public/seller_items" /}
+        </div>
+
+        <div class="dssc-form-default">
+            <form id="add_form" action="{:url('Sellerwaybill/waybill_save')}" method="post" enctype="multipart/form-data">
+                {if $waybill_info}
+                <input type="hidden" name="waybill_id" value="{$waybill_info.waybill_id}">
+                <input type="hidden" name="old_waybill_image" value="{$waybill_info.waybill_image}">
+                {/if}
+                <dl>
+                    <dt><i class="required">*</i>模板名称{$Think.lang.ds_colon}</dt>
+                    <dd>
+                        <input type="text" value="{if $waybill_info}{$waybill_info.waybill_name}{/if}" name="waybill_name" id="waybill_name" class="w120 text">
+                        <span></span>
+                        <p class="hint">运单模板名称，最多10个字</p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt><i class="required">*</i>物流公司{$Think.lang.ds_colon}</dt>
+                    <dd>
+                        <select name="waybill_express">
+                            {if $express_list}
+                            {volist name="express_list" id="express"}
+                            <option value="{$express.id}|{$express.e_name}" {if $express.selected}selected{/if}>{$express.e_name}</option>
+                            {/volist}
+                            {/if}
+                        </select>
+                        <span></span>
+                        <p class="hint">模板对应的物流公司</p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt><i class="required">*</i>宽度{$Think.lang.ds_colon}</dt>
+                    <dd>
+                        <input type="text" value="{if $waybill_info}{$waybill_info.waybill_width}{/if}" name="waybill_width" id="waybill_width" class="w60 text"><em class="add-on">mm</em>
+                        <span></span>
+                        <p class="hint">运单宽度，单位为毫米(mm)</p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt><i class="required">*</i>高度{$Think.lang.ds_colon}</dt>
+                    <dd>
+                        <input type="text" value="{if waybill_info}{$waybill_info.waybill_height}{/if}" name="waybill_height" id="waybill_height" class="w60 text"><em class="add-on">mm</em>
+                        <span></span>
+                        <p class="hint">运单高度，单位为毫米(mm)</p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt><i class="required">*</i>上偏移量{$Think.lang.ds_colon}</dt>
+                    <dd>
+                        <input type="text" value="{if $waybill_info}{$waybill_info.waybill_top}{/if}" name="waybill_top" id="waybill_top" class="w60 text"><em class="add-on">mm</em>
+                        <span></span>
+                        <p class="hint">运单模板上偏移量，单位为毫米(mm)</p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt><i class="required">*</i>左偏移量{$Think.lang.ds_colon}</dt>
+                    <dd>
+                        <input type="text" value="{if $waybill_info}{$waybill_info.waybill_left}{/if}" name="waybill_left" id="waybill_left" class="w60 text"><em class="add-on">mm</em>
+                        <span></span>
+                        <p class="hint">运单模板左偏移量，单位为毫米(mm)</p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt><i class="required">*</i>模板图片{$Think.lang.ds_colon}</dt>
+                    <dd>
+                        {if $waybill_info}
+                        <img width="500" src="{$waybill_info.waybill_image_url}">
+                        {/if}
+                        <input name="waybill_image" type="file" class="type-file-file" >
+                        <span></span>
+                        <p class="hint">请上传扫描好的运单图片，图片尺寸必须与快递单实际尺寸相符</p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt><i class="required">*</i>启用{$Think.lang.ds_colon}</dt>
+                    <dd>
+
+                        <ul class="dssc-form-radio-list">
+                            <li>
+                                <label for="waybill_usable_1">
+                                <input id="waybill_usable_1" type="radio" name="waybill_usable" value="1" {if $waybill_info.waybill_usable eq '1'}checked{/if}>
+                            是</label>
+                            </li>
+                            <li><label for="waybill_usable_0"><input id="waybill_usable_0" type="radio" name="waybill_usable" value="0" {if $waybill_info.waybill_usable neq '1'}checked{/if}>
+                                否</label></li></ul>
+                        <span></span>
+                        <p class="hint">请首先设计并测试模板然后再启用，启用后商家可以使用</p>
+                    </dd>
+                </dl>
+                <div class="bottom">
+                    <label class="submit-border">
+                        <input type="submit" class="submit" value="{$Think.lang.ds_submit}">
+                    </label>
+                </div>
+            </form>
+        </div>
+</div>
+</div>
+{include file="public/mall_footer" /}
+<script>
+    $('form').submit(function () {
+        ajaxpost('add_form', '', '', 'onerror')
+    })
+</script>

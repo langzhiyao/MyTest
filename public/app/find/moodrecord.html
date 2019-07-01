@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>想见孩-发现-心情</title>
+    <meta name="author" content="想见孩" />
+    <meta name="copyright" content="想见孩" />
+    <meta name="description" content="想见孩" />
+    <meta id="viewport" name="viewport" content="width=750" />
+    <link rel="stylesheet" href="../content/style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/iconfonts/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/lib/weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/css/jquery-weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/find.css" type="text/css" />
+    <link rel="shortcut icon" href="../content/images/ico.ico" type="image/x-icon" />
+    <script src="../content/scripts/mobile-util.js"></script>
+</head>
+
+<body>
+    <header class="head">
+        <div class="head0">
+            <div class="menu_bar_box">
+                <a href="javascript:history.go(-1);" class="back_btn">
+                    <i class="icon iconfont icon-jiantou3"></i>
+                </a>
+            </div>
+            <div class="head_title">
+                <p>心情记录</p>
+            </div>
+            <div class="head_r">
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <div class="main">
+        <div class="moodbanner" style="height:390px;background:url(../content/images/find/mood_banner.jpg) no-repeat center;background-size:cover;margin-bottom:30px;"></div>
+        <div class="container2">
+            <ul class="moodrecord_list" id="moodrecord_list">
+                <li>
+                    <a href="javascript:;" onclick="send_mood();">
+                        <div class="date today">
+                            <span>今天</span>
+                        </div>
+                        <div class="imgbox" style="width: 160px;height:180px;background:#eee url(../content/images/find/camera_icon.png) no-repeat center;"></div>
+                        <div class="txtbox">
+                            <p class="mr_p_today">记录心情，每天开始</p>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+            <div class="weui-footer" style="display: none;font-size: 22px;color: #999999;margin-bottom: 50px;">
+                <span class="weui-over">没有更多信息了</span>
+            </div>
+            <div class="weui-loadmore" style="display: none;font-size: 22px;color: #999999;margin-bottom: 50px;">
+                <i class="weui-loading"></i>
+                <span class="weui-loadmore__tips">正在加载</span>
+            </div>
+
+        </div>
+    </div>
+
+
+    <script src="../content/scripts/jquery.min.js"></script>
+    <script src="../content/plugins/jqweui/js/jquery-weui.min.js"></script>
+    <script src="../content/scripts/juqery.cookie.js"></script>
+    <script src="../content/scripts/API.js"></script>
+    <script src="../content/scripts/commom.js"></script>
+    <script>
+        $(function() {
+                $.ajax({
+                    type:'POST',
+                    url:api+'/Mood/mood.html',
+                    data: {
+                        key:user_token,
+                        member_id:user_member_id
+                    },
+                    dataType: "json",
+                    success: function (response) {
+                        var data = response.result.mood;
+                        if(response['code'] == 200){
+                            if(data.length >0){
+                                for(var i=0; i<data.length;i++) {
+                                    var ml = '';
+                                    ml += '<li>\n' +
+                                        '<a href="./mooddetail.html?id='+data[i].id+'">\n' +
+                                        '<div class="date">\n' +
+                                        '<span>'+data[i].month+'月</span>'+data[i].day+'\n' +
+                                        ' </div>\n';
+                                    if(data[i].image[0] != ''){
+                                        var img_url = upload_url+'/'+data[i].image[0];
+                                        ml += '<div class="imgbox" style="width: 160px;height:180px;background:#eee url('+img_url+') no-repeat center;background-size:cover;"></div>\n' ;
+                                    }else{
+                                        ml += ' <div class="imgbox" style="width: 160px;height:180px;background:#eee url(../content/images/find/mr_img.jpg) no-repeat center;background-size:cover;"></div>\n' ;
+                                    }
+                                    ml +=  '  <div class="txtbox">\n' +
+                                        ' <p class="mr_p">'+data[i].content+'</p>\n' +
+                                        '  </div>\n' +
+                                        ' </a>\n' +
+                                        ' </li>';
+                                    $("#moodrecord_list").append(ml);
+                                }
+                            }else{
+                                $('.weui-footer').show();
+                                $('.weui-loadmore').hide();
+                                $(document.body).destroyInfinite()
+                            }
+                        }else if(response['code'] == '400'){
+                            $.alert(response['message'],function(){
+                                goLogin();
+                            });
+                        }else{
+                            $.alert(response['message']);
+                        }
+                    }
+                })
+            var loading = false;
+            var start = 1;
+            $(document.body).infinite().on("infinite", function() {
+                if (loading) return;
+                loading = true;
+                setTimeout(function() {
+                    $.ajax({
+                        type:'POST',
+                        url:api+'/Mood/mood.html',
+                        data: {
+                            key:user_token,
+                            member_id:user_member_id,
+                            start:start
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                            var data = response.result.mood;
+                            if(response.result.page_count.page_count >start) {
+                                start = start + 1;
+                                if (response['code'] == 200) {
+                                    if (data.length > 0) {
+                                        for (var i = 0; i < data.length; i++) {
+                                            var ml = '';
+                                            ml += '<li>\n' +
+                                                '<a href="./mooddetail.html?id='+data[i].id+'">\n' +
+                                                '<div class="date">\n' +
+                                                '<span>'+data[i].month+'月</span>'+data[i].day+'\n' +
+                                                ' </div>\n';
+                                            if(data[i].image[0] != ''){
+                                                var img_url = upload_url+'/'+data[i].image[0];
+                                                ml += '<div class="imgbox" style="width: 160px;height:180px;background:#eee url('+img_url+') no-repeat center;background-size:cover;"></div>\n' ;
+                                            }else{
+                                                ml += ' <div class="imgbox" style="width: 160px;height:180px;background:#eee url(../content/images/find/mr_img.jpg) no-repeat center;background-size:cover;"></div>\n' ;
+                                            }
+                                            ml +=  '  <div class="txtbox">\n' +
+                                                ' <p class="mr_p">'+data[i].content+'</p>\n' +
+                                                '  </div>\n' +
+                                                ' </a>\n' +
+                                                ' </li>';
+                                            $("#moodrecord_list").append(ml);
+                                        }
+                                    } else {
+                                        $('.weui-footer').show();
+                                        $('.weui-loadmore').hide();
+                                        $(document.body).destroyInfinite()
+                                    }
+                                } else if (response['code'] == '400') {
+                                    $.alert(response['message'], function () {
+                                        goLogin();
+                                    });
+                                } else {
+                                    $.alert(response['message']);
+                                }
+                            }else{
+                                $('.weui-footer').show();
+                                $('.weui-loadmore').hide();
+                                $(document.body).destroyInfinite()
+                            }
+                        }
+                    });
+                    loading = false;
+                }, 2000);
+            });
+        })
+    </script>
+</body>
+
+</html>

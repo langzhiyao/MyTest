@@ -1,0 +1,60 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>推广设置</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" name="form1" action="">
+        <div class="ncap-form-default">
+            <dl>
+                <dt>{$Think.lang.inviter_back}</dt>
+                <dd>
+                    <span class="type-file-show"><img class="show_image" src="{$Think.config.url_domain_root}/static/admin/images/preview.png">
+                        <div class="type-file-preview"><img src="{$Think.config.url_domain_root}<?php echo '/uploads/'.ATTACH_COMMON;?>/{$list_setting.inviter_back}"></div>
+                    </span>
+                    <span class="type-file-box"><input type='text' name='textfield' id='textfield1' class='type-file-text' /><input type='button' name='button' id='button1' value='' class='type-file-button' />
+                        <input name="inviter_back" type="file" class="type-file-file" id="inviter_back" size="30" hidefocus="true" nc_type="change_inviter_back">
+                    </span>
+                    <p class="notic">推广背景图片，最佳显示尺寸为320*426像素</p>
+                </dd>
+            </dl>
+            <dl>
+                <dt>一级推广佣金比例</dt>
+                <dd>
+                    <input name="inviter_ratio_1" value="{$list_setting.inviter_ratio_1}" class="input-txt" type="text">%
+                    <span class="err"></span>
+                    <p class="notic">基数为订单总商品金额，请确保一二三级佣金比例之和不要小于最小分类分佣比例</p>
+                </dd>
+            </dl>
+            <dl>
+                <dt>二级推广佣金比例</dt>
+                <dd>
+                    <input name="inviter_ratio_2" value="{$list_setting.inviter_ratio_2}" class="input-txt" type="text">%
+                    <span class="err"></span>
+                    <p class="notic">基数为订单总商品金额，请确保一二三级佣金比例之和不要小于最小分类分佣比例</p>
+                </dd>
+            </dl>
+            <dl>
+                <dt>三级推广佣金比例</dt>
+                <dd>
+                    <input name="inviter_ratio_3" value="{$list_setting.inviter_ratio_3}" class="input-txt" type="text">%
+                    <span class="err"></span>
+                    <p class="notic">基数为订单总商品金额，请确保一二三级佣金比例之和不要小于最小分类分佣比例</p>
+                </dd>
+            </dl>
+            <dl>
+                <dt></dt>
+                <dd><a href="JavaScript:void(0);" class="btn" onclick="document.form1.submit()">确认提交</a></dd>
+            </dl>
+        </div>
+    </form>
+</div>

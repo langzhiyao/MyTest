@@ -1,0 +1,231 @@
+.details_header {
+    width: 100%;
+    height: 74px;
+    line-height: 74px;
+    position: fixed;
+    /* background-color: rgba(0, 0, 0, 0);
+    background: -webkit-linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
+    /* Safari 5.1 - 6.0 */
+    /* background: -o-linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0)); */
+    /* Opera 11.1 - 12.0 */
+    /* background: -moz-linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0)); */
+    /* Firefox 3.6 - 15 */
+    /* background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0)); */
+    /* 标准的语法 */
+    z-index: 100;
+}
+
+.goBack {
+    flex: 1;
+    top: 0;
+}
+
+.goBack .icon {
+    float: left;
+    display: inline-block;
+    width: 50%;
+    height: 74px;
+    font-size: 30px;
+    color: #fff;
+}
+
+.goBack p {
+    float: right;
+    display: inline-block;
+    width: auto;
+    height: 74px;
+    font-size: 26px;
+    color: #fff;
+    text-align: right;
+    text-align: right;
+}
+
+.video_wrap {
+    width: 100%;
+}
+
+.video_wrap video {
+    width: 750px;
+    height: auto;
+    margin: 0 auto
+}
+
+.video-js {
+    width: 750px;
+    display: block;
+    vertical-align: top;
+    box-sizing: border-box;
+    color: #fff;
+    background-color: #000;
+    position: relative;
+    padding: 0;
+    font-size: 20px !important;
+    line-height: 1;
+    font-weight: normal;
+    font-style: normal;
+    font-family: Arial, Helvetica, sans-serif;
+    word-break: initial;
+}
+
+.video-js .vjs-big-play-button {
+    font-size: 3em;
+    line-height: 1.5em;
+    height: 1.5em;
+    width: 3em;
+    display: block;
+    position: absolute;
+    top: 50% !important;
+    left: 50% !important;
+    padding: 0;
+    cursor: pointer;
+    opacity: 1;
+    border: 0.06666em solid #fff;
+    background-color: #2B333F;
+    background-color: rgba(43, 51, 63, 0.7);
+    border-radius: 0.3em;
+    transition: all 0.4s;
+    transform: translate(-50%, -50%);
+}
+
+.related {
+    display: flex;
+    width: 100%;
+    height: 150px;
+}
+
+.related1 {
+    flex: 3;
+}
+
+.related1 .title {
+    width: 526px;
+    height: 75px;
+    font-size: 32px;
+    line-height: 75px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.related1 .content {
+    width: 526px;
+    height: 75px;
+    font-size: 26px;
+    line-height: 75px;
+    color: #aeaeae;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.related2 {
+    flex: 1;
+    text-align: center;
+    height: 150px;
+}
+
+.related2 button {
+    width: 180px;
+    height: 42px;
+    font-size: 26px;
+    background: #4ec3bb;
+    border: none;
+    border-radius: 20px;
+    color: #fff;
+    margin-top: 54px;
+}
+
+.title_more {
+    font-size: 26px;
+    height: 92px;
+    line-height: 92px;
+}
+
+.related_list_li {
+    margin-bottom: 22px;
+}
+
+.img_wrap {
+    width: 146px;
+    height: 95px;
+    overflow: hidden;
+}
+
+.img_wrap img {
+    width: 100%;
+}
+
+.content_wrap {
+    width: 480px;
+    height: 42px;
+    margin: 0;
+    margin-left: 35px;
+}
+
+.content_wrap .title {
+    width: 100%;
+    /*height: 21px;*/
+    font-size: 28px;
+    /*line-height: 21px;*/
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.content_wrap .content {
+    width: 100%;
+    /*height: 21px;*/
+    font-size: 24px;
+    /*line-height: 21px;*/
+    color: #aeaeae;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+}
+
+
+/**/
+
+.video_box {
+    padding-top: 70px;
+}
+
+.video_box_inner {
+    position: relative;
+}
+
+.video_screen {
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .0);
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 9999999;
+}
+
+.details_header .collectBtn {
+    color: #666;
+}
+
+.details_header .icon-jiantou3 {
+    color: #666;
+}
+.video_detail{
+    height: 92px;line-height: 46px;
+    overflow: hidden;font-size: 26px;
+    color: #aeaeae;position: relative;
+    margin-bottom: 15px;}
+.video_detail p{
+    padding-right: 40px;}
+.video_detail.open{height:auto;min-height: 92px;overflow: visible;}
+.video_detail_icon{
+    width: 30px;
+    height: 30px;display: block;position: absolute;right:0;top:20px;}
+.video_detail_icon i.icon{
+    font-size: 30px;
+    color: #aaa;}
+.video_detail.open .video_detail_icon{display: none;}

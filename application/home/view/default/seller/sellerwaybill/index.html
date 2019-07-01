@@ -1,0 +1,100 @@
+{include file="public/seller_top" /}
+
+<div class="seller_main w1200">
+    {include file="public/seller_left" /}
+    <div class="seller_right clearfix">
+        <div class="seller_items">
+            {include file="public/seller_items" /}
+        </div>
+        <div class="alert alert-block mt10">
+            <ul class="mt5">
+                <li>1、未绑定的物流公司后边会出现<strong>“选择模板”</strong>按钮，在选择模板页面可以绑定可用的打印模板。</li>
+                <li>2、点击<strong>“设置”</strong>按钮可以设置自定义的内容，包括偏移量和需要显示的项目。</li>
+                <li>3、点击<strong>“默认”</strong>按钮可以设置当前模板为默认打印模板。</li>
+                <li>4、点击<strong>“解绑”</strong>按钮可以解除当前绑定，重新选择其它模板。</li>
+            </ul>
+        </div>
+        <table class="dssc-default-table">
+            <thead>
+            <tr>
+                <th class="w30"></th>
+                <th class="w180 tl">物流公司</th>
+                <th class="w180 tl">运单模板</th>
+                <th class="tl">运单图例</th>
+                <th class="w100 tl">默认</th>
+                <th class="w150">{$Think.lang.ds_common_button_operate}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {if $express_list}
+            {volist name="express_list" id="express"}
+            <tr class="bd-line">
+                <td></td>
+                <td class="tl">{$express.e_name}</td>
+                <td class="tl">{$express.waybill_name}</td>
+                <td class="tl">
+                    <div class="waybill-img-thumb">
+                        <a class="nyroModal" rel="gal" href="{$express.waybill_image_url}">
+                            <img src="{$express.waybill_image_url}">
+                        </a>
+                    </div>
+                    <div class="waybill-img-size">
+                        <p>宽度：{$express.waybill_width}(mm)</p>
+                        <p>高度：{$express.waybill_height}(mm)</p>
+                    </div>
+                </td>
+                <td class="tl">{$express.is_default_text}</td>
+                <td class="nscs-table-handle">
+        <span>
+            {if $express.bind}
+            <a href="{:url('home/sellerwaybill/waybill_setting',['store_waybill_id' =>$express.store_waybill_id])}" class="btn-blue">
+                <i class="icon-wrench"></i><p>设置</p></a></span>
+             <span><a href="javascript:;" nctype="btn_set_default" data-store-waybill-id="{$express.store_waybill_id}" class="btn-green"><i class="icon-ok-sign"></i><p>默认</p></a></span>
+                    <span><a href="{:url('sellerwaybill/waybill_unbind',['store_waybill_id'=>$express.store_waybill_id])}" class="btn-red"><i class="icon-unlink"></i><p>解绑</p></a></span>
+                    {else}
+                    <span><a href="{:url('home/sellerwaybill/waybill_bind',['express_id' => $express.id])}" class="btn-blue"><i class="icon-ok-circle"></i><p>选择模板</p></a>
+                        {/if}
+                </span>
+                </td>
+            </tr>
+            {/volist}
+            {else}
+            <tr>
+                <td colspan="20" class="norecord"><div class="warning-option"><i class="icon-warning-sign"></i>
+                    <span>您还没有选择默认物流公司，<a href="{:url('sellerdeliverset/express')}">去设置</a></span>
+                </div></td>
+            </tr>
+            {/if}
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="20"><div class="pagination">{$page}</div></td>
+            </tr>
+            </tfoot>
+        </table>
+       <form id="edit_form" method="post" onsubmit="ajaxpost('edit_form', '', '', 'onerror');return false;">
+        <input id="store_waybill_id" name="store_waybill_id" type="hidden" />
+       </form>
+    </div>
+</div>
+{include file="public/mall_footer" /}
+<script src="{$Think.config.url_domain_root}static/plugins/js/jquery.nyroModal/custom.min.js"></script>
+<link href="{$Think.config.url_domain_root}static/plugins/js/jquery.nyroModal/styles/nyroModal.css" rel="stylesheet" type="text/css" id="cssfile2"/>
+<script type="text/javascript">
+    $(function(){
+        $('a.nyroModal').nyroModal();
+        $('[nctype="btn_unbind"]').on('click', function() {
+            if(confirm('确认解绑？')) {
+                $('#store_waybill_id').val($(this).attr('data-store-waybill-id'));
+                $('#edit_form').attr('action', "{:url('sellerwaybill/waybill_unbind')}");
+                $('#edit_form').submit();
+            }
+        });
+
+        $('[nctype="btn_set_default"]').on('click', function() {
+            $('#store_waybill_id').val($(this).attr('data-store-waybill-id'));
+            $('#edit_form').attr('action', "{:url('sellerwaybill/waybill_set_default')}");
+            $('#edit_form').submit();
+        });
+    });
+</script>

@@ -1,0 +1,177 @@
+{include file="public/header" /}
+<script src="{$Think.config.url_domain_root}static/common/js/mlselection3.js"></script>
+<script src="{$Think.config.url_domain_root}static/home/js/common.js"></script>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>绑定银行卡管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>绑定银行卡信息，请认真填写。</li>
+        </ul>
+    </div>
+
+
+    <form id="user_form" enctype="multipart/form-data" method="post">
+        <input type="hidden" value="{$banks_array.bank_id}" name="bank_id" id="bank_id">
+        <table class="ds-default-table">
+            <tbody>
+            <tr class="noborder">
+                <td colspan="2" class="required"><label for="school_region">所属地区:</label></td>
+            </tr>
+            <tr>
+                <td id="region">
+                    <input type="hidden" value="{$address.city_id}" name="city_id" id="city_id">
+                    <input type="hidden" name="area_id" id="area_id" value="{$address.area_id}" class="area_ids" />
+                    <input type="hidden" name="area_info" id="area_info" value="{$address.area_info}" class="area_names" />
+                    {notempty name="banks_array.province"}
+                    <span>{$banks_array.region}</span>
+                    <input type="button" value="{$Think.lang.ds_edit}" class="edit_region" />
+                    <select style="display:none;">
+                        <option value="">请选择分类</option>
+                        {volist name="region_list" id="region"}
+                        <option value="{$region.area_id}">{$region.area_name}</option>
+                        {/volist}
+                    </select>
+                    {else}
+                    <select name="type_ides" id="type_ides">
+                        <option value="" >请选择分类</option>
+                        {volist name="region_list" id="region"}
+                        <option value="{$region.area_id}">{$region.area_name}</option>
+                        {/volist}
+                    </select>
+                    {/notempty}
+                </td>
+            </tr>
+            <tr class="noborder">
+                <td colspan="2" class="required"><label for="bank_name">所属银行:</label></td>
+            </tr>
+            <tr class="noborder">
+                <td class="vatop rowform"><input type="text" value="<?php echo $banks_array['bank_name']; ?>" name="bank_name" id="bank_name" class="txt"></td>
+                <td class="vatop tips"></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="required"><label for="bank_info">开户行信息:</label></td>
+            </tr>
+            <tr class="noborder">
+                <td class="vatop rowform"><input type="text" value="<?php echo $banks_array['bank_info']; ?>" id="bank_info" name="bank_info" class="txt"></td>
+                <td class="vatop tips"></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="required"><label for="bank_card">银行卡号:</label></td>
+            </tr>
+            <tr class="noborder">
+                <td class="vatop rowform"><input type="text" value="<?php echo $banks_array['bank_card']; ?>" id="bank_card" name="bank_card" class="txt"></td>
+                <td class="vatop tips"></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="required"><label for="true_name">联系人姓名:</label></td>
+            </tr>
+            <tr class="noborder">
+                <td class="vatop rowform"><input type="text" value="<?php echo $banks_array['true_name']; ?>" id="true_name" name="true_name" class="txt"></td>
+                <td class="vatop tips"></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="required"><label for="default_mobile">银行预留手机号:</label></td>
+            </tr>
+            <tr class="noborder">
+                <td class="vatop rowform"><input type="text" value="<?php echo $banks_array['default_mobile']; ?>" id="default_mobile" name="default_mobile" class="txt"></td>
+                <td class="vatop tips"></td>
+            </tr>
+            </tbody>
+            <tfoot>
+                <tr class="tfoot">
+                    <td colspan="15"><input id="submitBtn" class="btn" type="submit" value="{$Think.lang.ds_submit}"/></td>
+                </tr>
+            </tfoot>
+        </table>
+    </form>
+</div>
+<script type="text/javascript">
+
+    $(function(){
+        $("#region_choose").click(function() {
+            if ($("#user_form").valid()) {
+                $("#user_form").submit();
+            }
+        });
+    });
+    $(function() {
+        //按钮先执行验证再提交表单
+        $("#submitBtn").click(function() {
+            if ($("#user_form").valid()) {
+                $("#user_form").submit();
+            }
+        });
+        $('#user_form').validate({
+            errorPlacement: function(error, element) {
+                error.appendTo(element.parent().parent().prev().find('td:first'));
+            },
+            rules: {
+//                classunique: {
+//                    required: true,
+//                    remote: {
+//                        url: "{:url('office/student/ajax',['branch'=>'check_unique_code'])}",
+//                        type: 'get',
+//                        data: {
+//                            class_name: function() {
+//                                return $('#class_name').val();
+//                            },
+//                            classunique: function () {
+//                                return $('#classunique').val();
+//                            }
+//                        }
+//                    }
+//                },
+                bank_name: {
+                    required: true
+                },
+                bank_info: {
+                    required: true
+                },
+                bank_card: {
+                    required: true
+                },
+                true_name: {
+                    required: true
+                },
+                default_mobile: {
+                    required: true
+                }
+            },
+            messages: {
+                bank_name: {
+                    required: '所属银行不能为空'
+                },
+                bank_info: {
+                    required: '开户行信息不能为空',
+                },
+                bank_card: {
+                    required: '银行卡号不能为空'
+                },
+                true_name: {
+                    required: '联系人姓名不能为空'
+                },
+                default_mobile: {
+                    required: '预留手机号不能为空'
+                }
+            }
+        });
+    });
+    $(function() {
+        regionInit("region");
+    });
+</script>

@@ -1,0 +1,203 @@
+{include file="public/header" /}
+<script src="{$Think.config.url_domain_root}static/common/js/mlselection.js"></script>
+<script src="{$Think.config.url_domain_root}static/home/js/common.js"></script>
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>教师认证申请</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form method="get" name="formSearch" id="formSearch">
+        <table class="search-form">
+            <tbody>
+               <tr>
+                   <td> <label>身份证号：</label></td>
+                   <td><input type="text" name="user" value="{$Think.get.user}"></td>
+                   <td> <label>{$Think.lang.teacher_index_name}：</label></td>
+                   <td><input type="text" name="username" value="{$Think.get.username}"></td>
+                   <td> <select name="teacher_status" lay-verify="type" class="select">
+                            <option value="">{$Think.lang.teacher_index_status}</option>
+                            <option value="1" {if condition='$Think.get.teacher_status eq 1'}selected='selected'{/if}>待审核</option>
+                            <option value="2" {if condition='$Think.get.teacher_status eq 2'}selected='selected'{/if}>审核失败</option>
+                            <option value="3" {if condition='$Think.get.teacher_status eq 3'}selected='selected'{/if}>审核通过</option>
+                        </select></td>
+                   <td> <label>{$Think.lang.teacher_index_certime}：</label></td>
+                   <td>
+                       <input type="text" class="txt date" name="query_start_time" id="query_start_time" value="{$Think.get.query_start_time}" placeholder="请输入开始时间">
+                       &nbsp;–&nbsp;
+                       <input id="query_end_time" class="txt date" type="text" name="query_end_time" value="{$Think.get.query_end_time}" placeholder="请输入结束时间">
+                   </td>
+                     <td class="layui-inline">   <input type="submit" class="submit" value="搜索">
+                        <a href="{:url('Teachercertify/index')}" class="btns"><span>{$Think.lang.ds_cancel_search}</span></a>
+                        </td>
+               </tr>
+            </tbody>
+        </table>
+    </form>
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>系统平台全局设置,包括基础设置、购物、短信、邮件、水印和分销等相关模块。</li>
+        </ul>
+    </div>
+    <table class="ds-default-table">
+        <thead>
+        <tr class="thead">
+            <th colspan="align-center">{$Think.lang.teacher_index_id}</th>
+            <th class="align-center">{$Think.lang.teacher_index_name}</th>
+            <th class="align-center">身份证号</th>
+            <th class="align-center">{$Think.lang.teacher_index_cardimg}</th>
+            <th class="align-center">{$Think.lang.teacher_index_cardimg_fan}</th>
+            <th class="align-center">{$Think.lang.teacher_index_certificate}</th>
+            <th class="align-center">{$Think.lang.teacher_index_regiest}</th>
+            <th class="align-center">{$Think.lang.teacher_index_certime}</th>
+            <th class="align-center">{$Think.lang.teacher_index_status}</th>
+            <th class="align-center">{$Think.lang.ds_common_save_failreason}</th>
+            <?php  if(session('office_is_super') ==1 || in_array('15',$action)){?>
+            <th class="align-center">{$Think.lang.ds_handle}</th>
+            <?php }?>
+        </tr>
+        <tbody>
+        <?php if(!empty($teacher_list) && is_array($teacher_list)){ ?>
+        <?php foreach($teacher_list as $k => $v){ ?>
+        <tr class="hover member">
+            <td class="align-center"><?php if(!$_GET['page']){  echo $k+1; }else{ echo ($_GET['page']-1)*15+$k+1; }?></td>
+            <td class="align-center"><?php echo $v['username']; ?></td>
+            <td class="align-center"><?php echo $v['idcard']; ?></td>
+            <td class="align-center"><a href="javascript:imageBig({$v.id},1)"><img src="{$path}{$v.cardimg}" height="60px"></a></td>
+            <td class="align-center w50"><a href="javascript:imageBig({$v.id},2)"><img src="{$path}{$v.cardimg_fan}" height="60px"></a></td>
+            <td class="align-center"><a href="javascript:imageBig({$v.id},3)"><img src="{$path}{$v.certificate}" height="60px"></a></td>
+            <td class="align-center"><?php if(!empty($v['member_add_time'])){echo date("Y-m-d H:i:s",$v['member_add_time']);}else{echo "无录入";} ?></td>
+            <td class="align-center"><?php echo date("Y-m-d H:i:s",$v['createtime']); ?></td>
+            <td class="align-center"><?php if($v['status']==1){
+                                    echo "待审核";
+                                    }elseif($v['status']==2){
+                                    echo "审核通过";
+                                    }elseif($v['status']==3){
+                                    echo "审核失败";
+                                    } ?></td>
+            <td class="align-center"><?php echo $v['failreason']; ?></td>
+            <?php if(session('office_is_super') ==1 || in_array('15',$action)){ ?>
+            <td class="align-center">
+                <?php if($v['status']==1){ ?>
+                <a href="{:url('/Office/teachercertify/pass',['teacher_id'=>$v.id])}" class="layui-btn layui-btn-xs">{$Think.lang.teacher_index_pass}</a>
+                <?php }elseif($v['status']==3){  ?>
+                <a href="{:url('/Office/teachercertify/pass',['teacher_id'=>$v.id])}" class="layui-btn layui-btn-xs">{$Think.lang.teacher_index_repass}</a>
+                <?php }else{ ?>
+                无
+                <?php }  ?>
+            </td>
+            <?php } ?>
+        </tr>
+        <?php } ?>
+        <?php }else { ?>
+        <tr class="no_data">
+            <td colspan="11">{$Think.lang.ds_no_record}</td>
+        </tr>
+        <?php } ?>
+        </tbody>
+        <tfoot class="tfoot">
+        <?php if(!empty($member_list) && is_array($member_list)){ ?>
+        <tr>
+            <td class="w24"><input type="checkbox" class="checkall" id="checkallBottom"></td>
+            <td colspan="16">
+                <label for="checkallBottom">{$Think.lang.ds_select_all}</label>
+                &nbsp;&nbsp;<a href="JavaScript:void(0);" class="btn" onclick="if(confirm('{$Think.lang.ds_ensure_del}')){$('#form_member').submit();}"><span>{$Think.lang.ds_del}</span></a>
+            </td>
+        </tr>
+        <?php } ?>
+        </tfoot>
+    </table>
+    {$page}
+    
+</div>
+
+<form class="layui-form" onsubmit="return false;" style="display: none;" id="courForm">
+    <input type="hidden" id="role" value="">
+    <div  class="ncap-form-default">
+        <dl>
+            <dt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$Think.lang.admin_index_username}</dt>
+            <dd>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="admin_name" name="admin_name" value="" class="input-txt" type="text">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="err"></span>
+                <p class="notic">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$Think.lang.admin_add_username_tip}</p>
+            </dd>
+        </dl>
+        <dl>
+            <dt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$Think.lang.admin_index_password}</dt>
+            <dd>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="admin_password" name="admin_password" value="" class="input-txt" type="password">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="err"></span>
+                <p class="notic">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$Think.lang.admin_add_password_tip}</p>
+            </dd>
+        </dl>
+        <dl>
+            <dt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$Think.lang.admin_rpassword}</dt>
+            <dd>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="admin_rpassword" name="admin_rpassword" value="" class="input-txt" type="password">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="err"></span>
+                <p class="notic">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$Think.lang.admin_add_password_tip}</p>
+            </dd>
+        </dl>
+        <input type="hidden" name="gid" value="{$role}">
+        <dl>
+            <dd>&nbsp;&nbsp;&nbsp;<a href="JavaScript:void(0);" class="btn" id="submitBtn">确认提交</a></dd>
+        </dl>
+    </div>
+
+</form>
+<script type="text/javascript">
+    function imageBig(id,type) {
+        var urls=ADMIN_URL+'teachercertify/view?id='+id+"&type="+type;
+        //多窗口模式，层叠置顶
+        layer.open({
+            type: 2,
+            title: '图片详情',
+            area: ['70%', '80%'],
+            shadeClose: true,
+            shade: 0.4,
+            maxmin: false, //开启最大化最小化按钮
+            content: urls
+        });
+    }
+    function dd(id) {
+        var urls=ADMIN_URL+'schoolinfo/index?school_id='+id;
+        //多窗口模式，层叠置顶
+        layer.open({
+            type: 2
+            , title: '查看'
+            , area: ['80%', '80%']
+            , shade: 0
+            , maxmin: true
+            , content: urls
+
+        });
+    }
+    function jia(role){
+        $('#role').val(role);
+        //var urls=ADMIN_URL+'organizes/admin?role_id='+id;
+        //多窗口模式，层叠置顶
+        layer.open({
+            type: 1,
+            title: '分配管理员账号',
+            area: ['700px', '450px'],
+            fixed: false, //不固定
+            shadeClose: true,
+            shade: 0.4,
+            maxmin: false, //开启最大化最小化按钮
+            content: $("#courForm")
+        });
+    }
+</script>

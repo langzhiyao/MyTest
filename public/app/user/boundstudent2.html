@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>想见孩-绑定学生</title>
+    <meta name="author" content="想见孩" />
+    <meta name="copyright" content="想见孩" />
+    <meta name="description" content="想见孩" />
+    <meta id="viewport" name="viewport" content="width=750" />
+    <link rel="stylesheet" href="../content/style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/iconfonts/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/lib/weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/css/jquery-weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/user.css" type="text/css" />
+    <link rel="shortcut icon" href="../content/images/ico.ico" type="image/x-icon" />
+    <script src="../content/scripts/mobile-util.js"></script>
+</head>
+
+<body>
+    <header class="head">
+        <div class="head0">
+            <div class="menu_bar_box">
+                <!--  <a href="javascript:;" class="back_btn" onClick="javascript :history.back(-1);">
+                 <i class="icon iconfont icon-jiantou3"></i>
+                 </a> -->
+                <a href="javascript:;" class="back_btn" onClick="historyback()">
+                    <i class="icon iconfont icon-jiantou3"></i>
+                </a>
+            </div>
+            <div class="head_title">
+                <p>绑定学生</p>
+            </div>
+            <div class="head_r">
+                <a href="javascript:;" class="add_student_bar">
+                    <i class="icon iconfont icon-jiahao"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <div class="screen" id="screen"></div>
+    <div class="main">
+        <!-- 暂无学生 -->
+        <div class="no_bounds" style="display:none;">
+            <p class="no_bounds_p"><span>暂无绑定学生</span></p>
+        </div>
+
+        <!-- 有学生 -->
+        <div class="container2">
+            <div class="student_tab_box">
+                <ul class="student_tab">
+                    <li class="active">
+                        <a href="javascript:;">张大伟</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;">张小伟</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;">涨伟</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="bang_list">
+                <div class="name_box">
+                    <label for="bang_name"><span class="redstar">*</span>姓名</label>
+                </div>
+                <div class="input_box">
+                    <input class="input_txt" id="bang_name" type="text" placeholder="请输入您的姓名">
+                </div>
+            </div>
+
+            <div class="weui-cell bang_list">
+                <div class="weui-cell__hd name_box"><label for="sex" class="weui-label">性别</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input input_txt inputpointer" onfocus="this.blur()" id="sex" type="text" value="女">
+                </div>
+            </div>
+
+            <div class="weui-cell bang_list">
+                <div class="weui-cell__hd name_box"><label for="date" class="weui-label">生日</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input input_txt inputpointer" onfocus="this.blur()" id="date" type="text" value="" placeholder="请选择生日">
+                </div>
+            </div>
+            <div class="bang_list">
+                <div class="name_box">
+                    <label for="bang_name"><span class="redstar">*</span>身份证号</label>
+                </div>
+                <div class="input_box">
+                    <input class="input_txt" id="s_card" type="text" placeholder="请输入您的身份证号">
+                </div>
+            </div>
+
+            <div class="weui-cell bang_list">
+                <div class="weui-cell__hd name_box"><label for="city" class="weui-label"><span class="redstar">*</span>所在地</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input input_txt inputpointer" id="city" onfocus="this.blur()" type="text" value="" placeholder="请选择所在地">
+                </div>
+            </div>
+
+            <div class="weui-cell bang_list">
+                <div class="weui-cell__hd name_box"><label for="school" class="weui-label"><span class="redstar">*</span>就读学校</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input input_txt inputpointer" onfocus="this.blur()" id="school" type="text" data-values="" value="" placeholder="请先选择就读学校">
+                </div>
+            </div>
+
+            <div class="weui-cell bang_list">
+                <div class="weui-cell__hd name_box"><label for="classes" class="weui-label"><span class="redstar">*</span>所在年级</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input input_txt inputpointer" id="classes" onfocus="this.blur()" type="text" data-values="" value="" placeholder="请先选择所在年级">
+                </div>
+            </div>
+
+            <div class="weui-cell bang_list">
+                <div class="weui-cell__hd name_box"><label for="banji" class="weui-label"><span class="redstar">*</span>所在班级</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input input_txt inputpointer" id="banji" onfocus="this.blur()" type="text" data-values="" value="" placeholder="请先选择所在班级">
+                </div>
+            </div>
+
+            <div class="bang_list">
+                <div class="name_box">
+                    <label for="shibiema"><span class="redstar">*</span>班级识别码</label>
+                </div>
+                <div class="input_box">
+                    <input class="input_txt" id="shibiema" type="text" placeholder="请输入班级识别码">
+                </div>
+            </div>
+
+            <div class="weui-cell bang_list">
+                <div class="weui-cell__hd name_box"><label class="weui-label">看孩套餐</label></div>
+                <div class="weui-cell__bd">
+                    <a href="javascript:;" class="input_txt color_blue">前往购买套餐</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <script src="../content/scripts/jquery.min.js"></script>
+    <script src="../content/scripts/juqery.cookie.js"></script>
+    <script src="../content/plugins/jqweui/js/jquery-weui.min.js"></script>
+    <script src="../content/plugins/jqweui/js/city-picker.min.js"></script>
+    <script src="../content/scripts/commom.js"></script>
+    <script src="../content/scripts/API.js"></script>
+    <script src="../content/scripts/regular.js"></script>
+
+    <script>
+        $(function() {
+            // 性别选择
+            $("#sex").picker({
+                title: "请选择您的性别",
+                cols: [{
+                    textAlign: 'center',
+                    values: ['男', '女']
+                }],
+                onClose: function() {
+                    $("#screen").removeClass("show");
+                },
+            });
+
+            //生日选择
+            $("#date").calendar({
+                onChange: function(p, values, displayValues) {},
+                onClose: function(p, values, displayValues) {
+                    $("#screen").removeClass("show");
+                },
+            });
+
+
+            // 所在地区选择
+            /*$("#sex,#date,#city,#school").click(function() {
+                $('#bang_name,#shibiema').blur();
+                $("#screen").addClass("show");
+            });*/
+            $("#city").cityPicker({
+                title: "请选择所在地",
+                onChange: function(picker) {},
+                onOpen: function() {
+                    $('#bang_name,#shibiema').blur();
+                    $("#screen").addClass("show");
+                },
+                onClose: function(picker) {
+                    $("#screen").removeClass("show");
+                    $.ajax({
+                        type: "POST",
+                        url: api + '/Common/school.html',
+                        data: {
+                            key: user_token,
+                            province: picker.value[0],
+                            city: picker.value[1],
+                            area: picker.value[2]
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            if (response['result'].length == 0) {
+                                $("#school").select("update", {
+                                    items: [{}]
+                                })
+                            } else {
+                                $("#school").select("update", {
+                                    items: response['result']
+                                })
+                            }
+
+                        }
+                    });
+                }
+            });
+            // 学校就读选择
+
+            var schollID = '';
+            var Oschool = $("#school");
+            Oschool.select({
+                title: "请选择学校",
+                items: [{}],
+                onChange: function(p, v, d) {},
+                onOpen: function() {
+                    $('#bang_name,#shibiema').blur();
+                    $("#screen").addClass("show");
+                },
+                onClose: function(p, v, d) {
+                    $("#screen").removeClass("show");
+                    schollID = p.data.values;
+                    $.ajax({
+                        type: "POST",
+                        url: api + '/Common/grade.html',
+                        data: {
+                            key: user_token,
+                            school_id: p.data.values
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            if (response['result'].length == 0) {
+                                $("#classes").select("update", {
+                                    items: [{}]
+                                })
+                            } else {
+                                $("#classes").select("update", {
+                                    items: response['result']
+                                })
+                            }
+
+                        }
+                    });
+                }
+            });
+
+            //年级选择
+            $("#classes").select({
+                title: "请选择所在年级",
+                items: [{}],
+                onChange: function(p, v, d) {},
+                onOpen: function() {
+                    $('#bang_name,#shibiema').blur();
+                    $("#screen").addClass("show");
+                },
+                onClose: function(p, v, d) {
+                    $("#screen").removeClass("show");
+                    $.ajax({
+                        type: "POST",
+                        url: api + '/Common/classData.html',
+                        data: {
+                            key: user_token,
+                            school_id: schollID,
+                            grade_id: p.data.values
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            if (response['result'].length == 0) {
+                                $("#banji").select("update", {
+                                    items: [{}]
+                                })
+                            } else {
+                                $("#banji").select("update", {
+                                    items: response['result']
+                                })
+                            }
+                        }
+                    });
+                }
+            });
+
+            //班级选择
+            $("#banji").select({
+                title: "请选择所在班级",
+                items: [{}],
+                onChange: function(p, v, d) {},
+                onOpen: function() {
+                    $('#bang_name,#shibiema').blur();
+                    $("#screen").addClass("show");
+                },
+                onClose: function(p, v, d) {
+                    $("#screen").removeClass("show");
+
+                }
+            });
+
+        })
+
+        //绑定学生的提交操作
+        $("#bang_submit").click(function() {
+            if ($("#bang_name").val() == '') {
+                $.alert("请先填写孩子的姓名");
+                return false;
+            } else if ($("#s_card").val() == '') {
+                $.alert("请先填写身份证号");
+                return false;
+            } else if ($("#city").val() == '') {
+                $.alert("请选择所在地");
+                return false;
+            } else if ($("#school").val() == '') {
+                $.alert("请选择孩子就读学校");
+                return false;
+            } else if ($("#classes").val() == '') {
+                $.alert("请选择孩子所在年级");
+                return false;
+            } else if ($("#banji").val() == '') {
+                $.alert("请选择孩子的班级");
+                return false;
+            } else if ($("#shibiema").val() == '') {
+                $.alert("请填写班级识别码");
+                return false;
+            } else {
+                //ActionName：原生中对应的方法名；parameter：回传的参数
+                //json传递参数
+                var params = new Object();
+                params['key'] = user_token;
+                params['member_id'] = user_member_id;
+                params["name"] = $('#bang_name').val();
+                switch ($('#sex').val()) {
+                    case '男':
+                        params["sex"] = 1;
+                        break;
+                    case '女':
+                        params["sex"] = 2;
+                        break;
+                }
+                params["birthday"] = $('#date').val().split('/')[0] + '-' + $('#date').val().split('/')[1] + '-' + $('#date').val().split('/')[2];
+                params["province"] = $('#city').get(0).dataset.codes.split(',')[0];
+                params["city"] = $('#city').get(0).dataset.codes.split(',')[1];
+                params["area"] = $('#city').get(0).dataset.codes.split(',')[2];
+                params["school"] = $('#school').get(0).dataset.values;
+                params['grade'] = $('#classes').get(0).dataset.values;
+                params['class'] = $('#banji').get(0).dataset.values;
+                // params['class'] = 15;
+                params['class_code'] = $('#shibiema').val();
+                params['card'] = $('#s_card').val();
+                $.ajax({
+                    type: "POST",
+                    url: api + '/Member/studentBind.html',
+                    data: params,
+                    dataType: "json",
+                    success: function(response) {
+                        if (response['code'] == 400) {
+                            layout();
+                        } else {
+                            $.alert(response['message'], '', function() {
+                                historyback();
+                            })
+                        }
+
+                    }
+                });
+
+            }
+        })
+
+        //返回操作
+        function back(param) {
+            if (plateType() == 1) {
+                //安卓
+                alert("设备不支持")
+            } else {
+                window.webkit.messageHandlers.backClick.postMessage('back!!');
+            }
+        }
+
+        //判读是什么设备
+        function plateType() {
+            var u = navigator.userAgent;
+            var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+            var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+            if (isAndroid) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+
+
+        //扫描二维码
+        function scanning() {
+            if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) { //判断iPhone|iPad|iPod|iOS
+                window.webkit.messageHandlers.scanCode.postMessage('');
+            } else if (/(Android)/i.test(navigator.userAgent)) { //判断Android
+                Android.scanCode();
+            } else { //pc
+            };
+        }
+
+        //安卓扫码赋值函数
+        function funFromjs(result) {
+            $('#shibiema').val(result);
+        }
+
+        $(".student_tab>li").click(function() {
+            $(this).siblings().removeClass("active").end().addClass("active");
+        });
+    </script>
+</body>
+
+</html>

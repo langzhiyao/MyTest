@@ -1,0 +1,81 @@
+{include file="public/header" /}
+<script src="{$Think.config.url_domain_root}static/ckplayer/ckplayer.js"></script>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <h2>{$time}重温课堂视频共计{$res.totnum}个</h2>
+    <form method="post" enctype="multipart/form-data" name="form1" action="">
+        <table class="ds-default-table">
+            <thead>
+            <tr class="thead">
+                <th class="w272">{$Think.lang.ds_number}</th>
+                <th class="w172">开始时间</th>
+                <th class="w272 align-center">结束时间</th>
+                <th class="w172">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {notempty name="res.videos"}
+            {volist name="res.videos" id="v"}
+            <tr class="hover edit">
+                <td class="sort">{$key+1}</td>
+                <td class="name"><?php echo date('H:i',$v['begintime']); ?></td>
+                <td class="name"><?php echo date('H:i',$v['endtime']); ?></td>
+                <td class="align-center"><a onclick="rtmplay({$key})" style="cursor:pointer;">播放</a></td>
+                <input type="hidden" id="name{$key}" value="{$v.url}"/>
+            </tr>
+            {/volist}
+            {else /}
+            <tr class="no_data">
+                <td colspan="10">{$Think.lang.ds_no_record}</td>
+            </tr>
+            {/notempty}
+            </tbody>
+        </table>
+    </form>
+</div>
+<div class="layui-fluid layui-card-body" id="LAY" style="display: none;">
+    <div class="layui-row layui-col-space10 demo-list">
+        <div class="layui-col-sm4">
+            <!-- 填充内容 -->
+            <div class="layui-card">
+                <div id="video" style="width: 600px; height: 400px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function rtmplay(id){
+        var rtmpInfo= $('#name'+id).val();
+        //alert(rtmpInfo);exit;
+//        rtmpInfo =$.parseJSON(rtmpInfo);
+        layer.open({
+            type: 1,
+            title: '重温课堂',
+            //shadeClose: true,
+            area: ['644px', '470px'],
+            skin: 'layui-layer-rim',
+            content: $('#LAY')
+        });
+        var videoObject = {
+            container: '#video', //容器的ID或className
+            variable: 'player',//播放函数名称
+            autoplay:false,
+            live:true,
+            debug:true,
+            video: rtmpInfo
+        };
+        var player = new ckplayer(videoObject);
+    }
+</script>
+
+
+
+
+
+
+
+

@@ -1,0 +1,45 @@
+{include file="public/seller_top" /}
+<div class="seller_main w1200">
+    {include file="public/seller_left" /}
+    <div class="seller_right">
+        <div class="seller_items">
+            {include file="public/seller_items" /}
+        </div>
+
+        <table class="dssc-default-table">
+            <thead>
+            <tr><th class="w30"></th>
+                <th class="tl">{$Think.lang.mansong_name}</th>
+                <th class="w250">{$Think.lang.start_time}&nbsp;-&nbsp;{$Think.lang.end_time}</th>
+
+                <th class="w300">活动内容</th>
+                <th class="w110">{$Think.lang.ds_state}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="bd-line"><td></td>
+                <td class="tl"><dl class="goods-name"><dt>{$mansong_info.mansong_name}</dt></dl></td>
+                <td><p>{$mansong_info.start_time|date="Y-m-d H:i",###}</p><p>至</p><p>{$mansong_info.end_time|date="Y-m-d H:i",###}</p></td>
+                <td><ul class="dssc-mansong-rule-list">
+                    {notempty name="list"}
+                    {volist name="list" id="val"}
+                    <li>
+                        {$Think.lang.level_price}<strong>{$val.price}</strong>元，&nbsp;
+                        {notempty name="val.discount"}
+                        {$Think.lang.level_discount}<strong>{$val.discount}</strong>元，&nbsp;
+                        {/notempty}
+                        {empty name="val.goods_id"}
+                        <!-- {$Think.lang.gift_name} <span>{$Think.lang.text_not_join}</span> -->
+                        {else}
+                        {$Think.lang.gift_name}<a href="{$val.goods_url}" title="{$val.mansong_goods_name}" target="_blank" class="goods-thumb"> <img src="<?php echo cthumb($val['goods_image']);?>"/> </a>
+                        {/empty}
+                    </li>
+                    {/volist}
+                    {/notempty}
+                </ul></td>
+                <td>{$mansong_info.mansong_state_text}</td>
+            </tr>
+            <tbody>
+        </table>
+    </div>
+</div>

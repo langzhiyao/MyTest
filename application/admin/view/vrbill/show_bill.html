@@ -1,0 +1,107 @@
+
+<div class="page">
+  <div class="fixed-bar">
+    <div class="item-title">
+      <h3>虚拟订单结算</h3>
+		<ul class="tab-base">
+		<li><a href="{:url('vrbill/index')}"><span>结算管理</span></a></li>
+		<li><a href="{:url('vrbill/show_statis',['os_month'=>$bill_info.os_month])}"><span><?php echo $bill_info['os_month'];?>期  商家账单列表</span></a></li>
+		<li><a class="current" href="JavaScript:void(0);"><span>账单明细</span></a></li>
+		</ul>
+    </div>
+  </div>
+<div class="fixed-empty"></div>  
+    <table class="table tb-type2 noborder search">
+      <tbody>
+      <tr><td>店铺 - <?php echo $bill_info['ob_store_name'];?>（ID：<?php echo $bill_info['ob_store_id'];?>） <?php echo $bill_info['os_month'];?> 期 结算单&emsp;
+      <?php if ($bill_info['ob_state'] == BILL_STATE_STORE_COFIRM){?>
+      <a class="btns" onclick="if (confirm('审核后将无法撤销，进入下一步付款环节，确认审核吗?')){return true;}else{return false;}" href="{:url('vrbill/bill_check',['ob_no'=>$Request.param.ob_no])}"><span>{$Think.lang.nc_exdport}审核</span></a>
+       <?php }elseif ($bill_info['ob_state'] == BILL_STATE_SYSTEM_CHECK){?>
+		<a class="btns" href="{:url('vrbill/bill_pay',['ob_no'=>$Request.param.ob_no])}"><span>{$Think.lang.nc_exdport}付款完成</span></a>
+       <?php }elseif ($bill_info['ob_state'] == BILL_STATE_SUCCESS){?>
+      <a class="btns" target="_blank" href="{:url('vrbill/bill_print',['ob_no'=>$Request.ob_no])}"><span>{$Think.lang.ds_export}打印</span></a>
+      <?php }?>
+      </td></tr>
+        <tr><td>{$Think.lang.order_time_from}结算单号{$Think.lang.ds_colon}<?php echo $bill_info['ob_no'];?></td></tr>
+      	<tr><td>起止日期{$Think.lang.ds_colon}<?php echo date('Y-m-d',$bill_info['ob_start_date']);?> &nbsp;至&nbsp; <?php echo date('Y-m-d',$bill_info['ob_end_date']);?>
+      	</td></tr><tr>
+      <td>出账日期{$Think.lang.ds_colon}<?php echo date('Y-m-d',$bill_info['ob_create_date']);?></td></tr><tr>
+      <td>平台应付金额：<?php echo $bill_info['ob_result_totals'];?> = <?php echo $bill_info['ob_order_totals'];?> (消费金额) - <?php echo $bill_info['ob_commis_totals'];?> (佣金金额)</td>
+      </tr>
+      <tr><td>结算状态：<?php echo billState($bill_info['ob_state']);?>
+      <?php if ($bill_info['ob_state'] == BILL_STATE_SUCCESS){?>
+      	&emsp;结算日期{$Think.lang.ds_colon}<?php echo date('Y-m-d',$bill_info['ob_pay_date']);?>，结算备注{$Think.lang.ds_colon}<?php echo $bill_info['ob_pay_content'];?>
+      <?php }?>
+      </td></tr>
+      </tbody>
+    </table>
+
+
+<div class="homepage-focus">
+<h4>兑换码列表</h4>
+<ul class="tab-menu">
+<li class="<?php echo $Request.param.query_type == 'timeout' ? '' : 'current';?>">
+  <a href="{:url('vrbill/show_bill',['ob_no'=>$Request.param.ob_no,'query_type'=>''])}">已使用</a>
+</li>
+<li class="<?php echo $Request.param.query_type == 'timeout' ? 'current' : '';?>">
+  <a href="{:url('vrbill/show_bill',['ob_no'=>$Request.param.ob_no,'query_type'=>'timeout'])}">已过期</a>
+</li>
+</ul>
+</div>
+
+<div style="text-align:right;">
+<a class="btns" href="{:url('vrbill/show_bill',['ob_no'=>$Request.param.ob_no],'query_type'=>$Request.param.query_type,'op'=>'export_order')}" target="_blank">
+<span>导出CSV</span>
+</a>
+</div>
+
+<table class="table tb-type2 nobdb">
+    <thead>
+      <tr class="thead">
+        <th class="align-center">兑换码</th>
+        <th class="align-center"><?php echo $_GET['query_type'] == 'timeout' ? '过期时间' : '消费时间';?></th>
+        <th class="align-center">订单号</th>
+        <th class="align-center">消费金额</th>
+        <th class="align-center">佣金金额</th>
+        <th class="align-center">买家</th>
+        <th class="align-center">商家</th>
+        <th>{$Think.lang.ds_handle}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php if(is_array($code_list) && !empty($code_list)){?>
+      <?php foreach($code_list as $code_info){?>
+      <tr class="hover">
+        <td class="align-center"><?php echo $code_info['vr_code'];?></td>
+        <td class="align-center">
+        <?php if ($_GET['query_type'] == 'timeout') { ?>
+        <?php echo date('Y-m-d H:i:s',$code_info['vr_indate']);?>
+        <?php } else {?>
+        <?php echo date('Y-m-d H:i:s',$code_info['vr_usetime']);?>
+        <?php } ?>
+        </td>
+        <td class="align-center"><?php echo $order_list[$code_info['order_id']]['order_sn'];?></td>
+        <td class="align-center"><?php echo $code_info['pay_price'];?></td>
+        <td class="align-center"><?php echo dsPriceFormat($code_info['pay_price']*$code_info['commis_rate']/100);?></td>
+        <td class="align-center"><?php echo $order_list[$code_info['order_id']]['buyer_name'];?></td>
+        <td class="align-center"><?php echo $order_list[$code_info['order_id']]['store_name'];?></td>
+        <td>
+        <a href="{:url('vrorder/show_order',['order_id'=>$code_info.order_id])}">{$Think.lang.ds_view}</a>
+        </td>
+      </tr>
+      <?php }?>
+      <?php }else{?>
+      <tr class="no_data">
+        <td colspan="15">{$Think.lang.ds_no_record}</td>
+      </tr>
+      <?php }?>
+    </tbody>
+    <tfoot>
+      <tr class="tfoot">
+        <td colspan="15" id="dataFuncs">{$show_page}</td>
+      </tr>
+    </tfoot>
+  </table>
+
+
+</div>

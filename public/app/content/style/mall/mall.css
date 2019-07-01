@@ -1,0 +1,236 @@
+.body_content{
+	width: 702px;
+	margin: 0 auto;
+}
+
+a{
+	color: black;
+}
+
+a:link{
+	color: black;
+}
+
+a:visited{
+	color: black;
+}
+a:active{
+	color: black;
+}
+
+.float_left{
+	float: left;
+}
+
+.float_right{
+	float: right;
+}
+
+.clearBoth:after{
+	content: '';
+	display: block;
+	clear: both;
+}
+
+.userhead {
+	width: 100%;
+    height: 74px;
+	line-height: 74px;
+}
+
+.back_btn i{
+	font-size: 30px;
+}
+
+.header_title{
+	flex: 4;
+	font-size: 30px;
+	text-align: center;
+	position: relative;
+}
+.header_title input{
+	width: 100%;
+	height: 99%;
+	border-bottom: 1px solid #aeaeae;
+	/*padding-left: 50px;*/
+	font-size: 26px;
+	text-align: center;
+}
+.header_title input::input-placeholder{
+    color: #aeaeae !important;
+	font-size: 26px;
+}
+.header_title i{
+	position: absolute;
+	font-size: 30px;
+}
+.header_more{
+	text-align: right;
+}
+.header_more i{
+	font-size: 40px;
+	margin-right: 10px;
+}
+/*更多*/
+.sub-nav {
+    position: absolute;
+    right: 40px;
+    top: 72px;
+    font-size: 9pt;
+    display: block;
+    width: 204px;
+    background-color: transparent;
+    *border: 1px solid #666;
+	display: none;
+}
+.sub-nav s {
+    position: absolute;
+    top: -20px;
+    *top: -22px;
+    right: 5px;
+    display: block;
+    height: 0;
+    width: 0;
+    font-size: 0;
+    line-height: 0;
+    border-color: transparent transparent #eaeaea transparent;
+    border-style: dashed dashed solid dashed;
+    border-width: 10px;
+}
+.sub-nav s i {
+    position: absolute;
+    top: -9px;
+    *top: -9px;
+    right: -10px;
+    display: block;
+    height: 0;
+    width: 0;
+    font-size: 0;
+    line-height: 0;
+    border-color: transparent transparent #eaeaea transparent;
+    border-style: dashed dashed solid dashed;
+    border-width: 13px;
+}
+.sub-nav .content {
+    border: 1px solid #dadada;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    position: absolute;
+    background-color: #fff;
+    width: 100%;
+    *top: -2px;
+    *border-top: 1px solid #666;
+    *border-top: 1px solid #666;
+    *border-left: none;
+    *border-right: none;
+    *height: 102px;
+    box-shadow: 3px 3px 4px #999;
+    -moz-box-shadow: 3px 3px 4px #999;
+    -webkit-box-shadow: 3px 3px 4px #999;
+    padding-right: 15px;
+	font-size: 28px;
+	background: #eaeaea;
+	border-radius: 10px;
+}
+.sub-nav .content ul {
+    list-style: none;
+    margin: 0;
+    padding: 30px 0;
+}
+.sub-nav .content ul li {
+    height: 38px;
+    line-height: 38px;
+    padding-left: 25px;
+    overflow: hidden;
+	/*text-align: center;*/
+	margin-top: 20px;
+}
+.sub-nav .content ul li:first-child{
+	margin-top: 0
+}
+.sub-nav .content ul li i{
+	font-size: 28px;
+}
+.sub-nav .content ul li:last-child {
+    border-bottom: none
+}
+/*选项卡*/
+.tabs_mall{
+	height: 85px;
+	line-height: 85px;
+}
+.tabs_mall li{
+	width: 25%;
+}
+.tabs_mall li:nth-child(2),
+.tabs_mall li:nth-child(3){
+	text-align: center;
+}
+.tabs_mall li:nth-child(4){
+	text-align: right;
+}
+.tabs_mall li i{
+	font-size: 30px;
+	color: #aeaeae;
+}
+.tabs_mall li .action{
+	color: #8ad4ce;
+	border-bottom: 2px solid #8ad4ce;
+	padding-bottom: 10px;
+}
+/*内容区域*/
+.none{
+	display: none
+}
+.commodity_border{
+	width: 100%;
+	border-top: 1px solid #f1f1f1;
+	height: 196px;
+	padding: 30px 0;
+}
+.commodity_content{
+	height: 196px;
+}
+.comm_img_wrap{
+	width: 194px;
+	height: 194px;
+	overflow: hidden;
+	position: relative;
+	border: 1px solid #dcdcdc;
+}
+.comm_img_wrap img{
+	width: 100%;
+	position: absolute;
+	top: 50%; left: 50%;
+	transform: translate(-50%, -50%);
+}
+.comm_content_wrap{
+	width: 460px;
+	overflow: hidden;
+	margin-left: 30px;
+}
+.comm_content_wrap .title{
+	font-size: 32px;
+}
+.comm_content_wrap .cont{
+	font-size: 32px;
+	font-size: 24px;
+	margin-bottom: 10px;
+}
+.comm_content_wrap .price{
+	font-size: 32px;
+	color: #ff4a5b;
+}
+.comm_content_wrap .car{
+	font-size: 22px;
+	color: #aeaeae;
+}
+.comm_content_wrap .car span{
+	margin-right: 40px;
+}
+.comm_content_wrap .car i{
+	float: right;
+	font-size: 40px;
+	color: #ff4a5b;
+	margin-top: -20px
+}

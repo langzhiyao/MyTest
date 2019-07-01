@@ -1,0 +1,85 @@
+<div class="dsm-flow-item">
+    <div class="title">相关商品交易信息</div>
+    <div class="item-goods">
+        <?php if (is_array($goods_list) && !empty($goods_list)) { ?>
+        <?php foreach ($goods_list as $key => $val) { ?>
+        <dl>
+            <dt>
+            <div class="dsm-goods-thumb-mini"><a target="_blank" href="{:url('Home/Goods/index',['goods_id'=>$val.goods_id])}"><img src="<?php echo thumb($val, 60); ?>"/></a></div>
+            </dt>
+            <dd><a target="_blank" href="{:url('/home/goods/index',['goods_id'=>$val.goods_id])}"><?php echo $val['goods_name']; ?></a>
+                {$Think.lang.currency}<?php echo $val['goods_price']; ?> * <?php echo $val['goods_num']; ?> <font color="#AAA">(数量)</font>
+                <span><?php echo orderGoodsType($val['goods_type']);?></span>
+            </dd>
+        </dl>
+        <?php } ?>
+        <?php } ?>
+    </div>
+    <div class="item-order">
+        <dl>
+            <dt>运&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;费：</dt>
+            <dd><?php echo $order['shipping_fee']>0 ? dsPriceFormat($order['shipping_fee']):lang('ds_common_shipping_free'); ?></dd>
+        </dl>
+        <dl>
+            <dt>订单总额：</dt>
+            <dd><strong>{$Think.lang.currency}<?php echo dsPriceFormat($order['order_amount']); ?>
+                    <?php if ($order['refund_amount'] > 0) { ?>
+                    ({$Think.lang.refund_add}{$Think.lang.ds_colon}{$Think.lang.currency}<?php echo $order['refund_amount'];?>)
+                    <?php } ?>
+                </strong> </dd>
+        </dl>
+        <dl class="line">
+            <dt>订单编号：</dt>
+            <dd><a target="_blank" href="{:url('/home/memberorder/show_order',['order_id'=>$order.order_id])}"><?php echo $order['order_sn'];?></a>
+                <a href="javascript:void(0);" class="a">更多<i class="icon-angle-down"></i>
+                    <div class="more"> <span class="arrow"></span>
+                        <ul>
+                            <?php if($order['payment_code'] != 'offline' && !in_array($order['order_state'],array(ORDER_STATE_CANCEL,ORDER_STATE_NEW))) { ?>
+                            <li>付款单号{$Think.lang.ds_colon}<span><?php echo $order['pay_sn']; ?></span></li>
+                            <?php } ?>
+                            <li>{$Think.lang.member_order_pay_method}{$Think.lang.ds_colon}<span><?php echo $order['payment_name']; ?></span></li>
+                            <li>{$Think.lang.member_order_time}{$Think.lang.ds_colon}<span><?php echo date("Y-m-d H:i:s",$order['add_time']); ?></span></li>
+                            <?php if ($order['payment_time'] > 0) { ?>
+                            <li>{$Think.lang.member_show_order_pay_time}{$Think.lang.ds_colon}<span><?php echo date("Y-m-d H:i:s",$order['payment_time']); ?></span></li>
+                            <?php } ?>
+                            <?php if ($order_common['shipping_time'] > 0) { ?>
+                            <li>{$Think.lang.member_show_order_send_time}{$Think.lang.ds_colon}<span><?php echo date("Y-m-d H:i:s",$order_common['shipping_time']); ?></span></li>
+                            <?php } ?>
+                            <?php if ($order['finnshed_time'] > 0) { ?>
+                            <li>{$Think.lang.member_show_order_finish_time}{$Think.lang.ds_colon}<span><?php echo date("Y-m-d H:i:s",$order['finnshed_time']); ?></span></li>
+                            <?php } ?>
+                        </ul>
+                    </div>
+                </a> </dd>
+        </dl>
+        <?php if (!empty($order['shipping_code'])) { ?>
+        <dl>
+            <dt>物流单号：</dt>
+            <dd>
+                <a target="_blank" href="{:url('/home/memberorder/search_deliver',['order_id'=>$order.order_id])}"><?php echo $order['shipping_code'];?></a>
+                <a href="javascript:void(0);" class="a"><?php echo $order['e_name'];?></a>
+            </dd>
+        </dl>
+        <?php } ?>
+        <dl class="line">
+            <dt>商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;家：</dt>
+            <dd><?php echo $order['store_name'];?><a href="javascript:void(0);" class="a">更多<i class="icon-angle-down"></i>
+                    <div class="more"><span class="arrow"></span>
+                        <ul>
+                            <li>{$Think.lang.member_address_location}{$Think.lang.ds_colon}<span><?php echo $store['area_info'].'&nbsp;'.$store['store_address'];?></span></li>
+                            <li>联系电话：<span><?php echo $store['store_phone'];?></span></li>
+                        </ul>
+                    </div>
+                </a>
+                <div><span member_id="<?php echo $store['member_id'];?>"></span>
+                    <?php if (!empty($store['store_qq'])) { ?>
+                    <a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=<?php echo $store['store_qq'];?>&site=qq&menu=yes" title="QQ: <?php echo $store['store_qq'];?>"><img border="0" src="http://wpa.qq.com/pa?p=2:<?php echo $store['store_qq'];?>:52" style=" vertical-align: middle;"/></a>
+                    <?php } ?>
+                    <?php if (!empty($store['store_ww'])) { ?>
+                    <a target="_blank" href="http://amos.im.alisoft.com/msg.aw?v=2&uid=<?php echo $store['store_ww'];?>&site=cntaobao&s=2&charset=utf-8"  class="vm" ><img border="0" src="http://amos.im.alisoft.com/online.aw?v=2&uid=<?php echo $store['store_ww'];?>&site=cntaobao&s=2&charset=utf-8" alt="Wang Wang"  style=" vertical-align: middle;"/></a>
+                    <?php } ?>
+                </div>
+            </dd>
+        </dl>
+    </div>
+</div>

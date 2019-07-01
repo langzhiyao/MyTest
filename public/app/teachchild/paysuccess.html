@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>想见孩-购买成功</title>
+    <meta name="author" content="想见孩" />
+    <meta name="copyright" content="想见孩" />
+    <meta name="description" content="想见孩" />
+    <meta id="viewport" name="viewport" content="width=750" />
+    <link rel="stylesheet" href="../content/style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/iconfonts/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/user.css" type="text/css" />
+    <link rel="shortcut icon" href="../content/images/ico.ico" type="image/x-icon" />
+    <script src="../content/scripts/mobile-util.js"></script>
+    <link rel="stylesheet" href="/static/plugins/layer/css/layui.css">
+</head>
+
+<body>
+    <header class="head">
+        <div class="head0">
+            <div class="menu_bar_box">
+                <a href="javascript:;" class="back_btn">
+                    <i class="icon iconfont icon-jiantou3"></i>
+                </a>
+            </div>
+            <div class="head_title">
+                <p>购买成功</p>
+            </div>
+            <div class="head_r">
+
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <div class="main">
+        <div class="container2">
+            <div class="pay_finish paysuccess"></div>
+            <p class="pay_p1"> 购买成功 !</p>
+            <p class="pay_p2"></p>
+        </div>
+        <div class="pay_finish_btnbox">
+            <a href="javascript:;" class="pay_finish_btn">完成</a>
+        </div>
+    </div>
+
+
+    <script src="../content/scripts/jquery.min.js"></script>
+    <script src="../content/scripts/juqery.cookie.js"></script>
+    <script src="../content/scripts/API.js"></script>
+    <script src="../content/scripts/commom.js"></script>
+    <script>
+        $('.pay_p2').html('实付￥'+GetQueryString('over_amount'));
+        $('.pay_finish_btn').click(function(){
+            location.href=http_url+'app/teachchild/details.html?id='+GetQueryString('id');
+        })
+        $('.back_btn').click(function(){
+            location.href=http_url+'app/teachchild/details.html?id='+GetQueryString('id');
+        })
+    </script>
+</body>
+
+</html>

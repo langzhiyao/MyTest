@@ -1,0 +1,73 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>店铺统计</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+   <div class="fixed-empty"></div>
+
+  <form method="get" name="formSearch" id="formSearch">
+    <div class="w100pre" style="width: 100%;">
+        <table class="search-form">
+          <tbody>
+            <tr>
+            	<td>
+              	<select name="search_sclass" id="search_sclass" class="querySelect">
+              		<option value="" selected>店铺分类</option>
+                  {volist name="store_class" id="v"}
+              		<option value="{$v.sc_id}"
+                            {$Request.param.search_sclass==
+                            $v.sc_id
+                            ?'selected':''}>{$v.sc_name}</option>
+                    {/volist}
+                </select>
+                </td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+  </form>
+ <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+           <li>统计图展示各店铺分类中店铺等级的分布情况</li>
+        </ul>
+    </div>
+
+     <table class="ds-default-table">
+  	<tbody id="datatable">
+    {present name="stat_json"}
+    <tr class="hover">
+        <td class="align-center"><div id="container" class="w100pre close_float" style="height:400px"></div></td>
+      </tr>
+    {else /}
+    <tr class="no_data">
+          <td colspan="15">{:lang('ds_no_record')}</td>
+        </tr>
+   {/present}
+    </tbody>
+  </table>
+</div>
+<script src="{$Think.config.url_domain_root}static/plugins/highcharts/highcharts.js"></script>
+<script src="{$Think.config.url_domain_root}static/home/js/common.js"></script>
+<script src="{$Think.config.url_domain_root}static/common/js/statistics.js"></script>
+<script>
+$(function(){
+    {present name="stat_json"}
+        $('#container').highcharts({$stat_json});
+   {/present}
+    $('#ncsubmit').click(function(){
+        $('#formSearch').submit();
+    });
+});
+</script>

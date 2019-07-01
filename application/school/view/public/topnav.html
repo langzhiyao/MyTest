@@ -1,0 +1,38 @@
+<div class="admincp-header">
+    <div class="logo">
+        <img src="{$Think.config.url_domain_root}/static/school/images/logo11.png" />
+    </div>
+    <div class="navbar">
+        <div class="navbar_box">
+            <a href="javascript:;" class="navbar_moblie" id="navbar_moblie"><i class="icon iconfont icon-daohang"></i></a>
+            <ul class="fl main_navbar" id="main_navbar" style="float:left;">
+                {foreach name="menu_list" item="menu"}
+                <li id="nav_{$menu.name}">
+                    <a href="javascript:void(0)" onclick="openItem('{$menu.name}')">{$menu.text}</a>
+                    <dl>
+                        {foreach name="menu.children" item="submenu" }
+                        <dd><a href="javascript:void(0)" onclick="openItem('{$submenu.args}')">{$submenu.text}</a></dd>
+                        {/foreach}
+                    </dl>
+                    <span class="nav_pointer"><i class="icon iconfont icon-jiantou"></i></span>
+                </li>
+                {/foreach}
+            </ul>
+        </div>
+        <div class="user_btnbox">
+            <a href="javascript:;" class="membercenternav_bar" id="membercenternav_bar">
+                <span class="userimgbox">
+                    <img src="{$Think.config.url_domain_root}/static/school/images/user/userimg.jpg" alt="">
+                </span>
+            </a>
+            <ul class="fr membercenternav" style="float:right" id="membercenternav">
+                <li><span>您好,{$Think.session.school_admin_name}</span></li>
+                <li><a href="{:url('Index/modifypw')}" target="main-frame">修改密码</a></li>
+                <li><a href="{:url('Login/logout')}">安全退出</a></li>
+                <!--<li><a href="{:url('Cache/clear')}" target="main-frame">更新缓存</a></li>-->
+                <!--<li><a href="{:url('/Home/Index/index')}" target="_blank">访问首页</a></li>-->
+            </ul>
+        </div>
+
+    </div>
+</div>

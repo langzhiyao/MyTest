@@ -1,0 +1,57 @@
+{include file="public/mall_top" /}
+{include file="public/mall_header" /}
+
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/home/css/member.css">
+<div class="dsm-container">
+    {include file="public/member_left" /}
+    <div class="right-layout">
+        <div class="tabmenu">
+            {include file="public/member_items" /}
+        </div>
+<div class="dsm-default-form">
+    <dl>
+      <dt>{:lang('predeposit_cashsn')}{:lang('ds_colon')}</dt>
+      <dd>{$info.pdc_sn}</dd>
+    </dl>
+    <dl>
+      <dt>{:lang('predeposit_cash_price')}{:lang('ds_colon')}</dt>
+      <dd>{$info.pdc_amount} {:lang('currency_zh')}</dd>
+    </dl>
+    <dl>
+      <dt>{:lang('predeposit_cash_shoukuanbank')}{:lang('ds_colon')}</dt>
+      <dd>{$info.pdc_bank_name}</dd>
+    </dl>
+    <dl>
+      <dt>{:lang('predeposit_cash_shoukuanaccount')}{:lang('ds_colon')}</dt>
+      <dd>{$info.pdc_bank_no}</dd>
+    </dl>
+    <dl>
+      <dt>{:lang('predeposit_cash_shoukuanname')}{:lang('ds_colon')}</dt>
+      <dd>{$info.pdc_bank_user}</dd>
+    </dl>
+    <dl>
+      <dt>{:lang('predeposit_addtime')}{:lang('ds_colon')}</dt>
+      <dd>{:date('Y-m-d',$info.pdc_add_time)}</dd>
+    </dl>
+    <dl>
+      <dt>{:lang('predeposit_paystate')}{:lang('ds_colon')}</dt>
+      <dd><?php echo str_replace(array('0','1','2'),array('审核中','已审核','已支付'),$info['pdc_payment_state']);?></dd>
+    </dl>
+  <?php if (intval($info['pdc_check_time'])) {?>
+  <dl>
+      <dt>{:lang('predeposit_checktime')}{:lang('ds_colon')}</dt>
+      <dd>{:date('Y-m-d H:i:s',$info.pdc_check_time)}</dd>
+    </dl>
+  <?php } ?>
+  <?php if (intval($info['pdc_payment_time'])) {?>
+  <dl>
+      <dt>{:lang('predeposit_paytime')}{:lang('ds_colon')}</dt>
+      <dd>{:date('Y-m-d H:i:s',$info.pdc_payment_time)}</dd>
+    </dl>
+  <?php } ?> 
+  </div>
+
+          </div>
+</div>
+{include file="public/mall_server" /}
+{include file="public/mall_footer" /}

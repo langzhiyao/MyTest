@@ -1,0 +1,167 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>举报管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form id="search_form" method="get" name="formSearch">
+        <table class="search-form">
+            <tbody>
+            <tr>
+                <th><label for="input_inform_goods_name">{$Think.lang.inform_goods_name}</label></th>
+                <td><input class="txt" type="text" name="input_inform_goods_name" id="input_inform_goods_name" value="{$Request.get.input_inform_goods_name}"></td>
+                <th><label for="input_inform_type">{$Think.lang.inform_type}</label></th>
+                <td colspan="2"><input class="txt" type="text" name="input_inform_type" id="input_inform_type" value="{$Request.get.input_inform_type}"  style=" width:100px;">
+                    <label for="input_inform_member_name">{$Think.lang.inform_member_name}</label>
+                    <input class="txt" type="text" name="input_inform_member_name" id="input_inform_member_name" value="{$Request.get.input_inform_member_name}" style=" width:100px;"></td>
+            </tr>
+            <tr>
+                <th><label for="input_inform_subject">{$Think.lang.inform_subject}</label></th>
+                <td><input class="txt" type="text" name="input_inform_subject" id="input_inform_subject" value="{$Request.get.input_inform_subject}"></td>
+                <th><label for="time_from">{$Think.lang.inform_datetime}</label></th>
+                <td><input id="time_from" class="txt date" type="text" name="input_inform_datetime_start" value="{$Request.get.input_inform_datetime_start}">
+                    <label for="time_to">~</label>
+                    <input id="time_to" class="txt date" type="text" name="input_inform_datetime_end" value="{$Request.get.input_inform_datetime_end}"></td>
+                <td><a href="javascript:document.formSearch.submit();" class="btn-search " title="{$Think.lang.ds_query}"></a>
+                    <?php if(!(empty($_GET['input_inform_goods_name'])&&empty($_GET['input_inform_member_name'])&&empty($_GET['input_inform_type'])&&empty($_GET['input_inform_subject'])&&empty($_GET['input_inform_datetime_start'])&&empty($_GET['input_inform_datetime_end']))) { ?>
+                    <a href="{:url('inform/inform_list')}" class="btns " title="{$Think.lang.ds_cancel_search}"><span>{$Think.lang.ds_cancel_search}</span></a>
+                    <?php } ?></td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+    
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>{$Think.lang.inform_help3}</li>
+        </ul>
+    </div>
+    
+    <form method='post' id="list_form" action="{:url('voucherprice/voucher_price_drop')}">
+        <table class="ds-default-table">
+            <thead>
+            <tr class="thead">
+                <th>{$Think.lang.inform_goods_name}</th>
+                <th>{$Think.lang.inform_member_name}</th>
+                <th>{$Think.lang.inform_type}</th>
+                <th>{$Think.lang.inform_subject}</th>
+                <th>{$Think.lang.inform_pic}</th>
+                <th>{$Think.lang.inform_datetime}</th>
+                <th>{$Think.lang.inform_handle_type}</th>
+                <th>{$Think.lang.ds_handle}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {notempty name="list"}
+           {volist name="list" id="v"}
+            <tr class="line hover">
+                <td><a href="{:url('goods/index',['goods_id'=>$v.inform_goods_id])}" target="_blank">{$v.inform_goods_name}</a></td>
+                <td>{$v.inform_member_name}</td>
+                <td>{$v.inform_subject_type_name}</td>
+                <td>{$v.inform_subject_content}</td>
+                <td>
+                    <?php
+                        if(empty($v['inform_pic1'])&&empty($v['inform_pic2'])&&empty($v['inform_pic3'])) {
+                            echo lang('inform_pic_none');
+                        }
+                        else {
+                            $pic_link = 'index.php/show_pics/index?type=inform&pics=';
+                            if(!empty($v['inform_pic1'])) {
+                                $pic_link .= $v['inform_pic1'].'|';
+                            }
+                            if(!empty($v['inform_pic2'])) {
+                                $pic_link .= $v['inform_pic2'].'|';
+                            }
+                            if(!empty($v['inform_pic3'])) {
+                                $pic_link .= $v['inform_pic3'].'|';
+                            }
+                            $pic_link = rtrim($pic_link,'|');
+                    ?>
+                    <a href="<?php echo $pic_link;?>" target="_blank">{$Think.lang.inform_pic_view}</a>
+                    <?php } ?></td>
+                <td><span>{$v.inform_datetime|date="Y-m-d",###}</span></td>
+                <td>
+                    {switch name="v.inform_handle_type" }
+                    {case value="1"}{$Think.lang.inform_handle_type_unuse}{/case}
+                    {case value="2"}{$Think.lang.inform_handle_type_venom}{/case}
+                    {case value="3"}{$Think.lang.inform_handle_type_valid}{/case}
+                    {/switch}
+                   </td>
+                <td><a href="JavaScript:void(0);" class="show_detail">{$Think.lang.ds_detail}</a></td>
+            </tr>
+            <tr class="inform_detail">
+                <td colspan="15"><div class="shadow2">
+                    <div class="content">
+                        <dl>
+                            <dt>{$Think.lang.inform_content}</dt>
+                            <dd>{$v.inform_content}</dd>
+                        </dl>
+                        <dl style=" border: none;">
+                            <dt>{$Think.lang.inform_handle_message}</dt>
+                            <dd>
+                                {empty name="inform_handle_message"}
+                                {$Think.lang.inform_text_none}
+                                {else /}
+                                {$v.inform_handle_message}{$v.inform_handle_datetime|date="Y-m-d",###}
+                                {/empty}
+                            </dd>
+                        </dl>
+                        <div class="close_detail"><a href="JavaScript:void(0);" title="{$Think.lang.ds_close}">{$Think.lang.ds_close}</a></div>
+                    </div>
+                </div></td>
+            </tr>
+            {/volist}
+           {else /}
+            <tr class="no_data">
+                <td colspan="8">{$Think.lang.ds_no_record}</td>
+            </tr>
+            {/notempty}
+            </tbody>
+            <tfoot>
+            {notempty name="list"}
+            <tr class="tfoot">
+                <td  colspan="15"><div class="pagination"> {$show_page}</div></td>
+            </tr>
+            {/notempty}
+            </tfoot>
+        </table>
+    </form>
+
+</div>
+<script>
+$(document).ready(function(){
+//详细信息显示
+$(".inform_detail").hide();
+$(".show_detail").click(function(){
+$(".inform_detail").hide();
+$(this).parents("tr").next(".inform_detail").show();
+});
+$(".close_detail").click(function(){
+$(this).parents(".inform_detail").hide();
+});
+
+//表格移动变色
+
+$('#time_from').datepicker({onSelect:function(dateText,inst){
+var year2 = dateText.split('-') ;
+$('#time_to').datepicker( "option", "minDate", new Date(parseInt(year2[0]),parseInt(year2[1])-1,parseInt(year2[2])) );
+}});
+$('#time_to').datepicker({onSelect:function(dateText,inst){
+var year1 = dateText.split('-') ;
+$('#time_from').datepicker( "option", "maxDate", new Date(parseInt(year1[0]),parseInt(year1[1])-1,parseInt(year1[2])) );
+}});
+});
+</script>

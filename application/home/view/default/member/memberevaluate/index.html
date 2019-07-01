@@ -1,0 +1,63 @@
+{include file="public/mall_top" /}
+{include file="public/mall_header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/home/css/member.css">
+<div class="dsm-container">
+    {include file="public/member_left" /}
+    <div class="right-layout">
+        <div class="tabmenu">
+            {include file="public/member_items" /}
+        </div>
+
+        <form id="goodsevalform" method="get" class="tc">
+            <input type="hidden" name="act" value="member_evaluate"/>
+            <input type="hidden" name="op" value="list"/>
+            <input type="hidden" name="type" value="{$Request.get.type}"/>
+            {if $goodsevallist}
+            <div class="dsm-evaluation-list">
+                {volist name="goodsevallist" id="list"}
+                <div class="dsm-evaluation-timeline">
+                    <div class="date">{$list.geval_addtime|date="Y-m-d H:i:s",###}</div>
+                    <div class="goods-thumb"><a target="_blank" href="{:url('Goods/index',['goods_id'=>$list.geval_goodsid])}">
+                        <img src="{:thumb($list)}"> </a></div>
+                    <dl class="detail">
+                        <dt><a target="_blank" href="{:url('Goods/index',['goods_id'=>$list.geval_goodsid])}">{$list.geval_goodsname}</a> </dt>
+                        <dd>商品评分：
+                            <div class="raty" style="display:inline-block;" data-score="{$list.geval_scores}"></div>
+                        </dd>
+                        <dd>我的评价：{$list.geval_content} </dd>
+                        <dd>
+                            {if $list.geval_image== ''}
+                            <a href="{:url('memberevaluate/add_image',['geval_id'=>$list.geval_id])}" class="dsm-btn dsm-btn-orange">我要晒单</a>
+                            {/if}
+                            {if $list.geval_image !=''}
+                            晒图图片：
+                            <ul class="photos-thumb">
+                                <?php $image_array = explode(',', $list['geval_image']);?>
+                                <?php foreach ($image_array as $value) { ?>
+                                <li> <a nctype="nyroModal"  href="<?php echo snsThumb($value);?>"> <img src="<?php echo snsThumb($value);?>"> </a> </li>
+                                <?php } ?>
+                            </ul>
+                            {/if}
+                            
+                        </dd>
+                        {if $list.geval_explain}
+                        <dd>
+                            <p style="color:#996600;padding:5px 0px;">[{$Think.lang.member_evaluation_explain}]{$list.geval_explain}</p>
+                        </dd>
+                        {/if}
+                    </dl>
+                </div>
+                {/volist}
+            </div>
+            <div class="pagination mt30">{$show_page}</div>
+            {else}
+            <div class="norecord">
+                <div class="warning-option"><i></i><span>{$Think.lang.no_record}</span></div>
+            </div>
+            {/if}
+        </form>
+
+    </div>
+</div>
+{include file="public/mall_server" /}
+{include file="public/mall_footer" /}

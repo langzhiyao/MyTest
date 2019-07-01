@@ -1,0 +1,99 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>邮箱短信</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form method="post">
+        <div class="ncap-form-default">
+            <dl>
+                <dt>{$Think.lang.smtp_server}</dt>
+                <dd>
+                    <input type="text" name="email_host" id="email_host" value="{$list_config.email_host}" class="w200"/>
+                    <span class="err"></span>
+                    <p class="notic">{$Think.lang.set_smtp_server_address}</p>
+                </dd>
+            </dl>
+            
+            <dl>
+                <dt>{$Think.lang.email_port}</dt>
+                <dd>
+                    <input type="text" name="email_port" id="email_port" value="{$list_config.email_port}" class="w200"/>
+                    <span class="err"></span>
+                    <p class="notic">{$Think.lang.set_email_port}</p>
+                </dd>
+            </dl>
+            
+            <dl>
+                <dt>{$Think.lang.sender_mail_address}</dt>
+                <dd>
+                    <input type="text" name="email_addr" id="email_addr" value="{$list_config.email_addr}" class="w200"/>
+                    <span class="err"></span>
+                    <p class="notic">{$Think.lang.if_smtp_authentication}</p>
+                </dd>
+            </dl>
+            
+            <dl>
+                <dt>{$Think.lang.smtp_user_name}</dt>
+                <dd>
+                    <input type="text" name="email_id" id="email_id" value="{$list_config.email_id}" class="w200"/>
+                    <span class="err"></span>
+                    <p class="notic">{$Think.lang.smtp_user_name_tip}</p>
+                </dd>
+            </dl>
+            
+            <dl>
+                <dt>{$Think.lang.smtp_user_pwd}</dt>
+                <dd>
+                    <input type="password" name="email_pass" id="email_pass" value="{$list_config.email_pass}" class="w200"/>
+                    <span class="err"></span>
+                    <p class="notic">{$Think.lang.smtp_user_pwd_tip}</p>
+                </dd>
+            </dl>
+            
+            <dl>
+                <dt>{$Think.lang.test_mail_address}</dt>
+                <dd>
+                    <input type="text" name="email_test" id="email_test" value="" class="w200"/>
+                    <input type="button" value="测试" name="send_test_email" class="btn btn-small" id="send_test_email" >
+                </dd>
+            </dl>
+            <dl>
+                <dt></dt>
+                <dd>
+                    <input class="btn" type="submit" value="提交"/>
+                </dd>
+            </dl>
+        </div>
+    </form>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $('#send_test_email').click(function(){
+            $.ajax({
+                type:'POST',
+                url:"{:url('message/email_testing')}",
+                data:{'email_host':$('#email_host').val(),'email_port':$('#email_port').val(),'email_addr':$('#email_addr').val(),'email_id':$('#email_id').val(),'email_pass':$('#email_pass').val(),'email_test':$('#email_test').val()},
+                error:function(html){
+                    alert(html.msg);
+                },
+                success:function(html){
+                    alert(html.msg);
+                },
+                dataType:'json'
+            });
+        });
+    });
+</script>

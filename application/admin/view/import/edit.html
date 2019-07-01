@@ -1,0 +1,433 @@
+{include file="public/header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<style>
+    .layui-input{
+        width: 80%;
+    }
+    .layui-textarea{
+        width: 80%;
+    }
+    .layui-form-select .layui-edge{
+        right: 190px;
+    }
+    .layui-form-select dl{
+        min-width: 80%;
+    }
+    .layui-form-label{
+        width: 90px;
+    }
+    .layui-input-block{
+        margin-left: 115px;
+    }
+    .error{
+        color: red;
+        margin-top: 5px;
+        display: none;
+    }
+</style>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<!-- 操作说明 -->
+<div class="explanation" id="explanation" style="width:100%;box-sizing: border-box;">
+    <div class="title" id="checkZoom">
+        <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+        <span id="explanationZoom" title="收起提示" class="arrow"></span>
+    </div>
+    <ul>
+        <li>{$Think.lang.student_import_edit_ts}</li>
+    </ul>
+</div>
+<div style="margin-top: 20px;width: 100%;">
+    <form class="layui-form">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: #E00515;">*</span>{$Think.lang.member_mobile}</label>
+            <div class="layui-input-block">
+                <input type="text" id="m_mobile" name="m_mobile" value="{$import.m_mobile}" lay-verify="m_mobile" autocomplete="off" placeholder="请输入家长手机号" class="layui-input">
+                <p class="error"></p>
+            </div>
+
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$Think.lang.member_name}</label>
+            <div class="layui-input-block">
+                <input type="text" id="m_name" name="m_name" value="{$import.m_name}" lay-verify="m_name" autocomplete="off" placeholder="请输入家长姓名" class="layui-input">
+                <p class="error"></p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$Think.lang.member_sex}</label>
+            <div class="layui-input-block">
+                <select name="m_sex" id="m_sex">
+                    <option value="1" <?php if($import['m_sex'] == 1){echo 'selected';}?>>男</option>
+                    <option value="2" <?php if($import['m_sex'] == 2){echo 'selected';}?>>女</option>
+                </select>
+                <p class="error"></p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: #E00515;">*</span>{$Think.lang.student_name}</label>
+            <div class="layui-input-block">
+                <input type="text" id="s_name" name="s_name"  value="{$import.s_name}" lay-verify="s_name" autocomplete="off" placeholder="请输入学生姓名" class="layui-input">
+                <p class="error"></p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$Think.lang.student_sex}</label>
+            <div class="layui-input-block">
+                <select name="s_sex" id="s_sex" >
+                    <option value="1" <?php if($import['s_sex'] == 1){echo 'selected';}?>>男</option>
+                    <option value="2" <?php if($import['s_sex'] == 2){echo 'selected';}?>>女</option>
+                </select>
+                <p class="error"></p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: #E00515;">*</span>{$Think.lang.student_card}</label>
+            <div class="layui-input-block">
+                <input type="text" id="s_card"  name="s_card" value="{$import.s_card}" lay-verify="s_card" autocomplete="off" placeholder="请输入学生身份证号" class="layui-input">
+                <p class="error"></p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: #E00515;">*</span>{$Think.lang.school_name}</label>
+            <div class="layui-input-block">
+                <select name="school" lay-filter="school"  class="select"  lay-verify="type" id="school">
+                    <option value="0">请选择学校</option>
+                    {volist name="school" id="vo"}
+                    <option value="{$vo.schoolid}" <?php if($vo['schoolid'] == $import['school_id']){echo 'selected';}?>>{$vo.name}</option>
+                    {/volist}
+                </select>
+                <p class="error"></p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: #E00515;">*</span>{$Think.lang.school_type}</label>
+            <div class="layui-input-block">
+                <select name="grade" lay-filter="grade"  class="select"  lay-verify="type"  id="grade">
+                    <option value="0">请选择学校类型</option>
+                </select>
+                <p class="error"></p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: #E00515;">*</span>{$Think.lang.class_name}</label>
+            <div class="layui-input-block">
+                <select name="class" lay-filter="class"  class="select"  lay-verify="type" id="class">
+                    <option value="0">请选择班级</option>
+                </select>
+                <p class="error"></p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$Think.lang.t_name}</label>
+            <div class="layui-input-block">
+                <select name="t_name" id="t_name" >
+                    <option value="" >请选择套餐</option>
+                    <option value="1" <?php if($import['t_id'] == 1){echo 'selected';}?>>看孩套餐</option>
+                    <option value="2" <?php if($import['t_id'] == 2){echo 'selected';}?>>重温课堂套餐</option>
+                    <option value="3" <?php if($import['t_id'] == 3){echo 'selected';}?>>教孩套餐</option>
+                </select>
+                <p class="error"></p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$Think.lang.t_price}</label>
+            <div class="layui-input-block">
+                <input type="text" id="t_price" name="t_price" value="{$import.t_price}" lay-verify="t_price" autocomplete="off" placeholder="请输入购买价格" class="layui-input">
+                <p class="error"></p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$Think.lang.t_day}</label>
+            <div class="layui-input-block">
+                <input type="text" id="t_day" name="t_day" value="{$import.t_day}" lay-verify="t_day" autocomplete="off" placeholder="请输入购买时间" class="layui-input">
+                <p class="error"></p>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">{$Think.lang.t_content}</label>
+            <div class="layui-input-block">
+                <textarea placeholder="请输入内容" id="t_content" name="t_content" class="layui-textarea">{$import.t_content}</textarea>
+                <p class="error"></p>
+            </div>
+        </div>
+        <div style="margin: 20px;margin-left: 245px;">
+            <button type="button" class="layui-btn" id="true" >修改</button>
+            <button type="button" class="layui-btn layui-layer-close layui-layer-close1" id="del">取消</button>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var index = parent.layer.getFrameIndex(window.name);
+    var reason_id = "{$import.reason_id}";
+    if(reason_id){
+        if(reason_id == 1){
+            $('#m_mobile').next().show();
+            $('#m_mobile').next().html("{$import.reason}");
+        }else if(reason_id == 2){
+            $('#s_name').next().show();
+            $('#s_name').next().html("{$import.reason}");
+        }else if(reason_id == 3){
+            $('#s_card').next().show();
+            $('#s_card').next().html("{$import.reason}");
+        }else if(reason_id == 4){
+            $('#grade').next().show();
+            $('#grade').next().html("{$import.reason}");
+        }else if(reason_id == 5){
+            $('#class').next().show();
+            $('#class').next().html("{$import.reason}");
+        }else if(reason_id == 6){
+            $('#t_name').next().show();
+            $('#t_name').next().html("{$import.reason}");
+        }
+    }
+
+    layui.use(['form'], function(){
+        var form = layui.form;
+
+        var school = "{$import.school_id}";
+        var grade = "{$import.sc_id}";
+        var class_name = "{$import.classid}";
+        if(school != 0){
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_import_school_info?school='+school+'&grade='+grade+'&class='+class_name,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变年级
+                    $('#grade').html(data.grade);
+                    //改变班级
+                    $('#class').html(data.class);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        }
+        //学校
+        form.on('select(school)', function(data){
+            $('#grade').parent().find('.error').hide();
+            $('#grade').parent().find('.error').html("");
+            $('#class').parent().find('.error').hide();
+            $('#class').parent().find('.error').html("");
+            //改变年级
+            $('#grade').html('<option value="0">{$Think.lang.look_address_grade}</option>');
+            //改变班级
+            $('#class').html('<option value="0">{$Think.lang.look_address_class}</option>');
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_import_school_info?school='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变年级
+                    $('#grade').html(data.grade);
+                    //改变班级
+                    $('#class').html(data.class);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //年级
+        form.on('select(grade)', function(data){
+            $('#grade').parent().find('.error').hide();
+            $('#grade').parent().find('.error').html("");
+            $('#class').parent().find('.error').hide();
+            $('#class').parent().find('.error').html("");
+            //改变班级
+            $('#class').html('<option value="0">{$Think.lang.look_address_class}</option>');
+            var school = $('#school').find('option:selected').val();
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_import_school_info?school='+school+'&grade='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变班级
+                    $('#class').html(data.class);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+
+    });
+
+    $('#m_mobile').keyup(function(){
+        var value = $('#m_mobile').val();
+        var m_id = '';
+        if(!(/^1[3456789]{1}\d{9}$/.test(value))){
+            $('#m_mobile').next().show();
+            $('#m_mobile').next().html("手机号格式错误");
+        }else{
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/is_member_mobile?mobile='+value+'&m_id='+m_id,
+                data:{},
+                success:function(data){
+                    if(data){
+                        $('#m_mobile').next().show();
+                        $('#m_mobile').next().html("家长手机号已存在");
+                    }else{
+                        $('#m_mobile').next().hide();
+                        $('#m_mobile').next().html('');
+                    }
+                }
+            })
+        }
+    });
+
+    $('#s_name').keyup(function(){
+        var value = $('#s_name').val();
+        if(value == ''){
+            $('#s_name').next().show();
+            $('#s_name').next().html("学生姓名不能为空");
+        }else{
+            $('#s_name').next().hide();
+            $('#s_name').next().html('');
+        }
+    });
+
+    $('#s_card').keyup(function(){
+        var value = $('#s_card').val();
+        var s_id = '';
+        if(value == ''){
+            $('#s_card').next().show();
+            $('#s_card').next().html("学生身份证号不能为空");
+        }else{
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/is_student_card?card='+value+'&s_id='+s_id,
+                data:{},
+                success:function(data){
+                    if(data){
+                        $('#s_card').next().show();
+                        $('#s_card').next().html("学生身份证号已存在");
+                    }else{
+                        $('#s_card').next().hide();
+                        $('#s_card').next().html('');
+                    }
+                }
+            })
+        }
+    });
+    var flag = false;
+    $('#true').click(function(){
+        var id = "{$import.id}";
+        var m_mobile = $('#m_mobile').val();
+        var m_name = $('#m_name').val();
+        var m_sex = $('#m_sex').val();
+        var s_name = $('#s_name').val();
+        var s_sex = $('#s_sex').val();
+        var s_card = $('#s_card').val();
+        var school = $('#school').find('option:selected').val();
+        var school_type = $('#grade').find('option:selected').val();
+        var class_name = $('#class').find('option:selected').val();
+        var t_id = $('#t_id').val();
+        var t_price = $('#t_price').val();
+        var t_day = $('#t_day').val();
+        var content = $('#t_content').val();
+        if(!(/^1[3456789]{1}\d{9}$/.test(m_mobile))){
+            $('#m_mobile').focus();
+            $('#m_mobile').next().show();
+            $('#m_mobile').next().html("手机号格式错误");
+            flag = false;
+            return false;
+        }else {
+            var m_id='';
+            $.ajax({
+                type: 'POST',
+                url: ADMIN_URL + 'Common/is_member_mobile?mobile=' + m_mobile+'&m_id='+m_id,
+                data: {},
+                async:false,
+                success: function (data) {
+                    if (data) {
+                        $('#m_mobile').focus();
+                        $('#m_mobile').next().show();
+                        $('#m_mobile').next().html("家长手机号已存在");
+                        flag = false;
+                        return false;
+                    } else {
+                        flag = true;
+                        $('#m_mobile').next().hide();
+                        $('#m_mobile').next().html('');
+                    }
+                }
+            })
+        }
+        if(s_name == ''){
+            $('#s_name').focus();
+            $('#s_name').next().show();
+            $('#s_name').next().html("学生姓名不能为空");
+            flag = false;
+            return false;
+        }else{
+            $('#s_name').next().hide();
+            $('#s_name').next().html('');
+            flag = true;
+        }
+
+        if(s_card == ''){
+            $('#s_card').focus();
+            $('#s_card').next().show();
+            $('#s_card').next().html("学生身份证号不能为空");
+            flag = false;
+            return false;
+        }else{
+            var s_id = '';
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/is_student_card?card='+s_card+'&s_id='+s_id,
+                data:{},
+                async:false,
+                success:function(data){
+                    if(data){
+                        $('#s_card').focus();
+                        $('#s_card').next().show();
+                        $('#s_card').next().html("学生身份证号已存在");
+                        flag = false;
+                        return false;
+                    }else{
+                        $('#s_card').next().hide();
+                        $('#s_card').next().html('');
+                        flag = true;
+                    }
+                }
+            })
+        }
+        if(school == '0'){
+            layer.msg("请选择学校",{icon:2});
+            flag = false;
+            return false;
+        }
+        if(school_type == '0'){
+            layer.msg("请选择学校类型",{icon:2});
+            flag = false;
+            return false;
+        }
+        if(class_name == '0'){
+            layer.msg("请选择班级",{icon:2});
+            flag = false;
+            return false;
+        }
+        if(flag){
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Import/failUpdate.html?id='+id,
+                data:{m_mobile:m_mobile,m_name:m_name,m_sex:m_sex,s_name:s_name,s_sex:s_sex,s_card:s_card,school_id:school,sc_id:school_type,class_id:class_name,t_id:t_id,t_price:t_price,t_day:t_day,content:content},
+                dataType: 'json',
+                success: function(response){
+                    if(response['code'] == 200){
+                        layer.msg(response['msg'],{icon:1,time:2000},function(){
+                            window.location.href=ADMIN_URL+'Import/index';
+                        })
+                    }else{
+                        layer.msg(response['msg'],{icon:2});return false;
+                    }
+                }
+            })
+        }
+    });
+
+    //关闭iframe
+    $('#del').click(function(){
+        parent.layer.close(index);
+    });
+</script>

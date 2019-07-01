@@ -1,0 +1,32 @@
+<div class="ncp-voucher-exchange">
+  {if $result === true}
+  <form method="post" action="{:url('pointvoucher/voucherexchange_save')}" id="exform" onsubmit="ajaxpost('exform', '', '', 'onerror');">
+    
+    <input type="hidden" name="vid" value="{$template_info.voucher_t_id}"/>
+    <div class="pic">
+      <span>
+        <img src="{$template_info.voucher_t_customimg}"/>
+      </span>
+    </div>
+    <dl>
+      <dt>您正在使用<span class="ml5 mr5">{$template_info.voucher_t_points}</span>{:lang('points_unit')}&nbsp;兑换&nbsp;1&nbsp;张<br/>
+        {$template_info.store_name}{$template_info.voucher_t_price}{:lang('currency_zh')}店铺代金券（<em>满{$template_info.voucher_t_limit}减{$template_info.voucher_t_price}</em>）</dt>
+      <dd>店铺代金券有效期至{:date('Y-m-d',$template_info.voucher_t_end_date)}</dd>
+      <dd>
+        {if $template_info.voucher_t_eachlimit >0}
+           每个ID限领{$template_info.voucher_t_eachlimit}张
+       {else /}
+        每个ID领取不限量
+        {/if}
+      </dd>
+    </dl>
+    <div class="button">
+      <input type="submit" class="submit" value="兑换"/>
+      <a href="javascript:DialogManager.close('vexchange');" class="ncp-btn">取消</a>
+    </div>
+  </form>
+  <?php }else {?>
+  <div class="errormsg" style="height:50px; text-align:center;">{$message}</div>
+  <div style="text-align:center;"><a href="javascript:DialogManager.close('vexchange');" class="ncp-btn">取消</a></div>
+  <?php }?>
+</div>

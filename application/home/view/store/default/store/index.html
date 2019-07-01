@@ -1,0 +1,113 @@
+{include file="public/shop_header" /}
+<div class="banner w1200">
+    {notempty name="store_info.store_slide"}
+     <ul class="slides">
+    {foreach name="store_slide" id="slide"}
+         {if $slide != ''}
+        <li>
+    <a href="{$store_slide_url[$key]}"> <img src="{$Think.UPLOAD_SITE_URL}/{$Think.ATTACH_SLIDE}/{$slide}" width="1200"/></a>
+        </li>
+         {/if}
+    {/foreach}
+     </ul>
+    {else /}
+    <img src="{$Think.config.url_domain_root}/static/store/styles/default/images/header.jpg" width="1200"/>
+    {/notempty}
+</div>
+<div class="dss-nav w1200">
+    <ul>
+        <li class=""><a href="{:url('/Home/Store/index',['store_id'=>$store_info.store_id])}"><span>首页<i></i></span></a></li>
+        <?php
+        if (!empty($store_navigation_list)) {
+        foreach ($store_navigation_list as $value) {
+        if ($value['sn_if_show']) {
+        if ($value['sn_url'] != '') {
+        ?>
+        <li class=""><a href="<?php echo $value['sn_url']; ?>"><span>{$value.sn_title}<i></i></span></a></li>
+        <?php } else { ?>
+        <li class=""><a href="{:url('/Home/Store/article',['store_id'=>$store_info.store_id,'sn_id'=>$value.sn_id])}"><span>{$value.sn_title}<i></i></span></a></li>
+        <?php }
+        }
+        }
+        } ?>
+    </ul>
+</div>
+
+
+
+<div class="w1200 mt20">
+    <div class="ds_side">
+        <div class="common_module dss-search">
+            <div class="common_title">
+                <h2>商品搜索</h2>
+            </div>
+            <div class="common_content">
+                <p>
+                    <span><a href="{:url('store/goods_all',['store_id'=>$store_info.store_id,'key'=>1,'order'=>2])}">按新品</a></span>
+                    <span><a href="{:url('store/goods_all',['store_id'=>$store_info.store_id,'key'=>2,'order'=>2])}">按价格</a></span>
+                    <span><a href="{:url('store/goods_all',['store_id'=>$store_info.store_id,'key'=>3,'order'=>2])}">按销量</a></span>
+                    <span><a href="{:url('store/goods_all',['store_id'=>$store_info.store_id,'key'=>5,'order'=>2])}">按人气</a></span>
+                </p>
+                <div class="search-goods">
+                    <form method="get" action="{:url('/Home/Store/goods_all',['store_id'=>$store_info.store_id])}"name="searchShop">
+                        <input type="text" class="text w160" name="inkeyword" value="" placeholder="搜索店内商品">
+                        <a href="javascript:document.searchShop.submit();" class="ncs-btn">搜索</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="common_module">
+            <div class="common_title">
+                <h2>商品排行</h2>
+            </div>
+        </div>
+        <div class="common_module">
+            <div class="common_title">
+                <h2>商品收藏</h2>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="ds_main">
+        <div class="recommend-goods">
+            <div class="title"><span><a href="{:url('store/goods_all',['store_id'=>$store_info.store_id])}" class="more">更多</a></span>
+                <h4>推荐商品</h4>
+            </div>
+            <div class="dss-goods-list">
+                <?php if(!empty($new_goods_list) && is_array($new_goods_list)){?>
+                <ul>
+                    <?php foreach($new_goods_list as $value){?>
+                    <li>
+                        <dl>
+                            <dt><a href="{:url('/Home/Goods/index',['goods_id'=>$value.goods_id])}" class="goods-thumb" target="_blank"><img src="<?php echo thumb($value, 60); ?>" alt="<?php echo $value['goods_name'];?>"/></a>
+                            </dt>
+                            <dd class="goods-name"><a href="{:url('/Home/Goods/index',['goods_id'=>$value.goods_id])}" title="<?php echo $value['goods_name'];?>" target="_blank"><?php echo $value['goods_name'];?></a></dd>
+                            <dd class="goods-info">
+                                <span class="price"><i>{$Think.lang.currency}</i> <?php echo $value['goods_promotion_price']?> </span>
+                                <span class="goods-sold">{$Think.lang.show_store_index_be_sold}<strong><?php echo $value['goods_salenum'];?></strong>{$Think.lang.ds_jian}</span>
+                            </dd>
+                            <?php if (config('groupbuy_allow') && $value['goods_promotion_type'] == 1) {?>
+                            <dd class="goods-promotion"><span>抢购商品</span></dd>
+                            <?php } elseif (config('promotion_allow') && $value['goods_promotion_type'] == 2)  {?>
+                            <dd class="goods-promotion"><span>限时折扣</span></dd>
+                            <?php }?>
+                        </dl>
+                    </li>
+                    <?php }?>
+                </ul>
+                <?php }else{?>
+                <div class="nothing">
+                    <p>{$Think.lang.show_store_index_no_record}</p>
+                </div>
+                <?php }?>
+            </div>
+        </div>
+    </div>
+</div>
+{include file="public/mall_server" /}
+{include file="public/mall_footer" /}
+<script src="{$Think.config.url_domain_root}static/plugins/jquery.SuperSlide.2.1.1.js"></script>
+<script>
+    jQuery(".banner").slide({mainCell: ".slides ", autoPlay: true, delayTime: 3000});
+</script>

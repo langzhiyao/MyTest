@@ -1,0 +1,106 @@
+{include file="public/header" /}
+<script src="{$Think.config.url_domain_root}static/common/js/mlselection3.js"></script>
+<script src="{$Think.config.url_domain_root}static/home/js/common.js"></script>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>平台账号资金管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>账户余额和银行卡信息为个人隐私信息，请妥善保管。</li>
+        </ul>
+    </div>
+
+
+    <form id="user_form" enctype="multipart/form-data" method="post">
+
+        <table class="ds-default-table">
+            <input id="total_amount" name="total_amount" type="hidden" value="<?php if(!empty($companyInfo['total_amount'])){echo sprintf('%.2f',$companyInfo['total_amount']);} ?>" />
+            <input id="total_amount_new" name="total_amount_new" type="hidden" value="<?php if(!empty($companyInfo['total_amount'])){echo $companyInfo['total_amount'];} ?>" />
+            <input id="bank_name" name="bank_name" type="hidden" value="<?php echo $companyBanks['bank_name']; ?>" />
+            <input id="bank_card" name="bank_card" type="hidden" value="<?php echo $companyBanks['bank_card']; ?>" />
+            <input id="true_name" name="true_name" type="hidden" value="<?php echo $companyBanks['true_name']; ?>" />
+            <input id="o_id" name="o_id" type="hidden" value="<?php echo $companyInfo['o_id']; ?>" />
+            <tbody>
+            <tr class="noborder">
+                <td colspan="2" class="required"><label for="school_region">账户余额:</label><?php if(!empty($companyInfo['total_amount'])){echo sprintf('%.2f',$companyInfo['total_amount']);} ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <label for="school_region">银行卡信息: </label><?php echo $companyBanks['bank_name']; ?><?php echo $companyBanks['bank_card']; ?></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="required"><label for="s_money">输入提现金额:</label></td>
+            </tr>
+            <tr class="noborder">
+                <td class="vatop rowform"><input type="text" value="" id="s_money" name="s_money" class="txt" placeholder="最多可提现金额<?php if(!empty($companyInfo['total_amount'])){echo sprintf('%.2f',$companyInfo['total_amount']);} ?>"></td>
+                <td class="vatop tips"></td>
+            </tr>
+            </tbody>
+            <tfoot>
+                <tr class="tfoot">
+                    <td colspan="15"><input id="submitBtn" class="btn" type="submit" value="{$Think.lang.ds_submit}"/></td>
+                </tr>
+            </tfoot>
+        </table>
+    </form>
+</div>
+<script type="text/javascript">
+
+    $(function(){
+        $("#region_choose").click(function() {
+            if ($("#user_form").valid()) {
+                $("#user_form").submit();
+            }
+        });
+    });
+    $(function() {
+        //按钮先执行验证再提交表单
+        $("#submitBtn").click(function() {
+            if ($("#user_form").valid()) {
+                $("#user_form").submit();
+            }
+        });
+        $('#user_form').validate({
+            errorPlacement: function(error, element) {
+                error.appendTo(element.parent().parent().prev().find('td:first'));
+            },
+            rules: {
+                s_money: {
+                    required: true,
+                    remote: {
+                        url: "{:url('office/Companycash/ajax',['branch'=>'check_count'])}",
+                        type: 'get',
+                        data: {
+                            s_money: function() {
+                                return $('#s_money').val();
+                            },
+                            total_amount: function() {
+                                return $('#total_amount').val();
+                            }
+                        }
+                    }
+                }
+            },
+            messages: {
+                s_money: {
+                    required: '提现金额不能为空',
+                    remote:"请输入正确的金额，且不能超过账户余额！"
+                }
+            }
+        });
+    });
+    $(function() {
+        regionInit("region");
+    });
+</script>

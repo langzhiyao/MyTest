@@ -1,0 +1,135 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>编辑区域</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <form id="add_form" method="post">
+        <table class="ds-default-table">
+            <tbody>
+            <tr class="noborder">
+                <td colspan="2" class="required"><label class="validation"
+                                                        for="area_name">区域名称{$Think.lang.ds_colon}</label></td>
+            </tr>
+            <tr class="noborder">
+                <td class="vatop rowform"><input type="text" name="area_name" id="area_name" class="txt"
+                                                 value="{$area.area_name}"></td>
+                <td class="vatop tips"></td>
+            </tr>
+
+            <tr class="noborder">
+                <td colspan="2" class="required"><label class="validation"
+                                                        for="first_letter">首字母{$Think.lang.ds_colon}</label></td>
+            </tr>
+            <tr class="noborder">
+                <td class="vatop rowform">
+                    <select name='first_letter'>
+                        {volist name="letter" id="lv"}
+                        <option value='{$lv}' {eq name="lv" value="$area.first_letter" }selected{
+                        /eq}>{$lv}</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+
+            <tr class="noborder">
+                <td colspan="2" class="required"><label for="area_number">区号{$Think.lang.ds_colon}</label></td>
+            </tr>
+            <tr class="noborder">
+                <td class="vatop rowform"><input type="text" value="{$area.area_number}" name="area_number"
+                                                 id="area_number" class="txt"></td>
+            </tr>
+
+            <tr class="noborder">
+                <td colspan="2" class="required"><label for="post">邮编{$Think.lang.ds_colon}</label></td>
+            </tr>
+            <tr class="noborder">
+                <td class="vatop rowform"><input type="text" value="{$area.post}" name="post" id="post" class="txt">
+                </td>
+            </tr>
+            {if $area.parent_area_id}
+            <tr class="noborder">
+                <td colspan="2" class="required"><label for="area_class">上级区域{$Think.lang.ds_colon}</td>
+            </tr>
+            <tr class="noborder">
+                <td class="vatop rowform">
+                    {$parent_area_name}<input type='hidden' name='parent_area_id' value="{$area_id}">
+                </td>
+            </tr>
+            {else /}
+            <tr class="noborder">
+                <td colspan="2" class="required"><label for="area_class">显示{$Think.lang.ds_colon}</label></td>
+            </tr>
+            <tr class="noborder">
+                <td class="vatop rowform onoff">
+                    <label for="hot1"
+                           class="cb-enable {eq name='area.hot_city' value='1'}selected{/eq}"><span>{$Think.lang.open}</span></label>
+                    <label for="hot0"
+                           class="cb-disable {eq name='area.hot_city' value='0'}selected{/eq}"><span>{$Think.lang.close}</span></label>
+                    <input id="hot1" name="is_hot" value="1"
+                           type="radio" {eq name='area.hot_city' value='1'}checked{/eq}>
+                    <input id="hot0" name="is_hot" value="0"
+                           type="radio" {eq name='area.hot_city' value='0'}checked{/eq}>
+                </td>
+            </tr>
+            {/if}
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="2"><a id="submit" href="javascript:void(0)" class="btn">
+                    <input type="hidden" name="area_id" value="{$area.area_id}">
+                    <span>{$Think.lang.ds_submit}</span></a>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
+
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#submit").click(function () {
+            $("#add_form").submit();
+        });
+
+        $('#add_form').validate({
+            errorPlacement: function (error, element) {
+                error.appendTo(element.parent().parent().prev().find('td:first'));
+            },
+            success: function (label) {
+                label.addClass('valid');
+            },
+            rules: {
+                area_name: {
+                    required: true
+                },
+                area_number: {
+                    number: true
+                },
+                post: {
+                    number: true
+                }
+            },
+            messages: {
+                area_name: {
+                    required: '区域名称不能为空'
+                },
+                area_number: {
+                    number: '区号必须是数字'
+                },
+                post: {
+                    number: '邮编必须是数字'
+                }
+            }
+        });
+    });
+</script>

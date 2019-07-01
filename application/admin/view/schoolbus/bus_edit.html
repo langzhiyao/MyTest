@@ -1,0 +1,128 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+ <link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">       
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>{$Think.lang.schoolbus_manage}</h3>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+  <div class="fixed-empty"></div>
+    <?php if(session('admin_is_super') ==1 || in_array('1',$action)){ ?>
+            <th>
+                <!-- <button class="layui-btn" onclick="course_edit('add',false)"><i class="layui-icon">&#xe608;</i> 添加</button> -->
+            </th>
+    <?php } ?>
+<script type="text/javascript">
+  layui.use(['form','laydate'], function(){
+  var form = layui.form
+  ,laydate = layui.laydate;
+})
+</script>
+  <div class="explanation" id="explanation">
+      <div class="title" id="checkZoom">
+          <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+          <span id="explanationZoom" title="收起提示" class="arrow"></span>
+      </div>
+      <ul>
+          <li>课程管理</li>
+          <li>学校类型：如‘语文’，‘数学’，‘英语’</li>
+      </ul>
+  </div>
+          <button class="layui-btn add_foodlist" id="add_foodlist" pid="0"><i class="layui-icon">&#xe608;</i> 添加</button>
+ <div class="foot_edits">
+  <form action="{:url('/Admin/Schoolbus/schoolbus_edit')}" id="form1" method="post" class="layui-form">
+      <input type="hidden" name="action" value="add">
+      <div class="foot_inputs_box">
+          <label for="footinput">车牌号:</label>
+          <input type="text" id="footinput" name="bus_card" class="footinput" value="京ju1111" placeholder="例如 京ju1111" />
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <label for="footinput">车辆颜色:</label>
+          <input type="text" id="footinput" name="bus_color" class="footinput" value="黄色" placeholder="例如 黄色" />
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <label for="footinput">备注:</label>
+          <input type="text" id="footinput" name="bus_desc" class="footinput" value="依维柯19座每天两班 " placeholder="例如 依维柯19座每天两班 " />
+      </div>
+      <hr>
+      <div class="foot_inputs_box">
+          <label for="footinput">线路名称:</label>
+          <input type="text" name="bus_line_name" class="footinput" value="上学路线" placeholder="例如 如上学路线" />
+      </div>
+      <hr>
+      <div class="foot_inputs_box">
+          <label for="footinput">起点:</label>
+          <input type="text" name="bus_start" class="footinput" value="苏庄" placeholder="例如 苏庄" />
+          <label for="footinput">/</label>
+          <input type="text" name="bus_start_time" class="footinput" value="07:00" placeholder="例如 07:00" />
+
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <label for="footinput">终点:</label>
+          <input type="text" name="bus_end" class="footinput" value="创新谷 " placeholder="例如 创新谷 " />
+          <label for="footinput">/</label>
+          <input type="text" name="bus_end_time" class="footinput" value="07:45 " placeholder="例如 07:45 " />
+      </div>
+      <hr>
+      <div class="foot_inputs_box">
+          <label for="footinput">自定义重复时间:</label>&nbsp;&nbsp;&nbsp;&nbsp;
+          <div class="layui-input-block">
+          {foreach name=":config('week')" item="w" key="k" }
+            <input type="checkbox" {in name="$k" value="$editInfo.week"} checked="checked" {/in} {if condition="$k neq 0 || $k neq 6"} checked="checked" {/if} name="week[]" value="{$k}" lay-skin="primary" title="{$w}" >
+          {/foreach}
+          </div>
+      </div>
+      <hr>
+      <div class="foot_list_box" id="foot_list_box">
+          <div class="foot_list foot_t clear clearfix">
+             <div class="foot_item foot_item1"><div><p class="foot_title">车牌号</p></div></div>
+             <div class="foot_item foot_item2"><p class="foot_title">车辆颜色</p></div>
+             <div class="foot_item foot_item3"><p class="foot_title">备注</p></div>
+         </div>
+          <hr>
+          线路途径站点/时间                                                   
+  <hr>
+      </div>
+      <input type="hidden" name="action" value="add">
+  </form>
+   <div class="foot_submit_box clear">
+      
+      <button class="layui-btn" id="reset"> 重置</button>
+      <button class="layui-btn" id="subsss">提交</button>
+
+   </div>
+</div>
+<script type="text/javascript">
+  $('#subsss').click(function() {
+    $('#form1').submit();
+  });
+</script>
+ 
+
+
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/plugins/jquery.edit.js" charset="utf-8"></script>
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/plugins/js/dialog/dialog.js" id="dialog_js" charset="utf-8"></script>
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/plugins/js/jquery-ui/jquery-ui.min.js"></script>
+<script type="text/javascript">
+  $("#add_foodlist").click(function(){
+    var pid = $(this).attr('pid');
+
+    var footlist_str='<div class="foot_list foot_lists clear clearfix">'+
+         '<div class="foot_item foot_item1">'+
+          '<div>'+
+            '<input type="text" value="苏庄'+pid+'" name="bus_line['+pid+'][]" placeholder="例如：苏庄"/>'+
+          '</div>'+
+         '</div>'+
+         '<div class="foot_item foot_item2">'+
+            '<input type="text" value="0'+pid+':00" name="bus_line['+pid+'][]" placeholder="例如：07:00"/>'+
+         '</div>'+
+       '</div>';
+    $('#foot_list_box').append(footlist_str);
+    pid++
+    $(this).attr('pid',pid);
+  })
+</script>
+
+

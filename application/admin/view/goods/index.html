@@ -1,0 +1,186 @@
+{include file="public/header" /}
+<script  src="{$Think.config.url_domain_root}static/plugins/js/dialog/dialog.js" id="dialog_js" charset="utf-8"></script>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>商品管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+<form action="" method="get">
+    <table class="search-form">
+        <tbody>
+            <tr>
+                <th>{$Think.lang.goods_name}</th>
+                <td><input type="text" class="text w150" name="goods_name" value="{$Think.param.goods_name}"></td>
+                <td class="w70 tc">
+                    <label class="submit-border">
+                        <input type="submit" class="submit" value="搜索">
+                    </label>
+                </td>
+                    <td style="text-align:right;padding:8px 10px 8px 1200px">
+                        <a href="{:url('/home/sellerlogin/login')}" target="view_window"><input type="button" class="submit" value="添加商品"></a>
+                    </td>
+            </tr>
+        </tbody>
+    </table>
+</form>
+    <table class="ds-default-table">
+        <thead>
+            <tr>
+                <th></th>
+                <th></th>
+                <th>{$Think.lang.goods_common}</th>
+                <th>{$Think.lang.goods_name}</th>
+                <th>{$Think.lang.brand_cat}</th>
+                <th>{$Think.lang.price}</th>
+                <th>{$Think.lang.goods_storage}</th>
+                <th>{$Think.lang.goods_state}</th>
+                <th>{$Think.lang.goods_verify}</th>
+                {if $Request.param.type == 'lockup' && (session('admin_is_super') == 1 || in_array(2,$action) || in_array(4,$action))}
+                <th>{$Think.lang.ds_handle}</th>
+                {elseif $Request.param.type == 'waitverify' && (session('admin_is_super') == 1 || in_array(15,$action) || in_array(4,$action))}
+                <th>{$Think.lang.ds_handle}</th>
+                {elseif session('admin_is_super') == 1 || in_array(16,$action) || in_array(4,$action)}
+                <th>{$Think.lang.ds_handle}</th>
+                {/if}
+            </tr>
+        </thead>
+        <tbody>
+           {notempty name="goods_list"}
+            {volist name="goods_list" id="goods"}
+            <tr>
+                <td><input type="checkbox" class="checkitem" value="{$goods.goods_commonid}"></td>
+                <td><img src="{$Think.config.url_domain_root}static/admin/images/treetable/tv-expandable.gif" ectype="flex" status="open" fieldid="{$goods.goods_commonid}"></td>
+                <td>{$goods.goods_commonid}</td>
+                <td>{$goods.goods_name}</td>
+                <td>
+                    <p>{$goods.gc_name}</p>
+                    <p>{$goods.brand_name}</p>
+                </td>
+                <td>{$goods.goods_price}</td>
+                <td>{$storage[$goods['goods_commonid']]['goods_storage']}</td>
+                <td>{if $goods.goods_state eq '0'}下架{elseif $goods.goods_state eq '10'}禁售{else}出售中{/if}</td>
+                <td>{if $goods.goods_verify eq '0'}未通过{elseif $goods.goods_verify eq '10'}审核中{else}通过{/if}</td>
+                <td>
+                    <?php if(session('admin_is_super') == 1 || in_array('4',$action)){?>
+                        <a href="{:url('/home/goods/index',['goods_id' =>$storage[$goods['goods_commonid']][0]['goods_id']])}">查看</a>
+                    <?php }?>
+                    {if $Request.param.type == 'lockup' && (session('admin_is_super') == 1 || in_array(2,$action))}
+                    |
+                    <a href="{:url('goods/goods_del',['common_id'=>$goods['goods_commonid']])}">{:lang('ds_del')}</a>
+                    {elseif $Request.param.type == 'waitverify' && (session('admin_is_super') == 1 || in_array(15,$action))}
+                        {if $goods.goods_verify eq '10'}
+                         |
+                        <a href="javascript:void(0);" onclick="goods_verify({$goods['goods_commonid']});">{:lang('ds_verify')}</a>
+                        {/if}
+                    {else /}
+                    {if session('admin_is_super') == 1 || in_array(16,$action)}
+                    |
+                    <a href="javascript:void(0);" onclick="goods_lockup({$goods['goods_commonid']});">违规下架</a>
+                    {/if}
+                    {/if}
+                </td>
+            </tr>
+            <tr style="display:none">
+                <td colspan="20"><div class="ncsc-goods-sku ps-container"></div></td>
+            </tr>
+            {/volist}
+           {else /}
+           <tr class="no_data">
+               <td colspan="10">{$Think.lang.ds_no_record}</td>
+           </tr>
+        {/notempty}
+        </tbody>
+    </table>
+    {$page}
+</div>
+{include file="public/footer" /}
+<script src="{:config('url_domain_root')}static/home/js/common.js"></script>
+<script>
+    AJAX_URL = "{:url('/admin/Goods/ajax_goodslist')}";
+    $(function() {
+        $('x_title ul li a').click(
+                function() {
+                    $('li').removeClass('current');
+                    $(this).addClass('add');
+
+                })
+        // ajax获取商品列表
+        $('img[ectype="flex"]').click(
+                function() {
+                    var _parenttr = $(this).parents('tr');
+                    var _commonid = $(this).attr('fieldid');
+                    var src = $(this).attr('src');
+                    var status = $(this).attr("status");
+                    if (status == 'open') {
+                        $(this).attr('src', src.replace("tv-expandable", "tv-collapsable"));
+                        $(this).attr('status', 'close');
+                        var _div = _parenttr.next().find('.ncsc-goods-sku');
+                        if (_div.html() == '') {
+                            $.get(AJAX_URL, {commonid: _commonid}, function(date) {
+                                var res = eval('(' + date + ')');
+                                var _ul = $('<ul class="goods-sku-list"></ul>');
+                                for (var i = 0; i < res.length; i++)
+                                {
+                                    $('<li><div class="goods-thumb" title="商家货号：' + res[i].goods_serial + '"><a href="' + res[i].url + '" target="_blank"><image src="' + res[i].goods_image + '" ></a></div>' + res[i].goods_spec + '<div class="goods-price">价格：<em title="￥' + res[i].goods_price + '">￥' + res[i].goods_price + '</em></div><div class="goods-storage">库存：<em title="' + res[i].goods_storage + '">' + res[i].goods_storage + '</em></div><a href="' + res[i].url + '" target="_blank" class="ncsc-btn-mini">查看商品详情</a></li>').appendTo(_ul);
+                                    _ul.appendTo(_div);
+                                    _parenttr.next().show();
+                                }
+                            });
+                        } else {
+                            _parenttr.next().show()
+                        }
+                    }
+                    if (status == "close")
+                    {
+                        var src = $(this).attr('src');
+                        _parenttr.next().hide()
+                        $(this).attr('src', src.replace("tv-collapsable", "tv-expandable"));
+                        $(this).attr('status', 'open');
+                    }
+                });
+    });
+    // 商品下架
+    function goods_lockup(ids) {
+        _uri = ADMIN_URL+"goods/goods_lockup?commonid=" + ids;
+        CUR_DIALOG = ajax_form('goods_lockup', '违规下架理由', _uri, 350);
+    }
+
+    // 商品审核
+    function goods_verify(ids) {
+        _uri = ADMIN_URL+"goods/goods_verify?commonid=" + ids;
+        CUR_DIALOG = ajax_form('goods_verify', '审核商品', _uri, 350);
+    }
+</script>
+</body>
+<style>
+    .goods-sku-list li {
+        font-size: 12px;
+        vertical-align: top;
+        letter-spacing: normal;
+        word-spacing: normal;
+        display: inline-block;
+        width: 100px;
+        padding: 0 9px 0 10px;
+        margin-left: -1px;
+        border-left: dashed 1px #E6E6E6;
+    }
+    .goods-sku-list .goods-thumb a img {
+        line-height: 0;
+        text-align: center;
+        vertical-align: middle;
+        display: table-cell;
+        width: 60px;
+        height: 60px;
+        overflow: hidden;
+    }
+</style>

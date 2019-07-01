@@ -1,0 +1,97 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>经验值管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form method="get" name="formSearch" id="formSearch" action="">
+        <table class="search-form">
+            <tbody>
+                <tr>
+                    <th><label>会员名称</label></th>
+                    <td><input type="text" name="mname" class="txt" value='{$Think.get.mname}'></td>
+                    <th>添加时间</th>
+                    <td>
+                        <input type="text" id="stime" name="stime" class="txt date" value="{$Think.get.stime}">
+                        <label>~</label>
+                        <input type="text" id="etime" name="etime" class="txt date" value="{$Think.get.etime}">
+                    </td>
+                    <td>
+                        <select name="stage">
+                            <option value="" {notempty name="$Think.get.stage"}selected=selected{/notempty}>操作阶段</option>
+                            {foreach name="stage_arr" item="v" key="k" }
+                            <option value="{$k}" {if condition="$Think.get.stage eq $k"}selected=selected{/if}>{$v}</option>
+                            {/foreach}
+                        </select>
+                    </td>
+                    <th>描述</th>
+                    <td><input type="text" id="description" name="description" class="txt2" value="{$Think.get.description}" ></td>
+                    <td>
+                        <input type="submit" value="{$Think.lang.ds_query}"/>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+
+    <div style="text-align:right;">
+        <a class="btn" href="{:url('Exppoints/export_step1')}" id="ncexport">
+            <span>{:lang('ds_export')}Excel</span>
+        </a>
+    </div>
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>经验值明细，展示了会员经验值增减情况的详细情况记录，经验值前有符号“-”表示减少，无符号表示增加</li>
+        </ul>
+    </div>
+    <table class="ds-default-table">
+        <thead>
+            <tr>
+                <th>{$Think.lang.exp_membername}</th>
+                <th>{$Think.lang.exp_value}</th>
+                <th>{$Think.lang.exp_addtime}</th>
+                <th>{$Think.lang.exp_stage}</th>
+                <th>{$Think.lang.exp_desc}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {notempty name="list_log"}
+            {volist name="list_log" id="log"}
+            <tr>
+                <td>{$log.exp_membername}</td>
+                <td>{$log.exp_points}</td>
+                <td>{$log.exp_addtime|date="Y-m-d H:i:s",###}</td>
+                <td>{$log.exp_stage}</td>
+                <td>{$log.exp_desc}</td>
+            </tr>
+            {/volist}
+            {else /}
+            <tr class="no_data">
+                <td colspan="15">{$Think.lang.ds_no_record}</td>
+            </tr>
+            {/notempty}
+        </tbody>
+    </table>
+    {$show_page}
+
+</div>
+
+<script language="javascript">
+    $(function () {
+        $('#stime').datepicker({dateFormat: 'yy-mm-dd'});
+        $('#etime').datepicker({dateFormat: 'yy-mm-dd'});
+    });
+</script>

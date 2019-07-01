@@ -1,0 +1,183 @@
+{include file="public/header" /}
+<script src="{$Think.config.url_domain_root}static/common/js/mlselection_list.js"></script>
+<script src="{$Think.config.url_domain_root}static/home/js/common.js"></script>
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>学生管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form method="get" name="formSearch" id="formSearch">
+        <table class="search-form">
+            <tbody>
+            <tr>
+                <td> <label>{$Think.lang.school_index_studentname}：</label></td>
+                   <td> <input type="text" class="text w150" name="studentname" value="{$Think.get.studentname}"></td>
+                <td colspan="2" class="required"><label for="school_region">{$Think.lang.school_index_region}：</label></td>
+                        <td id="region"><input type="hidden" value="{$address.city_id}" name="city_id" id="city_id">
+                        <input type="hidden" name="area_id" id="area_id" value="{$address.area_id}" class="area_ids" />
+                        <input type="hidden" name="area_info" id="area_info" value="{$address.area_info}" class="area_names" />
+                        {notempty name="address.area_id"}
+                        <span>{$address.area_info}</span>
+                        <input type="button" value="{$Think.lang.ds_edit}" class="edit_region" />
+                        <select style="display:none;">
+                            <option value="0">请选择分类</option>
+                            {volist name="region_list" id="region"}
+                            <option value="{$region.area_id}">{$region.area_name}</option>
+                            {/volist}
+                        </select>
+                        {else}
+                        <select>
+                            <option value="0">请选择分类</option>
+                            {volist name="region_list" id="region"}
+                            <option value="{$region.area_id}">{$region.area_name}</option>
+                            {/volist}
+                        </select>
+                        {/notempty}
+                        </td>
+                <td id="school_list">
+                    <select name="school_name" >
+                        <option value="">{$Think.lang.school_index_allschool}</option>
+                        {volist name="schoolList" id="school"}
+                        <option {if condition='$Think.get.school_name eq $school.schoolid'}selected='selected'{/if} value="{$school.schoolid}">{$school.name}</option>
+                        {/volist}
+                    </select>
+                </td>
+
+                <td id="type_list">
+                    <select name="school_type" id="school_type">
+                        <option value="">{$Think.lang.school_index_type}</option>
+                        {volist name="schooltype" id="type"}
+                        <option value="{$type.sc_id}" {if condition='$Think.get.school_type eq $type.sc_id'}selected='selected'{/if}>{$type.sc_type}</option>
+                        {/volist}
+                    </select>
+                </td>
+
+                <td id="class_list">
+                    <select name="class_name" >
+                        <option value="">{$Think.lang.school_index_classname}</option>
+                        {volist name="classList" id="v"}
+                        <option value="{$v.classid}" {if condition='$Think.get.class_name eq $v.classid'}selected='selected'{/if}>{$v.typename}-{$v.classname}</option>
+                        {/volist}
+                    </select>
+                </td>
+
+                <td><select name="student_status" >
+                    <option value="">{$Think.lang.school_index_status}</option>
+                    <option value="1" {if condition='$Think.get.student_status eq 1'}selected='selected'{/if}>未绑定</option>
+                    <option value="2" {if condition='$Think.get.student_status eq 2'}selected='selected'{/if}>已绑定</option>
+                    </select></td>
+               
+                       <td> <input type="submit" class="submit" value="搜索">
+                        <a href="{:url('Student/index')}" class="btns"><span>{$Think.lang.ds_cancel_search}</span></a>
+                        </td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>系统平台全局设置,包括基础设置、购物、短信、邮件、水印和分销等相关模块。</li>
+        </ul>
+    </div>
+    <table class="ds-default-table">
+        <thead>
+        <tr class="thead">
+            <!--<th>&nbsp;</th>-->
+            <th colspan="align-center">{$Think.lang.school_index_id}</th>
+            <th colspan="align-center">{$Think.lang.student_index_id}</th>
+            <th colspan="align-center">{$Think.lang.school_index_studentname}</th>
+            <th colspan="align-center">{$Think.lang.school_edit_sex}</th>
+            <th class="align-center">{$Think.lang.school_index_classname}</th>
+            <th class="align-center">{$Think.lang.school_index_name}</th>
+            <th class="align-center">{$Think.lang.school_index_region}</th>
+            <th class="align-center">{$Think.lang.school_index_time}</th>
+            <th class="align-center">{$Think.lang.school_index_status}</th>
+            <th class="align-center">{$Think.lang.school_index_desc}</th>
+            <?php  if(session('office_is_super') ==1 || (in_array('4',$action) || in_array('3',$action) || in_array('2',$action))){?>
+            <th class="align-center">{$Think.lang.ds_handle}</th>
+            <?php } ?>
+        </tr>
+        <tbody>
+        <?php if(!empty($student_list) && is_array($student_list)){ ?>
+        <?php foreach($student_list as $k => $v){ ?>
+        <tr class="hover member">
+            <!--<td class="align-center"><input type="checkbox" name='del_id[]' value="<?php echo $v['schoolid']; ?>" class="checkitem"></td>-->
+            <td class="align-center"><?php if(!$_GET['page']){  echo $k+1; }else{ echo ($_GET['page']-1)*15+$k+1; }?></td>
+            <td class="align-center"><?php echo $v['s_id']; ?></td>
+            <td class="align-center"><?php echo $v['s_name']; ?></td>
+            <td class="align-center"><?php if($v['s_sex']==1){echo "男";}elseif($v['s_sex']==2){echo "女";} ?></td>
+            <td class="align-center"><?php echo $v['typename']; ?>-<?php echo $v['classname']; ?></td>
+            <td class="align-center"><?php echo $v['schoolname']; ?></td>
+            <td class="align-center"><?php echo $v['s_region']; ?></td>
+            <td class="align-center"><?php echo $v['s_createtime']; ?></td>
+            <td class="align-center"><?php if(empty($v['s_ownerAccount'])){echo "未绑定";}else{echo "已绑定";} ?></td>
+            <td class="align-center"><?php echo $v['s_remark']; ?></td>
+            <td class="align-center">
+                <?php if(session('office_is_super') ==1 || in_array('4',$action)){ ?>
+                <a href="javascript:dd({$v.s_id})" class="layui-btn layui-btn-xs">{$Think.lang.ds_view}</a>
+                <?php } ?>
+                <?php if(session('office_is_super') ==1 || in_array('3',$action)){ ?>
+                <a href="{:url('/Office/student/edit',['student_id'=>$v.s_id])}" class="layui-btn layui-btn-xs">{$Think.lang.ds_edit}</a>
+                <?php } ?>
+                <?php if(session('office_is_super') ==1 || in_array('2',$action)){ ?>
+                <a href="javascript:void(0)" onclick="if(confirm('{$Think.lang.ds_ensure_del}'))
+                location.href='{:url('/Office/student/drop',['student_id'=>$v.s_id])}';" class="layui-btn layui-btn-xs">{$Think.lang.ds_del}</a>
+                <?php } ?>
+            </td>
+        </tr>
+        <?php } ?>
+        <?php }else { ?>
+        <tr class="no_data">
+            <td colspan="11">{$Think.lang.ds_no_record}</td>
+        </tr>
+        <?php } ?>
+        </tbody>
+        <tfoot class="tfoot">
+        <?php if(!empty($member_list) && is_array($member_list)){ ?>
+        <tr>
+            <td class="w24"><input type="checkbox" class="checkall" id="checkallBottom"></td>
+            <td colspan="16">
+                <label for="checkallBottom">{$Think.lang.ds_select_all}</label>
+                &nbsp;&nbsp;<a href="JavaScript:void(0);" class="btn" onclick="if(confirm('{$Think.lang.ds_ensure_del}')){$('#form_member').submit();}"><span>{$Think.lang.ds_del}</span></a>
+            </td>
+        </tr>
+        <?php } ?>
+        </tfoot>
+    </table>
+    {$page}
+    
+</div>
+
+<script type="text/javascript">
+    function dd(id) {
+        var urls=ADMIN_URL+'studentinfo/index?student_id='+id;
+        //多窗口模式，层叠置顶
+        layer.open({
+            type: 2
+            , title: '查看'
+            , area: ['80%', '80%']
+            , shade: 0
+            , maxmin: true
+            , content: urls
+
+        });
+    }
+
+    $(function() {
+        regionInit("region");
+    });
+</script>

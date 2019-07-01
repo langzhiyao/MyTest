@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>想见孩-详情</title>
+    <meta name="author" content="想见孩" />
+    <meta name="copyright" content="想见孩" />
+    <meta name="description" content="想见孩" />
+    <meta id="viewport" name="viewport" content="width=750" />
+    <link rel="stylesheet" href="../content/style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/iconfonts/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/lib/weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/css/jquery-weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/teachchild/teachchild.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/teachchild/details.css" type="text/css" />
+    <link rel="shortcut icon" href="../content/images/ico.ico" type="image/x-icon" />
+    <script src="../content/scripts/mobile-util.js"></script>
+</head>
+
+<body>
+    <header class="details_header">
+        <div class="goBack body_content">
+            <a href="javascript:;" class="back_btn" onClick="historyback()">
+                <i class="icon iconfont icon-jiantou3"></i>
+            </a>
+            <p class="collectBtn" id="collect" onclick="collectVideo()" >收藏</p>
+            <p class="collectBtn" id="qxCollect" onclick="qxCollectVideo()" style="display: none;">取消收藏</p>
+        </div>
+    </header>
+    <div class="video_box">
+        <div class="video_box_inner">
+            <div class="upload_video">
+                <div class="videoimg_box">
+                    <img id="video_image" src="" />
+                    <a href="javascript:;" class="video_play_btn"></a>
+                </div>
+                <div id="video" style="width: 750px; height: auto;margin:0 auto 30px">
+                </div>
+
+               </div>
+        </div>
+    </div>
+
+    <div id="related">
+    </div>
+
+</body>
+
+<script src="../content/scripts/jquery.min.js"></script>
+<script src="../content/plugins/jqweui/js/jquery-weui.min.js"></script>
+<script src="../content/scripts/juqery.cookie.js"></script>
+<script src="../content/scripts/API.js"></script>
+<script src="../content/scripts/commom.js"></script>
+<script src="../content/plugins/ckplayer/ckplayer.js"></script>
+<script src="../content/scripts/teachchild/details.js"></script>
+
+<script>
+    // 播放视频
+    if(user_token){
+        $.ajax({
+            type:'POST',
+            url:api+'/Teacherdecide/decide.html',
+            data:{
+                key:user_token,
+                member_id:user_member_id,
+                video_id:GetQueryString("id")
+            },
+            dataType: "json",
+            success: function(res){
+                if(res['code'] == 200){
+                    //判断是否是自己上传的视频
+                    if(res.result[0]['myself'] == 0){
+                        //判断是否免费
+                        if(res.result[0]['price'] !=0){
+                            if(res.result[0]['buy'] != 0){
+                                $('.video_play_btn').parent().hide();
+                                $("#video").show();
+                            }
+                        }else{
+                            $('.video_play_btn').parent().hide();
+                            $("#video").show();
+                        }
+                        //判断是否收藏
+                        if(res.result[0]['collect'] == 0){
+                            $('#collect').show();
+                            $('#qxCollect').hide();
+                        }else{
+                            $('#collect').hide();
+                            $('#qxCollect').show();
+                        }
+                    }else{
+                        $('.video_play_btn').parent().hide();
+                        $("#video").show();
+                        $('#collect').hide();
+                        $('#qxCollect').hide();
+                    }
+
+                }
+            }
+        });
+    //添加历史纪录
+        $.ajax({
+            type:'POST',
+            url:api+'/teacherhistory/addhistory.html',
+            data:{
+                key:user_token,
+                member_id:user_member_id,
+                tid:GetQueryString("id")
+            },
+            dataType: "json",
+            success: function(res){
+                if(res['code'] == 200){
+                    // console.log()
+                }
+            }
+        })
+
+    }
+
+    $(".video_play_btn").click(function() {
+        if(!user_token){
+            $.toast("请前往登陆", 'forbidden');
+        }else{
+            $.ajax({
+                type:'POST',
+                url:api+'/Teacherdecide/decide.html',
+                data:{
+                    key:user_token,
+                    member_id:user_member_id,
+                    video_id:GetQueryString("id")
+                },
+                dataType: "json",
+                success: function(res){
+                    if(res['code'] == 200){
+                        //判断是否自己上传
+                        if(res.result[0]['myself'] == 0){
+                            //判断是否免费
+                            if(res.result[0]['price'] !=0){
+                                //判断是否购买
+                                if(res.result[0]['buy'] != 0){
+                                    $('.video_play_btn').parent().hide();
+                                    $("#video").show();
+                                }else{
+                                    $.toast("请前往购买", 'forbidden');
+                                }
+                            }else{
+                                $('.video_play_btn').parent().hide();
+                                $("#video").show();
+                            }
+                        }else{
+                            $('.video_play_btn').parent().hide();
+                            $("#video").show();
+                        }
+                    }else if(res['code'] == 400){
+                        $.toast('登陆失效，请重新登录','forbidden',function(){
+                            layout();
+                        });
+                    }else{
+                        $.toast('系统错误','forbidden');
+                    }
+                }
+            })
+
+        }
+    });
+
+</script>
+
+</html>

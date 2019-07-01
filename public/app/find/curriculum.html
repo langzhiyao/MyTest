@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>想见孩-发现-宝宝课堂</title>
+    <meta name="author" content="想见孩" />
+    <meta name="copyright" content="想见孩" />
+    <meta name="description" content="想见孩" />
+    <meta id="viewport" name="viewport" content="width=750" />
+    <link rel="stylesheet" href="../content/style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/iconfonts/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/lib/weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/css/jquery-weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/find.css" type="text/css" />
+    <link rel="shortcut icon" href="../content/images/ico.ico" type="image/x-icon" />
+    <script src="../content/scripts/mobile-util.js"></script>
+    <style>
+        .weui-cells_radio {
+            padding: 30px 40px;
+        }
+        
+        .weui-check_label {
+            font-size: 28px;
+            line-height: 80px;
+        }
+        
+        .weui-cells_radio .weui-check:checked+.weui-icon-checked:before {
+            font-size: 30px;
+        }
+
+        .main{
+            padding-top: 0;
+        }
+        .error{
+            font-size: 24px;
+            text-align: center;
+            padding-top: 100px;
+            display:none;
+        }
+    </style>
+</head>
+
+<body class="infobody">
+    <!--<header class="head">
+        <div class="head0">
+            <div class="menu_bar_box">
+                <a href="javascript:;" class="back_btn" onClick="historyback()">
+                    <i class="icon iconfont icon-jiantou3"></i>
+                </a>
+            </div>
+            <div class="head_title">
+                <p>学校课程</p>
+            </div>
+            <div class="head_r">
+                <a href="javascript:;" class="role_switch" id="role_switch"><i class="icon iconfont icon-qiehuantuichu"></i></a>
+            </div>
+        </div>
+    </header>-->
+
+    <!-- 主要内容 -->
+    <div class="main">
+        <div class="curriculum_content" id="curriculum_content" style="padding-top: 20px;margin-bottom: 20px;">
+            <div class="cookbook_title_box">
+                <h2 class="cookbook_title" id="cooktitle"></h2>
+            </div>
+        </div>
+        <div class="cont margt30">
+            <ul class="week_bar clearfix">
+                <li id="jobs1" onclick="setTab1('jobs',1,3)">
+                    <a href="javascript:;">上一周</a>
+                </li>
+                <li id="jobs2" onclick="setTab1('jobs',2,3)" class="active">
+                    <a href="javascript:;">当前周</a>
+                </li>
+                <li id="jobs3" onclick="setTab1('jobs',3,3)">
+                    <a href="javascript:;">下一周</a>
+                </li>
+            </ul>
+        </div>
+        <div id="courses_jobs_1" class="text_demand" style="display:none;">
+            <p class="courses_jobs_1 error" style="display: none"></p>
+            <div class="cont">
+                <ul class="week_list"></ul>
+            </div>
+
+        </div>
+        <div id="courses_jobs_2" class="text_demand">
+            <p class="courses_jobs_2 error" style="display: none"></p>
+            <div class="cont">
+                <ul class="week_list"></ul>
+            </div>
+        </div>
+        <div id="courses_jobs_3" class="text_demand" style="display:none;">
+            <p class="courses_jobs_3 error" style="display: none"></p>
+            <div class="cont">
+                <ul class="week_list"></ul>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="screen"></div>
+        <input type="hidden" value="0" id="childid" >
+    <input type="hidden" value="xx" id="infos" >
+    <input type="hidden" value="0" id="class_id" >
+    <input type="hidden" value="0" id="school_id" >
+    <script src="../content/scripts/jquery.min.js"></script>
+    <script src="../content/plugins/jqweui/js/jquery-weui.min.js"></script>
+    <script src="../content/scripts/juqery.cookie.js"></script>
+    <script src="../content/scripts/API.js"></script>
+    <script src="../content/scripts/commom.js"></script>
+    <script>
+        GetChildList(user_token,'reday');
+        change_current=function(classid,school_id,name){
+            $('#cooktitle').text(name);
+            GetCurriculumInfo(classid,school_id,2);
+        }
+        // 上周，本周，下周切换
+        function setTab1(name, cursel, n) {
+            var school_id =$("#school_id").val();
+            var class_id =$("#class_id").val();
+            var contentid = '';
+            for (i = 1; i <= n; i++) {
+                var menu = $("#" + name + i)
+                var con = $("#" + "courses_" + name + "_" + i)
+                if (i == cursel) {
+                    contentid = "courses_jobs_" + cursel;
+                    $.ajax({
+                        type: "POST",
+                        url: api + "/arrangement/index.html",
+                        data: {
+                            key: user_token,
+                            class_id: class_id,
+                            weektype: cursel,
+                            school_id: school_id
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            // console.log(response);
+                            if(response['code'] == 200){
+                                var contents = response.result[0];
+                                if (contents == '' || contents == undefined) {
+                                    $("." + contentid ).show();
+                                    $("." + contentid ).html('该学校暂未添加课程！')
+                                    $("#" + contentid + " .week_list").html('')
+                                }else{
+                                    $("." + contentid ).hide();
+                                    $("#" + contentid + " .week_list").html(HTML2(response.result[0].content))
+                                }
+                            }
+
+
+                        }
+                    });
+                    menu.addClass("active");
+                    con.fadeIn();
+                } else {
+                    menu.removeClass("active");
+                    con.hide();
+                }
+            }
+        }
+
+        // 折叠
+        function cuttle(obj) {
+            if(obj.next(".week_class_cont").css("display")=="none"){
+                obj.parent("li").siblings().find(".week_class_cont").slideUp(200);
+                obj.parent("li").find(".week_class_cont").slideDown(200);
+                obj.parent("li").siblings().removeClass("active");
+                obj.parent("li").addClass("active");
+            }else{
+                obj.next(".week_class_cont").slideUp(200);
+            }
+        }
+
+        $(function(){
+            setTimeout(function(){
+                var ssss = $('#infos').val();
+                ssss = $.parseJSON(ssss);
+                var school_id =$("#school_id").val();
+                var classid =$("#class_id").val();
+                $("#role_switch").select({
+                    title: "选择学生绑定学校",
+                    items: ssss,
+                    onChange: function(d) {
+                        if(d.values=='undefined' || d.values == null) return;
+                        var school_class = d.values.split('_');
+                        $('#cooktitle').text(d.titles);
+                        GetCurriculumInfo(school_class[1],school_class[0],2)
+                    },
+
+                    onOpen: function() {
+                        // console.log($(".cookbook_title").text());
+                        $(".weui-cells_radio p:contains('高一或10年级')").parent().next("div").find(".weui-check").attr("checked", "true");
+                    },
+                });
+            }, 500 );
+
+        })
+
+        // 食谱详情开关 end
+        /**
+         * 获取当前家长的所有孩子列表
+         * 包含学校id
+         * 包含班级id
+         * 包含孩子id
+         * @创建时间 2018-11-05T14:05:59+0800
+         */
+        function GetChildList(key,act,a){
+            if(!key){
+                key = user_token;
+            }
+            $.post(api+"/Students/get_student_info.html", {key: key}, function(data, textStatus, xhr) {
+                if(data.code==200){
+                    var result = data.result[0];
+                    $("#class_id").val(result.s_classid);
+                    $("#school_id").val(result.s_schoolid);
+                    $('#childid').val(result.s_id);
+                    $('#cooktitle').text(result.name+'--'+result.s_name);
+                    var list = data.result;
+                    var StudentsList = new Array;
+                    for (var i = 0; i < list.length; i++) {
+                        var school_class = list[i].s_schoolid+'_'+list[i].s_classid
+                        var info = {'title':list[i].name+'--'+list[i].s_name,'value':school_class}
+                        StudentsList.push(info);
+                    }
+
+                    var sssss =JSON.stringify(StudentsList);
+                    $("#infos").val(sssss);
+                    if (act == 'reday') {
+                        GetCurriculumInfo(result.s_classid,result.s_schoolid,2)
+                    }
+                }
+                return data;
+            },'json');
+        }
+
+        function GetCurriculumInfo(classid,school_id,wek){
+            $("#school_id").val(school_id);
+            $("#class_id").val(classid);
+            $.ajax({
+                type: "POST",
+                url: api + "/arrangement/index.html",
+                data: {
+                    key: user_token,
+                    class_id: classid,
+                    weektype: wek,
+                    school_id: school_id
+                },
+                dataType: "json",
+                success: function(response) {
+                    // console.log(response.result[0].content[0].morning.length);
+                    var contents = response.result[0];
+                    if (contents == '' || contents == undefined) {
+                        $('#jobs2').addClass('active').siblings().removeClass('active');
+
+                        $('#courses_jobs_2').show();
+                        $('#courses_jobs_1').hide();
+                        $('#courses_jobs_3').hide();
+                        $(".courses_jobs_2").show();
+                        $(".courses_jobs_2").html('该学校暂未添加课程！');
+                        $("#courses_jobs_2 .week_list").html('');
+                    }else{
+
+                        $('#courses_jobs_2').show();
+                        $('#courses_jobs_1').hide();
+                        $('#courses_jobs_3').hide();
+                        $(".courses_jobs_2").hide();
+                        $('#jobs2').addClass('active').siblings().removeClass('active');
+
+                        $("#courses_jobs_2 .week_list").html(HTML2(response.result[0].content));
+                    }
+
+
+                }
+            });
+        }
+
+        // 模板2
+        function HTML2(data2) {
+            var template2 = '';
+            for (j = 0; j < data2.length; j++) {
+                // 上午课程 模板21
+                var template21 = '';
+                // 下午课程 模板22
+                var template22 = '';
+                for (j1 = 0; j1 < data2[j].morning.length; j1++) {
+                    if(data2[j].morning[j1].time=='-')data2[j].morning[j1].time='';
+                    template21 += '<dd>' +
+                        '<a href="javascript:;"><span class="dot">●</span>' + data2[j].morning[j1].content + '<span style="margin-left:15px;">' + data2[j].morning[j1].time  +'</span></a>'+
+                        '</dd>' +
+                        '<dd>';
+                }
+                for (j2 = 0; j2 < data2[j].afternoon.length; j2++) {
+                    if(data2[j].afternoon[j2].time=='-')data2[j].afternoon[j2].time='';
+                    template22 += '<dd>' +
+                        '<a href="javascript:;"><span class="dot">●</span>' + data2[j].afternoon[j2].content + '<span style="margin-left:15px;">' + data2[j].afternoon[j2].time +'</span></a>'+
+                        '</dd>' +
+                        '<dd>';
+                }
+                template2 += '<li>' +
+                    '<a class="week_class_bar" onclick="cuttle($(this))" href="javascript:;">' + data2[j].date.week + '（' + data2[j].date.day + '）<i class="icon iconfont icon-jiantou linkpointer"></i></a>' +
+                    '<div class="week_class_cont">' +
+                    '<div class="week_class_txt">' +
+                    '<dl class="classplan">' +
+                    '<dt><i class="icon iconfont icon-custom-clock"></i>上午</dt>' + template21 +
+                    '</dl>' +
+                    '<dl class="classplan">' +
+                    '<dt><i class="icon iconfont icon-custom-clock"></i>下午</dt>' + template22 +
+                    '</dl>' +
+                    '</div>' +
+                    '</div>' +
+                    '</li>';
+            }
+            return template2;
+
+        }
+    </script>
+</body>
+
+</html>

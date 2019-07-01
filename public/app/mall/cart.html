@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>想见孩-购物车</title>
+    <meta name="author" content="想见孩" />
+    <meta name="copyright" content="想见孩" />
+    <meta name="description" content="想见孩" />
+    <meta id="viewport" name="viewport" content="width=750" />
+    <link rel="stylesheet" href="../content/style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/iconfonts/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/lib/weui.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/css/jquery-weui.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/mall/cart.css" type="text/css" />
+    <link rel="shortcut icon" href="../content/images/ico.ico" type="image/x-icon" />
+    <script src="../content/scripts/mobile-util.js"></script>
+</head>
+
+<body>
+
+    <header class="head">
+        <div class="head0">
+            <div class="menu_bar_box">
+                <a href="javascript:;" class="back_btn" onClick="javascript :history.back(-1);">
+                    <i class="icon iconfont icon-jiantou3"></i>
+                </a>
+            </div>
+            <div class="head_title">
+                <p>购物车</p>
+            </div>
+            <div class="head_r">
+                <span data-select="false" class="cart_edit">编辑</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- 内容区域 -->
+    <div class="cart_wrap cont750">
+        <div class="shop_coom_wrap body_content">
+            <div class="shop_wrap">
+                <img src="../content/images/mall/shop.png" alt="">
+                <span>想见孩商城</span>
+            </div>
+            <div class="comm_list_wrap">
+                <div class="comm_wrap clearBoth weui-cells_checkbox delete1">
+                    <label class="weui-cell weui-check__label float_left history_check_all float_left">
+							<div class="weui-cell__hd checked_input">
+					      		<input type="checkbox" data-id="1" onchange="changeState(event, this)" class="weui-check check1">
+						        <i class="weui-icon-checked"></i>
+						    </div>
+						</label>
+                    <div class="float_left comm_content">
+                        <div class="img_wrap float_left">
+                            <img src="../content/images/mall/comm.jpg" alt="">
+                        </div>
+                        <div class="content float_left">
+                            <p class="content_title">小天才电话手表Z5 </p>
+                            <p class="content_content">学生多功能防水儿童4G智能定位</p>
+                            <p class="content_price">￥ <i class="price1">50.00</i></p>
+                            <p class="jiajian_wrap">
+                                <span onclick="less(event)" data-id="1" class="jian jiajian">-</span>
+                                <span class="number number1">1</span>
+                                <span onclick="add(event)" data-id="1" data-stock="8" class="jia jiajian">+</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="shop_coom_wrap body_content">
+            <div class="shop_wrap">
+                <img src="../content/images/mall/shop.png" alt="">
+                <span>想见孩商城</span>
+            </div>
+            <div class="comm_list_wrap">
+                <div class="comm_wrap clearBoth weui-cells_checkbox delete2">
+                    <label class="weui-cell weui-check__label float_left history_check_all float_left">
+							<div class="weui-cell__hd checked_input">
+					      		<input type="checkbox" data-id="2" onchange="changeState(event, this)" class="weui-check check2">
+						        <i class="weui-icon-checked"></i>
+						    </div>
+						</label>
+                    <div class="float_left comm_content">
+                        <div class="img_wrap float_left">
+                            <img src="../content/images/mall/comm.jpg" alt="">
+                        </div>
+                        <div class="content float_left">
+                            <p class="content_title">小天才电话手表Z5 </p>
+                            <p class="content_content">学生多功能防水儿童4G智能定位</p>
+                            <p class="content_price">￥ <i class="price2">100.00</i></p>
+                            <p class="jiajian_wrap">
+                                <span onclick="less(event)" data-id="2" class="jian jiajian">-</span>
+                                <span class="number number2">1</span>
+                                <span onclick="add(event)" data-id="2" data-stock="20" class="jia jiajian">+</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="comm_wrap clearBoth weui-cells_checkbox delete3">
+                    <label class="weui-cell weui-check__label float_left history_check_all float_left">
+							<div class="weui-cell__hd checked_input">
+					      		<input type="checkbox" data-id="3" onchange="changeState(event, this)" class="weui-check check3">
+						        <i class="weui-icon-checked"></i>
+						    </div>
+						</label>
+                    <div class="float_left comm_content">
+                        <div class="img_wrap float_left">
+                            <img src="../content/images/mall/comm.jpg" alt="">
+                        </div>
+                        <div class="content float_left">
+                            <p class="content_title">小天才电话手表Z5 </p>
+                            <p class="content_content">学生多功能防水儿童4G智能定位</p>
+                            <p class="content_price">￥ <i class="price3">120.00</i></p>
+                            <p class="jiajian_wrap">
+                                <span onclick="less(event)" data-id="3" class="jian jiajian">-</span>
+                                <span class="number number3">1</span>
+                                <span onclick="add(event)" data-id="3" data-stock="5" class="jia jiajian">+</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 结算区域 -->
+    <div class="Settlement clearBoth">
+        <div class="cont750">
+            <span>合计：<i>￥</i><i class="total_price">0</i></span>
+            <span class="float_right" type="button" name="button">结算(<i class="amount">0</i>)</span>
+        </div>
+
+    </div>
+    <!-- 删除 -->
+    <div class="Delete clearBoth">
+        <span class="float_right" onclick="deleteComm()">删除</span>
+    </div>
+
+    <script src="../content/scripts/jquery.min.js"></script>
+    <script src="../content/plugins/jqweui/lib/fastclick.js"></script>
+    <script src="../content/plugins/jqweui/js/jquery-weui.js"></script>
+    <script src="../content/scripts/mall/cart.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,106 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>{$Think.lang.refund_manage}</h3>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <form method="post" id='form1'>
+        <div class="ncap-form-default">
+            <dl>
+                <dt>{$Think.lang.refund_order_refund}</dt>
+                <dd>
+                    <?php echo dsPriceFormat($refund['refund_amount']); ?>
+                </dd>
+            </dl>
+            <dl>
+                <dt>商品名称</dt>
+                <dd>
+                    <?php echo $refund['goods_name']; ?>
+                </dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.refund_buyer_message}</dt>
+                <dd>
+                    <?php echo $refund['reason_info']; ?>
+                </dd>
+            </dl>
+            <dl>
+                <dt>退款说明</dt>
+                <dd>
+                    <?php echo $refund['buyer_message']; ?>
+                </dd>
+            </dl>
+            <dl>
+                <dt>凭证上传</dt>
+                <dd>
+                    <?php if (is_array($pic_list) && !empty($pic_list)) { ?>
+                    <?php foreach ($pic_list as $key => $val) { ?>
+                    <?php if(!empty($val)){ ?>
+                    <a href="<?php echo UPLOAD_SITE_URL.'/'.ATTACH_PATH.'/refund/'.$val;?>" class="nyroModal" rel="gal">
+                        <img width="64" height="64" class="show_image" src="<?php echo UPLOAD_SITE_URL.'/'.ATTACH_PATH.'/refund/'.$val;?>"></a>
+                    <?php } ?>
+                    <?php } ?>
+                    <?php } ?>
+                </dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.refund_seller_message}</dt>
+                <dd>
+                    <?php echo $refund['seller_message']; ?>
+                </dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.refund_message}</dt>
+                <dd>
+                    <textarea id="admin_message" name="admin_message" class="tarea"></textarea>
+                </dd>
+            </dl>
+            <dl>
+                <dt></dt>
+                <dd>
+                    <input class="btn" type='submit' name="确认提交"/>
+                </dd>
+            </dl>
+        </div>
+    </form>
+</div>
+
+<script src="{$Think.config.url_domain_root}static/plugins/js/jquery.nyroModal/custom.min.js"></script>
+<link href="{$Think.config.url_domain_root}static/plugins/js/jquery.nyroModal/styles/nyroModal.css" rel="stylesheet" type="text/css" id="cssfile2"/>
+
+<script type="text/javascript">
+    $(function() {
+        $("#submitBtn").click(function() {
+            if ($("#post_form").valid()) {
+                $("#post_form").submit();
+            }
+        });
+        $('#post_form').validate({
+            errorPlacement: function(error, element) {
+                error.appendTo(element.parent().parent().prev().find('td:first'));
+            },
+            rules: {
+                admin_message: {
+                    required: true
+                }
+            },
+            messages: {
+                admin_message: {
+                    required   : '{$Think.lang.refund_message_null}'
+                }
+            }
+        });
+    });
+    $(document).ready(function () {
+        $('.nyroModal').nyroModal();
+    });
+</script>

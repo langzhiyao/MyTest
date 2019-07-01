@@ -1,0 +1,144 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>投诉管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <table class="ds-default-table">
+        <thead class="thead">
+        <tr class="space">
+            <th>{$Think.lang.complain_message}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th>{$Think.lang.complain_message}</th>
+        </tr>
+        <tr class="noborder hover">
+            <td><ul>
+                <li><strong>{$Think.lang.complain_state}:</strong>
+                    <b>{$complain_info.complain_state_text}</b>
+                </li>
+                <li>
+                    <strong>{$Think.lang.complain_subject_content}:</strong>
+                    {$complain_info.complain_subject_content}</li>
+                <li>
+                    <strong>{$Think.lang.complain_accuser}:</strong>
+                    {$complain_info.accuser_name}
+                </li>
+                <li>
+                    <strong>{$Think.lang.complain_evidence}:</strong>
+                    {empty name="complain_info.complain_pic1"}{empty name="complain_info.complain_pic2"}{empty name="complain_info.complain_pic3"}
+                    {$Think.lang.complain_pic_none}
+                    {else}
+                    <a href="" target="_blank">{$Think.lang.complain_pic_view}</a>
+                    {/empty}{/empty}{/empty}
+                </li>
+                <li>
+                    <strong>{$Think.lang.complain_datetime}:</strong>
+                    {$complain_info.complain_datetime|date="Y-m-d H:i:s",###}
+                </li>
+            </ul>
+            </td>
+        </tr>
+        <tr>
+            <th>{$Think.lang.complain_goods}</th>
+        </tr>
+        <tr class="noborder">
+            <td><table class="ds-default-table">
+                <tr>
+                    <th colspan="2">{$Think.lang.complain_goods_name}</th>
+                    <th>{$Think.lang.complain_text_num}</th>
+                    <th>{$Think.lang.complain_text_price}</th>
+                </tr>
+                {volist name="complain_goods_list" id="complain_goods"}
+                <tr>
+                    <td width="65" align="center" valign="middle"><a style="text-decoration:none;" href="{:url('home/goods/index',['goods_id'=>$complain_goods.goods_id])}" target="_blank">
+                        <img width="50" src="" />
+                    </a></td>
+                    <td class="intro">
+                        <p><a href="{:url('home/goods/index',['goods_id'=>$complain_goods.goods_id])}" target="_blank">{$complain_goods.goods_name} </a></p>
+                        <p>{:orderGoodsType($complain_goods.goods_type)}</p>
+                    </td>
+                    <td width="10%">{$complain_goods.goods_num}</td>
+                    <td width="10%">{$Think.lang.currency}{$complain_goods.goods_price}</td>
+                </tr>
+                {/volist}
+            </table></td>
+        </tr>
+        <tr>
+            <th>{$Think.lang.complain_content}</th>
+        </tr>
+        <tr class="noborder">
+            <td><div class="complain-intro" style=" color: #06C; border-color: #A7CAED; ">{$complain_info.complain_content}</div></td>
+        </tr>
+        </tbody>
+    </table>
+    {notempty name="refund_list"}
+    <table class="ds-default-table">
+        <thead class="thead">
+        <tr class="space">
+            <th>退款信息</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                {gt name="order_info.refund_amount" value="0"}
+                <p>{$Think.lang.refund_order_refund}:<b>{$Think.lang.currency}{$order_info.refund_amount}</b></p>
+                {/gt}
+                <p> 注：下表中订单商品退款在处理中的或已经确认，不能再次退款。</p>
+            </td>
+        </tr>
+        <tr class="noborder">
+            <td>
+                <table class="ds-default-table">
+                    <tr>
+                        <th colspan="2">{$Think.lang.complain_goods_name}</th>
+                        <th>退款金额</th>
+                        <th>实际支付额</th>
+                        <th>商家审核</th>
+                        <th>平台确认</th>
+                        <th>购买数量</th>
+                        <th>{$Think.lang.complain_text_price}</th>
+                    </tr>
+                    {volist name="refund_list" id="val"}
+                    <tr>
+                        <td width="65" align="center" valign="middle">
+                            <a style="text-decoration:none;" href="{:url('home/goods/index',['goods_id'=>$val.goods_id])}" target="_blank">
+                            <img width="50" src="" />
+                        </a>
+                        </td>
+                        <td class="intro">
+                            <p>
+                                <a href="{:url('home/goods/index',['goods_id'=>$val.goods_id])}" target="_blank">
+                                    {$val.goods_name}
+                                </a>
+                            </p>
+                            <p>{:orderGoodsType($val.goods_type)}</p>
+                        </td>
+                        <td width="10%">{$Think.lang.currency}{$val.extend_refund.refund_amount}</td>
+                        <td width="10%">{$Think.lang.currency}{$val.goods_pay_price}</td>
+                        <td width="10%">{$state_array.$val.extend_refund.seller_state}</td>
+                        <td width="10%">{eq name="val.extend_refund.seller_state" value="2"}{$admin_array[$val.extend_refund.refund_state]}{else /}无{/eq}</td>
+                        <td width="10%">{$val.goods_num}</td>
+                        <td width="10%">{$Think.lang.currency}{$val.goods_price}</td>
+                    </tr>
+                    {/volist}
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    {/notempty}
+
+</div>

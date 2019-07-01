@@ -1,0 +1,104 @@
+{include file="public/shop_header" /}
+<div class="banner w1200">
+    <img src="{$Think.config.url_domain_root}/static/store/styles/default/images/header.jpg" width="1200"/>
+</div>
+<div class="dss-nav w1200">
+    <ul>
+        <li class=""><a href="{:url('/Home/Store/index',['store_id'=>$store_info.store_id])}"><span>首页<i></i></span></a></li>
+        <?php
+        if (!empty($store_navigation_list)) {
+        foreach ($store_navigation_list as $value) {
+        if ($value['sn_if_show']) {
+        if ($value['sn_url'] != '') {
+        ?>
+        <li class=""><a href="<?php echo $value['sn_url']; ?>"><span>{$value.sn_title}<i></i></span></a></li>
+        <?php } else { ?>
+        <li class=""><a href="{:url('/Home/Store/article',['store_id'=>$store_info.store_id,'sn_id'=>$sn_id])}"><span>{$value.sn_title}<i></i></span></a></li>
+        <?php }
+        }
+        }
+        } ?>
+    </ul>
+</div>
+
+
+<div class="w1200 mt20">
+  <div class="common_module">
+    <div class="common_title">
+      <h4>
+        {if condition="$Think.get.stc_id"}{$stc_name}{elseif condition="$Think.get.inkeyword"}{$Think.lang.show_store_index_include}{$Think.get.inkeyword}{$Think.lang.show_store_index_goods}{else/}{$Think.lang.ds_whole_goods}{/if}
+      </h4>
+    </div>
+    <div class="dss-goodslist-bar">
+      <ul class="dss-array">
+        <li class='<?php echo input('get.key') == '1'?'selected':'';?>'><a <?php if(input('get.key') == '1'){?>class="<?php echo input('get.order') == 1 ? 'asc' : 'desc';?>"<?php }?> href="<?php echo (input('get.key') == '1' && input('get.order') == '2') ? replaceParam(array('key' => '1', 'order'=>'1')) : replaceParam(array('key' => '1', 'order' => '2'));?>">{$Think.lang.show_store_all_new}</a></li>
+        <li class='<?php echo input('get.key') == '2'?'selected':'';?>'><a <?php if(input('get.key') == '2'){?>class="<?php echo input('get.order') == 1 ? 'asc' : 'desc';?>"<?php }?> href="<?php echo (input('get.key') == '2' && input('get.order') == '2') ? replaceParam(array('key' => '2', 'order'=>'1')) : replaceParam(array('key' => '2', 'order' => '2'));?>">{$Think.lang.show_store_all_price}</a></li>
+        <li class='<?php echo input('get.key') == '3'?'selected':'';?>'><a <?php if(input('get.key') == '3'){?>class="<?php echo input('get.order') == 1 ? 'asc' : 'desc';?>"<?php }?> href="<?php echo (input('get.key') == '3' && input('get.order') == '2') ? replaceParam(array('key' => '3', 'order'=>'1')) : replaceParam(array('key' => '3', 'order' => '2'));?>">{$Think.lang.show_store_all_sale}</a></li>
+        <li class='<?php echo input('get.key') == '4'?'selected':'';?>'><a <?php if(input('get.key') == '4'){?>class="<?php echo input('get.order') == 1 ? 'asc' : 'desc';?>"<?php }?> href="<?php echo (input('get.key') == '4' && input('get.order') == '2') ? replaceParam(array('key' => '4', 'order'=>'1')) : replaceParam(array('key' => '4', 'order' => '2'));?>">{$Think.lang.show_store_all_collect}</a></li>
+        <li class='<?php echo input('get.key') == '5'?'selected':'';?>'><a <?php if(input('get.key') == '5'){?>class="<?php echo input('get.order') == 1 ? 'asc' : 'desc';?>"<?php }?> href="<?php echo (input('get.key') == '5' && input('get.order') == '2') ? replaceParam(array('key' => '5', 'order'=>'1')) : replaceParam(array('key' => '5', 'order' => '2'));?>">{$Think.lang.show_store_all_click}</a></li>
+      </ul>
+        <div class="dss-search">
+            <form id="" name="searchShop" method="get" action="" >
+                <input type="text" class="text w120" name="inkeyword" value="{$Think.get.inkeyword}" placeholder="搜索店内商品">
+                <a href="javascript:document.searchShop.submit();" class="dss-btn">{$Think.lang.ds_search}</a>
+            </form>
+        </div>
+    </div>
+    <?php if(!empty($recommended_goods_list) && is_array($recommended_goods_list)){?>
+    <div class="content dss-all-goods-list mb15">
+      <ul>
+        <?php foreach($recommended_goods_list as $value){?>
+        <li>
+          <dl>
+            <dt><a href="{:url('/Home/Goods/index',['goods_id'=>$value.goods_id])}" class="goods-thumb" target="_blank"><img src="<?php echo thumb($value, 240);?>" alt="<?php echo $value['goods_name'];?>" /></a>
+              <ul class="goods-thumb-scroll-show">
+              <?php if (isset($value['image'])) { ?>
+                  <?php $i=0;foreach ($value['image'] as $val) { $i++; ?>
+                  <li <?php if($i==1) {?> class="selected" <?php }?> ><a href="javascript:void(0);"><img src="<?php echo thumb($val, 60);?>"/></a></li>
+                  <?php }?>
+              <?php } else {?>
+                  <li class="selected"><a href="javascript:void(0)"><img src="<?php echo thumb($value, 60);?>"></a></li>
+              <?php }?>
+              
+              
+              </ul>
+            
+            </dt>
+            <dd class="goods-name"><a href="{:url('/Home/Goods/index',['goods_id'=>$value.goods_id])}" title="<?php echo $value['goods_name'];?>" target="_blank"><?php echo $value['goods_name']?></a></dd>
+            <dd class="goods-info"><span class="price">{$Think.lang.currency}
+              <?php echo $value['goods_promotion_price']?>
+              </span><span class="goods-sold">{$Think.lang.ds_sell_out}<strong><?php echo $value['goods_salenum'];?></strong> {$Think.lang.ds_jian}</span></dd>
+            <?php if (config('groupbuy_allow') && $value['goods_promotion_type'] == 1) {?>
+            <dd class="goods-promotion"><span>抢购商品</span></dd>
+            <?php } elseif (config('promotion_allow') && $value['goods_promotion_type'] == 2)  {?>
+            <dd class="goods-promotion"><span>限时折扣</span></dd>
+            <?php }?>
+          </dl>
+        </li>
+        <?php }?>
+      </ul>
+    </div>
+    <div class="pagination">{$show_page}</div>
+    <?php }else{?>
+    <div class="content dss-all-goods-list">
+    <div class="nothing">
+      <p>{$Think.lang.show_store_index_no_record}</p>
+    </div></div>
+    <?php }?>
+  </div>
+</div>
+<script>
+$(function(){
+    // 图片切换效果
+    $('.goods-thumb-scroll-show').find('a').mouseover(function(){
+        $(this).parents('li:first').addClass('selected').siblings().removeClass('selected');
+        var _src = $(this).find('img').attr('src');
+        _src = _src.replace('_60.', '_240.');
+        $(this).parents('dt').find('.goods-thumb').find('img').attr('src', _src);
+    });
+});
+</script>
+
+
+{include file="public/mall_server" /}
+{include file="public/mall_footer" /}

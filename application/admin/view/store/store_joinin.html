@@ -1,0 +1,112 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>店铺管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <form method="get" name="formSearch">
+        <table class="search-form">
+            <tbody>
+                <tr>
+                    <th><label for="store_name">{$Think.lang.store_name}</label></th>
+                    <td><input type="text" value="" name="store_name" id="store_name" class="txt"></td>
+                    <th><label for="owner_and_name">{$Think.lang.store_user}</label></th>
+                    <td><input type="text" value="" name="owner_and_name" id="owner_and_name" class="txt"></td>
+                    <th><label>{$Think.lang.belongs_level}</label></th>
+                    <td>
+                        <select name="grade_id">
+                            <option value="">{$Think.lang.ds_please_choose}...</option>
+                            <?php if(!empty($grade_list) && is_array($grade_list)){ ?>
+                            <?php foreach($grade_list as $k => $v){ ?>
+                            <option value="<?php echo $v['sg_id'];?>" {if condition="$Think.get.grade_id eq $v.sg_id"}selected{/if}><?php echo $v['sg_name'];?></option>
+                            <?php } ?>
+                            <?php } ?>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="joinin_state">
+                            <option value="">{$Think.lang.ds_please_choose}...</option>
+                            <?php if(!empty($joinin_state_array) && is_array($joinin_state_array)){ ?>
+                            <?php foreach($joinin_state_array as $k => $v){ ?>
+                            <option value="<?php echo $k;?>" {if condition="$Think.get.joinin_state eq $k"}selected{/if}><?php echo $v;?></option>
+                            <?php } ?>
+                            <?php } ?>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="submit" class="submit" value="搜索">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>点击审核按钮可以对开店申请进行审核，点击查看按钮可以查看开店信息</li>
+        </ul>
+    </div>
+    
+    <form method="post" id="store_form" name="store_form">
+        <table class="ds-default-table">
+            <thead>
+                <tr class="thead">
+                    <th>{$Think.lang.store_name}</th>
+                    <th>{$Think.lang.store_user_name}</th>
+                    <th>{$Think.lang.location}</th>
+                    <th class="align-center">{$Think.lang.belongs_level}</th>
+                    <th class="align-center">{$Think.lang.state}</th>
+                    <th class="align-center">{$Think.lang.ds_handle}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if(!empty($store_list) && is_array($store_list)){ ?>
+                <?php foreach($store_list as $k => $v){ ?>
+                <tr class="hover edit">
+                    <td><?php echo $v['store_name'];?></td>
+                    <td><?php echo $v['member_name'];?></td>
+                    <td class="w150"><?php echo $v['company_address'];?></td>
+                    <td class="align-center"><?php echo $v['sg_name'];?></td>
+                    <td class="align-center"><?php echo $joinin_state_array[$v['joinin_state']];?></td>
+                    <td class="w72 align-center">
+                        <?php if(in_array(intval($v['joinin_state']), array(STORE_JOIN_STATE_NEW, STORE_JOIN_STATE_PAY))) { ?>
+                        <a href="{:url('/Admin/Store/store_joinin_detail',['member_id'=>$v.member_id])}">审核</a>
+                        <?php } else { ?>
+                        <a href="{:url('/Admin/Store/store_joinin_detail',['member_id'=>$v.member_id])}">查看</a>
+                        <?php } ?>
+                        <?php if(intval($v['joinin_state'])<40) { ?>
+                        &nbsp;&nbsp; <a href="{:url('/Admin/Store/del_join',['member_id'=>$v.member_id])}">删除</a>
+                        <?php } ?>
+                    </td>
+                </tr>
+                <?php } ?>
+                <?php }else { ?>
+                <tr class="no_data">
+                    <td colspan="10">{$Think.lang.ds_no_record}</td>
+                </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+        <?php if(!empty($store_list) && is_array($store_list)){ ?>
+        <div class="pagination">{$page}</div>
+        <?php } ?>
+    </form>
+</div>
+<script>
+    function audit_submit(type) {
+        $('#type').val(type);
+        $("#store_form").submit();
+        return true;
+    }
+</script>

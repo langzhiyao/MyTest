@@ -1,0 +1,113 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>店铺管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+  <form method="get" name="formSearch">
+    <table class="search-form">
+      <tbody>
+        <tr>
+          <th><label>{$Think.lang.store_name}</label></th>
+          <td><input type="text" value="{$Think.get.store_name}" name="store_name" id="store_name" class="txt"></td>
+          <th><label>{$Think.lang.store_name}ID</label></th>
+          <td><input type="text" value="{$Think.get.store_id}" name="store_id" id="store_id" class="txt"></td>
+          <th>申请状态</th>
+          <td>
+          <select name="re_state">
+          <option value="">{$Think.lang.ds_please_choose}...</option>
+          <option {if condition="$Think.get.re_state eq '0'"}selected{/if} value="0">待付款</option>
+          <option {if condition="$Think.get.re_state eq '1'"}selected{/if} value="1">待审核</option>
+          <option {if condition="$Think.get.re_state eq '2'"}selected{/if} value="2">已审核</option>
+          </select>
+          </td>
+          <td><a href="javascript:document.formSearch.submit();" class="btn-search " title="{$Think.lang.ds_query}"></a>
+        </tr>
+        </tbody>
+    </table>
+</form>
+  <form method="post" id="store_form" name="store_form">
+    <table class="ds-default-table">
+      <thead>
+        <tr class="thead">
+          <th>店铺/ID</th>
+          <th>申请时间</th>
+          <th>收费标准(元/年)</th>
+          <th>续签时长(年)</th>
+          <th>付款金额(年)</th>
+          <th>续签起止有效期</th>
+          <th>状态</th>
+          <th>付款凭证</th>
+          <th>付款备注</th>
+          <th>{$Think.lang.ds_handle}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php if(!empty($reopen_list) && is_array($reopen_list)){ ?>
+        <?php foreach($reopen_list as $k => $val){ ?>
+        <tr class="hover edit">
+          <td><?php echo $val['re_store_name'];?>/<?php echo $val['re_store_id'];?></td>
+          <td><?php echo date('Y-m-d',$val['re_create_time']); ?></td>
+          <td><?php echo $val['re_grade_price']; ?> ( <?php echo $val['re_grade_name'];?> )</td>
+          <td><?php echo $val['re_year']?></td>
+          <td><?php echo $val['re_pay_amount'] == 0 ? '免费' : $val['re_pay_amount'];?></td>
+          <td>
+          <?php if ($val['re_start_time'] != '') {?>
+          <?php echo date('Y-m-d',$val['re_start_time']).' ~ '.date('Y-m-d',$val['re_end_time']);?>
+          <?php  } ?>
+          </td>
+          <td><?php echo str_replace(array('0','1','2'),array('待付款','待审核','通过审核'),$val['re_state']);?></td>
+          <td>
+          <?php if ($val['re_pay_cert'] != '') {?>
+          <a nctype="nyroModal" href="<?php echo $val['re_pay_cert'];?>">查看</a>
+          <?php } ?>
+          </td>
+          <td><?php echo $val['re_pay_cert_explain'];?></td>
+          <td>
+          <?php if ($val['re_state'] == '1') {?>
+          <a href="javascript:if(confirm('审核后，系统会自动将店铺的到期时间向后延续\n店铺等级不会自动变更，如果新签约的店铺等级发生变更，请手动更改店铺等级\n确认审核吗？'))window.location = '{:url('/Admin/Store/reopen_check',['re_id'=>$val.re_id])}';">审核</a>
+          <?php } ?>
+          <?php echo $val['re_state'] == '1' ? ' | ' : null;?>
+         <?php if ($val['re_state'] != '2') {?>
+         <a href="javascript:if(confirm('确认删除吗？'))window.location = '{:url('/Admin/Store/reopen_check',['re_id'=>$val.re_id,'re_store_id'=>$val.re_store_id])}';">{$Think.lang.ds_del}</a>
+          <?php } ?>
+          </td>
+        </tr>
+        <?php } ?>
+        <?php }else { ?>
+        <tr class="no_data">
+          <td colspan="10">{$Think.lang.ds_no_record}</td>
+        </tr>
+        <?php } ?>
+      </tbody>
+      <tfoot>
+        <tr class="tfoot">
+          <td></td>
+          <td colspan="15">
+              <?php if(!empty($reopen_list) && is_array($reopen_list)){ ?>
+              <div class="pagination">{$page}</div>
+              <?php } ?>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </form>
+</div>
+
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/plugins/js/jquery.nyroModal/custom.min.js" charset="utf-8"></script>
+<link href="{$Think.config.url_domain_root}static/plugins/js/jquery.nyroModal/styles/nyroModal.css" rel="stylesheet" type="text/css" id="cssfile2" />
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('a[nctype="nyroModal"]').nyroModal();
+    });
+</script>

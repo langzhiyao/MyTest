@@ -1,0 +1,237 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<script src="{$Think.config.url_domain_root}static/common/js/mlselectiones.js"></script>
+<script src="{$Think.config.url_domain_root}static/home/js/common.js"></script>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>分/子公司管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form id="add_form" method="post" enctype="multipart/form-data">
+        <table class="ds-default-table">
+            <tbody>
+            <tr class="noborder">
+                <td colspan="2"><label class="validation" for="o_name">{$Think.lang.organize_index_title}:</label></td>
+            </tr>
+            <tr class="noborder">
+                <td class="vatop rowform"><input type="text" id="o_name" name="o_name" class="txt" value="{$organize_array.o_name}">
+                <input type="hidden" id="o_id" name="o_id" value="{$organize_array.o_id}">
+                </td>
+                <td class="vatop tips"></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="required"><label class="validation" >{$Think.lang.organize_index_role}:</label></td>
+            </tr>
+            <tr class="noborder">
+                <td class="vatop rowform">
+                    <input type="hidden"  name="sid" id="sid" value="{$organize_array.o_role}">
+                    <input type="hidden" name="dep" id="dep" class="dep" value="1">
+                    <?php if(!empty($gadmin)){?>
+                        <?php foreach($gadmin as $key=>$value){?>
+                            <?php if($value['gid'] == $organize_array['o_role']){?>
+                                <li>
+                                    <input name="o_role" type="radio" value="<?php echo $value['gid'];?>" checked="checked">
+                                    <label><?php echo $value['gname'];?></label>
+                                </li>
+                            <?php }else{?>
+                                <li>
+                                    <input type="radio" name="o_role" value="<?php echo $value['gid'];?>">
+                                    <label><?php echo $value['gname'];?></label>
+                                </li>
+                            <?php }?>
+                        <?php }?>
+                    <?php }?>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="required"><label class="validation" >{$Think.lang.organize_index_is_child}:</label></td>
+            </tr>
+            <tr class="noborder">
+                <td class="vatop rowform">
+                    <?php if(1 == $organize_array['is_child']){?>
+                    <li>
+                        <input name="is_child" type="radio" value="1"  checked="checked">
+                        <label>是</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="is_child" value="2">
+                        <label>否</label>
+                    </li>
+                    <?php }else{?>
+                    <li>
+                        <input name="is_child" type="radio" value="1">
+                        <label>是</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="is_child" value="2" checked="checked">
+                        <label>否</label>
+                    </li>
+                    <?php }?>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="required"><label class="validation" for="type_ides">{$Think.lang.organize_index_address}:</label></td>
+            </tr>
+            <tr>
+                <td id="region">
+                    <input type="hidden" value="{$organize_array.o_provinceid}" name="o_provinceid" id="o_provinceid" class="o_provinceid">
+                    <input type="hidden" value="{$organize_array.o_cityid}" name="city_id" id="city_id" class="o_cityid">
+                    <input type="hidden" name="area_id" id="area_id" value="{$organize_array.o_areaid}" class="area_ids" />
+                    <input type="hidden" name="area_info" id="area_info" value="{$organize_array.o_area}" class="area_names" />
+                    {notempty name="organize_array.o_provinceid"}
+                    <span>{$organize_array.o_area}</span>
+                    <input type="button" value="{$Think.lang.ds_edit}" class="edit_region" />
+                    <select style="display:none;">
+                        <option value="">请选择分类</option>
+                        {volist name="region_list" id="region"}
+                        <option value="{$region.area_id}">{$region.area_name}</option>
+                        {/volist}
+                    </select>
+                    {else}
+                    <select name="type_ides" id="type_ides">
+                        <option value="" >请选择分类</option>
+                        {volist name="region_list" id="region"}
+                        <option value="{$region.area_id}">{$region.area_name}</option>
+                        {/volist}
+                    </select>
+                    {/notempty}
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="required"><label class="validation" >{$Think.lang.address}:</label></td>
+            </tr>
+            <tr class="noborder">
+                <td class="vatop rowform"><input type="text" id="o_address" name="o_address" class="txt" value="{$organize_array.o_address}"></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="required"><label class="validation">{$Think.lang.mob_phone}:</label></td>
+            </tr>
+            <tr class="noborder">
+                <td class="vatop rowform"><input type="text" id="o_phone" name="o_phone" class="txt" value="{$organize_array.o_phone}"></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="required"><label class="validation">{$Think.lang.organize_index_leading}:</label></td>
+            </tr>
+            <tr class="noborder">
+                <td class="vatop rowform"><input type="text" id="o_leading" name="o_leading" class="txt" value="{$organize_array.o_leading}"></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="required"><label class="validation">{$Think.lang.organize_index_enddate}:</label></td>
+            </tr>
+            <tr class="noborder">
+                <td class="vatop rowform"><input type="text" id="activity_end_date" name="activity_end_date" class="txt date" value="{$organize_array.o_enddate}"/></td>
+                <td class="vatop tips"></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="required"><label>{$Think.lang.organize_index_remark}:</label></td>
+            </tr>
+            <tr class="noborder">
+                <td>
+                    <textarea name="o_remark" id="o_remark">{$organize_array.o_remark}</textarea>
+
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr class="tfoot">
+                <td colspan="2"><a href="JavaScript:void(0);" class="btn" id="submitBtn"><span>{$Think.lang.ds_submit}</span></a></td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
+
+</div>
+<script>
+    //按钮先执行验证再提交表单
+    $(function(){$("#submitBtn").click(function(){
+        if($("#add_form").valid()){
+            $("#add_form").submit();
+        }
+    });
+    });
+    $(document).ready(function(){
+        $.datepicker.regional["zh-CN"] = { closeText: "关闭", prevText: "&#x3c;上月", nextText: "下月&#x3e;", currentText: "今天", monthNames: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"], monthNamesShort: ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"], dayNames: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"], dayNamesShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"], dayNamesMin: ["日", "一", "二", "三", "四", "五", "六"], weekHeader: "周", dateFormat: "yy-mm-dd", firstDay: 1, isRTL: !1, showMonthAfterYear: !0, yearSuffix: "年" }
+        $.datepicker.setDefaults($.datepicker.regional["zh-CN"]);
+
+        $("#activity_start_date").datepicker({dateFormat: 'yy-mm-dd'});
+        $("#activity_end_date").datepicker({dateFormat: 'yy-mm-dd'});
+        $("#add_form").validate({
+            errorPlacement: function(error, element){
+                error.appendTo(element.parent().parent().prev().find('td:first'));
+            },
+            rules : {
+                o_name: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 20
+                },
+                o_address: {
+                    required : true
+                },
+                o_leading: {
+                    required : true
+                },
+                o_phone: {
+                    required: true,
+                    minlength: 11,
+                    maxlength: 11
+                },
+                activity_end_date: {
+                    required : true,
+                    date      : false
+                },
+                type_ides : {
+                    required : true
+                }
+            },
+            messages : {
+                o_address: {
+                    required : '{$Think.lang.company_address}'
+                },
+                o_leading: {
+                    required : '{$Think.lang.company_leading}'
+                },
+                o_phone: {
+                    required : '{$Think.lang.company_phone}',
+                    minlength: '{$Think.lang.company_phoneerror}',
+                    maxlength: '{$Think.lang.company_phoneerror}'
+                },
+                o_name: {
+                    required : '{$Think.lang.organize_name_null}',
+                    minlength: '{$Think.lang.company_add_username_max}',
+                    maxlength: '{$Think.lang.company_add_username_max}'
+                },
+                activity_end_date: {
+                    required : '{$Think.lang.organize_new_enddate_null}'
+                },
+                type_ides : {
+                    required :'{$Think.lang.company_area}'
+                }
+            }
+        });
+    });
+
+    $(function(){
+        $("input:radio[name='o_role']").change(function(){
+            var v = $(this).val();
+            $('#sid').val(v);
+            $('#dep').val(1);
+
+        });
+// 模拟活动页面横幅Banner上传input type='file'样式
+        var textButton="<input type='text' name='textfield' id='textfield1' class='type-file-text' /><input type='button' name='button' id='button1' value='' class='type-file-button' />"
+        $(textButton).insertBefore("#activity_banner");
+        $("#activity_banner").change(function(){
+            $("#textfield1").val($("#activity_banner").val());
+        });
+    });
+    $(function() {
+        regionInit("region");
+    });
+</script> 

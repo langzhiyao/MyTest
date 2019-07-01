@@ -1,0 +1,49 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>文章管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <table class="ds-default-table">
+        <thead>
+            <tr>
+                <th>{$Think.lang.article_sort}</th>
+                <th>{$Think.lang.article_title}</th>
+                <th>{$Think.lang.article_cate}</th>
+                <th>{$Think.lang.article_show}</th>
+                <th>{$Think.lang.article_time}</th>
+                <th>{$Think.lang.ds_handle}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {notempty name="article_list"}
+            {volist name="article_list" id="article"}
+            <tr>
+                <td>{$article.article_sort}</td>
+                <td>{$article.article_title}</td>
+                <td>{$article.ac_name|default=''}</td>
+                <td>{if $article.article_show eq '1'}是{else}否{/if}</td>
+                <td>{$article.article_time}</td>
+                <td>
+                    <a href="{:url('/admin/Article/edit',['article_id'=>$article.article_id])}">{$Think.lang.ds_edit}</a>
+                    <a href="javascript:if(confirm('{$Think.lang.sure_drop}'))window.location ='{:url('/admin/Article/drop',['article_id'=>$article.article_id])}'" >{$Think.lang.ds_del}</a>
+                </td>
+            </tr>
+            {/volist}
+            {else /}
+            <tr class="no_data">
+                <td colspan="10">{$Think.lang.ds_no_record}</td>
+            </tr>
+            {/notempty}
+        </tbody>
+    </table>
+    {$page}
+</div>

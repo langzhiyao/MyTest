@@ -1,0 +1,88 @@
+<div class="w100pre close_float" style="text-align:right;">
+    <input type="hidden" id="export_type" name="export_type" data-param='{"url":"$actionurl}&orderby={$orderby}&exporttype=excel"}' value="excel"/>
+    <a class="btns" href="javascript:void(0);" id="export_btn"><span>导出Excel</span></a>
+</div>
+<input type="hidden" id="orderby" name="orderby" value="{$orderby}"/>
+
+<table class="ds-default-table">
+    <thead>
+    <tr class="thead sortbar-array">
+        {volist name="statheader" id="v"}
+       {if $v.isorder == 1}
+        <!-- <th class="{$v.class']?$v['class']:'align-center';?>"> -->
+        <th class="align-center">
+            {if $orderby == $v.key.'desc'}
+            <a nc_type="orderitem" href="{:url('$actionurl',['orderby']=>$v.key)}.' asc'" class="selected desc">{$v.text}<i></i></a></th>
+        {elseif $orderby == $v.key .'asc'}
+        <a nc_type="orderitem" href="{:url('$actionurl',['orderby']=>$v.key)}.' desc'" class="selected asc">{$v.text}<i></i></a></th>
+       {else}
+        <a nc_type="orderitem" href="{:url('$actionurl',['orderby']=>$v.key)}.' desc'">{$v.text}<i></i></a></th>
+       {/if}
+       {else}
+        <th class="align-center">{$v.text}</th>
+        {/if}
+        {/volist}
+    </tr>
+    </thead>
+    <tbody id="datatable">
+    {notempty name="statlist"}
+    {volist name="statlist" id="v"}
+    <tr class="hover">
+        {volist name="statheader" id="h_v"}
+        <td class="{$h_v.class ? $h_v.class : 'align-center'}">{$v[$h_v.key]}</td>
+        {/volist}
+    </tr>
+    {/volist}
+    {else}
+    <tr class="no_data">
+        <td colspan="11">{$Think.lang.no_record}</td>
+    </tr>
+   {/notempty}
+    </tbody>
+    {notempty name="statlist"}
+    <tfoot>
+    <tr class="tfoot">
+        <td colspan="15" id="dataFuncs"><div class="pagination"> {$show_page} </div></td>
+    </tr>
+    </tfoot>
+    {/notempty}
+</table>
+
+<script src="{$Think.config.url_domain_root}static/plugins/jquery.poshytip.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        //Ajax提示
+        $('.tip').poshytip({
+            className: 'tip-yellowsimple',
+            showTimeout: 1,
+            alignTo: 'target',
+            alignX: 'center',
+            alignY: 'top',
+            offsetY: 5,
+            allowTipHover: false
+        });
+
+        $('#statlist').find('.demo').ajaxContent({
+            event:'click', //mouseover
+            loaderType:"img",
+            loadingMsg:"{$Think.config.url_domain_root}static/admin/images/treetable/transparent.gif",
+            target:'#statlist'
+        });
+        $("[nc_type='orderitem']").ajaxContent({
+            event:'click',
+            loaderType:"img",
+            loadingMsg:"{$Think.config.url_domain_root}static/admin/images/treetable/transparent.gif",
+            target:'#statlist'
+        });
+
+        //导出图表
+        $("#export_btn").click(function(){
+            var item = $("#export_type");
+            var type = $(item).val();
+            if(type == 'excel'){
+                download_excel(item);
+            }
+        });
+    });
+</script>

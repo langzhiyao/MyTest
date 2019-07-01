@@ -1,0 +1,52 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" name="form1" action="">
+        <div class="ncap-form-default">
+            <dl>
+                <dt>{$Think.lang.school_index_classname}：{$class_array.classname}</dt>
+                <dt></dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.school_index_classunique}：{$class_array.classCard}</dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.school_index_type}：{volist name="schooltype" id="type"}
+                    {$type}
+                    {/volist}</dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.school_index_name}：{$schoolname}</dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.school_index_schoolregion}：{$class_array.school_region}</dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.school_index_desc}：{$class_array.desc}</dt>
+            </dl>
+            {if condition="$class_array.qr neq ''"}
+            <img src="{$Think.UPLOAD_SITE_URL}{$class_array.qr}">
+            <span class="box"><a href="{$Think.UPLOAD_SITE_URL}/{$class_array.qr}" download="{$class_array.qr}">保存</a></span><br />
+            {/if}
+        </div>
+    </form>
+
+</div>
+
+
+
+
+
+
+
+

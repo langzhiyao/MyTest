@@ -1,0 +1,123 @@
+{include file="public/header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<style>
+    .layui-form-label{
+        width: 200px;
+    }
+</style>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>通用设置/APP</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div class="explanation" id="explanation" style="width:100%;box-sizing: border-box;">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>教孩视频（重温课堂视频）支付成功后可以在规定的时间内重复观看，超过后，需要重新付费观看</li>
+            <li>设置教孩上传视频最长的可录制时间，app的录制时长由这里进行控制</li>
+            <li>设置副账号数量后，app的副账户进行按此数量显示。0为无副账户</li>
+            <li>分成比例可以填写小数，精确到2位，如果0.25%，每个教师只能有一个代理商（市级），特约代理商不参与分成</li>
+        </ul>
+    </div>
+    <form method="post" enctype="multipart/form-data" name="form1" class="layui-form">
+
+        <div class="ncap-form-default">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label" >{$Think.lang.teacher_children}</label>
+                    <div class="layui-input-inline">
+                        <input type="tel" name="teacher_children" value="{$list_config.teacher_children}" lay-verify="required|number" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">小时</div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.revisit_class}</label>
+                    <div class="layui-input-inline">
+                        <input type="tel" name="revisit_class" value="{$list_config.revisit_class}" lay-verify="required|number" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">小时</div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.teacher_children_video}</label>
+                    <div class="layui-input-inline">
+                        <input type="tel" name="teacher_children_video" value="{$list_config.teacher_children_video}" lay-verify="required|number" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">分钟</div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.f_account_num}</label>
+                    <div class="layui-input-inline">
+                        <input type="tel" name="f_account_num" value="{$list_config.f_account_num}" lay-verify="required|number" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">个</div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.teacher_pay_scale}</label>
+                    <div class="layui-form-mid layui-word-aux">{$Think.lang.zb}</div>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <input type="text" name="HQ" lay-verify="required|number" value="{$list_config.teacher_pay_scale->zb}" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">%</div>
+                    <div class="layui-form-mid">-</div>
+                    <div class="layui-form-mid layui-word-aux">{$Think.lang.province_agent}</div>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <input type="text" name="province_agent" lay-verify="required|number" value="{$list_config.teacher_pay_scale->province_agent}" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">%</div>
+                    <div class="layui-form-mid">-</div>
+                    <div class="layui-form-mid layui-word-aux">{$Think.lang.city_agent}</div>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <input type="text" name="city_agent" lay-verify="required|number" value="{$list_config.teacher_pay_scale->city_agent}" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">%</div>
+                    <div class="layui-form-mid">-</div>
+                    <div class="layui-form-mid layui-word-aux">{$Think.lang.teacher}</div>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <input type="text" name="teacher" lay-verify="required|number" value="{$list_config.teacher_pay_scale->teacher}" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">%</div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+                </div>
+            </div>
+            <!--<dl>-->
+                <!--<dt></dt>-->
+                <!--<dd><a href="JavaScript:void(0);" class="btn" onclick="document.form1.submit()">确认提交</a></dd>-->
+            <!--</dl>-->
+        </div>
+    </form>
+
+</div>
+
+
+
+
+
+
+
+

@@ -1,0 +1,7 @@
+<div id="container_{$stattype}"></div>
+<script src="{$Think.config.url_domain_root}static/plugins/highcharts/highcharts.js"></script>
+<script>
+$(function () {
+    $('#container_{$stattype}').highcharts({$stat_json});
+});
+</script>

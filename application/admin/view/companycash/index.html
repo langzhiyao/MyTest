@@ -1,0 +1,274 @@
+{include file="public/header" /}
+<script src="{$Think.config.url_domain_root}static/common/js/mlselection.js"></script>
+<script src="{$Think.config.url_domain_root}static/home/js/common.js"></script>
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>代理商提现管理 </h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>提现申请总额：<?php if(isset($sum)){echo $sum;}else{echo 0;} ?>元。</li>
+        </ul>
+    </div>
+    <form method="get" >
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">账号</label>
+                    <div class="layui-input-inline">
+                        <input type="text"  name="user" placeholder="请输入账号" value="{$_GET['user']}" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">提现编号</label>
+                    <div class="layui-input-inline">
+                        <input type="text"  name="number" placeholder="请输入账号" value="{$_GET['number']}" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-input-inline">
+                        <select name="status" lay-filter="status"  class="select"  lay-verify="type"  id="status">
+                            <option value="">状态</option>
+                            <option value="1" {if condition='$Think.get.status eq 1'}selected='selected'{/if}>待审核</option>
+                            <option value="2" {if condition='$Think.get.status eq 2'}selected='selected'{/if}>审核成功</option>
+                            <option value="3" {if condition='$Think.get.status eq 3'}selected='selected'{/if}>审核失败</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">筛选时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input date" name="query_start_time" id="query_start_time" value="{$Think.get.query_start_time}" placeholder="请输入开始时间">
+                    </div>
+                    <div class="layui-input-inline">
+                        <input id="query_end_time" class="layui-input date" type="text" name="query_end_time" value="{$Think.get.query_end_time}" placeholder="请输入结束时间">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn layuiadmin-btn-admin" lay-submit="" type="submit" lay-filter="LAY-user-back-search">
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <form method="post" id='form_admin' class="layui-form">
+        <table class="layui-table">
+            <thead>
+            <tr class="thead">
+                <th colspan="align-center">序号</th>
+                <th class="align-center">账号</th>
+                <th class="align-center">姓名</th>
+                <th class="align-center">所属公司</th>
+                <th class="align-center">所在地区</th>
+                <th class="align-center">绑定银行卡</th>
+                <th class="align-center">所属银行</th>
+                <th class="align-center">账户余额（元）</th>
+                <th class="align-center">提现金额（元）</th>
+                <th class="align-center">状态</th>
+                <?php if(session('admin_is_super') ==1 || in_array('15',$action)){ ?>
+                <th class="align-center">操作</th>
+                <?php } ?>
+                <th class="align-center">提现时间</th>
+                <th class="align-center">提现编号</th>
+            </tr>
+            <tbody>
+            <?php if(!empty($result) && is_array($result)){ ?>
+            <?php foreach($result as $k => $v){ ?>
+            <tr class="hover member">
+                <td class="align-center"><?php if(!$_GET['page']){  echo $k+1; }else{ echo ($_GET['page']-1)*15+$k+1; }?></td>
+                <td class="align-center"><?php echo $v['pdc_member_name']; ?></td>
+                <td class="align-center"><?php echo $v['pdc_bank_user']; ?></td>
+                <td class="align-center"><?php echo $v['o_name']; ?></td>
+                <td class="align-center"><?php echo $v['o_area']; ?></td>
+                <td class="align-center"><?php echo $v['pdc_bank_no']; ?></td>
+                <td class="align-center"><?php echo $v['pdc_bank_name']; ?></td>
+                <td class="align-center"><?php if(!empty($v['available_predeposit'])){echo sprintf("%.2f",$v['available_predeposit']);} ?></td>
+                <td class="align-center"><?php echo $v['pdc_amount']; ?></td>
+                <td class="align-center"><?php if($v['status']==1){echo "未知";}elseif($v['status']==2){echo "成功";}elseif($v['status']==3){echo "失败";} ?></td>
+                <?php if(session('admin_is_super') ==1 || in_array('15',$action)){ ?>
+                <td class="align-center"><?php if($v['status']==1){ ?>
+                    <a class="layui-btn layui-btn-sm" href="javascript:check('<?php echo $v['pdc_id'];?>')" >审核</a>
+                    <!--<a href="{:url('/admin/companycash/company_option',['pdc_id'=>$v.pdc_id,'status'=>2,'id'=>$v.pdc_member_id,'name'=>$v.pdc_member_name,'price'=>$v.pdc_amount,'number'=>$v.pdc_sn])}" class="layui-btn layui-btn-xs">成功</a>-->
+                    <!--<a href="{:url('/admin/companycash/company_option',['pdc_id'=>$v.pdc_id,'status'=>3,'id'=>$v.pdc_member_id,'name'=>$v.pdc_member_name,'price'=>$v.pdc_amount,'number'=>$v.pdc_sn])}" class="layui-btn layui-btn-xs">失败</a>-->
+
+                    <?php }else{ ?>
+                    无操作
+                    <?php } ?>
+                </td>
+                <?php } ?>
+                <td class="align-center"><?php echo date("Y-m-d H:i:s",$v['pdc_add_time']); ?></td>
+                <td class="align-center"><?php echo $v['pdc_sn']; ?></td>
+            </tr>
+            <?php } ?>
+            <?php }else { ?>
+            <tr class="no_data">
+                <td colspan="11">{$Think.lang.ds_no_record}</td>
+            </tr>
+            <?php } ?>
+            </tbody>
+            <tfoot class="tfoot">
+            <?php if(!empty($member_list) && is_array($member_list)){ ?>
+            <tr>
+                <td class="w24"><input type="checkbox" class="checkall" id="checkallBottom"></td>
+                <td colspan="16">
+                    <label for="checkallBottom">{$Think.lang.ds_select_all}</label>
+                    &nbsp;&nbsp;<a href="JavaScript:void(0);" class="btn" onclick="if(confirm('{$Think.lang.ds_ensure_del}')){$('#form_member').submit();}"><span>{$Think.lang.ds_del}</span></a>
+                </td>
+            </tr>
+            <?php } ?>
+            </tfoot>
+        </table>
+        <div>
+            <?php if(!empty($member_list) && is_array($member_list)){ ?>
+            <tr class="tfoot">
+                {$page}
+            </tr>
+            <?php } ?>
+        </div>
+    </form>
+</div>
+<form class="layui-form" onsubmit="return false;" style="display: none;" id="courForm" >
+    <input type="hidden" id="pdc_id" name="pdc_id" />
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">审核结果</label>
+            <div class="layui-input-inline">
+                <select name="sta" lay-filter="sta"  class="select"  lay-verify="type" id="sta" >
+                    <option  value="2">通过</option>
+                    <option  value="3">驳回</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item" id="images">
+        <label class="layui-form-label"><span style="color: #E00515;">*</span>上传凭证</label>
+        <div class="layui-input-block">
+            <div class="layui-upload">
+                <button type="button" class="layui-btn layui-btn-normal" id="upload-change" >选择并上传</button>
+                <input type="hidden" name="img" id="img">
+                <input class="layui-upload-file" accept="undefined" name="file" type="text">
+                <div class="layui-upload-list">
+                    <img class="layui-upload-img" id="image" src="" style="width: 150px;height: 150px;">
+                    <p id="demoText"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item" id="desc" style="display: none;">
+        <label class="layui-form-label">原因：</label>
+        <div class="layui-input-inline">
+            <textarea class="layui-text" name="desc" style="width: 300px;height: 100px;" ></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="demo1" id="course">立即提交</button>
+        </div>
+    </div>
+
+</form>
+<script type="text/javascript">
+    layui.use(['form','laypage', 'upload','layer'], function() {
+        var form = layui.form,
+            laypage = layui.laypage
+         ,upload = layui.upload
+            , layer = layui.layer;
+
+        upload.render({
+            elem: '#upload-change'
+            ,accept: 'images' //只允许上传图片
+            ,acceptMime: 'image/*' //只筛选图片
+            // ,size: 1024*2 //限定大小
+            ,url: '{:url("/Admin/Common/img_upload")}'
+            // ,data:{'form_submit':'ok','uploadpath':'check_agent_tx'}
+            ,choose: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+                obj.preview(function(index, file, result){
+                    $('#image').attr('src',result);
+                });
+            }
+            ,done: function(res, index, upload){
+                //上传完毕回调
+                if(res.code == 1){
+                    $('#img').val(res.msg);
+                }else{
+                    parent.layer.msg(res.msg,{icon:2});
+                }
+                layer.closeAll('loading'); //关闭loading
+            }
+            ,error: function(index, upload){
+                layer.closeAll('loading'); //关闭loading
+            }
+        });
+        //审核
+        form.on('select(sta)', function(data){
+            if(data.value == 3){
+                $('#images').css('display','none');
+                $('#desc').css('display','block');
+            }else{
+                $('#images').css('display','block');
+                $('#desc').css('display','none');
+            }
+        });
+    });
+    function check(pdc_id){
+        $('#pdc_id').val(pdc_id);
+        $("#course").click(function(event) {
+            var pdc_id = $("#pdc_id").val();
+            var sta = $("#sta").find('option:selected').val();
+            var img = '';
+            var desc = '';
+            if(sta== 2){
+                 img = $("#img").val();
+                if (img == '') {layer.msg('请上传转账凭证');return false;}
+            }else{
+                 desc = $('textarea[name=desc]').val();
+                if (desc == '') {layer.msg('请输入驳回理由');return false;}
+            }
+
+            $.ajax({
+                url: "{:url('/Admin/Companycash/company_option')}",
+                type: 'POST',
+                dataType: 'json',
+                data: {'pdc_id': pdc_id,'sta':sta,'img':img,'desc':desc},
+                success:function(sb){
+                        if(sb.code == 1){
+                            layer.msg(sb.msg,{icon:1},function(){
+                                layer.closeAll();
+                            })
+                        }else{
+                            layer.msg(sb.msg,{icon:2},function(){
+                                layer.closeAll();
+                            })
+                        }
+                }
+            });
+        });
+        layer.open({
+            type: 1,
+            title: '代理商提现审核',
+            shadeClose: true,
+            shade: 0.4,
+            maxmin: false, //开启最大化最小化按钮
+            area: ['600px', '400px'],
+            content: $('#courForm'),
+            end:function(){
+                location.reload()
+            }
+        });
+
+    }
+</script>

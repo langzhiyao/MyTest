@@ -1,0 +1,142 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>限时折扣</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form method="get" name="formSearch">
+        <table class="search-form">
+            <tbody>
+            <tr>
+                <th><label for="xianshi_name">{$Think.lang.xianshi_name}</label></th>
+                <td><input type="text" value="{$Request.get.xianshi_name}" name="xianshi_name" id="xianshi_name"
+                           class="txt" style="width:100px;"></td>
+                <th><label for="store_name">{$Think.lang.store_name}</label></th>
+                <td><input type="text" value="{$Request.get.store_name}" name="store_name" id="store_name"
+                           class="txt" style="width:100px;"></td>
+                <th><label for="">{$Think.lang.ds_state}</label></th>
+                <td>
+                    <select name="state">
+                        {notempty name="xianshi_state_array"}
+                        {volist name="xianshi_state_array" id="val"}
+                        <option value="{$key}"
+                                {eq name="key" value="$Request.get.state"}selected{/eq}>{$val}</option>
+                        {/volist}
+                        {/notempty}
+                    </select>
+                </td>
+                <td><a href="javascript:document.formSearch.submit();" class="btn-search" title="{$Think.lang.ds_query}">&nbsp;</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+    <!-- 帮助 -->
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>{$Think.lang.xianshi_list_help1}</li>
+            <li>{$Think.lang.xianshi_list_help2}</li>
+            <li>{$Think.lang.xianshi_list_help3}</li>
+        </ul>
+    </div>
+    
+    <!-- 列表 -->
+    <form id="list_form" method="post">
+        <input type="hidden" id="object_id" name="object_id"/>
+        <table class="ds-default-table">
+            <thead>
+            <tr class="thead">
+                <th class="align-left"><span>{$Think.lang.xianshi_name}</span></th>
+                <th class="align-left" width="240"><span>{$Think.lang.store_name}</span></th>
+                <th class="align-center" width="120"><span>{$Think.lang.start_time}</span></th>
+                <th class="align-center" width="120"><span>{$Think.lang.end_time}</span></th>
+                <th class="align-center" width="80"><span>购买下限</span></th>
+                <th class="align-center" width="80"><span>{$Think.lang.ds_state}</span></th>
+                <th class="align-center" width="120"><span>{$Think.lang.ds_handle}</span></th>
+            </tr>
+            </thead>
+            <tbody id="treet1">
+            {notempty name="list"}
+            {volist name="list" id="val"}
+            <tr class="hover">
+                <td class="align-left"><span>{$val.xianshi_name}</span></td>
+                <td class="align-left"><a
+                        href="{:url('home/showstore/index',['store_id'=>$val.store_id])}"><span>{$val.store_name}</span></a>
+                    {present name="flippedOwnShopIds[$val.store_id]"}
+                    <span class="ownshop">[自营]</span>
+                    {/present}
+                </td>
+                <td class="align-center"><span>{$val.start_time|date="Y-m-d H:i",###}</span></td>
+                <td class="align-center"><span>{$val.end_time|date="Y-m-d H:i",###}</span></td>
+                <td class="align-center"><span>{$val.lower_limit}</span></td>
+                <td class="align-center"><span>{$val.xianshi_state_text}</span></td>
+
+                <td class="nowrap align-center">
+                    <a href="{:url('promotionxianshi/xianshi_detail',['xianshi_id'=>$val.xianshi_id])}">{$Think.lang.ds_detail}</a>
+                    {if $val.editable}
+                    <a nctype="btn_cancel" data-xianshi-id="{$val.xianshi_id}"
+                       href="javascript:;">{$Think.lang.ds_cancel}</a>
+                    {/if}
+                    <a nctype="btn_del" data-xianshi-id="{$val.xianshi_id}"
+                       href="javascript:;">{$Think.lang.ds_del}</a>
+                </td>
+            </tr>
+           {/volist}
+            {else /}
+            <tr class="no_data">
+                <td colspan="16">{$Think.lang.ds_no_record}</td>
+            </tr>
+            {/notempty}
+            </tbody>
+            {notempty name="list"}
+            <tfoot>
+            <tr class="tfoot">
+                <td></td>
+                <td colspan="16">
+                    <div class="pagination">{$show_page} </div>
+                </td>
+            </tr>
+            </tfoot>
+            {/notempty}
+        </table>
+    </form>
+
+</div>
+<form id="submit_form" action="" method="post">
+    <input type="hidden" id="xianshi_id" name="xianshi_id" value="">
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        //取消限时折扣
+        $('[nctype="btn_cancel"]').on('click', function() {
+            if(confirm('{$Think.lang.ds_ensure_cancel}')) {
+                var action = "{:url('promotionxianshi/xianshi_cancel')}";
+                $('#submit_form').attr('action', action);
+                $('#xianshi_id').val($(this).attr('data-xianshi-id'));
+                $('#submit_form').submit();
+            }
+        })
+
+        //删除限时折扣
+        $('[nctype="btn_del"]').on('click', function() {
+            if(confirm('{$Think.lang.ds_ensure_del}')) {
+                var action = "{:url('promotionxianshi/xianshi_del')}";
+                $('#submit_form').attr('action', action);
+                $('#xianshi_id').val($(this).attr('data-xianshi-id'));
+                $('#submit_form').submit();
+            }
+        })
+    });
+</script>

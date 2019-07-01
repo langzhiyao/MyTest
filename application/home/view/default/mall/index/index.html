@@ -1,0 +1,583 @@
+{include file="public/mall_top" /}
+{include file="public/mall_header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/home/css/index.css">
+<script src="{$Think.config.url_domain_root}static/plugins/jquery.SuperSlide.2.1.1.js"></script>
+<style>
+    .mall_nav{border-bottom:none;}
+    .mall_nav .all_categorys .mc{display: block;}
+</style>
+<div class="clear"></div>
+<!-- HomeFocusLayout Begin-->
+<div class="home-focus-layout">
+    <div class="bd">
+        <ul id="fullScreenSlides" class="full-screen-slides">
+            {dstaglib:adv ap_id='1' limit='10' item='v'}
+            <li style="background: url({$Think.UPLOAD_SITE_URL}/{$Think.ATTACH_ADV}/{$v.adv_code}) center top no-repeat rgb(35, 35, 35); display: none;">
+                <a href="{$v.adv_link}" target="_blank" title="">&nbsp;</a>
+            </li>
+            {/dstaglib:adv}
+        </ul>
+    </div>
+    <div class="hd full-screen-slides-pagination">
+        <ul>
+            {dstaglib:adv ap_id='1' limit='10' item='v'}
+            <li class=""></li>
+            {/dstaglib:adv}
+        </ul>
+    </div>
+    
+    
+  <div class="right-sidebar">
+    <div class="right-panel">
+      {if $Think.session.is_login}
+      <div class="loginBox">
+        <div class="exitPanel"> <img class="lazyload"  data-original="{:getMemberAvatar($Think.session.avatar)}" alt="" />
+          <div class="message">
+            <p class="name">Hi, <a href="{:url('member/index')}">{:session('member_name')}</a>[<a href="{:url('login/logout')}">退出登录</a>]</p>
+          </div>
+          <div class="clear"></div>
+        </div>
+        <!-- 买家信息 -->
+        <div class="txtPanel"> <a href="{:url('memberorder/index',['state_type'=>'state_new'])}" class="line">
+          <p class="num">{$member_order_info.order_nopay_count}</p>
+          <p class="txt">待付款</p>
+          </a> <a target="_blank" href="{:url('memberorder/index')}" class="line">
+          <p class="num">{$member_order_info.order_noreceipt_count}</p>
+          <p class="txt">待收货</p>
+          </a> <a target="_blank" href="{:url('memberrefund/index')}">
+          <p class="num">{$member_order_info.order_noeval_count}</p>
+          <p class="txt">待评价</p>
+          </a>
+        </div>
+      </div>
+      {else /}
+      <div class="loginBox">
+        <div class="welcomePanel"> <img src="{:getMemberAvatar($Think.session.avatar)}">
+          <p>Hi，欢迎来{$setting_config.site_name}，请登录</p>
+        </div>
+        <div class="loginPanel">
+          <a href="{:url('login/login')}" rel="nofollow">
+            <span class="loginTxt"><img alt="" src="{:config('url_domain_root')}static/home/images/u-me.png">登录</span>
+          </a>
+          <a href="{:url('login/register')}" rel="nofollow">
+            <span class="reigsterTxt"><img alt="" src="{:config('url_domain_root')}static/home/images/u-pencil.png">注册</span>
+          </a>
+        </div>
+      </div>
+     {/if}
+      <ul class="securePanel">
+        <li><img alt="买家保障" src="{:config('url_domain_root')}static/home/images/u-promise.png">
+          <p>买家保障</p>
+        </li>
+        <li><img alt="商家认证" src="{:config('url_domain_root')}static/home/images/u-quality.png">
+          <p>商家认证</p>
+        </li>
+        <li><img alt="安全交易" src="{:config('url_domain_root')}static/home/images/u-safe.png">
+          <p>安全交易</p>
+        </li>
+      </ul>
+      <div class="clear"></div>
+    </div>
+  </div>
+</div>
+<!--HomeFocusLayout End-->
+
+<div class="jfocus-trigeminybox">
+    <a class="limited_time" title="限时打折" href="{:url('Promotion/index')}">
+        <div class="clock-wrap">
+            <div class="clock">
+                <div class="clock-h" id="ClockHours" style="-webkit-transform: rotate(93deg);"></div>
+                <div class="clock-m"></div>
+                <div class="clock-s"></div>
+            </div>
+        </div>
+    </a>
+    <div class="jfocus-trigeminy">
+        <div class="bd">
+            <div class="tempWrap">
+                <ul>
+                    <li>
+                        {dstaglib:adv ap_id='2' limit='10' item='v'}
+                        <a href="{$v.adv_link}" target="_blank" title="">
+                            <img class="lazyload" data-original="{$Think.UPLOAD_SITE_URL}/{$Think.ATTACH_ADV}/{$v.adv_code}" style="display: inline;">
+                        </a>
+                        {/dstaglib:adv}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="home-sale-layout w1200 mt20">
+        <div class="hd">
+            <ul class="tabs-nav">
+                <li class="tabs-selected on"><i class="arrow"></i><h3>商品推荐</h3></li>
+                <li class=""><i class="arrow"></i><h3>打折促销</h3></li>
+                <li class=""><i class="arrow"></i><h3>最新热卖</h3></li>
+                <li class=""><i class="arrow"></i><h3>疯狂抢购</h3></li>
+            </ul>
+        </div>
+        <div class="bd tabs-panel">
+            <ul style="display: block;">
+                {notempty name="recommend_list"}
+                {foreach name="recommend_list" item="goods"}
+                <li>
+                    <dl>
+                        <dt class="goods-name"><a target="_blank" href="{:url('goods/index',['goods_id'=>$goods.goods_commonid])}" title="{$goods.goods_name}">{$goods.goods_name}</a></dt>
+                        <dd class="goods-thumb">
+                            <a target="_blank" href="{:url('goods/index',['goods_id'=>$goods.goods_commonid])}">
+                                <img class="lazyload" data-original="{:cthumb($goods.goods_image)}" alt="{$goods.goods_name}">
+                            </a>
+                        </dd>
+                        <dd class="goods-price">商城价：<em>￥{$goods.goods_price}</em></dd>
+                    </dl>
+                </li>
+                {/foreach}
+                {/notempty}
+            </ul>
+            <ul style="display: none;">
+                {notempty name="promotion_list"}
+                {foreach name="promotion_list" item="goods"}
+                <li>
+                    <dl>
+                        <dt class="goods-name"><a target="_blank" href="{:url('goods/index',['goods_id'=>$goods.goods_id])}" title="{$goods.goods_name}">{$goods.goods_name}</a></dt>
+                        <dd class="goods-thumb">
+                            <a target="_blank" href="{:url('goods/index',['goods_id'=>$goods.goods_id])}">
+                                <img class="lazyload" data-original="{:cthumb($goods.goods_image)}" alt="{$goods.goods_name}">
+                            </a>
+                        </dd>
+                        <dd class="goods-price">商城价：<em>￥{$goods.goods_price}</em></dd>
+                    </dl>
+                </li>
+                {/foreach}
+                {/notempty}
+            </ul>
+            <ul style="display: none;">
+                {notempty name="new_list"}
+                {foreach name="new_list" item="goods"}
+                <li>
+                    <dl>
+                        <dt class="goods-name"><a target="_blank" href="{:url('goods/index',['goods_id'=>$goods.goods_id])}" title="{$goods.goods_name}">{$goods.goods_name}</a></dt>
+                        <dd class="goods-thumb">
+                            <a target="_blank" href="{:url('goods/index',['goods_id'=>$goods.goods_id])}">
+                                <img class="lazyload" data-original="{:cthumb($goods.goods_image)}" alt="{$goods.goods_name}">
+                            </a>
+                        </dd>
+                        <dd class="goods-price">商城价：<em>￥{$goods.goods_price}</em></dd>
+                    </dl>
+                </li>
+                {/foreach}
+                {/notempty}
+            </ul>
+            <ul style="display: none;">
+                {notempty name="groupbuy_list"}
+                {foreach name="groupbuy_list" item="goods"}
+                <li>
+                    <dl>
+                        <dt class="goods-name"><a target="_blank" href="{:url('goods/index',['goods_id'=>$goods.goods_id])}" title="{$goods.goods_name}">{$goods.goods_name}</a></dt>
+                        <dd class="goods-thumb">
+                            <a target="_blank" href="{:url('goods/index',['goods_id'=>$goods.goods_id])}">
+                                <img class="lazyload" data-original="{:cthumb($goods.goods_image)}" alt="{$goods.goods_name}">
+                            </a>
+                        </dd>
+                        <dd class="goods-price">商城价：<em>￥{$goods.goods_price}</em></dd>
+                    </dl>
+                </li>
+                {/foreach}
+                {/notempty}
+            </ul>
+        </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="floor floor1 w1200 style-red">
+    <div class="floor-left">
+        <div class="title">
+            <span>1F</span><h2 title="手机 、 数码 、 通信">数码通信</h2>
+        </div>
+        <div class="recommend-classes">
+            <ul>
+                {foreach name="floor1_block.goods_class_list" item="goods_class"}
+                <li><a href="{:url('Search/index',['cate_id'=>$goods_class.gc_id])}" title="{$goods_class.gc_name}" >{$goods_class.gc_name}</a></li>
+                {/foreach}
+            </ul>
+        </div>
+        <div class="left-ads">
+            {dstaglib:adv ap_id='8' limit='1' item='v'}
+            <a href="{$v.adv_link}" target="_blank" title="">
+                <img class="lazyload" data-original="{$Think.UPLOAD_SITE_URL}/{$Think.ATTACH_ADV}/{$v.adv_code}" style="display: inline;">
+            </a>
+            {/dstaglib:adv}
+        </div>
+    </div>
+    <div class="floor-right">
+        <ul class="tabs-nav hd">
+            {foreach name="floor1_block.goods_list" item="list"  key="list_key"}
+            <li {if condition="$list_key eq '0'"}class="on"{/if}><i class="arrow"></i><h3>{$list.gc_name}</h3></li>
+            {/foreach}
+        </ul>
+        <div class="goods-list bd">
+            {foreach name="floor1_block.goods_list" item="list" key="list_key"}
+            <ul {if condition="$list_key eq '0'"}style="display:block"{/if}>
+                {notempty name="list.gc_list"}
+                {foreach name="list.gc_list" item="goods"}
+                <li>
+                    <dl>
+                        <dt class="goods-name"><a target="_blank" href="{:url('goods/index',['goods_id'=>$goods.goods_commonid])}" title="{$goods.goods_name}">{$goods.goods_name}</a></dt>
+                        <dd class="goods-thumb">
+                            <a target="_blank" href="{:url('goods/index',['goods_id'=>$goods.goods_commonid])}">
+                                <img class="lazyload" data-original="{:cthumb($goods.goods_image)}" alt="{$goods.goods_name}"/>
+                            </a>
+                        </dd>
+                        <dd class="goods-price">
+                            <em>¥{$goods.goods_marketprice}</em>
+                            <span class="original">¥{$goods.goods_price}</span>
+                        </dd>
+                    </dl>
+                </li>
+                {/foreach}
+                {/notempty}
+            </ul>
+            {/foreach}
+        </div>
+    </div>
+</div>
+
+<div class="w1200 floor-banner">
+    {dstaglib:adv ap_id='3' limit='1' item='v'}
+    <a href="{$v.adv_link}" target="_blank" title="">
+        <img class="lazyload" data-original="{$Think.UPLOAD_SITE_URL}/{$Think.ATTACH_ADV}/{$v.adv_code}" style="display: inline;">
+    </a>
+    {/dstaglib:adv}
+</div>
+
+<div class="floor floor2 w1200 style-orange">
+    <div class="floor-left">
+        <div class="title">
+            <span>2F</span><h2 title="电视、空调、家电">生活家电</h2>
+        </div>
+        <div class="recommend-classes">
+            <ul>
+                {foreach name="floor2_block.goods_class_list" item="goods_class"}
+                <li><a href="{:url('Search/index',['cate_id'=>$goods_class.gc_id])}" title="{$goods_class.gc_name}" >{$goods_class.gc_name}</a></li>
+                {/foreach}
+            </ul>
+        </div>
+        <div class="left-ads">
+            {dstaglib:adv ap_id='9' limit='1' item='v'}
+            <a href="{$v.adv_link}" target="_blank" title="">
+                <img class="lazyload" data-original="{$Think.UPLOAD_SITE_URL}/{$Think.ATTACH_ADV}/{$v.adv_code}" style="display: inline;"/>
+            </a>
+            {/dstaglib:adv}
+        </div>
+    </div>
+    <div class="floor-right">
+        <ul class="tabs-nav hd">
+            {foreach name="floor2_block.goods_list" item="list"  key="list_key"}
+            <li {if condition="$list_key eq '0'"}class="on"{/if}><i class="arrow"></i><h3>{$list.gc_name}</h3></li>
+            {/foreach}
+        </ul>
+        <div class="goods-list bd">
+            {foreach name="floor2_block.goods_list" item="list" key="list_key"}
+            <ul {if condition="$list_key eq '0'"}style="display:block"{/if}>
+                {notempty name="list.gc_list"}
+                {foreach name="list.gc_list" item="goods"}
+                <li>
+                    <dl>
+                        <dt class="goods-name"><a target="_blank" href="{:url('goods/index',['goods_id'=>$goods.goods_commonid])}" title="{$goods.goods_name}">{$goods.goods_name}</a></dt>
+                        <dd class="goods-thumb">
+                            <a target="_blank" href="{:url('goods/index',['goods_id'=>$goods.goods_commonid])}">
+                                <img class="lazyload" data-original="{:cthumb($goods.goods_image)}" alt="{$goods.goods_name}"/>
+                            </a>
+                        </dd>
+                        <dd class="goods-price">
+                            <em>¥{$goods.goods_marketprice}</em>
+                            <span class="original">¥{$goods.goods_price}</span>
+                        </dd>
+                    </dl>
+                </li>
+                {/foreach}
+                {/notempty}
+            </ul>
+            {/foreach}
+        </div>
+    </div>
+</div>
+<div class="w1200 floor-banner">
+    {dstaglib:adv ap_id='5' limit='1' item='v'}
+    <a href="{$v.adv_link}" target="_blank" title="">
+        <img class="lazyload" data-original="{$Think.UPLOAD_SITE_URL}/{$Think.ATTACH_ADV}/{$v.adv_code}" style="display: inline;">
+    </a>
+    {/dstaglib:adv}
+</div>
+
+<div class="floor floor3 w1200 style-brown">
+    <div class="floor-left">
+        <div class="title">
+            <span>3F</span><h2 title="厨房电器">厨房电器</h2>
+        </div>
+        <div class="recommend-classes">
+            <ul>
+                {foreach name="floor3_block.goods_class_list" item="goods_class"}
+                <li><a href="{:url('Search/index',['cate_id'=>$goods_class.gc_id])}" title="{$goods_class.gc_name}" >{$goods_class.gc_name}</a></li>
+                {/foreach}
+            </ul>
+        </div>
+        <div class="left-ads">
+            {dstaglib:adv ap_id='10' limit='1' item='v'}
+            <a href="{$v.adv_link}" target="_blank" title="">
+                <img class="lazyload" data-original="{$Think.UPLOAD_SITE_URL}/{$Think.ATTACH_ADV}/{$v.adv_code}" style="display: inline;">
+            </a>
+            {/dstaglib:adv}
+        </div>
+    </div>
+    <div class="floor-right">
+        <ul class="tabs-nav hd">
+            {foreach name="floor3_block.goods_list" item="list"  key="list_key"}
+            <li {if condition="$list_key eq '0'"}class="on"{/if}><i class="arrow"></i><h3>{$list.gc_name}</h3></li>
+            {/foreach}
+        </ul>
+        <div class="goods-list bd">
+            {foreach name="floor3_block.goods_list" item="list" key="list_key"}
+            <ul {if condition="$list_key eq '0'"}style="display:block"{/if}>
+                {notempty name="list.gc_list"}
+                {foreach name="list.gc_list" item="goods"}
+                <li>
+                    <dl>
+                        <dt class="goods-name"><a target="_blank" href="{:url('goods/index',['goods_id'=>$goods.goods_commonid])}" title="{$goods.goods_name}">{$goods.goods_name}</a></dt>
+                        <dd class="goods-thumb">
+                            <a target="_blank" href="{:url('goods/index',['goods_id'=>$goods.goods_commonid])}">
+                                <img class="lazyload" data-original="{:cthumb($goods.goods_image)}" alt="{$goods.goods_name}"/>
+                            </a>
+                        </dd>
+                        <dd class="goods-price">
+                            <em>¥{$goods.goods_marketprice}</em>
+                            <span class="original">¥{$goods.goods_price}</span>
+                        </dd>
+                    </dl>
+                </li>
+                {/foreach}
+                {/notempty}
+            </ul>
+            {/foreach}
+        </div>
+    </div>
+</div>
+<div class="w1200 floor-banner">
+    {dstaglib:adv ap_id='6' limit='1' item='v'}
+    <a href="{$v.adv_link}" target="_blank" title="">
+        <img class="lazyload" data-original="{$Think.UPLOAD_SITE_URL}/{$Think.ATTACH_ADV}/{$v.adv_code}" style="display: inline;">
+    </a>
+    {/dstaglib:adv}
+</div>
+
+<div class="floor floor4 w1200 style-green">
+    <div class="floor-left">
+        <div class="title">
+            <span>4F</span><h2 title="电脑办公">电脑办公</h2>
+        </div>
+        <div class="recommend-classes">
+            <ul>
+                {foreach name="floor4_block.goods_class_list" item="goods_class"}
+                <li><a href="{:url('Search/index',['cate_id'=>$goods_class.gc_id])}" title="{$goods_class.gc_name}" >{$goods_class.gc_name}</a></li>
+                {/foreach}
+            </ul>
+        </div>
+        <div class="left-ads">
+            {dstaglib:adv ap_id='11' limit='1' item='v'}
+            <a href="{$v.adv_link}" target="_blank" title="">
+                <img class="lazyload" data-original="{$Think.UPLOAD_SITE_URL}/{$Think.ATTACH_ADV}/{$v.adv_code}" style="display: inline;">
+            </a>
+            {/dstaglib:adv}
+        </div>
+    </div>
+    <div class="floor-right">
+        <ul class="tabs-nav hd">
+            {foreach name="floor4_block.goods_list" item="list"  key="list_key"}
+            <li {if condition="$list_key eq '0'"}class="on"{/if}><i class="arrow"></i><h3>{$list.gc_name}</h3></li>
+            {/foreach}
+        </ul>
+        <div class="goods-list bd">
+            {foreach name="floor4_block.goods_list" item="list" key="list_key"}
+            <ul {if condition="$list_key eq '0'"}style="display:block"{/if}>
+                {notempty name="list.gc_list"}
+                {foreach name="list.gc_list" item="goods"}
+                <li>
+                    <dl>
+                        <dt class="goods-name"><a target="_blank" href="{:url('goods/index',['goods_id'=>$goods.goods_commonid])}" title="{$goods.goods_name}">{$goods.goods_name}</a></dt>
+                        <dd class="goods-thumb">
+                            <a target="_blank" href="{:url('goods/index',['goods_id'=>$goods.goods_commonid])}">
+                                <img class="lazyload" data-original="{:cthumb($goods.goods_image)}" alt="{$goods.goods_name}"/>
+                            </a>
+                        </dd>
+                        <dd class="goods-price">
+                            <em>¥{$goods.goods_marketprice}</em>
+                            <span class="original">¥{$goods.goods_price}</span>
+                        </dd>
+                    </dl>
+                </li>
+                {/foreach}
+                {/notempty}
+            </ul>
+            {/foreach}
+        </div>
+    </div>
+</div>
+<div class="w1200 floor-banner">
+    {dstaglib:adv ap_id='7' limit='1' item='v'}
+    <a href="{$v.adv_link}" target="_blank" title="">
+        <img class="lazyload" data-original="{$Think.UPLOAD_SITE_URL}/{$Think.ATTACH_ADV}/{$v.adv_code}" style="display: inline;">
+    </a>
+    {/dstaglib:adv}
+</div>
+
+
+<div class="floor floor5 w1200 style-blue">
+    <div class="floor-left">
+        <div class="title">
+            <span>5F</span><h2 title="五金装修">五金装修</h2>
+        </div>
+        <div class="recommend-classes">
+            <ul>
+                {foreach name="floor5_block.goods_class_list" item="goods_class"}
+                <li><a href="{:url('Search/index',['cate_id'=>$goods_class.gc_id])}" title="{$goods_class.gc_name}" >{$goods_class.gc_name}</a></li>
+                {/foreach}
+            </ul>
+        </div>
+        <div class="left-ads">
+            {dstaglib:adv ap_id='12' limit='1' item='v'}
+            <a href="{$v.adv_link}" target="_blank" title="">
+                <img class="lazyload" data-original="{$Think.UPLOAD_SITE_URL}/{$Think.ATTACH_ADV}/{$v.adv_code}" style="display: inline;">
+            </a>
+            {/dstaglib:adv}
+        </div>
+    </div>
+    <div class="floor-right">
+        <ul class="tabs-nav hd">
+            {foreach name="floor5_block.goods_list" item="list"  key="list_key"}
+            <li {if condition="$list_key eq '0'"}class="on"{/if}><i class="arrow"></i><h3>{$list.gc_name}</h3></li>
+            {/foreach}
+        </ul>
+        <div class="goods-list bd">
+            {foreach name="floor5_block.goods_list" item="list" key="list_key"}
+            <ul {if condition="$list_key eq '0'"}style="display:block"{/if}>
+                {notempty name="list.gc_list"}
+                {foreach name="list.gc_list" item="goods"}
+                <li>
+                    <dl>
+                        <dt class="goods-name"><a target="_blank" href="{:url('goods/index',['goods_id'=>$goods.goods_commonid])}" title="{$goods.goods_name}">{$goods.goods_name}</a></dt>
+                        <dd class="goods-thumb">
+                            <a target="_blank" href="{:url('goods/index',['goods_id'=>$goods.goods_commonid])}">
+                                <img class="lazyload" data-original="{:cthumb($goods.goods_image)}" alt="{$goods.goods_name}"/>
+                            </a>
+                        </dd>
+                        <dd class="goods-price">
+                            <em>¥{$goods.goods_marketprice}</em>
+                            <span class="original">¥{$goods.goods_price}</span>
+                        </dd>
+                    </dl>
+                </li>
+                {/foreach}
+                {/notempty}
+            </ul>
+            {/foreach}
+        </div>
+    </div>
+</div>
+<div class="w1200 floor-banner">
+    {dstaglib:adv ap_id='4' limit='1' item='v'}
+    <a href="{$v.adv_link}" target="_blank" title="">
+        <img class="lazyload" data-original="{$Think.UPLOAD_SITE_URL}/{$Think.ATTACH_ADV}/{$v.adv_code}" style="display: inline;">
+    </a>
+    {/dstaglib:adv}
+</div>
+
+
+
+<div class="wrapper mt10"></div>
+<div class="index-link wrapper">
+  <dl class="website">
+    <dt>合作伙伴 | 友情链接<b></b></dt>
+    <dd>
+      {notempty name="link_list"}
+      {volist name="link_list" id="val"}
+      <a href="{$val.link_url}" target="_blank" title="{$val.link_title}">{:str_cut($val.link_title,15)}</a>
+      {/volist}
+      {/notempty}
+    </dd>
+  </dl>
+</div>
+<div class="footer-line"></div>
+<!--首页底部保障开始-->
+
+<!--首页底部保障结束-->
+<!--StandardLayout Begin-->
+
+<!--StandardLayout End-->
+
+
+
+
+<script src="{$Think.config.url_domain_root}static/plugins/jquery.SuperSlide.2.1.1.js"></script>
+<script>
+  //轮播
+   jQuery(".home-focus-layout").slide({mainCell: ".bd ul", autoPlay: true, delayTime: 500,interTime: 5000});
+   jQuery(".jfocus-trigeminy").slide({mainCell:".bd li", autoPlay:true,delayTime: 1000,effect:"left",interTime: 5000,vis:4});
+   jQuery(".home-sale-layout").slide({autoPlay: false,});
+  jQuery(".floor1 .floor-right").slide({mainCell: ".bd", autoPlay: false, interTime: 5000});
+  jQuery(".floor2 .floor-right").slide({mainCell: ".bd", autoPlay: false, interTime: 5000});
+  jQuery(".floor3 .floor-right").slide({mainCell: ".bd", autoPlay: false, interTime: 5000});
+  jQuery(".floor4 .floor-right").slide({mainCell: ".bd", autoPlay: false, interTime: 5000});
+  jQuery(".floor5 .floor-right").slide({mainCell: ".bd", autoPlay: false, interTime: 5000});
+  function takeCount() {
+      setTimeout("takeCount()", 1000);
+      $(".time-remain").each(function(){
+          var obj = $(this);
+          var tms = obj.attr("count_down");
+          if (tms>0) {
+              tms = parseInt(tms)-1;
+              var days = Math.floor(tms / (1 * 60 * 60 * 24));
+              var hours = Math.floor(tms / (1 * 60 * 60)) % 24;
+              var minutes = Math.floor(tms / (1 * 60)) % 60;
+              var seconds = Math.floor(tms / 1) % 60;
+
+              if (days < 0) days = 0;
+              if (hours < 0) hours = 0;
+              if (minutes < 0) minutes = 0;
+              if (seconds < 0) seconds = 0;
+              obj.find("[time_id='d']").html(days);
+              obj.find("[time_id='h']").html(hours);
+              obj.find("[time_id='m']").html(minutes);
+              obj.find("[time_id='s']").html(seconds);
+              obj.attr("count_down",tms);
+          }
+      });
+  }
+  $(function () {
+
+      setTimeout("takeCount()", 1000);
+  })
+</script>
+
+
+{include file="public/mall_server" /}
+{include file="public/mall_footer" /}
+

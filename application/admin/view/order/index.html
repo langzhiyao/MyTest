@@ -1,0 +1,117 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>实物订单</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <form method="get">
+        <table class="search-form">
+            <tbody>
+                <tr>
+                    <th>{$Think.lang.order_number}</th>
+                    <td><input type="text" class="text w150" name="order_sn" value="{$Think.get.order_sn}"></td>
+                    <th>{$Think.lang.store_name}</th>
+                    <td><input type="text" class="text w150" name="store_name" value="{$Think.get.store_name}"></td>
+                    <th>{$Think.lang.order_state}</th>
+                    <td>
+                        <select name="order_state" class="querySelect">
+                            <option value="">{$Think.lang.ds_please_choose}</option>
+                            <option value="10" {if condition="$Think.get.order_state eq '10'"}selected{/if}>{$Think.lang.order_state_new}</option>
+                            <option value="20" {if condition="$Think.get.order_state eq '20'"}selected{/if}>{$Think.lang.order_state_pay}</option>
+                            <option value="30" {if condition="$Think.get.order_state eq '30'"}selected{/if}>{$Think.lang.order_state_send}</option>
+                            <option value="40" {if condition="$Think.get.order_state eq '40'"}selected{/if}>{$Think.lang.order_state_success}</option>
+                            <option value="0" {if condition="$Think.get.order_state eq '0'"}selected{/if}>{$Think.lang.order_state_cancel}</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>{$Think.lang.order_time_from}</th>
+                    <td>
+                        <input type="text" class="txt date" name="query_start_time" id="query_start_time" value="{$Think.get.query_start_time}">
+                        &nbsp;–&nbsp;
+                        <input id="query_end_time" class="txt date" type="text" name="query_end_time" value="{$Think.get.query_end_time}">
+                    </td>
+                    <th>{$Think.lang.buyer_name}</th>
+                    <td><input type="text" class="text w80" name="buyer_name" value="{$Think.get.buyer_name}"></td>
+                    <td>
+                        <select name="payment_code">
+                            <option value="">{$Think.lang.ds_please_choose}</option>
+                            {foreach $payment_list as $val} 
+                            <option {if condition="$Think.get.payment_code eq $val.payment_code"}selected{/if} value="{$val.payment_code}">{$val.payment_name}</option>
+                            {/foreach}
+                        </select>
+                    </td>
+                    <td class="w70 tc">
+                        <label class="submit-border">
+                            <input type="submit" class="submit" value="搜索">
+                        </label>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+
+    <table class="ds-default-table">
+        <thead>
+            <tr>
+                <th>{$Think.lang.order_number}</th>
+                <th>{$Think.lang.store_name}</th>
+                <th>{$Think.lang.buyer_name}</th>
+                <th>{$Think.lang.order_time}</th>
+                <th>{$Think.lang.order_total_price}</th>
+                <th>{$Think.lang.payment}</th>
+                <th>{$Think.lang.order_state}</th>
+                <th>{$Think.lang.ds_operation}</th>
+            </tr>
+        </thead>
+        {empty  name="order_list"}
+        <tbody>
+            <tr class="no_data">
+                <td colspan="20">{$Think.lang.no_record}</td>
+            </tr>
+        </tbody>
+        {else /}
+        <tbody>
+            {volist name="order_list" id="order"}
+            <tr>
+                <td>{$order.order_sn}</td>
+                <td>{$order.store_name}</td>
+                <td>{$order.buyer_name}</td>
+                <td>{$order.add_time|date="Y-m-d H:i:s",###}</td>
+                <td>{$order.order_amount}</td>
+                <td><?php echo orderPaymentName($order['payment_code']);?></td>
+                <td><?php echo orderState($order);?></td>
+                <td>
+                    <a href="{:url('order/show_order',['order_id'=>$order.order_id])}">{$Think.lang.ds_view}</a>
+                    {if condition="$order.if_cancel"}
+                    <a href="javascript:void(0)" onclick="if (confirm('{$Think.lang.order_confirm_cancel}')){location.href = '{:url('/admin/order/change_state',['state_type'=>'cancel','order_id'=>$order.order_id])}'}" >{$Think.lang.order_change_cancel}</a>
+                    {/if}
+                    {if condition="$order.if_system_receive_pay"}
+                    <a href="{:url('/admin/order/change_state',['state_type'=>'receive_pay','order_id'=>$order.order_id])}">{$Think.lang.order_change_received}</a>
+                    {/if}
+                </td>
+            </tr>
+            {/volist}
+        </tbody>
+        {/empty}
+    </table>
+    {$show_page}
+</div>
+
+<script type="text/javascript">
+$(function(){
+    $('#query_start_time').datepicker({dateFormat: 'yy-mm-dd'});
+    $('#query_end_time').datepicker({dateFormat: 'yy-mm-dd'});
+});
+</script> 
+

@@ -1,0 +1,204 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>视频分类管理</h3>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form id="goods_class_form" enctype="multipart/form-data" method="post">
+        <input type="hidden" name="form_submit" value="ok" />
+        <table class="ds-default-table">
+            <tbody>
+                <tr class="noborder">
+                    <td colspan="2" class="required"><label class="validation" for="gc_name">{$Think.lang.teacher_type_index_name}:</label></td>
+                </tr>
+                <tr class="noborder">
+                    <td class="vatop rowform"><input type="text" value="" name="gc_name" id="gc_name" maxlength="20" class="txt"></td>
+                    <td class="vatop tips"></td>
+                </tr>
+                <!--<tr>-->
+                    <!--<td colspan="2" class="required"><label for="pic"><?php echo '分类图片';?>:</label></td>-->
+                <!--</tr>-->
+                <!--<tr class="noborder">-->
+                    <!--<td class="vatop rowform"><span class="type-file-box">-->
+                            <!--<input type='text' name='textfield' id='textfield1' class='type-file-text' />-->
+                            <!--<input type='button' name='button' id='button1' value='' class='type-file-button' />-->
+                            <!--<input name="pic" type="file" class="type-file-file" id="pic" size="30" hidefocus="true" nc_type="change_pic">-->
+                        <!--</span></td>-->
+                    <!--<td class="vatop tips">只有第一级分类可以上传图片，建议用16px * 16px，超出后自动隐藏</td>-->
+                <!--</tr>-->
+                <tr>
+                    <td colspan="2" class="required"><label for="parent_id">{$Think.lang.teacher_class_add_sup_class}:</label></td>
+                </tr>
+                <tr class="noborder">
+                    <td class="vatop rowform"><select name="gc_parent_id" id="gc_parent_id">
+                            <option value="0">{$Think.lang.ds_please_choose}...</option>
+                            <?php if(!empty($parent_list) && is_array($parent_list)){ ?>
+                            <?php foreach($parent_list as $k => $v){ ?>
+                            <option <?php if($gc_parent_id == $v['gc_id']){ ?>selected='selected'<?php } ?> value="<?php echo $v['gc_id'];?>"><?php echo $v['gc_name'];?></option>
+                            <?php } ?>
+                            <?php } ?>
+                        </select></td>
+                    <td class="vatop tips">如果选择上级分类，那么新增的分类则为被选择上级分类的子分类</td>
+                </tr>
+                <!--<tr>-->
+                    <!--<td colspan="2" class="required"><label for="gc_name">{$Think.lang.teacher_type_index_type}:</label></td>-->
+                <!--</tr>-->
+                <!--<tr class="noborder">-->
+                    <!--<td colspan="2" id="gcategory"><select class="class-select">-->
+                            <!--<option value="0">{$Think.lang.ds_please_choose}...</option>-->
+                            <!--<?php if(!empty($gc_list)){ ?>-->
+                            <!--<?php foreach($gc_list as $k => $v){ ?>-->
+                            <!--<?php if ($v['gc_parent_id'] == 0) {?>-->
+                            <!--<option value="<?php echo $v['gc_id'];?>"><?php echo $v['gc_name'];?></option>-->
+                            <!--<?php } ?>-->
+                            <!--<?php } ?>-->
+                            <!--<?php } ?>-->
+                        <!--</select>-->
+                        <!--{$Think.lang.ds_quickly_targeted}</td>-->
+                <!--</tr>-->
+                <!--<tr class="noborder">-->
+                    <!--<td class="vatop rowform"><input type="hidden" name="t_name" id="t_name" value="" />-->
+                        <!--<div id="type_div" class="goods-sort-type">-->
+                            <!--<div class="container">-->
+                                <!--<dl>-->
+                                    <!--<dd>-->
+                                        <!--<input type="radio" name="t_id" value="0" checked="checked" />-->
+                                        <!--{$Think.lang.teacher_class_null_type} </dd>-->
+                                <!--</dl>-->
+                                <!--<?php if(!empty($type_list)){?>-->
+                                <!--<?php foreach($type_list as $k=>$val){?>-->
+                                <!--<?php if(!empty($val['type'])){?>-->
+                                <!--<dl>-->
+                                    <!--<dt id="type_dt_<?php echo $k;?>"><?php echo $val['name']?></dt>-->
+                                    <!--<?php foreach($val['type'] as $v){?>-->
+                                    <!--<dd>-->
+                                        <!--<input type="radio" name="t_id" value="<?php echo $v['type_id']?>" />-->
+                                        <!--<span><?php echo $v['type_name'];?></span></dd>-->
+                                    <!--<?php }?>-->
+                                <!--</dl>-->
+                                <!--<?php }?>-->
+                                <!--<?php }?>-->
+                                <!--<?php }?>-->
+                            <!--</div>-->
+                        <!--</div></td>-->
+                    <!--<td class="vatop tips">如果当前下拉选项中没有适合的类型，可以去<a onclick="window.parent.openItem('index,type,goods')" href="JavaScript:void(0);">{$Think.lang.ds_type}</a>功能中添加新的类型</td>-->
+                <!--</tr>-->
+                <tr>
+                    <td colspan="2" class="required"><label>{$Think.lang.ds_sort}:</label></td>
+                </tr>
+                <tr class="noborder">
+                    <td class="vatop rowform"><input type="text" value="255" name="gc_sort" id="gc_sort" class="txt"></td>
+                    <td class="vatop tips">数字范围为0~255，数字越小越靠前</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2"><a href="JavaScript:void(0);" class="btn" id="submitBtn"><span>{$Think.lang.ds_submit}</span></a></td>
+                </tr>
+            </tfoot>
+        </table>
+    </form>
+</div>
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/common/js/mlselection.js" charset="utf-8"></script>
+<!--<script type="text/javascript" src="{$Think.config.url_domain_root}/js/jquery.mousewheel.js"></script>--> 
+<script>
+//按钮先执行验证再提交表单
+              $(function() {
+
+//                  $('#type_div').perfectScrollbar();
+
+                  $("#submitBtn").click(function() {
+                      if ($("#goods_class_form").valid()) {
+                          $("#goods_class_form").submit();
+                      }
+                  });
+
+                  $("#pic").change(function() {
+                      $("#textfield1").val($(this).val());
+                  });
+                  $('input[type="radio"][name="t_id"]').click(function() {
+                      if ($(this).val() == '0') {
+                          $('#t_name').val('');
+                      } else {
+                          $('#t_name').val($(this).next('span').html());
+                      }
+                  });
+
+                  $('#goods_class_form').validate({
+                      errorPlacement: function(error, element) {
+                          error.appendTo(element.parent().parent().prev().find('td:first'));
+                      },
+                      rules: {
+                          gc_name: {
+                              required: true,
+                              remote: {
+                                  url: "{:url('/Admin/Goodsclass/ajax',['branch'=>'check_class_name'])}",
+                                  type: 'get',
+                                  data: {
+                                      gc_name: function() {
+                                          return $('#gc_name').val();
+                                      },
+                                      gc_parent_id: function() {
+                                          return $('#gc_parent_id').val();
+                                      },
+                                      gc_id: ''
+                                  }
+                              }
+                          },
+                          commis_rate: {
+                              required: true,
+                              max: 100,
+                              min: 0,
+                              digits: true
+                          },
+                          gc_sort: {
+                              number: true
+                          }
+                      },
+                      messages: {
+                          gc_name: {
+                              required: '{$Think.lang.goods_class_add_name_null}',
+                              remote: '{$Think.lang.goods_class_add_name_exists}'
+                          },
+                          commis_rate: {
+                              required: '{$Think.lang.goods_class_add_commis_rate_error}',
+                              max: '{$Think.lang.goods_class_add_commis_rate_error}',
+                              min: '{$Think.lang.goods_class_add_commis_rate_error}',
+                              digits: '{$Think.lang.goods_class_add_commis_rate_error}'
+                          },
+                          gc_sort: {
+                              number: '{$Think.lang.goods_class_add_sort_int}'
+                          }
+                      }
+                  });
+
+                  // 所属分类
+                  $("#gc_parent_id").on('change', function() {
+                      type_scroll($(this));
+                  });
+                  // 类型搜索
+                  $("#gcategory > select").on('change', function() {
+                      type_scroll($(this));
+                  });
+              });
+              var typeScroll = 0;
+              function type_scroll(o) {
+                  var id = o.val();
+                  if (!$('#type_dt_' + id).is('dt')) {
+                      return false;
+                  }
+                  $('#type_div').scrollTop(-typeScroll);
+                  var sp_top = $('#type_dt_' + id).offset().top;
+                  var div_top = $('#type_div').offset().top;
+                  $('#type_div').scrollTop(sp_top - div_top);
+                  typeScroll = sp_top - div_top;
+              }
+              gcategoryInit('gcategory');
+</script> 

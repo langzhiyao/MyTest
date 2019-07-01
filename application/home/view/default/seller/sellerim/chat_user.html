@@ -1,0 +1,24 @@
+<div id="chatUserList" class="dssc-chat-user-list">
+    {notempty name="list"}
+    <ul>
+        {volist name="list" id="val"}
+        <li class="normal" user_id="{$val.u_id}">
+            <a href="javascript:void(0)" onclick="user_chat_log('{$val.u_id}','{$val.u_name}');" title="与 {$val.u_name} 的最后对话时间：{$val.time}">
+                <span class="avatar"><img src="{$val.avatar}"/></span>{$val.u_name} </a></li>
+       {/volist}
+    </ul>
+   {else /}
+    <div class="warning-option"><i class="icon-warning-sign">&nbsp;</i><span>{$Think.lang.no_record}</span></div>
+    {/notempty}
+</div>
+<script src="{$Think.config.url_domain_root}static/plugins/jquery-2.1.4.min.js"></script>
+<script src="{$Think.config.url_domain_root}static/plugins/jquery.ajaxContent.pack.js"></script>
+<script src="{$Think.config.url_domain_root}static/plugins/perfect-scrollbar.min.js"></script>
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/perfect-scrollbar.min.css">
+<script type="text/javascript">
+    $('#store_chat_log .demo').ajaxContent({
+        target:'#store_chat_log'
+    });
+    //自定义滚定条
+    $('#chatUserList').perfectScrollbar();
+</script>

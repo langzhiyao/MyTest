@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>想见孩-选择套餐</title>
+    <meta name="author" content="想见孩" />
+    <meta name="copyright" content="想见孩" />
+    <meta name="description" content="想见孩" />
+    <meta id="viewport" name="viewport" content="width=750" />
+    <link rel="stylesheet" href="../content/style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/iconfonts/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/lib/weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/css/jquery-weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/user.css" type="text/css" />
+    <link rel="shortcut icon" href="../content/images/ico.ico" type="image/x-icon" />
+    <script src="../content/scripts/mobile-util.js"></script>
+    <link rel="stylesheet" href="/static/plugins/layer/css/layui.css">
+</head>
+
+<body>
+<header class="head">
+    <div class="head0">
+        <div class="menu_bar_box">
+            <a href="javascript:;" class="back_btn" onClick="historyback();">
+                <i class="icon iconfont icon-jiantou3"></i>
+            </a>
+        </div>
+        <div class="head_title">
+            <p>选择套餐</p>
+        </div>
+        <div class="head_r">
+
+        </div>
+    </div>
+</header>
+
+<!-- 主要内容 -->
+<div class="main paddb120">
+    <div class="cont margt50">
+        <div class="container3">
+            <ul class="level_list clearfix">
+
+            </ul>
+        </div>
+
+        <div class="choosed_box">
+            <div class="container2">
+                <p class="choosed_info">
+                    <i class="icon iconfont icon-tixingtishi"></i> 您选择的套餐将在<span class="date">2019-09-11</span>到期
+                </p>
+            </div>
+        </div>
+
+        <div class="payment_mode_box">
+            <div class="container2">
+                <div class="weui-cells weui-cells_checkbox clearfix" id="payments">
+                    <label class="weui-cell weui-check__label" for="s11" style="visibility: hidden;" id="wxpay_h5">
+                        <div class="weui-cell__bd">
+                            <p><img class="zhifulogo" src="../content/images/icons/weixin.png" alt="">
+                                微信支付
+                            </p>
+                        </div>
+                        <div class="weui-cell__hd">
+                            <input type="radio" class="weui-check" checked name="payment_code" id="s11" value="wxpay_app">
+                            <i class="weui-icon-checked"></i>
+                        </div>
+                    </label>
+                    <label class="weui-cell weui-check__label" for="s12" style="visibility: hidden;" id="alipay_app">
+                        <div class="weui-cell__bd">
+                            <p><img class="zhifulogo" src="../content/images/icons/zhifubao.png" alt="" >
+                                支付宝支付
+                            </p>
+                        </div>
+                        <div class="weui-cell__hd">
+                            <input type="radio" name="payment_code" class="weui-check" id="s12" value="alipay_app">
+                            <i class="weui-icon-checked"></i>
+                        </div>
+                    </label>
+                    <label class="weui-cell weui-check__label" for="s11" style="visibility: hidden;" id="nopay">
+                        <div class="weui-cell__bd">
+                            <p><img class="zhifulogo" src="../content/images/icons/weixin.png" alt=""></p>
+                        </div>
+                        <div class="weui-cell__hd">
+                            <i class="weui-icon-checked"></i>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="total_box">
+    <div class="total_cont">
+        <div class="total_cont_l">
+            <dl class="total_info">
+                <dt>总计：￥<strong id="price">0</strong> <span id="Discount">已优惠0元</span></dt>
+                <dd id="pkgdesc"></dd>
+            </dl>
+        </div>
+        <div class="total_cont_r">
+            <a class="total_cont_btn" href="javascript:;">确认支付</a>
+        </div>
+    </div>
+
+</div>
+<script src="../content/scripts/jquery.min.js"></script>
+<script src="../content/plugins/jqweui/js/jquery-weui.min.js"></script>
+<script src="../content/plugins/jqweui/js/city-picker.min.js"></script>
+<script src="/static/plugins/layer/layui.all.js"></script>
+<script src="/static/plugins/layer/layui.js"></script>
+<script src="/static/plugins/layer/layer.js"></script>
+<script src="../content/scripts/juqery.cookie.js"></script>
+<script src="../content/scripts/commom.js"></script>
+<script src="../content/scripts/API.js"></script>
+<div id="gopay" style="display: none;">
+
+</div>
+<script>
+    // var api = 'http://w.xjh.com/index.php/Wap';
+    // var user_token = '4570a44f7d6512c8ec2e20507a80009a';
+    var pkg_type = GetQueryString('pkg_type');
+    var child_id = GetQueryString('child_id');
+    $(function() {
+        if (pkg_type && child_id) {
+            GetPackagesList(pkg_type);
+            GetPaymentList();
+            GetNowPackageTime(child_id);
+        } else {
+            $.alert('参数错误,获取不到学生信息或套餐信息！', '系统提示', function() {
+                historyback();
+            })
+        }
+        $('.total_cont_btn').click(function(event) {
+            var pay = $("input[name='payment_code']:checked").val();
+            if (pay == 'undefined' || !pay || pay == '') {
+                $.alert('没有选择支付方式', '系统提示');
+                return false;
+            }
+            var pkginfo = $('.active').attr('data-info');
+            if (pkginfo == 'undefined' || !pkginfo || pkginfo == '') {
+                $.alert('请选择套餐！', '系统提示');
+                return false;
+            }
+            pkginfo = $.parseJSON(pkginfo);
+            var pkgid = pkginfo.pkg_id;
+            if (!pkgid) {
+                $.alert('请选择套餐！', '系统提示');
+                return false;
+            }
+            if (!child_id) {
+                $.alert('参数错误! child', '系统提示');
+                return false;
+            }
+            $.confirm('是否确认支付？', '支付提醒', function() {
+                $.ajax({
+                    type: 'POST',
+                    url: api + '/Packagesbuy/buy_step1.html',
+                    data: {
+                        'key': user_token,
+                        'pkg_id': pkgid,
+                        'payment_code': pay,
+                        'child_id': child_id,
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response['code'] == 200) {
+                            // 微信支付
+                            if (pay == 'wxpay_app') {
+                                var mbs = response.result[0];
+                                if (mbs.result_code == 'SUCCESS') {
+                                    if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) { //判断iPhone|iPad|iPod|iOS
+                                        window.webkit.messageHandlers.wxpayClick.postMessage(mbs);
+                                    } else if (/(Android)/i.test(navigator.userAgent)) { //判断Android
+                                        mbs = mbs['prepay_id'] + ',' + mbs['nonce_str'] + ',' + mbs['timestamp'] + ',' + mbs['sign'] + ',' + mbs['orderSn'];
+                                        Android.wxpayClick(mbs);
+                                    } else { //pc
+                                    };
+                                } else {
+                                    $.toast('系统错误', 'forbidden');
+                                    return false;
+                                }
+                            }
+                            //支付宝支付
+                            if (pay == 'alipay_app') {
+                                var mbs = response.result[0];
+                                if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) { //判断iPhone|iPad|iPod|iOS
+                                    window.webkit.messageHandlers.aliapyClick.postMessage(mbs);
+                                } else if (/(Android)/i.test(navigator.userAgent)) { //判断Android
+                                    mbs = mbs['content'] + ',' + mbs['orderSn'];
+                                    Android.aliapyClick(mbs);
+                                } else { //pc
+                                };
+                            }
+                        } else if (response['code'] == 400) {
+                            $.toast('请先前往登陆', 'forbidden');
+                            return false;
+                        } else {
+                            $.toast(response['message'], 'forbidden');
+                            return false;
+                        }
+                    }
+                })
+            });
+        })
+
+        function GetPackagesList(pkg_type) {
+            $.ajax({
+                url: api + '/Packagesbuy/get_packages_list',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    'key': user_token,
+                    'pkg_type': pkg_type
+                },
+            })
+                .done(function(sb) {
+                    if (sb.code == 200) {
+                        package = sb.result;
+                        var pkghtml = '';
+                        for (var i = 0; i < package.length; i++) {
+                            var packinfo = JSON.stringify(package[i]);
+                            // if (package[i].pkg_sort==666) {
+                            //     pkghtml+="<li class='active' data-info='"+packinfo+"' onclick='tableclick(this)'>";
+                            // }else{
+                            // }
+                            pkghtml += "<li data-info='" + packinfo + "' onclick='tableclick(this)'>";
+                            pkghtml += '<div class="level_item">';
+                            if (package[i].pkg_sort == 666) {
+                                pkghtml += '<span class="level_hot">热门推荐</span>';
+                            }
+                            pkghtml += '<p class="level_item_p1">' + package[i].pkg_title + '</p>' +
+                                '<p class="level_item_p2">￥<strong>' + package[i].pkg_price + '</strong></p>' +
+                                '<p class="level_item_p3">￥' + package[i].pkg_cprice + '</p>';
+                            if (package[i].pkg_sort == 666) {
+                                pkghtml += '<p class="level_item_p4"><span>' + package[i].pkg_desc + '</span></p>';
+                            }
+                            pkghtml += '</div>' +
+                                '</li>';
+                        }
+                        $('.level_list').html(pkghtml);
+                    } else {
+                        $.alert(sb.message, '系统提示', function() {
+                            historyback();
+                        })
+                    }
+
+                })
+        }
+
+        function GetPaymentList() {
+            $.post(api + '/Packagesbuy/get_payment_list', {
+                'key': user_token
+            }, function(data, textStatus, xhr) {
+                if (data.code == 200) {
+                    var payment = data.result[0];
+                    if (payment.length > 0) {
+                        for (var i = 0; i < payment.length; i++) {
+                            $('#' + payment[i].payment_title).css('visibility', 'visible');
+                        }
+                    } else {
+                        $('#nopay').css('visibility', 'visible');
+                    }
+
+                }
+            }, 'json');
+        }
+    })
+
+    function tableclick(demo) {
+        $(demo).siblings().removeClass("active").end().addClass("active");
+        var pkginfo = $(demo).attr('data-info');
+        pkginfo = pkginfo.replace(' ', '');
+        $.post(api + '/Packagesbuy/packages_time_reckon', {
+            'key': user_token,
+            'child_id': child_id,
+            'pkginfo': pkginfo
+        }, function(data, textStatus, xhr) {
+            if (data.code == 200) {
+                $('.date').text(data.result[0].end_time)
+                pkginfo = $.parseJSON(pkginfo);
+                $('#price').text(pkginfo.pkg_price)
+                var Discount = pkginfo.pkg_cprice - pkginfo.pkg_price;
+                $('#Discount').text('已优惠' + Discount + '元')
+                var type = pkginfo.pkg_type == 1 ? '看孩' : '回放';
+                var name = $('.active .level_item_p1').text();
+                // $('#pkgdesc').text('您已选择' + type + name + '套餐')
+                $('#pkgdesc').text('您已选择' + name)
+            } else {
+                $('.choosed_info').html(data.message);
+            }
+        }, "json");
+    }
+
+    function GetNowPackageTime(child_id) {
+        $.post(api + '/Packagesbuy/GetNowPackageTime', {
+            'key': user_token,
+            'child_id': child_id
+        }, function(data, textStatus, xhr) {
+            if (data.code == 200) {
+                $('.date').text(data.result[0].endtime)
+            } else {
+                $('.choosed_info').html(data.message);
+            }
+        }, "json");
+    }
+
+    function payTo(orderSn) {
+        location.href = http_url + 'app/user/paysuccess.html?orderSn=' + orderSn;
+    }
+</script>
+
+</body>
+
+</html>

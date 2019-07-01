@@ -1,0 +1,103 @@
+{include file="public/header" /}
+<script src="{$Think.config.url_domain_root}static/common/js/mlselection.js"></script>
+<script src="{$Think.config.url_domain_root}static/home/js/common.js"></script>
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>平台账号资金管理 </h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form method="get" name="formSearch" id="formSearch">
+        <table class="search-form">
+            <tbody>
+               <tr>
+                   <td> <label>会员账号：</label></td>
+                   <td><input type="text" name="user" value="{$Think.get.user}"></td>
+                   <td> <select name="status" lay-verify="type" class="select">
+                            <option value="">交易类型</option>
+                            <option value="1" {if condition='$Think.get.status eq 1'}selected='selected'{/if}>入账</option>
+                            <option value="2" {if condition='$Think.get.status eq 2'}selected='selected'{/if}>出账</option>
+                        </select></td>
+                   <td> <label>时间：</label></td>
+                   <td>
+                       <input type="text" class="txt date" name="query_start_time" id="query_start_time" value="{$Think.get.query_start_time}" placeholder="请输入开始时间">
+                       &nbsp;–&nbsp;
+                       <input id="query_end_time" class="txt date" type="text" name="query_end_time" value="{$Think.get.query_end_time}" placeholder="请输入结束时间">
+                   </td>
+                     <td class="layui-inline">   <input type="submit" class="submit" value="搜索">
+                        <a href="{:url('Teachercertify/index')}" class="btns"><span>{$Think.lang.ds_cancel_search}</span></a>
+                        </td>
+               </tr>
+            </tbody>
+        </table>
+    </form>
+    <?php if(session('office_is_super') ==1){ ?>
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>出账总额：<?php if(isset($sum['outCount'])){echo sprintf('%.2f', $sum['outCount']);}else{echo 0;} ?>元</li>
+            <li>入账总额：<?php if(isset($sum['totalCount'])){echo sprintf('%.2f', $sum['totalCount']);}else{echo 0;} ?>元 ；
+                （分成入账：<?php if(isset($sum['fenCount'])){echo sprintf('%.2f', $sum['fenCount']);}else{echo 0;} ?>元；
+                支付入账：<?php if(isset($sum['payCount'])){echo sprintf('%.2f', $sum['payCount']);}else{echo 0;} ?>元；）</li>
+        </ul>
+    </div>
+    <?php } ?>
+    <table class="ds-default-table">
+        <thead>
+        <tr class="thead">
+            <th colspan="align-center">序号</th>
+            <th class="align-center">交易类型</th>
+            <th class="align-center">会员账号</th>
+            <th class="align-center">身份</th>
+            <th class="align-center">金额（元）</th>
+            <th class="align-center">状态</th>
+            <th class="align-center">添加时间</th>
+            <th class="align-center">备注</th>
+        </tr>
+        <tbody>
+        <?php if(!empty($pdlog) && is_array($pdlog)){ ?>
+        <?php foreach($pdlog as $k => $v){ ?>
+        <tr class="hover member">
+            <td class="align-center"><?php if(!$_GET['page']){  echo $k+1; }else{ echo ($_GET['page']-1)*15+$k+1; }?></td>
+            <td class="align-center"><?php if($v['lg_type']=="share_admin_payment"){echo "入账";}elseif($v['lg_type']=="order_pay"){echo "入账";}elseif($v['lg_type']=="cash_pay"){echo "出账";} ?></td>
+            <td class="align-center"><?php echo $v['lg_member_name']; ?></td>
+            <td class="align-center"><?php if($v['lg_member_id']==1&&$v['lg_member_name']=="admin"){echo "超级管理员";}elseif($v['member_identity']==1){echo "家长";}elseif($v['member_identity']==2){echo "教师";}else{echo "代理商";} ?></td>
+            <td class="align-center"><?php if(!empty($v['lg_av_amount'])){echo sprintf("%.2f",$v['lg_av_amount']);} ?></td>
+            <td class="align-center"><?php if($v['status']==1){echo "成功";}else{echo "失败";} ?></td>
+            <td class="align-center"><?php if(!empty($v['lg_add_time'])){echo date("Y-m-d H:i:s",$v['lg_add_time']);} ?></td>
+            <td class="align-center" width="450px"><?php echo $v['lg_desc']; ?></td>
+        </tr>
+        <?php } ?>
+        <?php }else { ?>
+        <tr class="no_data">
+            <td colspan="11">{$Think.lang.ds_no_record}</td>
+        </tr>
+        <?php } ?>
+        </tbody>
+        <tfoot class="tfoot">
+        <?php if(!empty($member_list) && is_array($member_list)){ ?>
+        <tr>
+            <td class="w24"><input type="checkbox" class="checkall" id="checkallBottom"></td>
+            <td colspan="16">
+                <label for="checkallBottom">{$Think.lang.ds_select_all}</label>
+                &nbsp;&nbsp;<a href="JavaScript:void(0);" class="btn" onclick="if(confirm('{$Think.lang.ds_ensure_del}')){$('#form_member').submit();}"><span>{$Think.lang.ds_del}</span></a>
+            </td>
+        </tr>
+        <?php } ?>
+        </tfoot>
+    </table>
+    {$page}
+    
+</div>

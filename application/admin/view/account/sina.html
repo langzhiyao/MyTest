@@ -1,0 +1,58 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>账号同步</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    
+    <form method="post">
+        <div class="ncap-form-default">
+            <dl>
+                <dt>{$Think.lang.sina_isuse}</dt>
+                <dd>
+                    <div class="onoff">
+                        <label for="sina_isuse_show1" class="cb-enable {if condition="$list_config.sina_isuse eq 1"}selected{/if}" >是</label>
+                        <label for="sina_isuse_show0" class="cb-disable {if condition="$list_config.sina_isuse eq 0"}selected{/if}">否</label>
+                        <input id="sina_isuse_show1" name="sina_isuse" value="1" type="radio" {if condition="$list_config.sina_isuse eq 1"} checked="checked"{/if}>
+                        <input id="sina_isuse_show0" name="sina_isuse" value="0" type="radio" {if condition="$list_config.sina_isuse eq 0"} checked="checked"{/if}>
+                    </div>
+                </dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.sina_appcode}</dt>
+                <dd>
+                    <input type="text" name="sina_appcode" id="sina_appcode" value="{$list_config.sina_appcode}" class="w200"/>
+                </dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.sina_wb_akey}</dt>
+                <dd>
+                    <input type="text" name="sina_wb_akey" id="sina_wb_akey" value="{$list_config.sina_wb_akey}" class="w200"/>
+                </dd>
+            </dl>
+            
+            <dl>
+                <dt>{$Think.lang.sina_wb_skey}</dt>
+                <dd>
+                    <input type="text" name="sina_wb_skey" id="sina_wb_skey" value="{$list_config.sina_wb_skey}" class="w200"/>
+                </dd>
+            </dl>
+            <dl>
+                <dt></dt>
+                <dd>
+                    <input class="btn" type="submit" value="提交"/>
+                </dd>
+            </dl>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,89 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>预存款</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <form method="get"  name="formSearch" id="formSearch">
+        <table class="search-form">
+            <tbody>
+                <tr>
+                    <th>{$Think.lang.admin_predeposit_membername}</th>
+                    <td><input type="text" name="mname" class="txt" value='{$Think.get.mname}'></td>
+                    <th>{$Think.lang.admin_predeposit_addtime}</th>
+                    <td><input type="text" id="query_start_date" name="query_start_date" class="txt date" value="{$Think.get.query_start_date}" >
+                        <label>~</label>
+                        <input type="text" id="query_end_date" name="query_end_date" class="txt date" value="{$Think.get.query_start_date}" ></td>
+                    <td>
+                        <select id="paystate_search" name="paystate_search">
+                            <option value="">{$Think.lang.admin_predeposit_paystate}</option>
+                            <option value="0" {if condition="$Think.get.paystate_search eq '0'"}selected="selected"{/if}>未支付</option>
+                            <option value="1" {if condition="$Think.get.paystate_search eq '1'"}selected="selected"{/if}>已支付</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="submit" class="submit" value="查询">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+
+
+    <table class="ds-default-table">
+        <thead>
+            <tr class="thead">
+                <th>{$Think.lang.admin_predeposit_sn}</th>
+                <th>{$Think.lang.admin_predeposit_membername}</th>
+                <th class="align-center">{$Think.lang.admin_predeposit_addtime}</th>
+                <th class="align-center">{$Think.lang.admin_predeposit_paytime}</th>
+                <th class="align-center">{$Think.lang.admin_predeposit_payment}</th>
+                <th class="align-center">{$Think.lang.admin_predeposit_recharge_price}({$Think.lang.currency_zh})</th>
+                <th class="align-center">{$Think.lang.admin_predeposit_paystate}</th>
+                <th class="align-center">{$Think.lang.ds_handle}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {notempty  name="recharge_list"}
+            {volist name="recharge_list" id="recharge"}
+            <tr>
+                <td>{$recharge.pdr_sn}</td>
+                <td>{$recharge.pdr_member_name}</td>
+                <td>{$recharge.pdr_add_time|date="Y-m-d H:i:s",###}</td>
+                <td>{if $recharge.pdr_payment_time|intval('###')}{if $recharge.pdr_payment_time eq '0'}{$recharge.pdr_payment_time|date="Y-m-d",###}{else}{$recharge.pdr_payment_time|date="Y-m-d H:i:s",###}{/if}{/if}</td>
+                <td>{$recharge.pdr_payment_name}</td>
+                <td>{$recharge.pdr_amount}</td>
+                <td>{if $recharge.pdr_payment_state eq '0'}未支付{else}已支付{/if}</td>
+                <td>
+                    <a href="{:url('Predeposit/recharge_info',['id'=>$recharge.pdr_id])}">查看</a>
+                    <a href="javascript:if(confirm('{$Think.lang.sure_drop}'))window.location ='{:url('Predeposit/drop',['id'=>$recharge.pdr_id])}'" >{$Think.lang.ds_del}</a>
+                </td>
+            </tr>
+            {/volist}
+            {else /}
+            <tr class="no_data">
+                <td colspan="20">{$Think.lang.no_record}</td>
+            </tr>
+            {/notempty}
+        </tbody>
+    </table>
+
+
+</div>
+
+<script language="javascript">
+    $(function () {
+        $('#query_start_date').datepicker({dateFormat: 'yy-mm-dd'});
+        $('#query_end_date').datepicker({dateFormat: 'yy-mm-dd'});
+    });
+</script>

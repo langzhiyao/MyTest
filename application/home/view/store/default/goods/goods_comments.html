@@ -1,0 +1,67 @@
+<?php if(!empty($goodsevallist) && is_array($goodsevallist)){?>
+<?php foreach($goodsevallist as $k=>$v){?>
+<div id="t" class="ncs-commend-floor">
+    <div class="user-avatar">
+        <a <?php if($v['geval_isanonymous'] != 1){?>href="{:url('/Home/Membersnshome/index',['mid'=>$v.geval_frommemberid])}" target="_blank" data-param="{'id':<?php echo $v['geval_frommemberid'];?>}" nctype="mcard"<?php }?>> 
+            <img src="<?php echo getMemberAvatarForID($v['geval_frommemberid']);?>">
+        </a>
+    </div>
+  <dl class="detail">
+      <dt>
+      <span class="user-name">
+      <?php if($v['geval_isanonymous'] == 1){?>
+      <?php echo str_cut($v['geval_frommembername'],2).'***';?>
+      <?php }else{?>
+      <a href="{:url('/Home/Membersnshome/index',['mid'=>$v.geval_frommemberid])}" target="_blank" data-param="{'id':<?php echo $v['geval_frommemberid'];?>}" nctype="mcard"><?php echo $v['geval_frommembername'];?></a>
+      <?php }?>
+      </span>
+      <time pubdate="pubdate">[<?php echo @date('Y-m-d',$v['geval_addtime']);?>]</time>
+    </dt>
+    <dd>用户评分：<span class="raty" data-score="<?php echo $v['geval_scores'];?>"></span></dd>
+    <dd class="content">评价详情：<span><?php echo $v['geval_content'];?></span></dd>
+    <?php if (!empty($v['geval_explain'])){?>
+    <dd class="explain">{$Think.lang.ds_credit_explain}：<span><?php echo $v['geval_explain'];?></span></dd>
+    <?php } ?>
+    <?php if(!empty($v['geval_image'])) {?>
+    <dd>
+    晒单图片：
+    <ul class="photos-thumb"><?php $image_array = explode(',', $v['geval_image']);?>
+        <?php foreach ($image_array as $value) { ?>
+        <li><a nctype="nyroModal"  href="<?php echo snsThumb($value, 1024);?>">
+            <img src="<?php echo snsThumb($value);?>">
+        </a></li>
+        <?php } ?></ul>
+    </dd>
+    <?php } ?>
+  </dl>
+</div>
+<?php }?>
+<div class="tr pr5 pb5 pr">
+  <a href="{:url('/Home/Goods/comments_list',['goods_id'=>$Request.param.goods_id])}" target="_blank" class="more-commend">查看全部评价>></a><div class="pagination"></div>
+</div>
+<?php }else{?>
+<div class="ncs-norecord">{$Think.lang.no_record}</div>
+<?php }?>
+<script src="{$Think.config.url_domain_root}static/plugins/js/jquery.raty/jquery.raty.min.js"></script>
+<script src="{$Think.config.url_domain_root}static/plugins/js/jquery.nyroModal/custom.min.js" ></script>
+<link href="{$Think.config.url_domain_root}static/plugins/js/jquery.nyroModal/styles/nyroModal.css" rel="stylesheet" type="text/css" id="cssfile2" />
+<script type="text/javascript">
+$(document).ready(function(){
+   $('.raty').raty({
+        path: "{$Think.config.url_domain_root}static/plugins/js/jquery.raty/img",
+        readOnly: true,
+        score: function() {
+          return $(this).attr('data-score');
+        }
+    });
+
+   $('a[nctype="nyroModal"]').nyroModal();
+
+    $('#goodseval').find('.demo').ajaxContent({
+        event:'click', //mouseover
+        loaderType:"img",
+        loadingMsg:"/images/transparent.gif",
+        target:'#goodseval'
+    });
+});
+</script> 

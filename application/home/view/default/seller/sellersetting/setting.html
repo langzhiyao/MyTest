@@ -1,0 +1,173 @@
+{include file="public/seller_top" /}
+
+<div class="seller_main w1200">
+    {include file="public/seller_left" /}
+    <div class="seller_right">
+        <div class="seller_items">
+            {include file="public/seller_items" /}
+        </div>
+        <div class="dssc-form-default">
+            <form method="post"  enctype="multipart/form-data" id="my_store_form"  onsubmit="ajaxpost('my_store_form', '', '', 'onerror');" >
+                <input type="hidden" name="form_submit" value="ok" />
+                <dl>
+                    <dt>{$Think.lang.store_setting_grade}{$Think.lang.ds_colon}</dt>
+                    <dd>
+                        <p>{$store_grade.sg_name}</p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>店铺名称：</dt>
+                    <dd>
+                        <input type="text" value="{$store_info.store_name}" name="store_name" class="text w400">
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>{$Think.lang.store_setting_store_zy}{$Think.lang.ds_colon}</dt>
+                    <dd>
+                        <textarea name="store_zy" rows="2" class="textarea w400"  maxlength="50" >{$store_info.store_zy}</textarea>
+                        <p class="hint">{$Think.lang.store_create_store_zy_hint}</p>
+                    </dd>
+                </dl>
+
+                <dl>
+                    <dt>店铺二维码：</dt>
+                    <dd>
+                        <p><img src="{:storeQRCode($store_info.store_id)}"  title="商品原始地{:url('showstore/goods_all',['store_id'=>$store_info.store_id])}"></p>
+                        <p class="hint">保存后，生成新的二维码</p>
+                    </dd>
+                </dl>
+
+
+                <dl>
+                    <dt>{$Think.lang.store_setting_change_label}{$Think.lang.ds_colon}</dt>
+                    <dd>
+                        <div class="dssc-upload-thumb store-logo">
+                            <p>
+                                {empty name="store_info.store_logo"}
+                                <i class="icon-picture"></i>
+                                {else}
+                                <img src="{$Think.UPLOAD_SITE_URL}/{$Think.ATTACH_STORE}/{$Think.session.store_id}/{$store_info.store_logo}" nc_type="store_label" />
+                                {/empty}
+                            </p>
+                        </div>
+                        <div class="dssc-upload-btn"> 
+                            <a href="javascript:void(0);">
+                                <span><input type="file" hidefocus="true" size="1" class="input-file" name="store_logo" id="storeLablePic" nc_type="change_store_logo"/></span>
+                                <p><i class="icon-upload-alt"></i>图片上传</p>
+                            </a>
+                        </div>
+                        <p class="hint">{$Think.lang.store_setting_label_tip}</p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>{$Think.lang.store_setting_change_banner}{$Think.lang.ds_colon}</dt>
+                    <dd>
+                        <div class="dssc-upload-thumb store-banner">
+                            <p>
+                                {empty name="store_info.store_banner"}
+                                <i class="icon-picture"></i>
+                                {else}
+                                <img src="{$Think.UPLOAD_SITE_URL}/{$Think.ATTACH_STORE}/{$Think.session.store_id}/{$store_info.store_banner}" nc_type="store_banner" />
+                                {/empty}
+                                
+                            </p>
+                        </div>
+                        <div class="dssc-upload-btn"> <a href="javascript:void(0);"><span>
+                                    <input type="file" hidefocus="true" size="1" class="input-file" name="store_banner" id="storeBannerPic" nc_type="change_store_banner"/>
+                                </span>
+                                <p><i class="icon-upload-alt"></i>图片上传</p>
+                            </a> </div>
+                        <p class="hint">{$Think.lang.store_setting_banner_tip}</p>
+                    </dd>
+                </dl>
+
+                <dl>
+                    <dt>{$Think.lang.store_setting_change_avatar}{$Think.lang.ds_colon} </dt>
+                    <dd>
+                        <div class="dssc-upload-thumb store-logo">
+                            <p>
+                                {empty name="store_info.store_avatar"}
+                                <i class="icon-picture"></i>
+                                {else}
+                                <img src="{$Think.UPLOAD_SITE_URL}/{$Think.ATTACH_STORE}/{$Think.session.store_id}/{$store_info.store_avatar}" nc_type="store_label" />
+                                {/empty}
+                            </p>
+                        </div>
+                        <div class="dssc-upload-btn"> 
+                            <a href="javascript:void(0);">
+                                <span><input type="file" hidefocus="true" size="1" class="input-file" name="store_avatar" id="storeLablePic" nc_type="change_store_avatar"/></span>
+                                <p><i class="icon-upload-alt"></i>图片上传</p>
+                            </a>
+                        </div>
+                        <p class="hint">{$Think.lang.store_setting_sign_tip}</p>
+                    </dd>
+                </dl>
+                {present name="subdomain"}
+                <dl>
+                    <dt>{$Think.lang.store_setting_uri}{$Think.lang.ds_colon}</dt>
+                    <dd>
+                        {if $subdomain_edit == '1' || $store_info.store_domain == ''}
+                        <p>
+                            <input type="text" class="text"  name="store_domain" value="{$store_info.store_domain}"  />
+                            &nbsp; &nbsp;</p>
+                        <p class="hint">{$Think.lang.store_setting_uri_tip}: {:config('subdomain_length')}
+                            {if $subdomain_edit == '1'}
+                            &nbsp; &nbsp;{$Think.lang.store_setting_domain_times}: {$store_info.store_domain_times} &nbsp; &nbsp;{$Think.lang.store_setting_domain_times_max}: {$subdomain_times}
+                           {else}
+                            &nbsp; &nbsp;{$Think.lang.store_setting_domain_notice}
+                            {/if}
+                        </p>
+                        {else}
+                        <p>{$store_info.store_domain} &nbsp;</p>
+                        <p class="hint">{$Think.lang.store_setting_domain_tip}
+                            {if $setting_config.subdomain_edit == '1'}
+                            &nbsp; &nbsp;{$Think.lang.store_setting_domain_times}: {$store_info.store_domain_times} &nbsp; &nbsp;{$Think.lang.store_setting_domain_times_max}: {$subdomain_times}
+                           {/if}
+                        </p>
+                        {/if}
+                    </dd>
+                </dl>
+                {/present}
+                <dl>
+                    <dt>QQ{$Think.lang.ds_colon}</dt>
+                    <dd>
+                        <input class="w200 text" name="store_qq" type="text"  id="store_qq" value="{$store_info.store_qq}" />
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>{$Think.lang.store_setting_wangwang}{$Think.lang.ds_colon}</dt>
+                    <dd>
+                        <input class="text w200" name="store_ww" type="text"  id="store_ww" value="{$store_info.store_ww}" />
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>店铺电话{$Think.lang.ds_colon}</dt>
+                    <dd>
+                        <input class="text w200" name="store_phone" maxlength="20" type="text"  id="store_phone" value="{$store_info.store_phone}" />
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>{$Think.lang.store_setting_seo_keywords}{$Think.lang.ds_colon}</dt>
+                    <dd>
+                        <p>
+                            <input class="text w400" name="seo_keywords" type="text"  value="{$store_info.store_keywords}" />
+                        </p>
+                        <p class="hint">{$Think.lang.store_setting_seo_keywords_help}</p>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>{$Think.lang.store_setting_seo_description}{$Think.lang.ds_colon}</dt>
+                    <dd>
+                        <p>
+                            <textarea name="seo_description" rows="3" class="textarea w400" id="remark_input" >{$store_info.store_description}</textarea>
+                        </p>
+                        <p class="hint">{$Think.lang.store_setting_seo_description_help}</p>
+                    </dd>
+                </dl>
+                <div class="bottom">
+                    <label class="submit-border"><input type="submit" class="submit" value="{$Think.lang.store_goods_class_submit}" /></label>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

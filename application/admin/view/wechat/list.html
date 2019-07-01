@@ -1,0 +1,101 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>消息推送</h3>
+            </div>
+            <a href="{:url('Wechat/SendGroup')}"  class="btn" style="float: right">消息群发</a>
+        </div>
+    </div>
+            <table class="ds-default-table">
+                <thead>
+                <tr>
+                    <th style="width: 10%">{$Think.lang.tomember}</th>
+                    <th style="width: 10%">{$Think.lang.totype}</th>
+                    <th style="width: 40%">{$Think.lang.content}</th>
+                    <th style="width: 20%">{$Think.lang.totime}</th>
+                    <th style="width: 10%">{$Think.lang.state}</th>
+                    <th style="width: 10%">{$Think.lang.ds_handle}</th>
+                </tr>
+                </thead>
+                {notempty name="lists"}
+                <tbody>
+                {volist name="lists" id="list"}
+                <tr>
+                    <td>{$list.member_name}</td>
+                    <td>{$list.type}</td>
+                   <td>{$list.content}</td>
+                   <td>{:date('Y-m-d H:i:s',$list.createtime)}</td>
+                  <td>{if $list.issend}已发送{else/}<span style="color: red">未发送</span>{/if}</td>
+                    <td>
+                        <a href="{:url('/admin/Wechat/text_form',['id'=>$list.id])}">{$Think.lang.ds_edit}</a>|
+                        <a href="javascript:if(confirm('是否确认删除？'))window.location ='{:url('/admin/Wechat/del_text',['id'=>$list.id])}'" >{$Think.lang.ds_del}</a>
+                    </td>
+                </tr>
+                {/volist}
+                </tbody>
+                {else /}
+         <tbody>
+            <tr class="no_data">
+                <td colspan="20">{$Think.lang.no_record}</td>
+            </tr>
+        </tbody>
+        {/notempty}
+            </table>
+        </div>
+
+      <div class="ncap-form-default show_new" id="dialog" style="display: none">
+        <form method="post">
+            <dl>
+                <dt>标题</dt>
+                <dd>
+                    <input type="text" name="title" id="Title" style="width: 300px" value="">
+                </dd>
+            </dl>
+            <dl>
+                <dt>描述</dt>
+                <dd>
+                    <input type="text" name="description" id="Description" style="width: 300px">
+                </dd>
+            </dl>
+            <dl>
+                <dt>图片</dt>
+                <dd>
+                    <input type="file" name="s_pic">
+                </dd>
+            </dl>
+            <dl>
+                <dt>跳转链接</dt>
+                <dd>
+                <input type="text" name="url" id="Url" style="width: 300px">
+                </dd>
+            </dl>
+        </form>
+      </div>
+ <div class="pagination">{$show_page}</div>
+<script>
+    $('.news').click(function() {
+        $( "#dialog" ).dialog("open");
+        });
+    $( "#dialog" ).dialog({
+        autoOpen: false,
+        modal: true,
+        width: 500,
+        height: 400,
+        show: {
+            effect: "explode",
+            duration: 1000
+        },
+        hide: {
+            effect: "puff",
+            duration: 1000
+        }
+    });
+
+    var content= $.attr('content');
+
+</script>

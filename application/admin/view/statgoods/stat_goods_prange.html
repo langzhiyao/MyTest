@@ -1,0 +1,148 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>商品分析</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+   <div class="fixed-empty"></div>
+  <form method="get"  name="formSearch" id="formSearch">
+    <div class="w100pre" style="width: 100%;">
+        <table class="search-form">
+          <tbody>
+            <tr>
+              <td id="searchgc_td"></td>
+              <input type="hidden" id="choose_gcid" name="choose_gcid" value="0"/>
+              <td>
+              	<select name="search_type" id="search_type" class="querySelect">
+                  <option value="day" {if isset($search_arr.search_type) && $search_arr.search_type == 'day'}selected{/if}>按照天统计</option>
+                  <option value="week" {if isset($search_arr.search_type) && $search_arr.search_type == 'week'}selected{/if}>按照周统计</option>
+                  <option value="month" {if isset($search_arr.search_type) && $search_arr.search_type == 'month'}selected{/if}>按照月统计</option>
+                </select>
+              </td>
+              <td id="searchtype_day" style="display:none;">
+              	<input class="txt date" type="text" value="{:date('Y-m-d',$search_arr.day.search_time)}" id="search_time" name="search_time">
+              </td>
+              <td id="searchtype_week" style="display:none;">
+              	<select name="searchweek_year" class="querySelect">
+                  {volist name="year_arr" id="v"}
+              		<option value="{$key}" {$search_arr.week.current_year == $key ?'selected':''}>{$v}</option>
+                  {/volist}
+                </select>
+                <select name="searchweek_month" class="querySelect">
+                  {volist name="month_arr" id="v"}
+              		<option value="{$key}" {$search_arr.week.current_month == $key ?'selected':''}>{$v}</option>
+                  {/volist}
+                </select>
+                <select name="searchweek_week" class="querySelect">
+                  {volist name="week_arr" id="v"}
+              		<option value="{$v.key}" {$search_arr.week.current_week == $key ?'selected':''}>{$v.val}</option>
+                  {/volist}
+                </select>
+              </td>
+              <td id="searchtype_month" style="display:none;">
+              	<select name="searchmonth_year" class="querySelect">
+                  {volist name="year_arr" id="v"}
+              		<option value="{$key}" {$search_arr.month.current_year == $key ?'selected':''}>{$v}</option>
+                  {/volist}
+                </select>
+                <select name="searchmonth_month" class="querySelect">
+                  {volist name="month_arr" id="v"}
+              		<option value="{$key}" {$search_arr.month.current_month == $key ? 'selected':''}>{$v}</option>
+                  {/volist}
+                </select>
+              </td>
+              <td>
+                <a href="javascript:void(0);" id="ncsubmit" class="btn-search tooltip"></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+  </form>
+
+  <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>{:lang('stat_validorder_explain')}</li>
+            <li>点击“设置价格区间”进入设置价格区间页面，下方统计图将根据您设置的价格区间进行统计</li>
+            <li>统计图展示符合搜索条件的有效订单中的商品单价，在所设置的价格区间的分布情况</li>
+        </ul>
+    </div>
+
+  <table class="ds-default-table">
+	<thead class="thead">
+		<tr class="space">
+			<th colspan="15">价格销量分布（<a href="{:url('statgeneral/setting')}" style="font-size:12px; font-weight:normal;">设置价格区间</a>）</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+              {if $pricerange_statjson}
+              <div id="container_pricerange" class="w100pre close_float" style="height:400px"></div>
+              {else /}
+              <div class="w100pre close_float align-center h36 mt10">查看分布情况前，请先设置价格区间。
+                <a href="{:url('statgeneral/setting')}" style="font-size:12px; font-weight:normal;">马上设置</a>
+              </div>
+              {/if}
+			</td>
+		</tr>
+	</tbody>
+  </table>
+</div>
+
+<script src="{$Think.config.url_domain_root}static/plugins/highcharts/highcharts.js"></script>
+<script src="{$Think.config.url_domain_root}static/home/js/common.js"></script>
+<script src="{$Think.config.url_domain_root}static/common/js/statistics.js"></script>
+<script src="{$Think.config.url_domain_root}static/common/js/mlselection.js"></script>
+<script>
+//展示搜索时间框
+function show_searchtime(){
+    s_type = $("#search_type").val();
+    $("[id^='searchtype_']").hide();
+    $("#searchtype_"+s_type).show();
+}
+$(function () {
+    //统计数据类型
+    var s_type = $("#search_type").val();
+    $('#search_time').datepicker({dateFormat: 'yy-mm-dd'});
+
+    show_searchtime();
+    $("#search_type").change(function(){
+        show_searchtime();
+    });
+
+    //更新周数组
+    $("[name='searchweek_month']").change(function(){
+        var year = $("[name='searchweek_year']").val();
+        var month = $("[name='searchweek_month']").val();
+        $("[name='searchweek_week']").html('');
+        $.getJSON(SITE_URL+'common/getweekofmonth',{y:year,m:month},function(data){
+            if(data != null){
+                for(var i = 0; i < data.length; i++) {
+                    $("[name='searchweek_week']").append('<option value="'+data[i].key+'">'+data[i].val+'</option>');
+                }
+            }
+        });
+    });
+
+    $('#container_pricerange').highcharts({$pricerange_statjson});
+
+    $('#ncsubmit').click(function(){
+        $('#formSearch').submit();
+    });
+
+    //商品分类
+    init_gcselect({$gc_choose_json},{$gc_json});
+});
+</script>

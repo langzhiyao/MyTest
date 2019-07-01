@@ -1,0 +1,105 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>店铺管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <form method="get" name="formSearch" id="formSearch">
+        <table class="search-form">
+            <tbody>
+                <tr>
+                    <th><label>{$Think.lang.belongs_level}</label></th>
+                    <td>
+                        <select name="grade_id">
+                            <option value="">{$Think.lang.ds_please_choose}...</option>
+                            <?php if(!empty($grade_list) && is_array($grade_list)){ ?>
+                            <?php foreach($grade_list as $k => $v){ ?>
+                            <option value="<?php echo $v['sg_id'];?>" {if condition="$Think.get.grade_id eq $v.sg_id"}selected{/if}><?php echo $v['sg_name'];?></option>
+                            <?php } ?>
+                            <?php } ?>
+                        </select>
+                    </td>
+                    <th><label for="owner_and_name">{$Think.lang.store_user}</label></th>
+                    <td><input type="text" value="{$Think.get.owner_and_name}" name="owner_and_name" id="owner_and_name" class="txt"></td><td></td><th><label>店铺类型</label></th>
+                    <td>
+                        <select name="store_type">
+                            <option value="">{$Think.lang.ds_please_choose}...</option>
+                            <?php if(!empty($store_type) && is_array($store_type)){ ?>
+                            <?php foreach($store_type as $k => $v){ ?>
+                            <option value="<?php echo $k;?>" {if condition="$Think.get.store_type eq $k"}selected{/if}><?php echo $v;?></option>
+                            <?php } ?>
+                            <?php } ?>
+                        </select>
+                    </td>
+                    <th><label for="store_name">{$Think.lang.store_name}</label></th>
+                    <td><input type="text" value="{$Think.get.store_name}" name="store_name" id="store_name" class="txt"></td>
+                    <td>
+                        <input type="submit" class="submit" value="搜索">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+    
+    
+    <table class="ds-default-table">
+      <thead>
+        <tr class="thead">
+          <th>{$Think.lang.store_name}</th>
+          <th>{$Think.lang.store_user_name}</th>
+          <th>店主卖家账号</th>
+          <th class="align-center">{$Think.lang.belongs_level}</th>
+          <th class="align-center">{$Think.lang.period_to}</th>
+          <th class="align-center">{$Think.lang.state}</th>
+          <th class="align-center">{$Think.lang.ds_handle}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php if(!empty($store_list) && is_array($store_list)){ ?>
+        <?php foreach($store_list as $k => $v){ ?>
+        <tr class="hover edit <?php echo getStoreStateClassName($v);?>">
+          <td>
+              <a href="{:url('/Home/Store/index',['store_id'=>$v.store_id])}" >
+                <?php echo $v['store_name'];?>
+            </a>
+          </td>
+          <td><?php echo $v['member_name'];?></td>
+          <td><?php echo $v['seller_name'];?></td>
+          <td class="align-center"><?php echo $search_grade_list[$v['grade_id']];?></td>
+          <td class="nowarp align-center"><?php echo $v['store_end_time']?date('Y-m-d', $v['store_end_time']):lang('no_limit');?></td>
+          <td class="align-center w72"><?php echo $v['store_state']?lang('open'):lang('close');?></td>
+        <td class="align-center w200">
+            <a href="{:url('/Admin/Store/store_joinin_detail',['member_id'=>$v.member_id])}">查看</a>&nbsp;&nbsp;
+            <a href="{:url('/Admin/Store/store_edit',['store_id'=>$v.store_id])}">{$Think.lang.ds_edit}</a>&nbsp;&nbsp;
+            <a href="{:url('/Admin/Store/store_bind_class',['store_id'=>$v.store_id])}">经营类目</a>
+            <?php if (getStoreStateClassName($v) != 'open' && cookie('remindRenewal'.$v['store_id']) == null) {?>
+            <a href="{:url('/Admin/Store/remind_renewal',['store_id'=>$v.store_id])}">提醒续费</a><?php }?>
+            &nbsp;&nbsp; 
+            <a href="{:url('/Admin/Store/del',['id'=>$v.store_id,'member_id'=>$v.member_id])}" onclick="return confirm('您确认要删除此店铺吗？');">删除</a>
+            </td>
+        </tr>
+        <?php } ?>
+        <?php }else { ?>
+        <tr class="no_data">
+          <td colspan="15">{$Think.lang.ds_no_record}</td>
+        </tr>
+        <?php } ?>
+      </tbody>
+      <tfoot>
+        <tr class="tfoot">
+          <td></td>
+          <td colspan="16">
+            <div class="pagination">{$page}</div></td>
+        </tr>
+      </tfoot>
+    </table>
+    
+</div>

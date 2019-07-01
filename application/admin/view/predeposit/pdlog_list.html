@@ -1,0 +1,98 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>预存款</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>未支付的提现单可以点击查看选项更改提现单的支付状态</li>
+            <li>点击删除可以删除未支付的提现单</li>
+        </ul>
+    </div>
+
+    <form method="get">
+        <table class="search-form">
+            <tbody>
+                <tr>
+                    <th><label>{$Think.lang.admin_predeposit_membername}</label></th>
+                    <td><input type="text" name="mname" class="txt" value='{$Think.get.mname}'></td>
+                    <th><label>{$Think.lang.admin_predeposit_maketime}</label></th>
+                    <td>
+                        <input type="text" id="stime" name="stime" class="txt date" value="{$Think.get.stime}" >
+                        <label>~</label>
+                        <input type="text" id="etime" name="etime" class="txt date" value="{$Think.get.etime}" >
+                    </td>
+                </tr>
+                <tr>
+                    <th><label>{$Think.lang.admin_predeposit_adminname}</label></th>
+                    <td><input type="text" name="aname" class="txt" value='{$Think.get.aname}'></td>
+                    <td>
+                        <a href="javascript:document.formSearch.submit();" class="btn-search " title="{$Think.lang.ds_query}"></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+
+    <table class="ds-default-table">
+        <thead>
+            <tr class="thead">
+                <th>{$Think.lang.admin_predeposit_membername}</th>
+                <th class="align-center">{$Think.lang.admin_predeposit_changetime}</th>
+                <th>{$Think.lang.admin_predeposit_pricetype_available}({$Think.lang.currency_zh})</th>
+                <th>{$Think.lang.admin_predeposit_pricetype_freeze}({$Think.lang.currency_zh})</th>
+                <th>{$Think.lang.admin_predeposit_log_desc}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if(!empty($list_log) && is_array($list_log)){ ?>
+            <?php foreach($list_log as $k => $v){?>
+            <tr class="hover">
+                <td><?php echo $v['lg_member_name'];?></td>
+                <td class="nowarp align-center"><?php echo @date('Y-m-d H:i:s',$v['lg_add_time']);?></td>
+                <td><?php echo floatval($v['lg_av_amount']) ? (floatval($v['lg_av_amount']) > 0 ? '+' : null ).$v['lg_av_amount'] : null;?></td>
+                <td><?php echo floatval($v['lg_freeze_amount']) ? (floatval($v['lg_freeze_amount']) > 0 ? '+' : null ).$v['lg_freeze_amount'] : null;?></td>
+                <td><?php echo $v['lg_desc'];?>
+                    <?php if ($v['lg_admin_name'] != '') { ?>
+                    ( {$Think.lang.admin_predeposit_adminname} <?php echo $v['lg_admin_name'];?>  )
+                    <?php } ?>
+                </td>
+            </tr>
+            <?php } ?>
+            <?php }else { ?>
+            <tr class="no_data">
+                <td colspan="10">{$Think.lang.ds_no_record}</td>
+            </tr>
+            <?php } ?>
+        </tbody>
+    </table>
+<tfoot>
+            <tr>
+                <td colspan="16" id="dataFuncs"><div class="pagination">{$show_page}</div></td>
+            </tr>
+        </tfoot>
+
+</div>
+
+<script language="javascript">
+    $(function() {
+        $('#stime').datepicker({dateFormat: 'yy-mm-dd'});
+        $('#etime').datepicker({dateFormat: 'yy-mm-dd'});
+    });
+</script>

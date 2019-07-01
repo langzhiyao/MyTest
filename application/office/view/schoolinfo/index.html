@@ -1,0 +1,57 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" name="form1" action="">
+        <div class="ncap-form-default">
+            <dl>
+                <dt>{$Think.lang.school_index_name}：{$school_array.name}</dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.school_index_unique}：{$school_array.schoolCard}</dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.school_index_region}：{$school_array.region}</dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.school_index_type}：{volist name="schooltype" id="type"}
+                    {$type}
+                    {/volist}</dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.school_index_address}：{$school_array.address}</dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.school_index_phone}：{$school_array.common_phone}</dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.school_index_username}：{$school_array.username}</dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.school_index_dieline}：{$school_array.dieline}</dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.school_index_desc}：{$school_array.desc}</dt>
+            </dl>
+
+        </div>
+    </form>
+
+</div>
+
+
+
+
+
+
+
+

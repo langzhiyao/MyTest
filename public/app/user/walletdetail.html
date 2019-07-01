@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>想见孩-我的钱包明细</title>
+    <meta name="author" content="想见孩" />
+    <meta name="copyright" content="想见孩" />
+    <meta name="description" content="想见孩" />
+    <meta id="viewport" name="viewport" content="width=750" />
+    <link rel="stylesheet" href="../content/style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/iconfonts/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/lib/weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/css/jquery-weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/wallet/wallet.css" type="text/css" />
+    <link rel="shortcut icon" href="../content/images/ico.ico" type="image/x-icon" />
+    <script src="../content/scripts/mobile-util.js"></script>
+</head>
+
+<body class="infobody">
+
+
+    <!-- 主要内容 -->
+    <div class="main" style="padding-top: 0px;">
+      <!--  <p class="wallet_p">2018-09-12</p>
+        <div class="wallet_cont">
+            <ul class="wallet_ul">
+                <li>
+                    <div class="wallet_list wallet_t">
+                        <div>10.0元</div>
+                        <div>提现</div>
+                    </div>
+                    <div class="wallet_list wallet_b">
+                        <div>68*******321</div>
+                        <div>09:20:12</div>
+                    </div>
+                </li>
+                <li>
+                    <div class="wallet_list wallet_t">
+                        <div>10.0元</div>
+                        <div class="income">收入</div>
+                    </div>
+                    <div class="wallet_list wallet_b">
+                        <div>68*******321</div>
+                        <div>09:20:12</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <p class="wallet_p">2018-09-11</p>
+        <div class="wallet_cont">
+            <ul class="wallet_ul">
+                <li>
+                    <div class="wallet_list wallet_t">
+                        <div>10.0元</div>
+                        <div>提现</div>
+                    </div>
+                    <div class="wallet_list wallet_b">
+                        <div>68*******321</div>
+                        <div>09:20:12</div>
+                    </div>
+                </li>
+                <li>
+                    <div class="wallet_list wallet_t">
+                        <div>10.0元</div>
+                        <div class="income">收入</div>
+                    </div>
+                    <div class="wallet_list wallet_b">
+                        <div>68*******321</div>
+                        <div>09:20:12</div>
+                    </div>
+                </li>
+            </ul>
+        </div>-->
+    </div>
+
+
+    <script src="../content/scripts/jquery.min.js"></script>
+    <script src="../content/scripts/juqery.cookie.js"></script>
+    <script src="../content/plugins/jqweui/js/jquery-weui.min.js"></script>
+    <script src="../content/scripts/commom.js"></script>
+    <script src="../content/scripts/API.js"></script>
+    <script>
+        $(function() {
+            var List = [];
+            var Page = 1;
+            $.ajax({
+                type:'POST',
+                url:api+'/Memberwallet/MemberPdList.html',
+                data:{
+                    key:user_token,
+                    member_id:user_member_id
+                },
+                dataType: 'json',
+                success:function(response){
+                    if (response['code'] == 200) {
+                        if (response['result'].length == 0) {
+                            $('.main').html('<div class="weui-loadmore weui-loadmore_line"><span class="weui-loadmore__tips">暂无数据</span></div>');
+                        } else {
+                            let keys = Object.keys(response['result'][0]);
+                            for (var i = 0; i < keys.length; i++) {
+                                let params = new Object();
+                                params[keys[i]] = response['result'][0][keys[i]];
+                                List.push(params);
+                            }
+                            $('#id').val(response['result'][1]['id']);
+                            $('.main').html(HTML(List));
+                        }
+                    } else {
+                        $.toast(response['message'],'forbidden');return false;
+                    }
+                }
+            });
+            // HTML模板
+            function HTML(data) {
+                var template = '';
+                for (var i = 0; i < data.length; i++) {
+                    var Time = Object.keys(data[i]);
+                    var content = '';
+                    for (var s = 0; s < data[i][Time[0]].length; s++) {
+                        content += '<li>\n' +
+                            '                        <div class="wallet_list wallet_t">\n' +
+                            '                            <div><span style="font-size: 40px;">'+ data[i][Time[0]][s]['lg_av_amount']+'</span>元</div>\n' ;
+                                if(data[i][Time[0]][s]['status'] ==1){
+                                    content +=' <div class="income">收入</div>\n';
+                                }else if(data[i][Time[0]][s]['status'] ==2){
+                                    content +='<div>提现</div>\n';
+                                }
+                        content +='                        </div>\n' +
+                            '                        <div class="wallet_list wallet_b">\n' +
+                            '                            <div></div>\n' +
+                            '                            <div>'+ data[i][Time[0]][s]['add_time']+'</div>\n' +
+                            '                        </div>\n' +
+                            '                        </li>';
+
+                    }
+                    template += '<p class="wallet_p">' + Time[0] + '</p>' + '<div class="wallet_cont"> <ul class="wallet_ul">' + content + '</ul></div>';
+                }
+                return template;
+            }
+
+        })
+    </script>
+
+</body>
+
+</html>

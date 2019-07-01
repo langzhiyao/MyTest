@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>想见孩-我的订单-看孩订单</title>
+    <meta name="author" content="想见孩" />
+    <meta name="copyright" content="想见孩" />
+    <meta name="description" content="想见孩" />
+    <meta id="viewport" name="viewport" content="width=750" />
+    <link rel="stylesheet" href="../content/style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/iconfonts/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/lib/weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/css/jquery-weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/user.css" type="text/css" />
+    <link rel="shortcut icon" href="../content/images/ico.ico" type="image/x-icon" />
+    <script src="../content/scripts/mobile-util.js"></script>
+</head>
+
+<body>
+    <header class="head">
+        <div class="head0">
+            <div class="menu_bar_box">
+                <a href="javascript:;" class="back_btn" onClick="historyback()">
+                    <i class="icon iconfont icon-jiantou3"></i>
+                </a>
+            </div>
+            <div class="head_title">
+                <p>我的订单</p>
+            </div>
+            <div class="head_r">
+
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <div class="main">
+        <div class="cont margt30">
+            <div class="container2">
+                <ul class="orderforms_nav clearfix">
+                    <li id="jobs1" onclick="setTab('jobs',1,3)" class="active">
+                        <a href="javascript:;">看孩订单</a>
+                    </li>
+                    <li id="jobs2" onclick="setTab('jobs',2,3)">
+                        <a href="javascript:;">教孩订单</a>
+                    </li>
+                    <li id="jobs3" onclick="setTab('jobs',3,3)">
+                        <a href="javascript:;">商城订单</a>
+                    </li>
+                </ul>
+                <div class="orderforms_cont clear hover" id="order_jobs_1">
+                    <ul class="orderforms_list orderforms_list2">
+
+                    </ul>
+                </div>
+                <div class="orderforms_cont clear hover" id="order_jobs_2" style="display: none;">
+                    <ul class="orderforms_list orderforms_list2">
+
+                    </ul>
+                </div>
+                <div class="orderforms_cont clear hover" id="order_jobs_3" style="display: none;">
+                    <ul class="orderforms_list orderforms_list2">
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="../content/scripts/jquery.min.js"></script>
+    <script src="../content/scripts/juqery.cookie.js"></script>
+    <script src="../content/plugins/jqweui/js/jquery-weui.min.js"></script>
+    <script src="../content/plugins/jqweui/js/city-picker.min.js"></script>
+    <script src="../content/scripts/commom.js"></script>
+    <script src="../content/scripts/API.js"></script>
+
+    <script type="text/javascript">
+        //默认加载看孩订单数据
+        $.ajax({
+            type: "POST",
+            url: api + '/Member/order.html',
+            data: {
+                key: user_token,
+                member_id: user_member_id,
+                type_id: 1
+            },
+            dataType: "json",
+            success: function(response) {
+                $('#order_jobs_1 .orderforms_list').html(HTML(response['result']))
+            }
+        });
+
+        function setTab(name, cursel, n) {
+            for (i = 1; i <= n; i++) {
+                var menu = $("#" + name + i)
+                var con = $("#" + "order_" + name + "_" + i)
+                if (i == cursel) {
+                    menu.addClass("active");
+                    con.fadeIn();
+                    $.ajax({
+                        type: "POST",
+                        url: api + '/Member/order.html',
+                        data: {
+                            key: user_token,
+                            member_id: user_member_id,
+                            type_id: cursel
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            $('#order_jobs_' + cursel + ' .orderforms_list').html(HTML(response['result']))
+                        }
+                    });
+                } else {
+                    menu.removeClass("active");
+                    con.hide();
+                }
+            }
+        }
+
+        // html模板
+        function HTML(data) {
+            var template = '';
+            for (var i = 0; i < data.length; i++) {
+                var state = '';
+                switch (data[i]['order_state']) {
+                    case 0:
+                        state = '已取消';
+                        break;
+                    case 10:
+                        state = '未付款';
+                        break;
+                    case 20:
+                        state = '已付款';
+                        break;
+                    case 30:
+                        state = '已发货';
+                        break;
+                    case 40:
+                        state = '已收货';
+                        break;
+                }
+                template += '<li>' +
+                    '<div class="name">' + data[i]['order_name'] + '</div>' +
+                    '<div class="price">￥' + data[i]['order_amount'] + '</div>' +
+                    '<div class="date">' + data[i]['add_time'] + '</div>' +
+                    '<div class="status"><span class="nonpayment">' + state + '</span></div>' +
+                    '</li>'
+            }
+            return template;
+        }
+    </script>
+</body>
+
+</html>

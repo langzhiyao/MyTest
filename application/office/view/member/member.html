@@ -1,0 +1,179 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+ <link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">       
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>会员管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    
+    <form method="get" name="formSearch" id="formSearch">
+        <table class="search-form">
+            <tbody>
+                <tr>
+                    <td>
+                        <select name="search_field_name" >
+                            <option <?php if($search_field_name == 'member_name'){ ?>selected='selected'<?php } ?> value="member_name">{$Think.lang.member_index_name}</option>
+                            <option <?php if($search_field_name == 'member_mobile'){ ?>selected='selected'<?php } ?> value="member_mobile">手机号码</option>
+                        </select>
+                    </td>
+                    <td><input type="text" value="<?php echo $search_field_value;?>" name="search_field_value" class="txt"></td>
+                    
+                    <td>
+                        <select name="search_state" >
+                            <option {if condition='$Think.get.search_state'}selected='selected'{/if} value="">{$Think.lang.member_index_state}</option>
+                            
+                            <option {if condition='$Think.get.search_state eq "no_memberstate"'}selected='selected'{/if} value="no_memberstate">{$Think.lang.member_index_login_deny}</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="search_identity" >
+                            <option {if condition='$Think.get.search_identity'}selected='selected'{/if} value="">身份</option>
+                            <option {if condition='$Think.get.search_identity eq "1"'}selected='selected'{/if} value="1">家长</option>
+                            <option {if condition='$Think.get.search_identity eq "2"'}selected='selected'{/if} value="2">教师</option>
+                            
+                        </select>
+                    </td>
+
+                    <td>
+                        <input type="submit" class="submit" value="搜索">
+                        
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </form>
+    <script type="text/javascript">
+      
+
+    </script>
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>平台会员管理，包括家长和教师个人基础信息</li>
+        </ul>
+    </div>
+    <br/>
+    <!-- <div style="text-align:right;">
+      <a class="btns layui-btn layui-btn-sm"  href="{:url('Membercommon/export_step')}" id="ncexport"><span>{$Think.lang.ds_export}Excel</span></a>
+    </div> -->
+
+    <table class="ds-default-table">
+      <thead>
+        <tr class="thead">
+          <th>&nbsp;</th>
+          <th colspan="2">{$Think.lang.member_index_name}</th>
+          <th class="align-center"><span>身份</span></th>
+          <th class="align-center"><span>年龄</span></th>
+          <th class="align-center"><span>账号</span></th>
+          
+          <th class="align-center">{$Think.lang.member_index_state}</th>
+            <?php if(session('office_is_super')==1 || in_array('3',$action) || in_array('2',$action)){?>
+          <th class="align-center">{$Think.lang.ds_handle}</th>
+            <?php }?>
+        </tr>
+      <tbody>
+        <?php if(!empty($member_list) && is_array($member_list)){ ?>
+        <?php foreach($member_list as $k => $v){ ?>
+        <tr class="hover member">
+          <td class="w24"><input type="checkbox" name='del_id[]' value="<?php echo $v['member_id']; ?>" class="checkitem"></td>
+          <td class="w48 picture">
+              <div class="size-44x44">
+              <span class="thumb"><i></i>
+                  <img src="{:getMemberAvatar($v.member_avatar)}?{:microtime()}"  onload="javascript:DrawImage(this,44,44);"/>
+              </span>
+          </div>
+          </td>
+          <td><p class="name"><strong><?php echo $v['member_name']; ?></strong></p>
+            <p class="smallfont">{$Think.lang.member_index_reg_time}:&nbsp;<?php echo $v['member_add_time']; ?></p>
+            
+              <div class="im">
+                  
+               <?php if($v['member_mobile'] != ''){ ?>
+               <div style="font-size:13px; padding-left:10px">&nbsp;&nbsp;<?php echo $v['member_mobile']; ?></div>
+               <?php } ?>
+              </div>
+          </td>
+          <td class="align-center"><?php
+            switch ($v['member_identity']) {
+                case 2:
+                    echo '教师';
+                    break;
+                case 1:
+                    echo '家长';
+                    break;
+            }
+            ?></td>
+          <td class="align-center"><?php echo $v['member_age']; ?></td>
+          <td class="align-center"><?php if($v['is_owner']!=0){echo "副账号";}else{echo "主账号";} ?></td>
+          
+          <td class="align-center"><?php echo $v['member_state'] == 1?lang('member_edit_allow'):lang('member_edit_deny'); ?></td>
+          <td class="align-center">
+            <?php if(session('office_is_super') ==1 || in_array(4,$action)){?>
+              <a href="javascript:dd({$v.member_id})" data-method="setTop" class="layui-btn layui-btn-sm">{$Think.lang.ds_view}</a>
+              <?php }?>
+
+              <?php if(session('office_is_super')==1 || in_array('3',$action)){?>
+              <a class="layui-btn layui-btn-sm" href="{:url('/Office/member/edit',['member_id'=>$v.member_id])}">{$Think.lang.ds_edit}</a>
+              <?php }?>
+              
+              <?php if(session('office_is_super')==1 || in_array('2',$action)){?>
+              <a class="layui-btn layui-btn-sm layui-btn-danger" href="javascript:member_drop('{$v.member_id}')">{$Think.lang.ds_del}</a>
+              <?php }?>
+          </td>
+        </tr>
+        <?php } ?>
+        <?php }else { ?>
+        <tr class="no_data">
+          <td colspan="11">{$Think.lang.ds_no_record}</td>
+        </tr>
+        <?php } ?>
+      </tbody>
+      <script type="text/javascript">
+        function dd(id) {
+            var urls=ADMIN_URL+'Membercommon/MemberInfo?member_id='+id;
+            //多窗口模式，层叠置顶
+            layer.open({
+                type: 2,
+                title: '公司信息',
+                area: ['80%', '80%'],
+                shadeClose: true,
+                shade: 0.4,
+                maxmin: false, //开启最大化最小化按钮
+                content: urls
+            });
+        }
+        function member_drop(id){
+          layer.confirm('是否删除此用户？', {
+            btn: ['删除','取消'] //按钮
+          }, function(){
+            window.location.href="{:url('/Office/member/drop')}?member_id="+id;
+          });
+        }
+      </script>
+      <tfoot class="tfoot">
+        <?php if(!empty($member_list) && is_array($member_list)){ ?>
+        <tr>
+        <td class="w24"><input type="checkbox" class="checkall" id="checkallBottom"></td>
+          <td colspan="16">
+          <label for="checkallBottom">{$Think.lang.ds_select_all}</label>
+            &nbsp;&nbsp;<a href="JavaScript:void(0);" class="btn" onclick="if(confirm('{$Think.lang.ds_ensure_del}')){$('#form_member').submit();}"><span>{$Think.lang.ds_del}</span></a>
+          </td>
+        </tr>
+        <?php } ?>
+      </tfoot>
+    </table>
+    {$page}
+    
+</div>

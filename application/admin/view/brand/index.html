@@ -1,0 +1,107 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>品牌管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form method="get" name="formSearch" id="formSearch">
+        <table class="search-form">
+            <tbody>
+            <tr>
+                <th><label for="search_brand_name">{$Think.lang.brand_index_name}</label></th>
+                <td><input class="txt" name="search_brand_name" id="search_brand_name" value="{$search_brand_name}" type="text"></td>
+                <th><label for="search_brand_class">{$Think.lang.brand_index_class}</label></th>
+                <td><input class="txt" name="search_brand_class" id="search_brand_class" value="{$search_brand_class}" type="text"></td>
+                <td><a href="javascript:document.formSearch.submit();" class="btn-search " title="{$Think.lang.ds_query}"></a>
+                    {if $search_brand_name != '' || $search_brand_class != ''}
+                    <a class="btns " href="{:url('brand/index')}" title="{$Think.lang.ds_cancel_search}"><span>{$Think.lang.ds_cancel_search}</span></a>
+                   {/if}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <input type="hidden" value="" name="export">
+    </form>
+    
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>{$Think.lang.brand_index_help1}</li>
+            <li>{$Think.lang.brand_index_help2}</li>
+            <li>{$Think.lang.brand_index_help3}</li>
+        </ul>
+    </div>
+    
+    
+    <form method='post' onsubmit="if(confirm('{$Think.lang.ds_ensure_del}')){return true;}else{return false;}" name="brandForm">
+        <div style="text-align:right;"><a class="btns" href="{:url('brand/export_step1')}" id="ncexport"><span>{$Think.lang.ds_export}Excel</span></a></div>
+        <table class="ds-default-table">
+            <thead>
+            <tr class="thead">
+                <th class="w24"></th>
+                <th class="w48">{$Think.lang.ds_sort}</th>
+                <th class="w270">{$Think.lang.brand_index_name}</th>
+                <th class="w150">{$Think.lang.brand_index_class}</th>
+                <th>{$Think.lang.brand_index_pic_sign}</th>
+                <th class="align-center">展示方式</th>
+                <th class="align-center">{$Think.lang.ds_recommend}</th>
+                <th class="w72 align-center">{$Think.lang.ds_handle}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {notempty name="brand_list"}
+            {volist name="brand_list" id="v"}
+            <tr class="hover edit">
+                <td><input value="{$v.brand_id}" class="checkitem" type="checkbox" name="del_brand_id[]"></td>
+                <td class="sort"><span class=" editable"  nc_type="inline_edit" fieldname="brand_sort" ajax_branch='brand_sort' fieldid="{$v.brand_id}" datatype="pint" maxvalue="255" title="{$Think.lang.ds_editable}">{$v.brand_sort}</span></td>
+                <td class="name"><span class=" editable" nc_type="inline_edit" fieldname="brand_name" ajax_branch='brand_name' fieldid="{$v.brand_id}" required="1"  title="{$Think.lang.ds_editable}">{$v.brand_name}</span></td>
+                <td class="class">{$v.brand_class}</td>
+                <td class="picture"><div class="brand-picture"><img src="{:brandImage($v.brand_pic)}" style="height: 55px;width: 55px"/></div></td>
+                <td class="align-center">{$v.show_type==1 ?'文字':'图片'}</td>
+                <td class="align-center yes-onoff">
+                    {if $v.brand_recommend == '0'}
+                    <a href="JavaScript:void(0);" class=" disabled" ajax_branch='brand_recommend' nc_type="inline_edit" fieldname="brand_recommend" fieldid="{$v.brand_id}" fieldvalue="0" title="{$Think.lang.ds_editable}"><img src="{$Think.config.url_domain_root}static/admin/images/treetable/transparent.gif"></a>
+                    {else /}
+                    <a href="JavaScript:void(0);" class=" enabled" ajax_branch='brand_recommend' nc_type="inline_edit" fieldname="brand_recommend" fieldid="{$v.brand_id}" fieldvalue="1"  title="{$Think.lang.ds_editable}"><img src="{$Think.config.url_domain_root}static/admin/images/treetable/transparent.gif"></a>
+                   {/if}
+                </td>
+                <td class="align-center">
+                    <a href="{:url('brand/brand_edit',['brand_id'=>$v.brand_id])}">{$Think.lang.ds_edit}</a>&nbsp;|&nbsp;
+                    <a href="javascript:void(0)" onclick="if(confirm('{$Think.lang.ds_ensure_del}'))
+                        location.href='{:url('brand/brand_del',['brand_id'=>$v.brand_id])}';">{$Think.lang.ds_del}</a></td>
+            </tr>
+           {/volist}
+           {else /}
+            <tr class="no_data">
+                <td colspan="10">{$Think.lang.ds_no_record}</td>
+            </tr>
+            {/notempty}
+            </tbody>
+            <tfoot>
+            {notempty name="brand_list"}
+            <tr colspan="15" class="tfoot">
+                <td><input type="checkbox" class="checkall" id="checkallBottom"></td>
+                <td colspan="16"><label for="checkallBottom">{$Think.lang.ds_select_all}</label>
+                    &nbsp;&nbsp;<a href="JavaScript:void(0);" class="btn" onclick="document.brandForm.submit()"><span>{$Think.lang.ds_del}</span></a>
+                    <div class="pagination"> {$page} </div></td>
+            </tr>
+           {/notempty}
+            </tfoot>
+        </table>
+    </form>
+    <div class="clear"></div>
+</div>
+<script type="text/javascript" src="{:config('url_domain_root')}static/plugins/jquery.edit.js" charset="utf-8"></script>

@@ -1,0 +1,69 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+ <link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">       
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <table class="layui-table">
+        <thead>
+          <tr>
+            <th style="width: 100px;"></th>
+            <th></th>
+          </tr> 
+        </thead>
+        <tbody>
+          <tr>
+            <td>姓名</td>
+            <td>{$member_name}</td>
+          </tr>
+          <tr>
+            <td>手机号(同账号)</td>
+            <td>{$member_mobile}</td>
+          </tr>
+          <tr>
+            <td>邮箱</td>
+            <td>{$member_email}</td>
+          </tr>
+          <tr>
+            <td>性别</td>
+            <td>{:SexFomat($member_sex)}</td>
+          </tr>
+          <tr>
+            <td>生日</td>
+            <td>{:Fomat($member_birthday)}</td>
+          </tr>
+          <tr>
+            <td>所在地区</td>
+            <td>{$member_areainfo}</td>
+          </tr>
+          <tr>
+            <td>注册时间</td>
+            <td>{:Fomat($member_add_time)}</td>
+          </tr>
+          <tr>
+            <td>账号状态</td>
+            <td>{:$member_state==1?'开启':'禁用'}</td>
+          </tr>
+          
+          <tr>
+        </tr>
+      </tbody>
+    </table>
+
+</div>
+
+
+
+
+
+
+
+

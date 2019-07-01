@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>想见孩-发现-校车</title>
+    <meta name="author" content="想见孩" />
+    <meta name="copyright" content="想见孩" />
+    <meta name="description" content="想见孩" />
+    <meta id="viewport" name="viewport" content="width=750" />
+    <link rel="stylesheet" href="../content/style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/iconfonts/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/lib/weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/css/jquery-weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/find.css" type="text/css" />
+    <link rel="shortcut icon" href="../content/images/ico.ico" type="image/x-icon" />
+    <script src="../content/scripts/mobile-util.js"></script>
+    <style>
+        .weui-cells_radio {
+            padding: 30px 40px;
+        }
+        
+        .weui-check_label {
+            font-size: 28px;
+            line-height: 80px;
+        }
+        
+        .weui-cells_radio .weui-check:checked+.weui-icon-checked:before {
+            font-size: 30px;
+        }
+        .main{
+            padding-top: 0;
+        }
+    </style>
+</head>
+
+<body class="mdbody">
+    <!--<header class="head">
+        <div class="head0">
+            <div class="menu_bar_box">
+                <a href="javascript:;" class="back_btn" onClick="historyback()">
+                    <i class="icon iconfont icon-jiantou3"></i>
+                </a>
+            </div>
+            <div class="head_title">
+                <p>学校班车</p>
+            </div>
+            <div class="head_r">
+                <a href="javascript:;" class="role_switch" id="role_switch"><i class="icon iconfont icon-qiehuantuichu"></i></a>
+            </div>
+        </div>
+    </header>-->
+
+    <!-- 主要内容 -->
+    <div class="main">
+        <div class="curriculum_content" id="curriculum_content" style="padding-top: 20px;">
+            <div class="cookbook_title_box" style="margin-bottom: 0px;">
+                <h2 class="cookbook_title" id="cooktitle"> </h2>
+            </div>
+        </div>
+        <div class="container3">
+
+            <div class="schoolbus_cont">
+                <img class="schoolbus_img" src="../content/images/find/schoolbus_img.png" alt="">
+                <!-- 没有数据时显示 -->
+                <div class="no_cook_cont" id="no_cook_cont" style="display: none">
+                    <div class="nofootbox">
+                        <p class="nofootbox_p">
+                            该学校暂未添加校车
+                        </p>
+                    </div>
+                </div>
+                <div id="schoolbus_list_box">
+                   
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="screen"></div>
+    <input type="hidden" value="0" id="childid" >
+    <input type="hidden" value="xx" id="infos" >
+    <script src="../content/scripts/jquery.min.js"></script>
+    <script src="../content/plugins/jqweui/js/jquery-weui.min.js"></script>
+    <script src="../content/scripts/juqery.cookie.js"></script>
+    <script src="../content/scripts/API.js"></script>
+    <script src="../content/scripts/commom.js"></script>
+    <script>
+        GetChildList(user_token,'reday');
+        
+        change_bus = function(id,name){
+            $('#cooktitle').text(name);
+            GetBusInfo(id);
+        };
+
+        // 校车路线模板
+        function HTML(data) {
+            console.log(data);
+            var template = '';
+            var template2 = '';
+            for (i = 0; i < data.length; i++) {
+                template2 = '';
+                for (j = 0; j < data[i]["bus_line"].length; j++) {
+                    template2 += '<li>' +
+                        '<span class="bus_icon"></span>' +
+                        '<div class="channel_cont">' +
+                        '<div>' + data[i]["bus_line"][j]["ArrivalTime"] + '</div>' +
+                        '<div>' + data[i]["bus_line"][j]["Station"] + '</div>' +
+                        '</div>' +
+                        '</li>';
+                }
+
+                template += '<div class="schoolbus_list">' +
+                    '<h2 class="line_way_title">' + data[i]["bus_start"] +
+                    '<i class="icon iconfont icon-single_arrow"></i>' + data[i]["bus_end"] +
+                    '<span class="gotoschool_type">' + data[i]["bus_line_name"] + '</span>' +
+                    '</h2>' +
+                    '<div class="bus_line">' +
+                    '<div class="bus_line_t">' +
+                    '<div class="bus_line_tl">' +
+                    '<ul class="bus_line_ul bus_line_time">' +
+                    '<li>' + data[i]["bus_start_time"] + '</li>' +
+                    '<li>' + data[i]["bus_end_time"] + '</li>' +
+                    '</ul>' +
+                    '</div>' +
+                    '<div class="bus_line_tr">' +
+                    '<ul class="bus_line_ul bus_line_name">' +
+                    '<li><span class="bus_icon"></span>' +
+                    '<p>' + data[i]["bus_start"] + '</p>' +
+                    '</li>' +
+                    '<li><span class="bus_icon"></span>' +
+                    '<p>' + data[i]["bus_end"] + '</p>' +
+                    '</li>' +
+                    '</ul>' +
+                    '<a href="javascript:;" class="completeroute" onclick="wayOpen($(this))">完整路线</a>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="bus_line_b">' +
+                    '<div class="bus_info">' +
+                    '<p class="bus_info_p1">监督投诉：12646464<span class="platenumber">' + data[i]["bus_card"] + '</span></p>' +
+                    '<p class="bus_info_p1">敬请提前候车，看见车了向司机招手示意，上车主动系好安全带</p>' +
+                    '</div>' +
+                    '<ul class="bus_line_ul channel">' + template2 +
+                    '</ul>' +
+                    '<div class="packup_box">' +
+                    '<a href="javascript:;" class="packup_btn" onclick="wayClose($(this))">' +
+                    '收起 <i class="icon iconfont icon-07jiantouxiangshang"></i>' +
+                    '</a>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>';
+
+            }
+
+            return template;
+
+        }
+
+        // 完整路线打开关闭 start
+        function wayOpen(Othis) {
+            var _this_line_b = Othis.parents(".bus_line").find(".bus_line_b");
+            Othis.fadeOut(200);
+            if (_this_line_b.css("display") == "none") {
+                _this_line_b.slideDown(200);
+            }
+        }
+
+        function wayClose(Othis) {
+            var _that_line_t = Othis.parents(".bus_line").find(".bus_line_t");
+            var _that_line_b = Othis.parents(".bus_line_b");
+            _that_line_t.find(".completeroute").fadeIn(200);
+            _that_line_b.slideUp(200);
+        }
+        // 完整路线打开关闭 end
+        // 切换孩子
+        
+        $(function(){
+            setTimeout(function(){
+                var ssss = $('#infos').val();
+                ssss = $.parseJSON(ssss);
+                
+                $("#role_switch").select({
+                    title: "选择学生绑定学校",
+                    items: ssss,
+                    onChange: function(d) {
+                        if(d.values=='undefined' || d.values == null) return;
+                        $('#cooktitle').text(d.titles)
+                        GetBusInfo(d.values)
+                    },
+                    onClose: function() {
+                        //关闭遮罩层
+                        $(".screen").removeClass("show");
+                        // console.log("close");
+                    },
+                    onOpen: function() {
+                        // console.log($(".cookbook_title").text());
+                        $(".weui-cells_radio p:contains('高一或10年级')").parent().next("div").find(".weui-check").attr("checked", "true");
+
+                    },
+                });   
+            }, 500 );
+            
+        })
+        /**
+ * 获取当前家长的所有孩子列表
+ * 包含学校id
+ * 包含班级id
+ * 包含孩子id
+ * @创建时间 2018-11-05T14:05:59+0800
+ */
+function GetChildList(key,act,a){
+    if(!key){
+        key = user_token;
+    }
+    $.post(api+"/Students/get_student_info.html", {key: key}, function(data, textStatus, xhr) {
+        if(data.code==200){
+            var s_id = data.result[0]['s_id'];
+            $('#childid').val(s_id);
+            $('#cooktitle').text(data.result[0].name+'--'+data.result[0].s_name)
+            var list = data.result;
+            var StudentsList = new Array;
+            for (var i = 0; i < list.length; i++) {
+                var info = {'title':list[i].name+'--'+list[i].s_name,'value':list[i].s_id}
+               StudentsList.push(info);
+            }
+            var sssss =JSON.stringify(StudentsList);
+            $("#infos").val(sssss);
+            if (act == 'reday') {
+                GetBusInfo(s_id)
+            }
+        }
+        return data;
+    },'json');
+}
+
+
+function GetBusInfo(s_id){
+    // alert(111);return;
+    // var child_id = school.val();
+    $.ajax({
+        type: "POST",
+        url: api + "/Students/GetSchoolBusInfo.html",
+        data: {
+            key: user_token,
+            child_id: s_id
+        },
+        dataType: "json",
+        success: function(response) {
+            // console.log(response);
+            // return;
+            var schoolbus = HTML(response["result"]);
+            if(schoolbus){
+                $("#schoolbus_list_box").html(schoolbus);
+            }else{
+                $("#no_cook_cont").show();
+                $("#schoolbus_list_box").hide();
+            }
+        }
+    });
+}
+
+    </script>
+</body>
+
+</html>

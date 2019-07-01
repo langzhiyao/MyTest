@@ -1,0 +1,175 @@
+{include file="public/header" /}
+<script src="{$Think.config.url_domain_root}static/common/js/mlselection3.js"></script>
+<script src="{$Think.config.url_domain_root}static/home/js/common.js"></script>
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<style>
+    .layui-form-label{
+        width: 200px;
+    }
+</style>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>机器人增加</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>添加打卡机器人</li>
+        </ul>
+    </div>
+    <form id="user_form" enctype="multipart/form-data" method="post" class="layui-form">
+        <div class="ncap-form-default">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">机器人ID：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="SNNumber" name="SNNumber" class="layui-input">
+                        <span class="err"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">学校所在地区：</label>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select  lay-filter="province"  class="select"  lay-verify="type" name="province" id="province">
+                                <option value="" selected>{$Think.lang.look_address_province}</option>
+                                {volist name="region_list" id="vo"}
+                                <option value="{$vo.area_id}">{$vo.area_name}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                        <div class="layui-input-inline">
+                            <select name="city" lay-filter="city"  class="select"  lay-verify="type"  id="city">
+                                <option value="">{$Think.lang.look_address_city}</option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline">
+                            <select name="area" lay-filter="area"  class="select"  lay-verify="type"  id="area">
+                                <option value="">{$Think.lang.look_address_area}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">所属学校：</label>
+                    <div class="layui-input-inline">
+                        <select name="school" id="school" class="select">
+                            <option value="">请选择所属学校</option>
+                        </select>
+                        <span class="err"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">备注：</label>
+                    <div class="layui-input-inline">
+                        <textarea id="desc" name="desc" class="layui-text"></textarea>
+                        <span class="err"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">状态：</label>
+                <div class="layui-input-block">
+                    <input type="radio" value="1" name="isdel" checked="checked">使用
+                    <input type="radio" value="2" name="isdel">禁用
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label"></label>
+                <div class="layui-input-block">
+                    <a href="JavaScript:void(0);" class="btn" id="submitBtn">确认提交</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    layui.use(['form','laypage', 'layer'], function(){
+        var form = layui.form,
+            laypage = layui.laypage
+            ,layer = layui.layer;
+        //省
+        form.on('select(province)', function(data){
+            //改变市区
+            $('#city').html('<option value="0">{$Think.lang.look_address_city}</option>');
+            //改变县区
+            $('#area').html('<option value="0">{$Think.lang.look_address_area}</option>');
+
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变市区
+                    $('#city').html(data.city);
+                    //改变县区
+                    $('#area').html(data.area);
+                    //改变学校
+                    $('#school').html(data.school);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //市
+        form.on('select(city)', function(data){
+            //改变县区
+            $('#area').html('<option value="0">{$Think.lang.look_address_area}</option>');
+            var province = $('#province').find('option:selected').val();
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+province+'&city='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变县区
+                    $('#area').html(data.area);
+                    //改变学校
+                    $('#school').html(data.school);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //县/区
+        form.on('select(area)', function(data){
+            var province = $('#province').find('option:selected').val();
+            var city = $('#city').find('option:selected').val();
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+province+'&city='+city+'&area='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变学校
+                    $('#school').html(data.school);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+
+    });
+    $(function() {
+        regionInit("region");
+        //按钮先执行验证再提交表单
+        $("#submitBtn").click(function() {
+            if ($("#user_form").valid()) {
+                $("#user_form").submit();
+            }
+        });
+    });
+</script>

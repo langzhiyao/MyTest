@@ -1,0 +1,75 @@
+{include file="public/seller_top" /} 
+<div class="seller_main w1200">
+    {include file="public/seller_left" /}
+    <div class="seller_right">
+        <div class="seller_items">
+            {include file="public/seller_items" /}
+        </div>
+        
+        
+        
+        
+        
+        
+<div class="dssc-form-default">
+  <form id="add_form" action="{:url('/home/selleraccount/account_edit_save')}" method="post">
+    <input name="seller_id" value="<?php echo $seller_info['seller_id'];?>" type="hidden" />
+    <dl>
+      <dt><i class="required">*</i>卖家账号名{$Think.lang.ds_colon}</dt>
+      <dd> <?php echo $seller_info['seller_name'];?> <span></span>
+        <p class="hint"></p>
+      </dd>
+    </dl>
+    <dl>
+      <dt><i class="required">*</i>账号组{$Think.lang.ds_colon}</dt>
+      <dd><select name="group_id">
+          <?php foreach($seller_group_list as $value) { ?>
+          <option value="<?php echo $value['group_id'];?>" <?php echo $seller_info['seller_group_id'] == $value['group_id']?'selected':'';?>><?php echo $value['group_name'];?></option>
+          <?php } ?>
+        </select>
+        <span></span>
+        <p class="hint"></p>
+      </dd>
+    </dl>
+    <div class="bottom">
+      <label class="submit-border">
+        <input type="submit" class="submit" value="{$Think.lang.ds_submit}">
+      </label>
+    </div>
+  </form>
+</div>
+<script>
+$(document).ready(function(){
+    $('#add_form').validate({
+        onkeyup: false,
+        errorPlacement: function(error, element){
+            element.nextAll('span').first().after(error);
+        },
+    	submitHandler:function(form){
+    		ajaxpost('add_form', '', '', 'onerror');
+    	},
+        rules: {
+            group_id: {
+                required: true
+            }
+        },
+        messages: {
+            group_id: {
+                required: '<i class="icon-exclamation-sign"></i>请选择账号组'
+            }
+        }
+    });
+});
+</script> 
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    </div>
+</div>
+{include file="public/mall_footer" /}

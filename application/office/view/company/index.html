@@ -1,0 +1,311 @@
+{include file="public/header" /}
+<script src="{$Think.config.url_domain_root}static/common/js/mlselectiones.js"></script>
+<script src="{$Think.config.url_domain_root}static/home/js/common.js"></script>
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>分/子公司管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>分/子公司信息展示。</li>
+        </ul>
+    </div>
+    <form method="post" name="formSearch" id="formSearch">
+        <table class="search-form">
+            <tbody>
+            <tr>
+                <th><label for="search_organize_name">公司名称：</label></th>
+                <td><input class="txt" name="search_organize_name" id="search_organize_name" value="{$search_organize_name}" type="text"></td>
+
+                <td id="region">
+                    <input type="hidden" name="area_id" id="area_id" value="{$address.area_id}" class="area_ids" />
+                    <input type="hidden" name="area_info" id="area_info" value="{$address.area_info}" class="area_names" />
+                    <input type="hidden"  name="o_provinceid" id="o_provinceid" class="o_provinceid">
+                    <input type="hidden"  name="o_cityid" id="o_cityid" class="o_cityid">
+                    <input type="hidden" name="dep" id="dep" class="dep" value="1">
+                    <input type="hidden"  name="sid" id="sid" value="1">
+                    {notempty name="address.area_id"}
+                    <span>{$address.area_info}</span>
+                    <input type="button" value="{$Think.lang.ds_edit}" class="edit_region" />
+                    <select style="display:none;">
+                        <option value="0">请选择地区</option>
+                        {volist name="region_list" id="region"}
+                        <option value="{$region.area_id}">{$region.area_name}</option>
+                        {/volist}
+                    </select>
+                    {else}
+                    <select>
+                        <option value="0">请选择地区</option>
+                        {volist name="region_list" id="region"}
+                        <option value="{$region.area_id}">{$region.area_name}</option>
+                        {/volist}
+                    </select>
+                    {/notempty}
+
+                </td>
+
+                <td><a href="javascript:document.formSearch.submit();" class="btn-search " title="{$Think.lang.ds_query}"></a>
+                    {if $search_brand_name != '' || $search_brand_class != ''}
+                    <a class="btns " href="{:url('student/index')}" title="{$Think.lang.ds_cancel_search}"><span>{$Think.lang.ds_cancel_search}</span></a>
+                    {/if}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <input type="hidden" value="" name="export">
+    </form>
+
+
+    <form method='post' onsubmit="if(confirm('{$Think.lang.ds_ensure_del}')){return true;}else{return false;}" name="brandForm">
+        <?php if(session('office_is_super') ==1 || in_array(7,$action)){?>
+            <div style="text-align:right;"><a class="btns layui-btn layui-btn-sm"  href="{:url('company/export_step1',['o_name'=>$search_organize_name,'o_provinceid'=>$o_provinceid,'o_cityid'=>$o_cityid,'area_id'=>$area_id])}" id="ncexport"><span>{$Think.lang.ds_export}Excel</span></a></div>
+        <?php }?>
+        <table class="ds-default-table">
+            <thead>
+            <tr class="thead">
+                <th class="w272">{$Think.lang.ds_number}</th>
+                <th class="w172">{$Think.lang.ds_organize_name}</th>
+                <th class="w272 align-center">{$Think.lang.organize_index_address}</th>
+                <th class="w272 align-center">{$Think.lang.ds_organize_time}</th>
+                <?php if(session('office_is_super') ==1 || in_array(4,$action) || in_array(3,$action) || in_array(2,$action) || in_array(6,$action)){?>
+                <th class="w172">{$Think.lang.ds_handle}</th>
+                <?php }?>
+                <th class="w172">{$Think.lang.ds_organize_remark}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {notempty name="organize_list"}
+            {volist name="organize_list" id="v"}
+            <tr class="hover edit">
+                <td class="sort">{$key+1}</td>
+                <td class="name">{$v.o_name}</td>
+                <td class="class">{$v.o_area}</td>
+                <td class="picture">{$v.o_createtime}</td>
+                <?php if(session('office_is_super') ==1 || in_array(4,$action) || in_array(3,$action) || in_array(2,$action) || in_array(6,$action)){?>
+                <td class="align-center">
+                    <?php if(session('office_is_super') ==1 || in_array(4,$action)){?>
+                    <a href="javascript:dd({$v.o_id})" data-method="setTop" class="layui-btn layui-btn-xs">{$Think.lang.ds_view}</a>
+                    <?php }?>
+                    <?php if(session('office_is_super') ==1 || in_array(3,$action)){?>
+                    <a href="{:url('company/edit',['organize_id'=>$v.o_id])}" class="layui-btn layui-btn-xs">{$Think.lang.ds_edit}</a>
+                    <?php }?>
+                    <?php if(session('office_is_super') ==1 || in_array(2,$action)){?>
+                    <a href="javascript:void(0)" onclick="if(confirm('{$Think.lang.ds_ensure_del}'))
+                        location.href='{:url('company/del',['o_id'=>$v.o_id])}';" class="layui-btn layui-btn-xs">{$Think.lang.ds_del}</a>
+                    <?php }?>
+                    <?php if(session('office_is_super') ==1 || in_array(6,$action)){?>
+                    <a href="javascript:jia({$v.o_role},{$v.o_id})" class="layui-btn layui-btn-xs" id="parentIframe">{$Think.lang.ds_organize_assign}</a>
+                    <?php }?>
+                </td>
+                <?php }?>
+                <td class="align-center">{$v.o_remark}</td>
+            </tr>
+            {/volist}
+            {else /}
+            <tr class="no_data">
+                <td colspan="10">{$Think.lang.ds_no_record}</td>
+            </tr>
+            {/notempty}
+            </tbody>
+
+        </table>
+        <tfoot>
+        {notempty name="organize_list"}
+        <tr colspan="15" class="tfoot">
+            <td colspan="16">
+                <div class="pagination"> {$page} </div></td>
+        </tr>
+        {/notempty}
+        </tfoot>
+    </form>
+    <div class="clear"></div>
+</div>
+<form class="layui-form" onsubmit="return false;" style="display: none;" id="courForm">
+    <input type="hidden" id="role" value="">
+    <input type="hidden" id="oid" value="">
+    <div  class="ncap-form-default">
+        <dl>
+            <dt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$Think.lang.admin_index_username}</dt>
+            <dd>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="admin_name" name="admin_name" value="" class="input-txt" type="text">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="err"></span>
+                <p class="notic">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$Think.lang.admin_add_username_tip}</p>
+            </dd>
+        </dl>
+        <dl>
+            <dt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$Think.lang.admin_index_password}</dt>
+            <dd>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="admin_password" name="admin_password" value="" class="input-txt" type="password">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="err"></span>
+                <p class="notic">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$Think.lang.admin_add_password_tip}</p>
+            </dd>
+        </dl>
+        <dl>
+            <dt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$Think.lang.admin_rpassword}</dt>
+            <dd>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="admin_rpassword" name="admin_rpassword" value="" class="input-txt" type="password">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="err"></span>
+                <p class="notic">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$Think.lang.admin_add_password_tip}</p>
+            </dd>
+        </dl>
+        <input type="hidden" name="gid" value="{$role}">
+        <dl>
+            <dt></dt>
+            <dd>&nbsp;&nbsp;&nbsp;<a href="JavaScript:void(0);" class="btn" id="submitBtn">确认提交</a></dd>
+        </dl>
+    </div>
+
+</form>
+<script type="text/javascript" src="{:config('url_domain_root')}static/plugins/jquery.edit.js" charset="utf-8"></script>
+<script>
+    function dd(id) {
+        var urls=ADMIN_URL+'organizes/company?o_id='+id;
+                //多窗口模式，层叠置顶
+                layer.open({
+                    type: 2,
+                    title: '公司信息',
+                    area: ['80%', '80%'],
+                    shadeClose: true,
+                    shade: 0.4,
+                    maxmin: false, //开启最大化最小化按钮
+                    content: urls
+                });
+    }
+//    function jia(id){
+//        var urls=ADMIN_URL+'organizes/admin?role_id='+id;
+//        //多窗口模式，层叠置顶
+//        layer.open({
+//            type: 2,
+//            title: '分配管理员账号',
+//            area: ['700px', '450px'],
+//            fixed: false, //不固定
+//            shadeClose: true,
+//            shade: 0.4,
+//            maxmin: false, //开启最大化最小化按钮
+//            content: urls
+//        });
+//    }
+        function jia(role,oid){
+            $('#role').val(role);
+            $('#oid').val(oid);
+            //var urls=ADMIN_URL+'organizes/admin?role_id='+id;
+            //多窗口模式，层叠置顶
+            layer.open({
+                type: 1,
+                title: '分配管理员账号',
+                area: ['700px', '450px'],
+                fixed: false, //不固定
+                shadeClose: true,
+                shade: 0.4,
+                maxmin: false, //开启最大化最小化按钮
+                content: $("#courForm")
+            });
+        }
+    $(function() {
+        regionInit("region");
+    });
+    //按钮先执行验证再提交表
+    $(document).ready(function() {
+
+        layui.use(['form', 'layedit', 'laydate'], function() {
+            var form = layui.form
+        });
+        //按钮先执行验证再提交表单
+        $("#submitBtn").click(function() {
+            if ($("#courForm").valid()) {
+                //$("#courForm").submit();
+                //$('.layui-layer-close1').click();
+                var admin_name = $("#admin_name").val();
+                var admin_password = $("#admin_password").val();
+                var gid = $("#role").val();
+                var oid=$("#oid").val();
+                $.ajax({
+                    url: "{:url('/Office/company/admin_add')}",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {'admin_name': admin_name,'admin_password':admin_password,'gid':gid,'oid':oid},
+                    success:function(sb){
+                        if (sb.m==true) {
+                            layer.msg(sb.ms, {icon: 16,time: 500},function(){
+                                window.location.href="{:url('/Office/Company/index')}";
+                            });
+                        }else{
+                            alert(sb.ms);
+                            window.location.href="{:url('/Office/Company/index')}";
+                        }
+                    }
+                });
+
+            }
+        });
+        $("#courForm").validate({
+            errorPlacement: function(error, element) {
+                error.appendTo(element.nextAll('span.err'));
+            },
+            rules: {
+                admin_name: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 20,
+                    remote: {
+                        url: ADMIN_URL+'/School/ajax.html?branch=check_admin_name',
+                        type: 'get',
+                        data: {
+                            admin_name: function() {
+                                return $('#admin_name').val();
+                            }
+                        }
+                    }
+                },
+                admin_password: {
+                    required: true,
+                    minlength: 6,
+                    maxlength: 20
+                },
+                admin_rpassword: {
+                    required: true,
+                    equalTo: '#admin_password'
+                },
+                gid: {
+                    required: true
+                }
+            },
+            messages: {
+                admin_name: {
+                    required: '{$Think.lang.admin_add_username_null}',
+                    minlength: '{$Think.lang.admin_add_username_max}',
+                    maxlength: '{$Think.lang.admin_add_username_max}',
+                    remote: '{$Think.lang.admin_add_admin_not_exists}'
+                },
+                admin_password: {
+                    required: '{$Think.lang.admin_add_password_null}',
+                    minlength: '{$Think.lang.admin_add_password_max}',
+                    maxlength: '{$Think.lang.admin_add_password_max}'
+                },
+                admin_rpassword: {
+                    required: '{$Think.lang.admin_add_password_null}',
+                    equalTo: '{$Think.lang.admin_edit_repeat_error}'
+                },
+                gid: {
+                    required: '{$Think.lang.admin_add_gid_null}',
+                }
+            }
+        });
+    });
+</script>
+

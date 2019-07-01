@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>想见孩-上传视频课件</title>
+    <meta name="author" content="想见孩" />
+    <meta name="copyright" content="想见孩" />
+    <meta name="description" content="想见孩" />
+    <meta id="viewport" name="viewport" content="width=750" />
+    <link rel="stylesheet" href="../content/style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/iconfonts/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/lib/weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/css/jquery-weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/teachchild/upload.css" type="text/css" />
+    <link rel="shortcut icon" href="../content/images/ico.ico" type="image/x-icon" />
+    <script src="../content/scripts/mobile-util.js"></script>
+</head>
+
+<body>
+
+    <div class="body_content">
+        <header class="head">
+            <div class="head0">
+                <div class="menu_bar_box">
+                    <a href="javascript:;" class="back_btn" onClick="historyback()">
+                        <i class="icon iconfont icon-jiantou3"></i>
+                    </a>
+                </div>
+                <div class="head_title">
+                    <p>上传视频课件</p>
+                </div>
+                <div class="head_r">
+                </div>
+            </div>
+        </header>
+        <div class="main">
+            <div class="upload_video">
+                <div style="width:100%; height: auto;margin-bottom: 30px;">
+                    <video id="video_true" controls controlsList="nodownload" width="750px" height="400px" preload="none" poster="">
+                        <source src="" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+
+            <!-- 表单 -->
+            <div class="form_wrap">
+                <div class="bang_list">
+                    <div class="name_box">
+                        <label for="bang_name">课程标题</label>
+                    </div>
+                    <div class="input_box">
+                        <input class="input_txt" id="bang_name" type="text" placeholder="为课程起一个标题吧">
+                    </div>
+                </div>
+                <div class="weui-cell bang_list">
+                    <div class="name_box">
+                        <label for="aboutValue">课程简介</label>
+                    </div>
+                    <div class="input_box">
+                        <a href="javascript:;" class="open-popup" data-target="#about">
+                            <input class="input_txt" readonly="readonly" id="aboutValue" type="text" placeholder="介绍一下你的课程吧">
+                        </a>
+                    </div>
+                </div>
+                <div id="about" class="weui-popup__container">
+                    <div class="weui-popup__overlay"></div>
+                    <div class="weui-popup__modal">
+                        <div class="body_content">
+                            <header class="head">
+                                <div class="head0">
+                                    <div class="menu_bar_box">
+                                        <a href="javascript:;" class="back_btn" onClick="popupClose(event)">
+                                            <i class="icon iconfont icon-jiantou3 close-popup"></i>
+                                        </a>
+                                    </div>
+                                    <div class="head_title">
+                                        <p>课程简介</p>
+                                    </div>
+                                    <div class="head_r">
+                                        <p class='close-popup' onclick="popupClose(event)">确认</p>
+                                    </div>
+                                </div>
+                            </header>
+                        </div>
+                        <div class="container3" style="padding:0 23px;">
+                            <div class="weui-cell" style="border-bottom:1px solid #ededed;">
+                                <div class="weui-cell__bd">
+                                    <textarea class="weui-textarea feedback_txt" id="sizeStatistics" placeholder="请输入文本" rows="5" style="background:none;font-size: 28px;"></textarea>
+                                    <div class="weui-textarea-counter keepwatch" style="font-size: 24px;"><span id="currentSize">0</span>/400</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bang_list">
+                    <div class="name_box">
+                        <label for="zuozhe">作者</label>
+                    </div>
+                    <div class="input_box">
+                        <input class="input_txt" id="zuozhe" type="text" placeholder="作者姓名">
+                    </div>
+                </div>
+                <div class="weui-cell bang_list">
+                    <div class="weui-cell__hd name_box"><label for="category" class="weui-label">类别</label></div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input input_txt inputpointer" id="category" type="text" placeholder="请选择类别" value="" />
+                    </div>
+                </div>
+                <div class="weui-cell bang_list isKemu" style="display: none">
+                    <div class="weui-cell__hd name_box"><label for="category" class="weui-label">科目</label></div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input input_txt inputpointer" id="kemu" type="text" placeholder="请选择科目" value="" />
+                    </div>
+                </div>
+                <div class="weui-cell bang_list">
+                    <div class="weui-cell__hd name_box"><label for="price" class="weui-label">价格</label></div>
+                    <div class="weui-cell__bd price_wrap_label">
+                        <a href="javascript:;" class="open-popup" data-target="#priceBottom">
+                            <input class="weui-input input_txt" id="price" readonly="readonly" type="text" placeholder="请选择" value="" />
+                            <label>元</label>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div id="priceBottom" class="weui-popup__container popup-bottom">
+                <div class="weui-popup__overlay"></div>
+                <div class="weui-popup__modal">
+                    <div class="body_content">
+                        <header class="head">
+                            <div class="head0">
+                                <div class="menu_bar_box">
+                                    <i class="close-popup price_close">取消</i>
+                                </div>
+                                <div class="head_title">
+                                    <p>价格</p>
+                                </div>
+                                <div class="head_r">
+                                    <p class='close-popup price_ok' onclick="pricePopupClose(event)">确认</p>
+                                </div>
+                            </div>
+                        </header>
+                    </div>
+                    <div class="price_boot_wrap">
+                        <div class="http_price_wrap">
+
+                        </div>
+                        <!-- <p>自定义价格</p> -->
+                        <input id="zidingyiinput" type="text" min="1" name="" value="" placeholder="自定义价格">
+                    </div>
+                </div>
+            </div>
+
+            <div class="operating">
+                <p><button type="button" name="button" onclick="isUpload(0)">确认上传</button></p>
+                <p><button type="button" name="button" onclick="isUpload(1)">删除并退出</button></p>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script src="../content/scripts/jquery.min.js"></script>
+    <script src="../content/plugins/jqweui/js/jquery-weui.min.js"></script>
+    <script src="../content/scripts/juqery.cookie.js"></script>
+    <script src="../content/scripts/API.js"></script>
+    <script src="../content/scripts/commom.js"></script>
+    <script src="../content/plugins/jqweui/js/class-picker.js"></script>
+    <script src="../content/plugins/ckplayer/ckplayer.js"></script>
+    <script src="../content/scripts/teachchild/upload.js"></script>
+    <script>
+        $(function() {
+            // 反馈意见字数限制
+            $("#sizeStatistics").on("keyup", function() {
+                var size = $("#sizeStatistics").val().length;
+                if (size > 400) {
+                    size = 400;
+                    $("#sizeStatistics").val($("#sizeStatistics").val().substring(0, 400));
+                }
+                $("#currentSize").html(size);
+            })
+        })
+    </script>
+</body>
+
+</html>

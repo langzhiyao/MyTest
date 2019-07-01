@@ -1,0 +1,209 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>商品分析</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+   <div class="fixed-empty"></div>
+
+
+  <form method="get"  name="formSearch" id="formSearch">
+    <div class="w100pre" style="width: 100%;">
+        <table class="search-form">
+          <tbody>
+            <tr>
+              <td>
+              	<select name="search_type" id="search_type" class="querySelect">
+                  <option value="day" {if isset($search_arr.search_type) && $search_arr.search_type == 'day'}selected{/if}>按照天统计</option>
+                  <option value="week" {if isset($search_arr.search_type) && $search_arr.search_type == 'week'}selected{/if}>按照周统计</option>
+                  <option value="month" {if isset($search_arr.search_type) && $search_arr.search_type == 'month'}selected{/if}>按照月统计</option>
+                </select>
+              </td>
+              <td id="searchtype_day" style="display:none;">
+              	<input class="txt date" type="text" value="{:date('Y-m-d',$search_arr.day.search_time)}" id="search_time" name="search_time">
+              </td>
+              <td id="searchtype_week" style="display:none;">
+              	<select name="searchweek_year" class="querySelect">
+                  {volist name="year_arr" id="v"}
+              		<option value="{$key}" {$search_arr.week.current_year == $key ?'selected':''}>{$v}</option>
+                  {/volist}
+                </select>
+                <select name="searchweek_month" class="querySelect">
+                  {volist name="month_arr" id="v"}
+              		<option value="{$key}" {$search_arr.week.current_month == $key ?'selected':''}>{$v}</option>
+                  {/volist}
+                </select>
+                <select name="searchweek_week" class="querySelect">
+                  {volist name="week_arr" id="v"}
+              		<option value="{$v.key}" {$search_arr.week.current_week == $key ?'selected':''}>{$v.val}</option>
+                  {/volist}
+                </select>
+              </td>
+              <td id="searchtype_month" style="display:none;">
+              	<select name="searchmonth_year" class="querySelect">
+                  {volist name="year_arr" id="v"}
+              		<option value="{$key}" {$search_arr.month.current_year == $key ?'selected':''}>{$v}</option>
+                  {/volist}
+                </select>
+                <select name="searchmonth_month" class="querySelect">
+                  {volist name="month_arr" id="v"}
+              		<option value="{$key}" {$search_arr.month.current_month == $key ? 'selected':''}>{$v}</option>
+                  {/volist}
+                </select>
+              </td>
+                <td>商品名称<input class="txt-long" type="text" name="goods_name" value="{$Request.param.goods_name}" /></td>
+         	  	<td>店铺名称<input class="txt-long" type="text" name="store_name" value="{$Request.param.store_name}" /></td>
+         	  	<td>分类</td>
+         	  	<td id="searchgc_td"></td>
+                <input type="hidden" id="choose_gcid" name="choose_gcid" value="0"/>
+                <input type="hidden" id="exporttype"  name="exporttype"  value="">
+         	  	<td>
+                  <a href="javascript:void(0);" id="ncsubmit" class="btn-search tooltip"></a>
+                </td>
+            </tr>
+
+          </tbody>
+        </table>
+       <span class="right" style="margin:12px 0px 6px 4px;">
+
+        </span>
+    </div>
+  </form>
+
+  <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>{:lang('stat_validorder_explain')}</li>
+        	<li>以下列表为符合搜索条件的有效订单中所有商品数据，及其时间段内的销量、下单量、下单总金额</li>
+            <li>点击每列旁边的箭头对列表进行排序，默认按照“下单商品件数”降序排列</li>
+        </ul>
+    </div>
+
+
+  <div id="container" class="w100pre close_float">
+      <div style="text-align:right;">
+      	<a class="btns" href="javascript:void(0);" id="export_btn"><span>导出Excel</span></a>
+      </div>
+  </div>
+  <table class="ds-default-table">
+    <thead>
+      <tr class="thead sortbar-array" >
+	      <th class="align-center">商品名称</th>
+	      <th class="align-center">平台货号</th>
+	      <th class="align-center">店铺名称</th>
+	      <th class="align-center">
+            <a nc_type="orderitem" data-param='{"orderby":"goodsnum"}' class="{!$orderby || $orderby=='goodsnum desc' ?'selected desc':''}{$orderby =='goodsnum asc'?'selected asc':'' }">下单商品件数<i></i></a>
+          </th>
+	      <th class="align-center">
+            <a nc_type="orderitem" data-param='{"orderby":"ordernum"}' class="{$orderby == 'selected desc' ?'selected desc':''} {$orderby == 'ordernum asc' ?'selected asc':''}">下单单量<i></i></a>
+          </th>
+	      <th class="align-center">
+            <a nc_type="orderitem" data-param='{"orderby":"goodsamount"}' class="{$orderby == 'goodsamount desc' ?'selected desc':''}{$orderby == 'goodsamount asc' ?'selected asc':''}">下单金额<i></i></a>
+          </th>
+      </tr>
+    </thead>
+    <tbody id="datatable">
+    {notempty name="goods_list"}
+   {volist name="goods_list" id="v"}
+      <tr class="hover">
+        <td class="align-left">
+          <a href="{:url('home/goods/index',['goods_id'=>$v.goods_id])}" target="_blank">{$v.goods_name}</a>
+        </td>
+        <td class="align-center">{$v.goods_commonid}</td>
+        <td class="align-center">{$v.store_name}</td>
+        <td class="align-center">{$v.goodsnum}</td>
+        <td class="align-center">{$v.ordernum}</td>
+        <td class="align-center">{$v.goodsamount}</td>
+      </tr>
+    {/volist}
+    {else /}
+    <tr class="no_data">
+      <td colspan="15">{:lang('ds_no_record')}</td>
+    </tr>
+   {/notempty}
+    </tbody>
+    {notempty name="goods_list"}
+    <tfoot>
+      <tr class="tfoot">
+        <td colspan="15" id="dataFuncs">
+          <div class="pagination"> {$show_page} </div>
+        </td>
+      </tr>
+    </tfoot>
+    {/notempty}
+  </table>
+</div>
+<script src="{$Think.config.url_domain_root}static/plugins/highcharts/highcharts.js"></script>
+<script src="{$Think.config.url_domain_root}static/home/js/common.js"></script>
+<script src="{$Think.config.url_domain_root}static/common/js/statistics.js"></script>
+<script src="{$Think.config.url_domain_root}static/common/js/mlselection.js"></script>
+<script>
+//展示搜索时间框
+function show_searchtime(){
+    s_type = $("#search_type").val();
+    $("[id^='searchtype_']").hide();
+    $("#searchtype_"+s_type).show();
+}
+$(function () {
+    //统计数据类型
+    var s_type = $("#search_type").val();
+    $('#search_time').datepicker({dateFormat: 'yy-mm-dd'});
+
+    show_searchtime();
+    $("#search_type").change(function(){
+        show_searchtime();
+    });
+
+    //更新周数组
+    $("[name='searchweek_month']").change(function(){
+        var year = $("[name='searchweek_year']").val();
+        var month = $("[name='searchweek_month']").val();
+        $("[name='searchweek_week']").html('');
+        $.getJSON(SITE_URL+'common/getweekofmonth',{y:year,m:month},function(data){
+            if(data != null){
+                for(var i = 0; i < data.length; i++) {
+                    $("[name='searchweek_week']").append('<option value="'+data[i].key+'">'+data[i].val+'</option>');
+                }
+            }
+        });
+    });
+
+    $('#ncsubmit').click(function(){
+        $("#exporttype").val('');
+        $("#orderby").val('');
+        $('#formSearch').submit();
+    });
+
+    //导出图表
+    $("#export_btn").click(function(){
+        $("#exporttype").val('excel');
+        $('#formSearch').submit();
+    });
+    //排序
+    $("[nc_type='orderitem']").click(function(){
+        $("#exporttype").val('');
+        var data_str = $(this).attr('data-param');
+        eval( "data_str = "+data_str);
+        if($(this).hasClass('desc')){
+            $("#orderby").val(data_str.orderby + ' asc');
+        } else {
+            $("#orderby").val(data_str.orderby + ' desc');
+        }
+        $('#formSearch').submit();
+    });
+
+    //商品分类
+    init_gcselect({$gc_choose_json},{$gc_json});
+
+});
+</script>

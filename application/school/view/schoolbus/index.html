@@ -1,0 +1,397 @@
+{include file="public/header" /}
+<script src="{$Think.config.url_domain_root}static/common/js/mlselection.js"></script>
+<script src="{$Think.config.url_domain_root}static/home/js/common.js"></script>
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>校车管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>系统平台全局设置,包括基础设置、购物、短信、邮件、水印和分销等相关模块。</li>
+        </ul>
+    </div>
+    <table class="ds-default-table">
+        <thead>
+        <tr class="thead">
+            <th colspan="align-center">序号</th>
+            <th class="align-center">路线名称</th>
+            <th class="align-center">校车车牌</th>
+            <th class="align-center">颜色</th>
+            <th class="align-center">起点-终点/时间</th>
+            <th class="align-center">途径站点/时间</th>
+            <th class="align-center">重复时间(周)</th>
+            <th class="align-center">备注</th>
+            <th class="align-center">操作</th>
+        </tr>
+        <tbody>
+        <?php if(!empty($busList) && is_array($busList)){ ?>
+        <?php foreach($busList as $k => $v){ ?>
+        <tr class="hover member">
+            <td class="align-center"><?php if(!$_GET['page']){  echo $k+1; }else{ echo ($_GET['page']-1)*15+$k+1; }?></td>
+            <td class="align-center"><?php echo $v['bus_line_name']; ?></td>
+            <td class="align-center"><?php echo $v['bus_card']; ?></td>
+            <td class="align-center"><?php echo $v['bus_color']; ?></td>
+            <td class="align-center">
+                <?php if($v['bus_start']!=""){ ?>
+                <?php echo $v['bus_start']; ?>/<?php echo $v['bus_start_time']; ?>--<?php echo $v['bus_end']; ?>/<?php echo $v['bus_end_time']; ?>
+                <?php } ?>
+            </td>
+            <td class="align-center" width="450px"><?php echo $v['line']; ?></td>
+            <td class="align-center"><?php echo $v['week']; ?></td>
+            <td class="align-center"><?php echo $v['bus_desc']; ?></td>
+            <td class="align-center">
+                <a href="{:url('/school/schoolbus/schoolbus_edit',['bus_id'=>$v.bus_id])}" class="layui-btn layui-btn-xs">{$Think.lang.ds_edit}</a>
+                <a href="javascript:void(0)" onclick="if(confirm('{$Think.lang.ds_ensure_del}'))
+                location.href='{:url('/school/schoolbus/drop',['bus_id'=>$v.bus_id])}';" class="layui-btn layui-btn-xs">{$Think.lang.ds_del}</a>
+            </td>
+        </tr>
+        <?php } ?>
+        <?php }else { ?>
+        <tr class="no_data">
+            <td colspan="11">{$Think.lang.ds_no_record}</td>
+        </tr>
+        <?php } ?>
+        </tbody>
+        <tfoot class="tfoot">
+        <?php if(!empty($member_list) && is_array($member_list)){ ?>
+        <tr>
+            <td class="w24"><input type="checkbox" class="checkall" id="checkallBottom"></td>
+            <td colspan="16">
+                <label for="checkallBottom">{$Think.lang.ds_select_all}</label>
+                &nbsp;&nbsp;<a href="JavaScript:void(0);" class="btn" onclick="if(confirm('{$Think.lang.ds_ensure_del}')){$('#form_member').submit();}"><span>{$Think.lang.ds_del}</span></a>
+            </td>
+        </tr>
+        <?php } ?>
+        </tfoot>
+    </table>
+    {$page}
+    
+</div>
+
+<script type="text/javascript">
+    layui.use(['form','laypage', 'layer'], function(){
+        var form = layui.form,
+            laypage = layui.laypage
+            ,layer = layui.layer;
+        //关键字搜索
+        var name = '<?php if(!empty($_GET["name"])){echo $_GET["name"];}?>';
+        //省 市 区
+        var province = '<?php if(!empty($_GET["province"])){echo $_GET["province"];}?>';
+        var city = '<?php if(!empty($_GET["city"])){echo $_GET["city"];}?>';
+        var area = '<?php if(!empty($_GET["area"])){echo $_GET["area"];}?>';
+        //学校 年级 班级
+        var school = '<?php if(!empty($_GET["school"])){echo $_GET["school"];}?>';
+        var grade = '<?php if(!empty($_GET["grade"])){echo $_GET["grade"];}?>';
+        var class_name = '<?php if(!empty($_GET["class"])){echo $_GET["class"];}?>';
+        if(province != 0){
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+province+'&city='+city+'&area='+area+'&school='+school,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变市区
+                    $('#city').html(data.city);
+                    //改变县区
+                    $('#area').html(data.area);
+                    //改变学校
+                    $('#school').html(data.school);
+                    //改变年级
+                    $('#grade').html(data.grade);
+                    //改变班级
+                    $('#class').html(data.class);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        }
+
+        if(school != 0){
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_school_info?school='+school+'&grade='+grade+'&class='+class_name,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变年级
+                    $('#grade').html(data.grade);
+                    //改变班级
+                    $('#class').html(data.class);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        }
+
+        //省
+        form.on('select(province)', function(data){
+            //改变市区
+            $('#city').html('<option value="0">{$Think.lang.look_address_city}</option>');
+            //改变县区
+            $('#area').html('<option value="0">{$Think.lang.look_address_area}</option>');
+            //改变年级
+            $('#grade').html('<option value="0">{$Think.lang.look_address_grade}</option>');
+            //改变班级
+            $('#class').html('<option value="0">{$Think.lang.look_address_class}</option>');
+
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变市区
+                    $('#city').html(data.city);
+                    //改变县区
+                    $('#area').html(data.area);
+                    //改变学校
+                    $('#school').html(data.school);
+                    //改变年级
+                    $('#grade').html(data.grade);
+                    //改变班级
+                    $('#class').html(data.class);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //市
+        form.on('select(city)', function(data){
+            //改变县区
+            $('#area').html('<option value="0">{$Think.lang.look_address_area}</option>');
+            //改变年级
+            $('#grade').html('<option value="0">{$Think.lang.look_address_grade}</option>');
+            //改变班级
+            $('#class').html('<option value="0">{$Think.lang.look_address_class}</option>');
+            var province = $('#province').find('option:selected').val();
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+province+'&city='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变县区
+                    $('#area').html(data.area);
+                    //改变学校
+                    $('#school').html(data.school);
+                    //改变年级
+                    $('#grade').html(data.grade);
+                    //改变班级
+                    $('#class').html(data.class);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //县/区
+        form.on('select(area)', function(data){
+            //改变年级
+            $('#grade').html('<option value="0">{$Think.lang.look_address_grade}</option>');
+            //改变班级
+            $('#class').html('<option value="0">{$Think.lang.look_address_class}</option>');
+            var province = $('#province').find('option:selected').val();
+            var city = $('#city').find('option:selected').val();
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+province+'&city='+city+'&area='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变学校
+                    $('#school').html(data.school);
+                    //改变年级
+                    $('#grade').html(data.grade);
+                    //改变班级
+                    $('#class').html(data.class);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //学校
+        form.on('select(school)', function(data){
+            //改变年级
+            $('#grade').html('<option value="0">{$Think.lang.look_address_grade}</option>');
+            //改变班级
+            $('#class').html('<option value="0">{$Think.lang.look_address_class}</option>');
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_school_info?school='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变年级
+                    $('#grade').html(data.grade);
+                    //改变班级
+                    $('#class').html(data.class);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //年级
+        form.on('select(grade)', function(data){
+            //改变班级
+            $('#class').html('<option value="0">{$Think.lang.look_address_class}</option>');
+            var school = $('#school').find('option:selected').val();
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_school_info?school='+school+'&grade='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变班级
+                    $('#class').html(data.class);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+
+        //分页
+        laypage.render({
+            elem: 'page'
+            ,count: '<?php echo $list_count;?>'
+            ,limit:2
+            ,layout: ['count', 'prev', 'page', 'next',  'skip']
+            ,jump: function(obj){
+                // console.log(obj);
+                var page = obj.curr,
+                    page_count = obj.limit;
+                $.ajax({
+                    type:'POST',
+                    url:ADMIN_URL+'Camera/get_list',
+                    data:{name:name,province:province,city:city,area:area,school:school,grade:grade,class:class_name,page:page,page_count:page_count},
+                    success:function(data){
+                        data = jQuery.parseJSON(data);
+
+                        // console.log(data.html);
+                        $('#html').html(data.html);
+                        $('#count').html(data.count+'个');
+                    }
+                })
+
+            }
+        });
+
+    });
+    function dd(id) {
+        var urls=ADMIN_URL+'schoolinfo/index?school_id='+id;
+        //多窗口模式，层叠置顶
+        layer.open({
+            type: 2
+            , title: '查看'
+            , area: ['80%', '80%']
+            , shade: 0
+            , maxmin: true
+            , content: urls
+
+        });
+    }
+function jia(role,admin_company_id){
+            $('#role').val(role);
+            $('#admin_company_id').val(admin_company_id);
+            //var urls=ADMIN_URL+'organizes/admin?role_id='+id;
+            //多窗口模式，层叠置顶
+            layer.open({
+                type: 1,
+                title: '分配管理员账号',
+                area: ['700px', '450px'],
+                fixed: false, //不固定
+                shadeClose: true,
+                shade: 0.4,
+                maxmin: false, //开启最大化最小化按钮
+                content: $("#courForm")
+            });
+        }
+    $(function() {
+        regionInit("region");
+    });
+    //按钮先执行验证再提交表
+    $(document).ready(function() {
+
+        layui.use(['form', 'layedit', 'laydate'], function() {
+            var form = layui.form
+        });
+        //按钮先执行验证再提交表单
+        $("#submitBtn").click(function() {
+            if ($("#courForm").valid()) {
+                //$("#courForm").submit();
+                //$('.layui-layer-close1').click();
+                var admin_name = $("#admin_name").val();
+                var admin_password = $("#admin_password").val();
+                var role=$("#role").val();
+                var admin_company_id=$("#admin_company_id").val();
+                $.ajax({
+                    url: "{:url('/school/school/admin_add')}",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {'admin_name': admin_name,'admin_password':admin_password,'role':role,'admin_company_id':admin_company_id},
+                    success:function(sb){
+                        if (sb.m) {
+                            layer.msg(sb.ms, {icon: 16,time: 500},function(){
+                                window.location.href="{:url('/school/School/member')}";
+                            });
+
+                        }
+                    }
+                });
+
+            }
+        });
+        $("#courForm").validate({
+            errorPlacement: function(error, element) {
+                error.appendTo(element.nextAll('span.err'));
+            },
+            rules: {
+                admin_name: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 20,
+                    remote: {
+                        url: ADMIN_URL+'/school/ajax.html?branch=check_admin_name',
+                        type: 'get',
+                        data: {
+                            admin_name: function() {
+                                return $('#admin_name').val();
+                            }
+                        }
+                    }
+                },
+                admin_password: {
+                    required: true,
+                    minlength: 6,
+                    maxlength: 20
+                },
+                admin_rpassword: {
+                    required: true,
+                    equalTo: '#admin_password'
+                },
+                gid: {
+                    required: true
+                }
+            },
+            messages: {
+                admin_name: {
+                    required: '{$Think.lang.admin_add_username_null}',
+                    minlength: '{$Think.lang.admin_add_username_max}',
+                    maxlength: '{$Think.lang.admin_add_username_max}',
+                    remote: '{$Think.lang.admin_add_admin_not_exists}'
+                },
+                admin_password: {
+                    required: '{$Think.lang.admin_add_password_null}',
+                    minlength: '{$Think.lang.admin_add_password_max}',
+                    maxlength: '{$Think.lang.admin_add_password_max}'
+                },
+                admin_rpassword: {
+                    required: '{$Think.lang.admin_add_password_null}',
+                    equalTo: '{$Think.lang.admin_edit_repeat_error}'
+                },
+                gid: {
+                    required: '{$Think.lang.admin_add_gid_null}',
+                }
+            }
+        });
+    });
+</script>

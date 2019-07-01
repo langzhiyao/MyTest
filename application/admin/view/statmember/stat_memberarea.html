@@ -1,0 +1,167 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>会员统计</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+<form method="get" action="" name="formSearch" id="formSearch">
+    <div class="w100pre" style="width: 100%;">
+        <table class="search-form">
+          <tbody>
+            <tr>
+              <td>
+              	<select name="search_type" id="search_type" class="querySelect">
+                  <option value="day" {if isset($search_arr.search_type) && $search_arr.search_type == 'day'}selected{/if}>按照天统计</option>
+                  <option value="week" {if isset($search_arr.search_type) && $search_arr.search_type == 'week'}selected{/if}>按照周统计</option>
+                  <option value="month" {if isset($search_arr.search_type) && $search_arr.search_type == 'month'}selected{/if}>按照月统计</option>
+                </select>
+              </td>
+              <td id="searchtype_day" style="display:none;">
+              	<input class="txt date"
+                       type="text"
+                       value="{:date('Y-m-d',$search_arr.day.search_time)}"
+                       id="search_time"
+                       name="search_time">
+              </td>
+              <td id="searchtype_week" style="display:none;">
+              	<select name="searchweek_year" class="querySelect">
+                  {volist name="year_arr" id="v"}
+              		<option value="{$key}" {$search_arr.week.current_year== $key ? 'selected': ''}>{$v}</option>
+                  {/volist}
+                </select>
+                <select name="searchweek_month" class="querySelect">
+                  {volist name="month_arr" id="v"}
+              		<option value="{$key}" {$search_arr.week.current_month== $key ? 'selected':''}>{$v}</option>
+                  {/volist}
+                </select>
+                <select name="searchweek_week" class="querySelect">
+                  {volist name="week_arr" id="v"}
+              		<option value="{$v.key}"
+                            {$search_arr.week.current_week==
+                            $v['key'] ? 'selected' :''}>{$v.val}</option>
+                  {/volist}
+                </select>
+              </td>
+              <td id="searchtype_month" style="display:none;">
+              	<select name="searchmonth_year" class="querySelect">
+                  {volist name="year_arr" id="v"}
+              		<option value="{$key}" {$search_arr.month.current_year== $key?'selected':''}>{$v}</option>
+                  {/volist}
+                </select>
+                <select name="searchmonth_month" class="querySelect">
+                  {volist name="month_arr" id="v"}
+              		<option value="{$key}" {$search_arr.month.current_month== $key?'selected':''}>{$v}</option>
+                  {/volist}
+                </select>
+              </td>
+                 <td>
+              	会员名称<input type="text" name="membername" value="{$Request.param.membername}"/>
+              </td>
+              <td>
+                <a href="javascript:void(0);" id="ncsubmit" class="btn-search tooltip" title="{:lang('ds_query')}"></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <span class="right" style="margin:12px 0px 6px 4px;">
+        </span>
+    </div>
+  </form>
+  <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>{:lang('stat_validorder_explain')}</li>
+            <li>统计图表展示了时间段内有效订单的订单数量、下单商品数量和订单总金额在各个区域的分布情况</li>
+            <li>点击列表上方的“导出Excel”，将列表数据导出为Excel文件</li>
+            <li>点击每列旁边的箭头对列表进行排序，默认按照“下单会员数”降序排列</li>
+        </ul>
+    </div>
+
+   <div id="stat_tabs" class="w100pre close_float ui-tabs" style="min-height:500px">
+      <div class="close_float tabmenu">
+      	<ul class="tab pngFix">
+      		<li><a href="#membernum_div" nc_type="showmap" data-param='{"type":"membernum"}'>下单会员数</a></li>
+        	<li><a href="#ordernum_div" nc_type="showmap" data-param='{"type":"ordernum"}'>下单量</a></li>
+        	<li><a href="#orderamount_div" nc_type="showmap" data-param='{"type":"orderamount"}'>下单金额</a></li>
+        </ul>
+      </div>
+     <!-- 下单会员数 -->
+      <div id="membernum_div" class="close_float" style="text-align:center;"></div>
+     <!-- 下单量 -->
+      <div id="ordernum_div" class="close_float" style="text-align:center;"></div>
+     <!-- 下单金额 -->
+      <div id="orderamount_div" class="close_float" style="text-align:center;"></div>
+   </div>
+  <!-- 统计列表 -->
+  <div id="statlist" class="w100pre close_float" style="text-align:right;"></div>
+
+</div>
+
+<script src="{$Think.config.url_domain_root}static/plugins/highcharts/highcharts.js"></script>
+<script src="{$Think.config.url_domain_root}static/home/js/common.js"></script>
+<script src="{$Think.config.url_domain_root}static/common/js/statistics.js"></script>
+<script>
+//展示搜索时间框
+function show_searchtime(){
+    s_type = $("#search_type").val();
+    $("[id^='searchtype_']").hide();
+    $("#searchtype_"+s_type).show();
+}
+
+$(function () {
+    //切换登录卡
+    $('#stat_tabs').tabs();
+
+    //统计数据类型
+    var s_type = $("#search_type").val();
+    $('#search_time').datepicker({dateFormat: 'yy-mm-dd'});
+
+    show_searchtime();
+    $("#search_type").change(function(){
+        show_searchtime();
+    });
+
+    //更新周数组
+    $("[name='searchweek_month']").change(function(){
+        var year = $("[name='searchweek_year']").val();
+        var month = $("[name='searchweek_month']").val();
+        $("[name='searchweek_week']").html('');
+        $.getJSON(SITE_URL+'common/getweekofmonth',{y:year,m:month},function(data){
+            if(data != null){
+                for(var i = 0; i < data.length; i++) {
+                    $("[name='searchweek_week']").append('<option value="'+data[i].key+'">'+data[i].val+'</option>');
+                }
+            }
+        });
+    });
+
+    $('#ncsubmit').click(function(){
+        $('#formSearch').submit();
+    });
+
+    //加载统计地图
+    getStatMap('membernum');
+    $("[nc_type='showmap']").click(function(){
+        var data_str = $(this).attr('data-param');
+        eval('data_str = '+data_str);
+        getStatMap(data_str.type);
+    });
+    //加载统计列表
+    $('#statlist').load(ADMIN_URL+'statmember/area_list?t=<?php echo $searchtime;?>');
+});
+//加载统计地图
+function getStatMap(type){
+    $('#'+type+'_div').load(ADMIN_URL+'statmember/area_map?type='+type+'&t=<?php echo $searchtime;?>');
+}
+</script>

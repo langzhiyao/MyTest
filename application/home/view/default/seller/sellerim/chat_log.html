@@ -1,0 +1,33 @@
+<div id="chatLogList" class="dssc-chat-log-list">
+    {notempty name="list"}
+    <ul>
+        {volist name="list" id="val"}
+        <li class="{$val.f_id == $seller.member_id ? 'store_log':'user_log'}">
+            <div class="member">
+                {if $val.f_id == $seller.member_id}
+                客服：{$seller.seller_name}<em>( 会员ID：{$val.f_name})</em>
+                {else /}
+                会员：{$val.f_name}
+                {/if}<span class="time">{:date('Y-m-d H:i:s',$val.add_time)}</span></div>
+            <div class="content">{:parsesmiles($val.t_msg)}</div>
+        </li>
+        {/volist}
+    </ul>
+    {else /}
+    <div class="warning-option"><i class="icon-warning-sign">&nbsp;</i><span>{$Think.lang.no_record}</span></div>
+   {/notempty}
+</div>
+{notempty name="list"}
+<div class="pagination">{$show_page}</div>
+{/notempty}
+<script src="{$Think.config.url_domain_root}static/plugins/jquery-2.1.4.min.js"></script>
+<script src="{$Think.config.url_domain_root}static/plugins/jquery.ajaxContent.pack.js"></script>
+<script src="{$Think.config.url_domain_root}static/plugins/perfect-scrollbar.min.js"></script>
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/perfect-scrollbar.min.css">
+<script type="text/javascript">
+    $('#store_chat_log ul.pagination li a').ajaxContent({
+        target:'#store_chat_log'
+    });
+    //自定义滚定条
+    $('#chatLogList').perfectScrollbar();
+</script>

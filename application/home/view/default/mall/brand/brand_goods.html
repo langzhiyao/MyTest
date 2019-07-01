@@ -1,0 +1,118 @@
+{include file="public/mall_top" /}
+{include file="public/mall_header" /}
+
+<script>
+var PURL = [{$purl|default=''}];
+</script>
+<script src="{$Think.config.url_domain_root}static/home/js/search_goods.js"></script>
+
+<div class="nch-container wrapper">
+  <div class="left">
+    <div class="nch-module nch-module-style01">
+      <div class="title">
+        <h3>{$Think.lang.brand_index_recommend_brand}</h3>
+      </div>
+      <div class="content">
+          {notempty name="brand_r"}
+          <ul class="nch-sidebar-brand">
+              {foreach $brand_r as $brand} 
+              <li class="picture">
+                  <a href="{:url('brand/brand_goods',['brand_id'=>$brand.brand_id])}" target="_blank">
+                      <span class="brand-logo"><img src="<?php echo brandImage($brand['brand_pic']);?>" /></span> 
+                      <span class="brand-name">{$brand.brand_name}</span>
+                  </a>
+              </li>
+              {/foreach}
+          </ul>
+          {/notempty}
+      </div>
+    </div>
+    <div class="nch-module nch-module-style03"><?php echo loadadv(37,'html');?> </div>
+    <!-- 浏览历史 -->
+    <div class="nch-module nch-module-style03">
+      <div class="title">
+        <h3>{$Think.lang.brand_index_viewed_goods}</h3>
+      </div>
+      <div class="content">
+        <div class="nch-sidebar-viewed" id="nchSidebarViewed">
+          <ul>
+          <?php if(!empty($viewed_goods)){ ?>
+            <?php foreach ($viewed_goods as $k=>$v){?>
+            <li>
+              <div class="goods-pic"><a href="<?php echo url('goods/index',array('goods_id'=>$v['goods_id'])); ?>"><img src="{$Think.config.url_domain_root}static/home/images/loading.gif" rel="lazy" data-url="<?php echo thumb($v, 60); ?>" title="<?php echo $v['goods_name']; ?>" alt="<?php echo $v['goods_name']; ?>" ></a></div>
+              <dl>
+                <dt><a href="<?php echo url('goods/index',array('goods_id'=>$v['goods_id'])); ?>"><?php echo $v['goods_name']; ?></a></dt>
+                <dd>{$Think.lang.currency}<?php echo $v['goods_promotion_price']; ?></dd>
+              </dl>
+            </li>
+            <?php } ?>
+          <?php } ?>
+          </ul>
+        </div>
+        <a href="{:url('membergoodsbrowse/listinfo')}" class="nch-sidebar-all-viewed">全部浏览历史</a> </div>
+    </div>
+  </div>
+  <div class="right">
+    <div class="shop_con_list" id="main-nav-holder">
+      <nav class="sort-bar" id="main-nav">
+        <div class="nch-sortbar-array"> 排序方式：
+            <ul>
+                <li {if $Think.param.key neq ''}class="selected"{/if}><a href="<?php echo dropParam(array('order', 'key'));?>"  class="nobg" title="{$Think.lang.brand_index_default_sort}">{$Think.lang.brand_index_default}</a></li>
+                <li {if $Think.param.key eq '1'}class="selected"{/if}><a href="<?php echo (input('param.order') == '2' && input('param.key') == '1') ? replaceParam(array('key' => '1', 'order' => '1')):replaceParam(array('key' => '1', 'order' => '2')); ?>" <?php if(input('param.key') == '1'){?>class="<?php echo input('param.order') == 1 ? 'asc' : 'desc';?>"<?php }?> >{$Think.lang.brand_index_sold}<i></i></a></li>
+                <li {if $Think.param.key eq '2'}class="selected"{/if}><a href="<?php echo (input('param.order') == '2' && input('param.key') == '2') ? replaceParam(array('key' => '2', 'order' => '1')):replaceParam(array('key' => '2', 'order' => '2')); ?>" <?php if(input('param.key') == '2'){?>class="<?php echo input('param.order') == 1 ? 'asc' : 'desc';?>"<?php }?> >{$Think.lang.brand_index_click}<i></i></a></li>
+                <li {if $Think.param.key eq '3'}class="selected"{/if}><a href="<?php echo (input('param.order') == '2' && input('param.key') == '3') ? replaceParam(array('key' => '3', 'order' => '1')):replaceParam(array('key' => '3', 'order' => '2')); ?>" <?php if(input('param.key') == '3'){?>class="<?php echo input('param.order') == 1 ? 'asc' : 'desc';?>"<?php }?> >{$Think.lang.brand_index_price}<i></i></a></li>
+            </ul>
+        </div>
+        <div class="nch-sortbar-owner"><span><a href="<?php if (input('param.type') == 1) { echo dropParam(array('type'));} else { echo replaceParam(array('type' => '1'));}?>" <?php if (input('param.type') == 1) {?>class="selected"<?php }?>><i></i>平台自营</a></span></div>
+        <div class="nch-sortbar-owner"><span><a href="<?php if (input('param.gift') == 1) { echo dropParam(array('gift'));} else { echo replaceParam(array('gift' => '1'));}?>" <?php if (input('param.gift') == 1) {?>class="selected"<?php }?>><i></i>赠品</a></span></div>
+        <div class="nch-sortbar-location">商品所在地：
+          <div class="select-layer">
+            <div class="holder"><em nc_type="area_name">{$Think.lang.brand_index_area}<!-- 所在地 --></em></div>
+            <div class="selected"><a nc_type="area_name">{$Think.lang.brand_index_area}<!-- 所在地 --></a></div>
+            <i class="direction"></i>
+            <ul class="options">
+              {include file="public/home/goods_class_area" /}
+            </ul>
+          </div>
+        </div>
+      </nav>
+        
+        
+      <!-- 商品列表循环  -->
+      {include file="public/home/goods_squares" /}
+      
+      
+      <div class="tc mt20 mb20">
+        <div class="pagination">{$show_page}</div>
+      </div>
+    </div>
+
+    <!-- 猜你喜欢 -->
+    <div id="guesslike_div" style="width:980px;"></div>
+  </div>
+</div>
+<script src="{$Think.config.url_domain_root}static/home/js/waypoints.js"></script>
+<script>
+$(function(){
+ //浮动导航  waypoints.js
+    $('#main-nav-holder').waypoint(function(event, direction) {
+        $(this).parent().toggleClass('sticky', direction === "down");
+        event.stopPropagation();
+    });
+    //浏览历史处滚条
+	$('#nchSidebarViewed').perfectScrollbar();
+  	//猜你喜欢
+	$('#guesslike_div').load("{:url('/Home/Search/get_guesslike')}", function(){
+        $(this).show();
+    });
+});
+<?php if(isset($_GET['area_id']) && intval($_GET['area_id']) > 0){?>
+$(function(){
+    // 选择地区后的地区显示
+    $('[nc_type="area_name"]').html('<?php echo $output['province_array'][intval($_GET['area_id'])]; ?>');
+});
+<?php }?>
+</script>
+
+{include file="public/mall_server" /}
+{include file="public/mall_footer" /}

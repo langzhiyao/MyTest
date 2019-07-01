@@ -1,0 +1,96 @@
+{include file="public/seller_top" /}
+<div class="seller_main w1200">
+{include file="public/seller_left" /}
+<div class="seller_right clearfix">
+        <div class="seller_items">
+            {include file="public/seller_items" /}
+        </div>
+
+    <div class="dssc-form-default">
+        <form method="post" action="{:url('Sellernavigation/navigation_save')}" target="_parent" name="store_navigation_form" id="store_navigation_form" enctype="multipart/form-data">
+            <input type="hidden" name="sn_id" value="{$sn_info.sn_id}"/>
+            <dl>
+                <dt><i class="required">*</i>{$Think.lang.store_navigation_name}{$Think.lang.ds_colon}</dt>
+                <dd>
+                    <input type="text" class="w150 text" name="sn_title" value="{$sn_info.sn_title}" /><span></span>
+                </dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.store_navigation_display}{$Think.lang.ds_colon}</dt>
+                <dd>
+                    <ul class="dssc-form-radio-list">
+                        <li>
+                            <label for="sn_if_show_0"><input type="radio" class="radio" name="sn_if_show" id="sn_if_show_0" value="1" {if $sn_info.sn_if_show eq '1' || $sn_info.sn_if_show eq ''}checked="checked"{/if}/>
+                                {$Think.lang.store_payment_yes}</label></li>
+                        <li>
+                            <label for="sn_if_show_1"><input type="radio" class="radio" name="sn_if_show" id="sn_if_show_1" value="0" {if $sn_info.sn_if_show eq '0'}checked="checked"{/if}/>
+                                {$Think.lang.store_payment_no}</label></li>
+                    </ul>
+                </dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.store_goods_class_sort}{$Think.lang.ds_colon}</dt>
+                <dd>
+                    <input type="text" class="w50 text" name="sn_sort" value="{if $sn_info.sn_sort neq ''}{$sn_info.sn_sort}{else}255{/if}"/>
+                </dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.store_navigation_content}{$Think.lang.ds_colon}</dt>
+                <dd>
+                    {$build_editor}
+                    <textarea id="sn_content" name="sn_content"></textarea>
+                </dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.store_navigation_url}{$Think.lang.ds_colon}</dt>
+                <dd>
+                    <p>
+                        <input type="text" class="w300 text" name="sn_url" value="{$sn_info.sn_url}" />
+                    </p>
+                    <p class="hint">{$Think.lang.store_navigation_url_tip}</p>
+                    </td>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.store_navigation_new_open}{$Think.lang.store_navigation_new_open}</dt>
+                <dd>
+                    <ul class="dssc-form-radio-list">
+                        <li>
+                            <label for="sn_new_open_1"><input type="radio" class="radio" name="sn_new_open" id="sn_new_open_1" value="1" {if $sn_info.sn_new_open eq '1'|| $sn_info.sn_new_open eq ''}checked="checked"{/if}>
+                                {$Think.lang.store_navigation_new_open_yes}</label></li>
+                        <li>
+                            <label for="sn_new_open_0"><input type="radio" class="radio" name="sn_new_open" id="sn_new_open_0" value="0" {if $sn_info.sn_new_open eq '0'}checked="checked"{/if}>
+                                {$Think.lang.store_navigation_new_open_no}</label></li>
+                    </ul>
+                </dd>
+            </dl>
+            <div class="bottom">
+                <label class="submit-border"><input type="submit" class="submit" value="{$Think.lang.store_goods_class_submit}" /></label>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+{include file="public/mall_footer" /}
+<script type="text/javascript">
+    $(document).ready(function(){
+        //页面输入内容验证
+        $('#store_navigation_form').validate({
+            errorPlacement: function(error, element){
+                var error_td = element.parent('dd').children('span');
+                error_td.append(error);
+            },
+            rules: {
+                sn_title: {
+                    required: true,
+                    maxlength: 10
+                }
+            },
+            messages: {
+                sn_title: {
+                    required: '<i class="icon-exclamation-sign"></i>{$Think.lang.store_navigation_name_null}',
+                    maxlength: '<i class="icon-exclamation-sign"></i>{$Think.lang.store_navigation_name_max}'
+                }
+            }
+        });
+    });
+</script>

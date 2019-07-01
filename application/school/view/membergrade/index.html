@@ -1,0 +1,61 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>会员等级</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <form method="post">
+        <table class="ds-default-table">
+            <thead>
+                <tr>
+                    <th>{$Think.lang.mg_gradename}</th>
+                    <th>{$Think.lang.mg_integral}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>V1</td>
+                    <td>
+                        <input type="text" name="exppoints[1]" value="{$mg.1.exppoints|default=''}" class="w200">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>V2</td>
+                    <td>
+                        <input type="text" name="exppoints[2]" value="{$mg.2.exppoints|default=''}" class="w200">
+                    </td>
+                </tr>
+                <tr>
+                    <td>V3</td>
+                    <td>
+                        <input type="text" name="exppoints[3]" value="{$mg.3.exppoints|default=''}" class="w200">
+                    </td>
+                </tr>
+                <tr>
+                    <td>V4</td>
+                    <td>
+                        <input type="text" name="exppoints[4]" value="{$mg.4.exppoints|default=''}" class="w200">
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input class=" btn" type="submit" value="提交"/>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+    </form>
+</div>

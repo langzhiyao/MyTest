@@ -1,0 +1,128 @@
+{include file="public/mall_top" /}
+{include file="public/mall_header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/store/styles/{$store_theme}/css/goods.css">
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/store/styles/default/css/shop.css">
+<div class="w1200">
+  <div class="ncs-goods-layout expanded" >
+    <div class="ncs-goods-main" id="main-nav-holder">
+      <div class="ncs-comment">
+        <div class="ncs-goods-title-bar">
+          <h4>{$Think.lang.goods_index_evaluation}</h4>
+        </div>
+        <div class="ncs-goods-info-content bd" id="ncGoodsRate">
+          <div class="top">
+            <div class="rate">
+              <p><strong>{$goods_evaluate_info.good_percent}</strong><sub>%</sub>好评</p>
+              <span>共有{$goods_evaluate_info.all}人参与评分</span></div>
+            <div class="percent">
+              <dl>
+                <dt>好评<em>({$goods_evaluate_info.good_percent}%)</em></dt>
+                <dd><i style="width: {$goods_evaluate_info.good_percent}%"></i></dd>
+              </dl>
+              <dl>
+                <dt>中评<em>({$goods_evaluate_info.normal_percent}%)</em></dt>
+                <dd><i style="width: {$goods_evaluate_info.normal_percent}%"></i></dd>
+              </dl>
+              <dl>
+                <dt>差评<em>({$goods_evaluate_info.bad_percent}%)</em></dt>
+                <dd><i style="width: {$goods_evaluate_info.bad_percent}%"></i></dd>
+              </dl>
+            </div>
+            <div class="btns"><span>您可对已购商品进行评价</span>
+              <p><a href="{if $goods.is_virtual}{:url('membervrorder/index')}{else /}{:url('memberorder/index')}{/if}" class="ncs-btn ncs-btn-red" target="_blank"><i class="icon-comment-alt"></i>评价商品</a></p>
+            </div>
+          </div>
+          <!-- 商品评价内容部分 -->
+          <div class="ncs-goods-title-nav">
+            <ul id="comment_tab">
+              <li {empty name="type"}class="current"{/empty}><a href="{:url('goods/comments_list',['goods_id'=>$goods.goods_id])}">{$Think.lang.goods_index_evaluation}({$goods_evaluate_info.all})</a></li>
+              <li {$type == '1'?'class="current"':''}><a href="{:url('goods/comments_list',['goods_id'=>$goods.goods_id,'type'=>'1'])}">好评({$goods_evaluate_info.good})</a></li>
+              <li {$type == '2'?'class="current"':''}><a href="{:url('goods/comments_list',['goods_id'=>$goods.goods_id,'type'=>'2'])}">中评({$goods_evaluate_info.normal})</a></li>
+              <li {$type == '3'?'class="current"':''}><a href="{:url('goods/comments_list',['goods_id'=>$goods.goods_id,'type'=>'3'])}">差评({$goods_evaluate_info.bad})</a></li>
+            </ul>
+          </div>
+          <div id="goodseval" class="ncs-commend-main">
+            {notempty name="goodsevallist"}
+            {foreach name="goodsevallist" item="v"}
+            <div id="t" class="ncs-commend-floor">
+              <div class="user-avatar"><a {if $v.geval_isanonymous != 1}href="{:url('membersnshome/index',['mid'=>$v.geval_frommemberid])}" target="_blank" data-param="{'id':{$v.geval_frommemberid}}" nctype="mcard"{/if}><img src="{:getMemberAvatarForID($v.geval_frommemberid)}" ></a></div>
+              <dl class="detail">
+                <dt> <span class="user-name">
+                  {if $v.geval_isanonymous == 1}
+                  {:str_cut($v.geval_frommembername,2)}***
+                  {else /}
+                  <a href="{:url('membersnshome/index',['mid'=>$v.geval_frommemberid])}" target="_blank" data-param="{'id':{$v.geval_frommemberid}}" nctype="mcard">{$v.geval_frommembername}</a>
+                {/if}
+                  </span>
+                  <time pubdate="pubdate">[{:date('Y-m-d',$v.geval_addtime)}]</time>
+                </dt>
+                <dd>用户评分：<span class="raty" data-score="{$v.geval_scores}"></span></dd>
+                <dd class="content">评价详情：<span>{$v.geval_content}</span></dd>
+                {notempty name="v.geval_explain"}
+                <dd class="explain">{$Think.lang.ds_credit_explain}：<span>{$v.geval_explain}</span></dd>
+               {/notempty}
+                {notempty name="v.geval_image"}
+                <dd>
+                晒单图片：
+                <ul class="photos-thumb">
+                  <?php $image_array = explode(',', $v['geval_image']);?>
+                  {foreach name="image_array" item="value"}
+                  <li><a nctype="nyroModal"  href="{:snsThumb($value)}">
+                    <img src="{:snsThumb($value)}">
+                  </a></li>
+                  {/foreach}
+                </ul>
+                </dd>
+                {/notempty}
+            </dl>
+        </div>
+          {/foreach}
+            <div class="tr pr5 pb5">
+              <div class="pagination"> {$show_page}</div>
+            </div>
+          {else /}
+            <div class="ncs-norecord">{$Think.lang.no_record}</div>
+            {/notempty}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ncs-sidebar">
+      <div class="ncs-sidebar-container">
+        <div class="title">
+          <h4>商品信息</h4>
+        </div>
+        <div class="content">
+          <dl class="ncs-comment-goods">
+            <dt class="goods-name"> <a href="{:url('goods/index',['goods_id'=>$goods.goods_id])}"> {$goods.goods_name} </a> </dt>
+            <dd class="goods-pic"><a href="{:url('goods/index',['goods_id'=>$goods.goods_id])}"> <img src="{:cthumb($goods.goods_image)}" alt="{$goods.goods_name}"> </a> </dd>
+            <dd class="goods-price">{$Think.lang.goods_index_goods_price}{$Think.lang.ds_colon}<em class="saleP">{$Think.lang.currency}{$goods.goods_price}</em></dd>
+            <dd class="goods-raty">{$Think.lang.goods_index_evaluation}{$Think.lang.ds_colon} <span class="raty" data-score="{$goods_evaluate_info.star_average}"></span> </dd>
+          </dl>
+        </div>
+        <!--S 店铺信息-->
+        {include file="store/default/store/store_info"}
+        <!--E 店铺信息 --> 
+      </div>
+    </div>
+  </div>
+</div>
+{include file="public/mall_server" /}
+{include file="public/mall_footer" /}
+<script src="{$Think.config.url_domain_root}static/plugins/js/jquery.nyroModal/custom.min.js"></script>
+      <link href="{$Think.config.url_domain_root}static/plugins/js/jquery.nyroModal/styles/nyroModal.css" rel="stylesheet"
+            type="text/css" id="cssfile2"/>
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/plugins/js/jquery.raty/jquery.raty.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('.raty').raty({
+        path: "{$Think.config.url_domain_root}static/plugins/js/jquery.raty/img",
+        readOnly: true,
+        score: function() {
+            return $(this).attr('data-score');
+        }
+    });
+
+    $('a[nctype="nyroModal"]').nyroModal();
+});
+</script> 

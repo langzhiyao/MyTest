@@ -1,0 +1,52 @@
+.myupload i {
+    font-size: 30px;
+}
+
+.myupload .header_more {
+    font-size: 26px;
+}
+
+.myupload_tabs {
+    width: 750px;
+    padding-top: 100px;
+    background: #fff;
+    position: relative;
+    z-index: 7;
+}
+
+.myupload_tabs_wrap {
+    width: 245px;
+    height: 55px;
+    margin: 0 auto;
+    border: 2px solid #4ec3bb;
+    border-radius: 30px;
+    /*margin-top: 20px;*/
+    overflow: hidden;
+}
+
+.myupload_tabs_wrap span {
+    display: inline-block;
+    width: 50%;
+    height: 55px;
+    line-height: 55px;
+    text-align: center;
+    font-size: 24px;
+    color: #aeaeae;
+}
+
+.myupload_tabs_wrap .action {
+    background: #4ec3bb;
+    color: #fff;
+}
+
+.main_content .content_wrap .img_wrap {
+    position: relative;
+}
+
+.main_content .content_wrap .img_wrap .img_top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 68px;
+    height: 68px;
+}

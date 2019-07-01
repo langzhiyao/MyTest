@@ -1,0 +1,95 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>空间管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form method="get" name="formSearch">
+        <table class="search-form">
+            <tbody>
+            <tr>
+                <th><label for="search_brand_name">{$Think.lang.g_album_keyword}</label></th>
+                <td><input class="txt" name="keyword" id="keyword" value="" type="text"></td>
+                <td><a href="javascript:document.formSearch.submit();" class="btn-search " title="{$Think.lang.ds_query}"></a>
+                    <?php if($store_name != '' && !empty($list) ){?>
+                    <a class="btns" href="{:url('store/index',['store_id'=>$list.0.store_id])}"><span>{$store_name}</span></a>
+                    <?php }?>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+    
+  <div class="explanation" id="explanation">
+      <div class="title" id="checkZoom">
+          <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+          <span id="explanationZoom" title="收起提示" class="arrow"></span>
+      </div>
+      <ul>
+          <li>{$Think.lang.g_album_del_tips}</li>
+      </ul>
+  </div>
+    
+    
+    <form method='post' id="picForm" name="picForm">
+        <input type="hidden" name="form_submit" value="ok" />
+        <table class="ds-default-table">
+            <thead>
+            <tr class="thead">
+                <th class="w24"></th>
+                <th class="w72 center">{$Think.lang.g_album_fmian}</th>
+                <th class="w270">{$Think.lang.g_album_one}</th>
+                <th class=" w270">{$Think.lang.g_album_shop}</th>
+                <th>{$Think.lang.g_album_pic_count}</th>
+                <th class="w72 align-center">{$Think.lang.ds_handle}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {notempty name="list"}
+            {volist name="list" id="v"}
+            <tr class="hover edit">
+                <td><input value="{$v.aclass_id}" class="checkitem" type="checkbox" name="aclass_id[]"></td>
+                <td>
+                    {notempty name="v.aclass_cover"}
+                    <img src="{:cthumb($v.aclass_cover,60,$v.store_id)}" onload="javascript:DrawImage(this,70,70);">
+                    {else /}
+                    <img src="{:config('url_domain_root')}uploads/home/common/default_goods_image.gif" onload="javascript:DrawImage(this,70,70);">
+                    {/notempty}
+                </td>
+                <td class="name">{$v.aclass_name}</td>
+                <td class="class"><a href="{:url('home/store/index',['store_id'=>$v.store_id])}" >{$v.store_name}</td>
+                <td>{$pic_count[$v.aclass_id] ? $pic_count[$v.aclass_id] : 0}</td>
+                <td class="align-center">
+                    <a href="{:url('Goodsalbum/pic_list',['aclass_id'=>$v.aclass_id])}">{$Think.lang.g_album_pic_one}</a>&nbsp;|&nbsp;
+                    <a href="javascript:void(0)" onclick="if(confirm('{$Think.lang.ds_ensure_del}')){location.href='{:url('Goodsalbum/aclass_del',['aclass_id'=>$v.aclass_id])}';}else{return false;}">{$Think.lang.ds_del}</a></td>
+            </tr>
+            {/volist}
+            {else}
+            <tr class="no_data">
+                <td colspan="10">{$Think.lang.ds_no_record}</td>
+            </tr>
+            {/notempty}
+            </tbody>
+            <tfoot>
+            {notempty name="list"}
+            <tr colspan="15" class="tfoot">
+                <td><input type="checkbox" class="checkall" id="checkallBottom"></td>
+                <td colspan="16"><label for="checkallBottom">{$Think.lang.ds_select_all}</label>
+                    &nbsp;&nbsp;<a href="JavaScript:void(0);" class="btn" onclick="if(confirm('{$Think.lang.ds_ensure_del}')){$('#picForm').submit()}"><span>{$Think.lang.ds_del}</span></a>
+                    {$page}</td>
+            </tr>
+            {/notempty}
+            </tfoot>
+        </table>
+    </form>
+
+</div>

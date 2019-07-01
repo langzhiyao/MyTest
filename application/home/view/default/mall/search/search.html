@@ -1,0 +1,260 @@
+{include file="public/mall_top" /}
+{include file="public/mall_header" /}
+
+
+<script src="{$Think.config.url_domain_root}static/home/js/search_goods.js"></script>
+<div class="nch-container wrapper" >
+  <div class="left">
+    <?php if (!empty($goods_class_array)) {?>
+    <div class="nch-module nch-module-style02">
+      <div class="title">
+        <h3>分类筛选</h3>
+      </div>
+      <div class="content">
+        <ul id="files" class="tree">
+          <?php foreach ($goods_class_array as $value) {?>
+          <li><i class="tree-parent tree-parent-collapsed"></i><a href="{:url('/Home/Search/index',['cate_id'=>$value.gc_id,'keyword'=>$Request.param.keyword])}" {if condition="$value.gc_id eq $Think.get.cate_id"}class="selected"{/if}><?php echo $value['gc_name']?></a>
+            <?php if (!empty($value['class2'])) {?>
+            <ul>
+              <?php foreach ($value['class2'] as $val) {?>
+              <li><i class="tree-parent tree-parent-collapsed"></i><a href="{:url('/Home/Search/index',['cate_id'=>$val.gc_id,'keyword'=>$Request.param.keyword])}" {if condition="$val.gc_id eq $Think.get.cate_id"}class="selected"{/if}><?php echo $val['gc_name']?></a>
+                <?php if (!empty($val['class3'])) {?>
+                <ul>
+                  <?php foreach ($val['class3'] as $v) {?>
+                  <li class="tree-parent tree-parent-collapsed"><i></i><a href="{:url('/Home/Search/index',['cate_id'=>$v.gc_id,'keyword'=>$Request.param.keyword])}" {if condition="$v.gc_id eq $Think.get.cate_id"}class="selected"{/if}><?php echo $v['gc_name']?></a></li>
+                  <?php }?>
+                </ul>
+                <?php }?>
+              </li>
+              <?php }?>
+            </ul>
+            <?php }?>
+          </li>
+          <?php }?>
+        </ul>
+      </div>
+    </div>
+    <?php }?>
+    <!-- S 推荐展位 -->
+    <div nctype="booth_goods" class="nch-module" style="display:none;"> </div>
+    <!-- F 同类排行 -->
+    <div stype="listhot_goods" style="display:none;"></div>
+    <!-- E 推荐展位 -->
+    <!-- 最近浏览 -->
+    <div class="nch-module nch-module-style03">
+      <div class="title">
+        <h3>{$Think.lang.goods_class_viewed_goods}</h3>
+      </div>
+      <div class="content">
+        <div class="nch-sidebar-viewed" id="nchSidebarViewed">
+          <ul>
+            <?php if(!empty($viewed_goods) && is_array($viewed_goods)){?><?php foreach ($viewed_goods as $k=>$v){?>
+            <li class="nch-sidebar-bowers">
+              <div class="goods-pic"><a href="{:url('/Home/Goods/index',['goods_id'=>$v.goods_id])}" target="_blank"><img src="<?php echo thumb($v, 60); ?>" title="<?php echo $v['goods_name']; ?>" alt="<?php echo $v['goods_name']; ?>" ></a></div>
+              <dl>
+                <dt><a href="{:url('/Home/Goods/index',['goods_id'=>$v.goods_id])}" target="_blank"><?php echo $v['goods_name']; ?></a></dt>
+                <dd>{$Think.lang.currency}<?php echo $v['goods_promotion_price']; ?></dd>
+              </dl>
+            </li>
+            <?php } ?><?php } ?>
+          </ul>
+        </div>
+        <a href="{:url('/Home/Membergoodsbrowse/listinfo')}" class="nch-sidebar-all-viewed">全部浏览历史</a></div>
+    </div>
+
+  </div>
+  <div class="right">
+    <div id="gc_goods_recommend_div" style="width:980px;"></div>
+    <?php if(!isset($goods_class_array['child']) && empty($goods_class_array['child']) && !empty($goods_class_array)){?>
+    <?php $dl=1;  //dl标记?>
+    <?php if((!empty($brand_array) && is_array($brand_array)) || (!empty($attr_array) && is_array($attr_array))){?>
+    <div class="nch-module nch-module-style01">
+      <div class="title">
+        <h3>
+          <?php if (!empty($show_keyword)) {?>
+          <em><?php echo $show_keyword;?></em> -
+          <?php }?>
+          商品筛选</h3>
+      </div>
+      <div class="content">
+        <div class="nch-module-filter">
+          <?php if((isset($checked_brand) && is_array($checked_brand)) || (isset($checked_attr) && is_array($checked_attr))){?>
+          <dl nc_type="ul_filter">
+            <dt>{$Think.lang.goods_class_index_selected}{$Think.lang.ds_colon}</dt>
+            <dd class="list">
+              <?php if(isset($checked_brand) && is_array($checked_brand)){?>
+              <?php foreach ($checked_brand as $key=>$val){?>
+              <span class="selected" nctype="span_filter">{$Think.lang.goods_class_index_brand}:<em><?php echo $val['brand_name']?></em><i data-uri="<?php echo removeParam(array('b_id' => $key));?>">X</i></span>
+              <?php }?>
+              <?php }?>
+              <?php if(isset($checked_attr) && is_array($checked_attr)){?>
+              <?php foreach ($checked_attr as $val){?>
+              <span class="selected" nctype="span_filter"><?php echo $val['attr_name'].':<em>'.$val['attr_value_name'].'</em>'?><i data-uri="<?php echo removeParam(array('a_id' => $val['attr_value_id']));?>">X</i></span>
+              <?php }?>
+              <?php }?>
+            </dd>
+          </dl>
+          <?php }?>
+          <?php if (!isset($checked_brand) || empty($checked_brand)){?>
+          <?php if(!empty($brand_array) && is_array($brand_array)){?>
+          <dl>
+            <dt>{$Think.lang.goods_class_index_brand}{$Think.lang.ds_colon}</dt>
+            <dd class="list">
+              <ul class="nch-brand-tab" nctype="ul_initial" style="display:none;">
+                <li data-initial="all"><a href="javascript:void(0);">所有品牌<i class="arrow"></i></a></li>
+                <?php if (!empty($initial_array)) {?>
+                <?php foreach ($initial_array as $val) {?>
+                <li data-initial="<?php echo $val;?>"><a href="javascript:void(0);"><?php echo $val;?><i class="arrow"></i></a></li>
+                <?php }?>
+                <?php }?>
+              </ul>
+              <div id="ncBrandlist">
+                <ul class="nch-brand-con" nctype="ul_brand">
+                  <?php $i = 0;foreach ($brand_array as $k=>$v){  $i++;  ?>
+                  <li data-initial="<?php echo $v['brand_initial']?>" <?php if ($i > 14) {?>style="display:none;"<?php }?>><a href="<?php echo replaceParam(array('b_id' => $k));?>">
+                    <?php if ($v['show_type'] == 0) {?>
+                    <img src="<?php echo brandImage($v['brand_pic']);?>" alt="<?php echo $v['brand_name'];?>" /> <span>
+                    <?php  echo $v['brand_name'];?>
+                    </span>
+                    <?php } else { echo $v['brand_name'];?>
+                    <?php }?>
+                    </a></li>
+                  <?php }?>
+                </ul>
+              </div>
+            </dd>
+            <?php if (count($brand_array) > 16){?>
+            <dd class="all"><span nctype="brand_show"><i class="icon-angle-down"></i>{$Think.lang.goods_class_index_more}</span></dd>
+            <?php }?>
+          </dl>
+          <?php $dl++;  }?>
+          <?php } ?>
+          <?php if(!empty($attr_array) && is_array($attr_array))  {   ?>
+          <?php $j = 0;foreach ($attr_array as $key=>$val) { $j++; ?>
+          <?php if(!isset($checked_attr[$key]) && !empty($val['value']) && is_array($val['value'])){  ?>
+          <dl>
+            <dt><?php echo $val['name'];?>{$Think.lang.ds_colon}</dt>
+            <dd class="list">
+              <ul>
+                <?php $i = 0;foreach ($val['value'] as $k=>$v) { $i++; ?>
+                <li <?php if ($i>10){ ?>style="display:none" nc_type="none"<?php }?>><a href="<?php $a_id = ((input('param.a_id')!= '' && input('param.a_id')!= 0)?input('param.a_id').'_'.$k:$k); echo replaceParam(array('a_id' => $a_id));?>"><?php echo $v['attr_value_name'];?></a></li>
+                <?php }?>
+              </ul>
+            </dd>
+            <?php if (count($val['value']) > 10){?>
+            <dd class="all"><span nc_type="show"><i class="icon-angle-down"></i>{$Think.lang.goods_class_index_more}</span></dd>
+            <?php }?>
+          </dl>
+          <?php }?>
+          <?php $dl++;} ?>
+          <?php }?>
+        </div>
+      </div>
+    </div>
+    <?php } ?>
+    <?php  ?>
+    <div class="shop_con_list" id="main-nav-holder">
+      <nav class="sort-bar" id="main-nav">
+        <div class="pagination"></div>
+        <div class="nch-sortbar-array"> 排序方式：
+          <ul>
+            <li {if $Think.param.key neq ''}class="selected"{/if}><a href="<?php echo dropParam(array('order', 'key'));?>"  title="{$Think.lang.goods_class_index_default_sort}">{$Think.lang.goods_class_index_default}</a></li>
+            <li {if $Think.param.key eq '1'}class="selected"{/if}><a href="<?php echo (input('param.order') == '2' && input('param.key') == '1') ? replaceParam(array('key' => '1', 'order' => '1')):replaceParam(array('key' => '1', 'order' => '2')); ?>" <?php if(input('param.key') == '1'){?>class="<?php echo input('param.order') == 1 ? 'asc' : 'desc';?>"<?php }?> >{$Think.lang.goods_class_index_sold}<i></i></a></li>
+            <li {if $Think.param.key eq '2'}class="selected"{/if}><a href="<?php echo (input('param.order') == '2' && input('param.key') == '2') ? replaceParam(array('key' => '2', 'order' => '1')):replaceParam(array('key' => '2', 'order' => '2')); ?>" <?php if(input('param.key') == '2'){?>class="<?php echo input('param.order') == 1 ? 'asc' : 'desc';?>"<?php }?> >{$Think.lang.goods_class_index_click}<i></i></a></li>
+            <li {if $Think.param.key eq '3'}class="selected"{/if}><a href="<?php echo (input('param.order') == '2' && input('param.key') == '3') ? replaceParam(array('key' => '3', 'order' => '1')):replaceParam(array('key' => '3', 'order' => '2')); ?>" <?php if(input('param.key') == '3'){?>class="<?php echo input('param.order') == 1 ? 'asc' : 'desc';?>"<?php }?> >{$Think.lang.goods_class_index_price}<i></i></a></li>
+            <li><div><input id="priceMin" title="最低价" value="{$Think.param.priceMin}" maxlength="6" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" class="input-txt"><em>-</em><input id="priceMax" title="最高价" value="{$Think.param.priceMax}" maxlength="6" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" class="input-txt"><a id="priceBtn" class="priceBtn">确定</a></div></li>
+          </ul>
+        </div>
+        <div class="nch-sortbar-owner"><span><a href="<?php if (input('param.type') == 1) { echo dropParam(array('type'));} else { echo replaceParam(array('type' => '1'));}?>" <?php if (input('param.type') == 1) {?>class="selected"<?php }?>><i></i>平台自营</a></span></div>
+        <div class="nch-sortbar-owner"><span><a href="<?php if (input('param.gift') == 1) { echo dropParam(array('gift'));} else { echo replaceParam(array('gift' => '1'));}?>" <?php if (input('param.gift') == 1) {?>class="selected"<?php }?>><i></i>赠品</a></span></div>
+        <div class="nch-sortbar-location">商品所在地：
+          <div class="select-layer">
+            <div class="holder"><em nc_type="area_name">{$Think.lang.goods_class_index_area}<!-- 所在地 --></em></div>
+            <div class="selected"><a nc_type="area_name">{$Think.lang.goods_class_index_area}<!-- 所在地 --></a></div>
+            <i class="direction"></i>
+            <ul class="options">
+              {include file="public/home/goods_class_area" /}
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <!-- 商品列表循环  -->
+
+      <div>
+          
+          {include file="public/home/goods_squares" /}
+        
+      </div>
+      <div class="tc mt20 mb20">
+        <div class="pagination">{$show_page}</div>
+      </div>
+    </div>
+
+    <!-- 猜你喜欢 -->
+    <div id="guesslike_div" style="width:980px;"></div>
+  </div>
+  <div class="clear"></div>
+</div>
+<script src="{$Think.config.url_domain_root}static/home/js/waypoints.js"></script>
+<script src="{$Think.config.url_domain_root}static/home/js/search_category_menu.js"></script>
+<script type="text/javascript">
+var defaultSmallGoodsImage = '<?php echo defaultGoodsImage(240);?>';
+var defaultTinyGoodsImage = '<?php echo defaultGoodsImage(60);?>';
+
+$(function(){
+    $('#files').tree({
+        expanded: 'li:lt(2)'
+    });
+	//品牌索引过长滚条
+    $('#ncBrandlist').perfectScrollbar({suppressScrollX:true});
+    //浮动导航  waypoints.js
+    $('#main-nav-holder').waypoint(function(event, direction) {
+        $(this).parent().toggleClass('sticky', direction === "down");
+        event.stopPropagation();
+    });
+	// 单行显示更多
+	$('span[nc_type="show"]').click(function(){
+		s = $(this).parents('dd').prev().find('li[nc_type="none"]');
+		if(s.css('display') == 'none'){
+			s.show();
+			$(this).html('<i class="icon-angle-up"></i>{$Think.lang.goods_class_index_retract}');
+		}else{
+			s.hide();
+			$(this).html('<i class="icon-angle-down"></i>{$Think.lang.goods_class_index_more}');
+		}
+	});
+
+  {if $Request.param.area_id > 0}
+  $('[nc_type="area_name"]').html("{$province_array[$Request.param.area_id]}");
+	{/if}
+
+        {if $Request.param.cate_id > 0}
+    $('div[nctype="booth_goods"]').load("{:url('/Home/Search/get_booth_goods',['cate_id'=>$Request.param.cate_id])}", function(){
+        $(this).show();
+    });
+	{/if}
+        {if $Request.param.cate_id > 0}
+
+    $('div[id="gc_goods_recommend_div"]').load("{:url('/Home/Search/get_hot_goods',['cate_id'=>$Request.param.cate_id])}", function(){
+        $(this).show();
+    });
+	{/if}
+	//浏览历史处滚条
+	$('#nchSidebarViewed').perfectScrollbar({suppressScrollX:true});
+
+	//猜你喜欢
+	$('#guesslike_div').load("{:url('/Home/Search/get_guesslike')}", function(){
+        $(this).show();
+    });
+    $('#priceBtn').click(function(){
+        var priceMin = $('#priceMin').val();
+        var priceMax = $('#priceMax').val();
+        var url = window.location.href;
+        var url = url + "?priceMin=" + priceMin + "&priceMax=" + priceMax;
+        window.location.href = url;
+    });
+});
+</script>
+
+{include file="public/mall_server" /}
+{include file="public/mall_footer" /}

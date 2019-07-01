@@ -1,0 +1,97 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>预存款</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <form method="post">
+        <div class="ncap-form-default">
+            <dl>
+                <dt>会员名称</dt>
+                <dd>
+                    <input type="hidden" name="member_id" id="member_id" value='0'/>
+                    <input id="member_name" name="member_name" value="" class="input-txt" type="text" onchange="javascript:checkmember();">
+                    <span class="err"></span>
+                    <p class="notic"></p>
+                </dd>
+            </dl>
+            <dl  id="tr_memberinfo">
+                <dt></dt>
+                <dd id="td_memberinfo">
+
+                </dd>
+            </dl>
+            <dl>
+                <dt>增减类型</dt>
+                <dd>
+                    <select id="operatetype" name="operatetype">
+                        <option value="1">增加</option>
+                        <option value="2">减少</option>
+                        <option value="3">冻结</option>
+                        <option value="4">解冻</option>
+                    </select>
+                </dd>
+            </dl>
+
+            <dl>
+                <dt>金额</dt>
+                <dd>
+                    <input type="text" class="form-control" name="amount" id="amount" value="" />
+                </dd>
+            </dl>
+            <dl>
+                <dt>描述信息</dt>
+                <dd>
+                    <textarea name="lg_desc" ></textarea>
+                </dd>
+            </dl>
+            <dl>
+                <dt></dt>
+                <dd>
+                    <input class="btn" type="submit" value="提交"/>
+                </dd>
+            </dl>
+
+        </div>
+    </form>
+
+</div>
+
+<script>
+                        function checkmember() {
+                            var membername = $.trim($("#member_name").val());
+                            if (membername == '') {
+                                $("#member_id").val('0');
+                                alert('请输入会员名');
+                                return false;
+                            }
+                            var url = SITE_URL + 'index.php/Admin/Predeposit/checkmember.html';
+                            $.post(url, {'name': membername}, function(data) {
+                                if (data.id)
+                                {
+                                    $("#tr_memberinfo").show();
+                                    var msg = " " + data.name + ", 当前预存款数为" + data.available_predeposit + ", 当前预存款冻结金额数为" + data.freeze_predeposit;
+                                    $("#member_name").val(data.name);
+                                    $("#member_id").val(data.id);
+                                    $("#td_memberinfo").text(msg);
+                                }
+                                else
+                                {
+                                    $("#member_name").val('');
+                                    $("#member_id").val('0');
+                                    alert("会员信息错误");
+                                }
+                            }, 'json');
+                        }
+</script>
+</body>

@@ -1,0 +1,94 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>举报管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <table class="ds-default-table">
+        <tbody>
+        <tr>
+            <th class="nobg" colspan="12"><div class="title"><h5>{$Think.lang.ds_prompts}</h5><span class="arrow"></span></div></th>
+        </tr>
+        <tr>
+            <td>
+                <ul>
+                    <li>{$Think.lang.inform_help4}</li>
+                </ul></td>
+        </tr>
+        </tbody>
+    </table>
+    <form method='post' id="list_form" action="{:url('voucherprice/voucher_price_drop')}">
+        <input type="hidden" id="inform_type_id" name="inform_type_id" value="" />
+        <table class="ds-default-table">
+            <thead>
+            <tr class="thead">
+                <th></th>
+                <th>{$Think.lang.inform_type}</th>
+                <th>{$Think.lang.inform_type_desc}</th>
+                <th class="align-center">{$Think.lang.ds_handle}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {notempty name="list"}
+            {volist name="list" id="v"}
+            <tr class="hover">
+                <td class="w24"><input type="checkbox" name='voucher_price_checkbox' value="{$v.inform_type_id}" class="checkitem"></td>
+                <td>{$v.inform_type_name}</td>
+                <td>{$v.inform_type_desc}</td>
+                <td class="w72 align-center"><a href="JavaScript:void(0);" onclick="submit_delete('{$v.inform_type_id}')">{$Think.lang.ds_del}</a></td>
+            </tr>
+                {/volist}
+               {else /}
+            <tr class="no_data">
+                <td colspan="10">{$Think.lang.ds_no_record}</td>
+            </tr>
+            {/notempty}
+            </tbody>
+            <tfoot>
+            {notempty name="list"}
+            <tr class="tfoot">
+                <td>
+                    {notempty name="list"}
+                    <input type="checkbox" class="checkall" id="checkall_1">
+                    {/notempty}
+                </td>
+                <td colspan="16"><label for="checkall_1">{$Think.lang.ds_select_all}</label>
+                    &nbsp;&nbsp;<a href="JavaScript:void(0);" class="btn" onclick="submit_delete_batch()"><span>{$Think.lang.ds_del}</span></a>
+                    <div class="pagination"> {$show_page}</div></td>
+            </tr>
+            {/notempty}
+            </tfoot>
+        </table>
+    </form>
+
+</div>
+<script type="text/javascript">
+    function submit_delete_batch(){
+        /* 获取选中的项 */
+        var items = '';
+        $('.checkitem:checked').each(function(){
+            items += this.value + ',';
+        });
+        if(items != '') {
+            items = items.substr(0, (items.length - 1));
+            submit_delete(items);
+        }
+    }
+    function submit_delete(inform_type_id){
+        if(confirm('{$Think.lang.inform_type_delete_confirm}')) {
+            $('#list_form').attr('method','post');
+            $('#list_form').attr('action','{:url('inform/inform_subject_type_drop')}');
+            $('#inform_type_id').val(inform_type_id);
+            $('#list_form').submit();
+        }
+    }
+</script>

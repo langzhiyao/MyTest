@@ -1,0 +1,58 @@
+{include file="public/seller_top" /}
+
+<div class="seller_main w1200">
+    {include file="public/seller_left" /}
+    <div class="seller_right clearfix">
+        <div class="seller_items">
+            {include file="public/seller_items" /}
+            <a href="{:url('sellernavigation/navigation_add')}" class="dssc-btn dssc-btn-green" title="添加导航">添加导航</a>
+        </div>
+        
+
+        <table class="dssc-default-table">
+            <thead>
+            <tr>
+                <th class="w60">{$Think.lang.store_goods_class_sort}</th>
+                <th class="tl">{$Think.lang.store_navigation_name}</th>
+                <th class="w120">{$Think.lang.store_navigation_display}</th>
+                <th class="w110">{$Think.lang.ds_handle}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {if $navigation_list}
+            {volist name="navigation_list" id="nav"}
+            <tr class="bd-line">
+                <td>{$nav.sn_sort}</td>
+                <td class="tl"><dl class="goods-name"><dt><a href="{if $nav.sn_url eq ''}{:url('show_store/show_article',array('store_id' =>session('store_id'),'sn_id'=>$nav.sn_id))}{else}{$nav.sn_url}{/if}">{$nav.sn_title}</a></dt></dl></td>
+                <td>{if $nav.sn_if_show}{$Think.lang.ds_yes}{else}{$Think.lang.ds_no}{/if}</td>
+                <td class="dssc-table-handle"><span><a href="{:url('sellernavigation/navigation_edit',array('sn_id' => $nav.sn_id))}" class="btn-blue"><i class="icon-edit"></i>
+          <p> {$Think.lang.ds_edit}</p>
+          </a></span><span> <a href="javascript:;" nctype="btn_del" data-sn-id="{$nav.sn_id}"class="btn-red"><i class="icon-trash"></i>
+          <p>{$Think.lang.ds_del}</p>
+          </a></span></td>
+            </tr>
+            {/volist}
+            {else}
+            <tr>
+                <td colspan="20" class="norecord"><div class="warning-option"><i class="icon-warning-sign"></i><span>{$Think.lang.no_record}</span></div></td>
+            </tr>
+            {/if}
+            </tbody>
+        </table>
+        <form id="del_form" method="post" action="{:url('Sellernavigation/navigation_del')}">
+            <input id="del_sn_id" name="sn_id" type="hidden" />
+        </form>
+    </div>
+</div>
+{include file="public/mall_footer" /}
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('[nctype="btn_del"]').on('click', function() {
+            var sn_id = $(this).attr('data-sn-id');
+            if(confirm('确认删除？')) {
+                $('#del_sn_id').val(sn_id);
+                ajaxpost('del_form', '', '', 'onerror')
+            }
+        });
+    });
+</script>

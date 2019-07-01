@@ -1,0 +1,117 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+ <link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">       
+<script src="{$Think.config.url_domain_root}static/ckplayer/ckplayer.js"></script>
+
+
+<div class="layui-fluid layui-card-body" id="LAY" style="display: none;">
+    <div class="layui-row layui-col-space10 demo-list">
+        <div class="layui-col-sm4">
+            <!-- 填充内容 -->
+            <div class="layui-card">
+                <div id="video" style="width: 600px; height: 400px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <ul class="layui-nav" lay-filter="">
+      {notempty name="childs"}
+      {volist name="childs" id="v"}
+        <li class="layui-nav-item"><a href="javascript:;" class="sssss" sid="{$v.s_id}">{$v.s_name}</a></li>
+      {/volist}
+      {else /}
+        <li class="layui-nav-item">还没有绑定孩子</li>
+      {/notempty}
+    </ul>
+    <table id="camera" lay-filter="test"></table>
+    <script>
+      function rtmplay(cid){
+        addrtmp(cid,2);
+        var rtmpInfo= $('#rmt_'+cid).attr('datainfo');
+        rtmpInfo =$.parseJSON(rtmpInfo);
+        layer.open({
+          type: 1,
+          title: rtmpInfo.name,
+          // shadeClose: true,
+          shade: false,
+          area: ['644px', '470px'],
+          skin: 'layui-layer-rim',
+          content: $('#LAY')
+          ,cancel: function(){
+                addrtmp(cid,1);
+          }
+        });
+        var videoObject = {
+                container: '#video', //容器的ID或className
+                variable: 'player',//播放函数名称
+                autoplay:false,
+                live:true,
+                debug:true,
+                video: rtmpInfo.rtmpplayurl,
+                poster:rtmpInfo.imageurl
+            };
+        var player = new ckplayer(videoObject);
+    }
+    function addrtmp(cid,is_rtmp){
+        $.ajax({
+            type:'POST',
+            url:ADMIN_URL+'Monitor/addrtmp',
+            data:{cid:cid,is_rtmp:is_rtmp},
+            success:function(data){
+                return(data);
+            }
+        })
+    }
+    layui.use(['table', 'element'], function(){
+        var table = layui.table;
+        $('.sssss').click(function(event) {
+            var s_id = $(this).attr('sid');
+            GetCamera(s_id);
+        });
+        function GetCamera(s_id){
+          var member_id = '<?php echo $_GET["member_id"];?>';
+          var urls=ADMIN_URL+'Membercommon/ChildrenCamera?member_id='+member_id+'&s_id='+s_id;
+          //第一个实例
+          table.render({
+            elem: '#camera'
+            ,height: 'full-200'
+            ,url: urls //数据接口
+            ,page: true //开启分页
+            ,cols: [[ //表头
+              {field: 'name', title: '名称', width:200,fixed: 'center'}
+              ,{field: 'channelid', title: '通道ID', width:80}
+              ,{field: 'deviceid', title: '设备id', width:100}
+              ,{field: 'id', title: '摄像头id', width:100} 
+              ,{field: 'statusess', title: '在线', width: 60}
+              ,{field: 'parentid', title: '资源id', width: 80}
+              ,{field: 'clic', title: '播放地址', width: 90}
+              ,{field: 'is_classrooms', title: '重温课堂', width: 100}
+              ,{field: 'statuss', title: '开关', width:60}
+              ,{field: 'sq_time', title: '导入时间', width: 180, sort: true}
+              ,{field: 'begintime', title: '开启时间', width: 120}
+              ,{field: 'endtime', title: '关闭时间', width: 120}
+            ]]
+
+          });
+        
+        }
+    });
+    
+    </script>
+
+</div>
+
+
+
+
+
+
+
+

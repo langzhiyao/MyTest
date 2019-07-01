@@ -1,0 +1,67 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <h2>账户余额：<?php if(!empty($company['total_amount'])){echo sprintf('%.2f',$company['total_amount']);}else{echo 0;} ?>元&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        冻结余额：<?php if(!empty($company['freeze_amount'])){echo sprintf('%.2f',$company['freeze_amount']);}else{echo 0;} ?>元&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        银行卡信息：<?php if(!empty($company['bank_name'])){echo sprintf('%.2f',$company['bank_name']);}else{echo "无";} ?><?php echo $company['bank_card']; ?></h2>
+    <form method="post" enctype="multipart/form-data" name="form1" action="">
+        <table class="ds-default-table">
+            <thead>
+            <tr class="thead">
+                <th class="w272">{$Think.lang.ds_number}</th>
+                <th class="w172">{$Think.lang.organize_studentnum_name}</th>
+                <th class="w272 align-center">{$Think.lang.organize_studentnum_names}</th>
+                <th class="w172">{$Think.lang.organize_membernum_school}</th>
+                <th class="w172">{$Think.lang.organize_membernum_class}</th>
+                <th class="w172">{$Think.lang.ds_organize_time}</th>
+                <th class="w172">{$Think.lang.ds_organize_remark}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php if(!empty($student_list) && is_array($student_list)){ ?>
+            <?php foreach($student_list as $k => $v){ ?>
+            <tr class="hover edit">
+                <td class="sort"><?php if(!$_GET['page']){  echo $k+1; }else{ echo ($_GET['page']-1)*15+$k+1; }?></td>
+                <td class="name"><?php echo $v['s_name']; ?></td>
+                <td class="name"><?php echo $v['member_name']; ?></td>
+                <td class="name"><?php echo $v['schoolname']; ?></td>
+                <td class="name"><?php echo $v['classname']; ?></td>
+                <td class="picture"><?php echo $v['s_createtime']; ?></td>
+                <td class="align-center"><?php echo $v['s_remark']; ?></td>
+            </tr>
+            <?php } ?>
+            <?php }else { ?>
+            <tr class="no_data">
+                <td colspan="10">{$Think.lang.ds_no_record}</td>
+            </tr>
+            <?php } ?>
+            </tbody>
+
+        </table>
+    </form>
+    <tfoot>
+    {notempty name="student_list"}
+    <tr colspan="15" class="tfoot">
+        <td colspan="16">
+            <div class="pagination"> {$page} </div></td>
+    </tr>
+    {/notempty}
+    </tfoot>
+</div>
+
+
+
+
+
+
+
+

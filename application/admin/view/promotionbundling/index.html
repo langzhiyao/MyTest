@@ -1,0 +1,99 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>优惠套装</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form method="get" name="formSearch">
+        <table class="search-form">
+            <tbody>
+            <tr>
+                <th><label for="mansong_name">{$Think.lang.bundling_name}</label></th>
+                <td><input type="text" value="{$Request.get.bundling_name}" name="bundling_name" id="bundling_name" class="txt" style="width:100px;"></td>
+                <th><label for="store_name">{$Think.lang.bundling_quota_store_name}</label></th>
+                <td><input type="text" value="{$Request.get.store_name}" name="store_name" id="store_name" class="txt" style="width:100px;"></td>
+                <th><label for="">{$Think.lang.ds_state}</label></th>
+                <td>
+                    <select name="state">
+                        <option>{$Think.lang.bundling_state_all}</option>
+                        <option {eq name="Request.get.state" value="1" }selected="selected"{/eq}>{$Think.lang.bundling_state_1}</option>
+                        <option {eq name="Request.get.state" value="0" }selected="selected"{/eq}>{$Think.lang.bundling_state_0}</option>
+                    </select>
+                </td>
+                <td><a href="javascript:document.formSearch.submit();" class="btn-search " title="{$Think.lang.ds_query}"></a></td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+    <!-- 帮助 -->
+    
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>{$Think.lang.bundling_quota_prompts}</li>
+        </ul>
+    </div>
+    
+    <!-- 列表 -->
+    <form id="list_form" method="post">
+        <table class="ds-default-table">
+            <thead>
+            <tr class="thead">
+                <th>{$Think.lang.bundling_quota_store_name}</th>
+                <th class="align-center">{$Think.lang.bundling_name}</th>
+                <th class="align-center">{$Think.lang.bundling_price}</th>
+                <th class="align-center">{$Think.lang.bundling_goods_count}</th>
+                <th class="align-center">{$Think.lang.ds_status}</th>
+                <th class="align-center">{$Think.lang.ds_handle}</th>
+            </tr>
+            </thead>
+            <tbody id="treet1">
+            {notempty name="list"}
+            {volist name="list" id="val"}
+            <tr class="hover">
+                <td class="align-left"><a href="{:url('home/showstore/inde',['store_id'=>$val.store_id])}" ><span>{$val.store_name}</span></a>
+                    {present name="flippedOwnShopIds[$val.store_id]"}
+                    <span class="ownshop">[自营]</span>
+                    {/present}
+                </td>
+                <td class="align-center">{$val.bl_name}</td>
+                <td class="align-center">{$val.bl_discount_price}</td>
+                <td class="align-center">{$val.count}</td>
+                <td class="align-center">
+                    {$state_array[$val.bl_state]}
+                </td>
+                <td class="nowrap align-center">
+                    <a target="block" href="{:url('home/goods/index',['goods_id'=>$val.goods_id])}">{$Think.lang.ds_view}</a>
+                    <a href="{:url('promotionbundling/del_bundling',['bl_id'=>$val.bl_id])}">{$Think.lang.ds_del}</a>
+                </td>
+            </tr>
+            {/volist}
+            {else /}
+            <tr class="no_data">
+                <td colspan="16">{$Think.lang.ds_no_record}</td>
+            </tr>
+            {/notempty}
+            </tbody>
+            {notempty name="list"}
+            <tfoot>
+            <tr class="tfoot">
+                <td colspan="16"><label>
+                    <div class="pagination">{$show_page} </div></td>
+            </tr>
+            </tfoot>
+            {/notempty}
+        </table>
+    </form>
+
+</div>

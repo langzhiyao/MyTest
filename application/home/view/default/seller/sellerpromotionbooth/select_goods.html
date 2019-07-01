@@ -1,0 +1,17 @@
+
+{notempty name="goods_list"}
+<ul class="goods-list">
+    {volist  name="goods_list" id="val"}
+    <li>
+        <div class="goods-thumb"><img src="{:thumb($val,240)}"/></div>
+        <dl class="goods-info">
+            <dt><a href="{:url('goods/index',['goods_id'=>$val.goods_id])}" target="_blank">{$val.goods_name}</a> </dt>
+            <dd>销售价格：{$Think.lang.currency}{$val.goods_price}
+        </dl>
+        <a nctype="a_choose_goods" data-param='{gid:{$val.goods_id}}' href="javascript:void(0);" class="dssc-btn-mini">选择商品</a> </li>
+    {/volist}
+</ul>
+<div class="pagination">{$show_page}</div>
+{else /}
+<div>{$Think.lang.no_record}</div>
+{/notempty}

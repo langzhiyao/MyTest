@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>想见孩-我的收藏</title>
+    <meta name="author" content="想见孩" />
+    <meta name="copyright" content="想见孩" />
+    <meta name="description" content="想见孩" />
+    <meta id="viewport" name="viewport" content="width=750" />
+    <link rel="stylesheet" href="../content/style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/iconfonts/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/lib/weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/css/jquery-weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/user.css" type="text/css" />
+    <link rel="shortcut icon" href="../content/images/ico.ico" type="image/x-icon" />
+    <script src="../content/scripts/mobile-util.js"></script>
+</head>
+
+<body>
+    <header class="head">
+        <div class="head0">
+            <div class="menu_bar_box">
+                <a href="javascript:;" class="back_btn" onClick="javascript:history.back(-1);">
+                    <i class="icon iconfont icon-jiantou3"></i>
+                </a>
+            </div>
+            <div class="head_title">
+                <p>我的收藏-课件</p>
+            </div>
+            <div class="head_r">
+
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <div class="main">
+        <div class="cont margt30">
+            <div class="container2">
+                <div class="orderforms_cont clear">
+                    <p class="no_data" id="no_data"><span>———— 暂无收藏 ————</span></p>
+                    <ul class="collect_list"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="../content/scripts/jquery.min.js"></script>
+    <script src="../content/plugins/jqweui/js/jquery-weui.min.js"></script>
+    <script src="../content/scripts/juqery.cookie.js"></script>
+    <script src="../content/plugins/jqweui/js/city-picker.min.js"></script>
+    <script src="../content/scripts/commom.js"></script>
+    <script src="../content/scripts/API.js"></script>
+
+    <script>
+        // 默认加载我收藏的课件列表
+        $.ajax({
+            type: "POST",
+            url: api + "/Member/collect.html",
+            data: {
+                key: user_token,
+                member_id: user_member_id,
+                type_id: 1
+            },
+            dataType: "json",
+            success: function(response) {
+                console.log(response["result"]);
+                if (response["result"].length > 0) {
+                    $("#no_data").hide();
+                    $(".collect_list").html(HTML(response['result']))
+                } else {
+                    $("#no_data").show();
+                }
+            }
+        });
+
+
+        // html模板
+        function HTML(data) {
+            var template = '';
+            for (var i = 0; i < data.length; i++) {
+                var freeState = '';
+                if (data[i]['t_price'] == '') {
+                    freeState = '免费'
+                } else {
+                    freeState = data[i]['t_price'];
+                }
+                var img_url = upload_url + '/' + data[i]['t_picture'];
+                template += '<li>' +
+                    '<a href="javascript:;">' +
+                    '<span class="pay_type pay_free">' + freeState + '</span>' +
+                    '<div class="collect_img" style="background: url(' + img_url + ') no-repeat center;background-size:cover;"></div>' +
+                    '<dl class="collect_txt">' +
+                    '<dt>' + data[i]['t_title'] + '</dt>' +
+                    '<dd class="bolds">作者：' + data[i]['member_nickname'] + '</dd>' +
+                    '<dd>' + data[i]['t_profile'] + '</dd>' +
+
+                    '</dl>' +
+                    '</a>' +
+                    '</li>'
+            }
+            return template;
+        }
+    </script>
+</body>
+
+</html>

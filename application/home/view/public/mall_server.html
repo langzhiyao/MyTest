@@ -1,0 +1,37 @@
+<div class="server">
+    <div class="ensure">
+        <a href="#"></a>
+        <a href="#"></a>
+        <a href="#"></a>
+        <a href="#"></a>
+    </div>
+    <div class="mall_desc">
+        {notempty name="article_list"}
+        {volist name="article_list" id="art" length='4'}
+        <dl> 
+            <dt>{$art.ac_name}</dt>
+            <dd>
+                {notempty name="art.list"}
+                {volist name="art.list" id="list"}
+                <a href="{if $list.article_url !=''}{$list.article_url}{else /}{:url('Article/show',['article_id'=>$list.article_id])}{/if}">{$list.article_title}</a>
+                {/volist}
+                {/notempty}
+            </dd>
+        </dl>
+        {/volist}
+        {/notempty}
+        <dl class="mall_mobile">
+            <dt>手机商城</dt>
+            <dd>
+                <a href="#" class="join">
+                    <img src="http://ecmall.etmall.60data.com/data/files/mall/settings/default_qrcode.png" width="105" height="105" alt="手机天猫">
+                </a>
+            </dd> 
+        </dl>
+    </div>
+</div>
+
+
+
+
+

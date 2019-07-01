@@ -1,0 +1,315 @@
+{include file="public/header" /}
+<script src="{$Think.config.url_domain_root}static/common/js/mlselection2.js"></script>
+<script src="{$Think.config.url_domain_root}static/home/js/common.js"></script>
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<style>
+    .layui-form-label{
+        width: 200px;
+    }
+</style>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>班级管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>修改房间位置信息。</li>
+        </ul>
+    </div>
+
+
+    <form id="user_form" enctype="multipart/form-data" method="post" class="layui-form">
+        <div class="ncap-form-default">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.school_index_schoolregion}：</label>
+                    <div class="layui-input-inline">
+                        <select  lay-filter="province"  class="select"  lay-verify="type" name="province" id="province">
+                            <option value="">{$Think.lang.look_address_province}</option>
+                            {volist name="region_list" id="vo"}
+                            <option value="{$vo.area_id}" <?php if($vo['area_id'] == $position_array["province_id"]){echo 'selected';}?> >{$vo.area_name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="layui-input-inline">
+                        <select name="city" lay-filter="city"  class="select"  lay-verify="type"  id="city">
+                            <option value="">{$Think.lang.look_address_city}</option>
+                        </select>
+                    </div>
+                    <div class="layui-input-inline">
+                        <select name="area" lay-filter="area"  class="select"  lay-verify="type"  id="area">
+                            <option value="">{$Think.lang.look_address_area}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <input  name="position_id" value="{$position_array['position_id']}" type="hidden">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.school_index_checkname}：</label>
+                    <div class="layui-input-inline">
+                        <select  lay-filter="school"  class="select"  lay-verify="type" name="school" id="school">
+                            <option value="">{$Think.lang.school_index_allschool}</option>
+                        </select>
+                    </div>
+                    <!--<div class="layui-input-inline">
+                        <select name="grade" lay-filter="grade"  class="select"  lay-verify="type"  id="grade">
+                            <option value="">{$Think.lang.school_index_type}</option>
+                        </select>
+                    </div>-->
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.school_index_positionname}：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="school_position_name" value="<?php echo $position_array['position'];?>" name="school_position_name" class="layui-input">
+                        <span class="err"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.school_index_desc}：</label>
+                    <div class="layui-input-inline">
+                        <textarea id="position_desc" name="position_desc" class="layui-text"><?php echo $position_array['desc'];?></textarea>
+                        <span class="err"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label"></label>
+                <div class="layui-input-block">
+                    <a href="JavaScript:void(0);" class="btn" id="submitBtn">确认提交</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    layui.use(['form','laypage', 'layer'], function(){
+        var form = layui.form,
+            laypage = layui.laypage
+            ,layer = layui.layer;
+        //省 市 区
+        var province = '<?php if(!empty($position_array["province_id"])){echo $position_array["province_id"];}?>';
+        var city = '<?php if(!empty($position_array["city_id"])){echo $position_array["city_id"];}?>';
+        var area = '<?php if(!empty($position_array["area_id"])){echo $position_array["area_id"];}?>';
+        //学校 年级 班级
+        var school = '<?php if(!empty($position_array["school_id"])){echo $position_array["school_id"];}?>';
+        // var grade = '<?php if(!empty($position_array["type_id"])){echo $position_array["type_id"];}?>';
+        if(province != 0){
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+province+'&city='+city+'&area='+area+'&school='+school,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变市区
+                    $('#city').html(data.city);
+                    //改变县区
+                    $('#area').html(data.area);
+                    //改变学校
+                    $('#school').html(data.school);
+                    //改变年级
+                    $('#grade').html(data.grade);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        }
+
+        if(school != 0){
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_school_info2?school='+school+'&grade='+grade,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变年级
+                    $('#grade').html(data.grade);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        }
+
+        //省
+        form.on('select(province)', function(data){
+            //改变市区
+            $('#city').html('<option value="0">{$Think.lang.look_address_city}</option>');
+            //改变县区
+            $('#area').html('<option value="0">{$Think.lang.look_address_area}</option>');
+            //改变年级
+            // $('#grade').html('<option value="0">{$Think.lang.look_address_grade}</option>');
+
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    var province_name = $('#province').find('option:selected').html();
+                    $('#area_info').val(province_name);
+                    //改变市区
+                    $('#city').html(data.city);
+                    //改变县区
+                    $('#area').html(data.area);
+                    //改变学校
+                    $('#school').html(data.school);
+                    //改变年级
+                    // $('#grade').html(data.grade);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //市
+        form.on('select(city)', function(data){
+            //改变县区
+            $('#area').html('<option value="0">{$Think.lang.look_address_area}</option>');
+            //改变年级
+            // $('#grade').html('<option value="0">{$Think.lang.look_address_grade}</option>');
+            //改变班级
+            // $('#class').html('<option value="0">{$Think.lang.look_address_class}</option>');
+            var province = $('#province').find('option:selected').val();
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+province+'&city='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    var province_name = $('#province').find('option:selected').html();
+                    var city_name = $('#city').find('option:selected').html();
+                    $('#area_info').val(province_name+city_name);
+                    //改变县区
+                    $('#area').html(data.area);
+                    //改变学校
+                    $('#school').html(data.school);
+                    //改变年级
+                    // $('#grade').html(data.grade);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //县/区
+        form.on('select(area)', function(data){
+            //改变年级
+            // $('#grade').html('<option value="0">{$Think.lang.look_address_grade}</option>');
+            //改变班级
+            // $('#class').html('<option value="0">{$Think.lang.look_address_class}</option>');
+            var province = $('#province').find('option:selected').val();
+            var city = $('#city').find('option:selected').val();
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+province+'&city='+city+'&area='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    var province_name = $('#province').find('option:selected').html();
+                    var city_name = $('#city').find('option:selected').html();
+                    var area_name = $('#area').find('option:selected').html();
+                    $('#area_info').val(province_name+city_name+area_name);
+                    //改变学校
+                    $('#school').html(data.school);
+                    //改变年级
+                    // $('#grade').html(data.grade);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //学校
+       /* form.on('select(school)', function(data){
+            //改变年级
+            $('#grade').html('<option value="0">{$Think.lang.look_address_grade}</option>');
+            //改变班级
+            $('#class').html('<option value="0">{$Think.lang.look_address_class}</option>');
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_school_info2?school='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变年级
+                    $('#grade').html(data.grade);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });*/
+
+
+    });
+    $(function(){
+        $("#region_choose").click(function() {
+            if ($("#user_form").valid()) {
+                $("#user_form").submit();
+            }
+        });
+    });
+
+    $(function() {
+        //按钮先执行验证再提交表单
+        $("#submitBtn").click(function() {
+            if ($("#user_form").valid()) {
+                $("#user_form").submit();
+            }
+        });
+        $('#user_form').validate({
+            errorPlacement: function(error, element) {
+                error.appendTo(element.nextAll('span.err'));
+            },
+            rules: {
+                school_name: {
+                    required: true
+                },
+                school_position_name: {
+                    required: true,
+                    remote: {
+                        url: "{:url('Admin/position/ajax',['branch'=>'check_position_name'])}",
+                        type: 'get',
+                        data: {
+                            position: function() {
+                                return $('#school_position_name').val();
+                            },
+                            school_id: function () {
+                                return $('#school').find('option:selected').val();
+                            },
+                            type_id: function () {
+                                return $('#grade').find('option:selected').val();
+                            },
+                            position_id: function () {
+                                return $('#position_id').val();
+                            }
+                        }
+                    }
+                },
+                grade: {
+                    required: true
+                }
+            },
+            messages: {
+                school: {
+                    required: '{$Think.lang.school_add_sname_null}'
+                },
+                school_position_name: {
+                    required: '{$Think.lang.school_add_class_null}',
+                    remote: '{$Think.lang.class_add_name_exists}'
+                },
+                grade: {
+                    required: '{$Think.lang.school_add_type_null}'
+                }
+            }
+        });
+    });
+    $(function(){
+        $('#school_dieline').datepicker({dateFormat: 'yy-mm-dd'});
+    });
+
+    $(function() {
+        regionInit("region");
+    });
+</script>

@@ -1,0 +1,58 @@
+.wallet_p {
+    font-size: 28px;
+    line-height: 60px;
+    padding: 10px 30px;
+}
+
+.wallet_cont {
+    background: #fff;
+    padding: 0 30px;
+}
+
+.wallet_ul li {
+    border-bottom: 1px solid #eee;
+    padding: 20px 0;
+}
+
+.wallet_list {
+    -webkit-display: flex;
+    display: flex;
+    justify-content: space-between;
+}
+
+.wallet_t {
+    font-size: 26px;
+    color: #242424;
+    height: 60px;
+    line-height: 60px;
+}
+
+.wallet_t>div,
+.wallet_b>div {
+    width: 60%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.wallet_t>div:last-child {
+    color: #50c3bc;
+    text-align: right;
+    width: 40%;
+}
+
+.wallet_b>div:last-child {
+    text-align: right;
+    width: 40%;
+}
+
+.wallet_t>div.income {
+    color: #242424;
+}
+
+.wallet_b {
+    font-size: 24px;
+    color: #adadad;
+    height: 40px;
+    line-height: 40px;
+}

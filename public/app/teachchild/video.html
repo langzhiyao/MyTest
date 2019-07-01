@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>想见孩-我的视频</title>
+    <meta name="author" content="想见孩" />
+    <meta name="copyright" content="想见孩" />
+    <meta name="description" content="想见孩" />
+    <meta id="viewport" name="viewport" content="width=750" />
+    <link rel="stylesheet" href="../content/style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/iconfonts/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/lib/weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/css/jquery-weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/teachchild/teachchild.css" type="text/css" />
+    <link rel="shortcut icon" href="../content/images/ico.ico" type="image/x-icon" />
+    <script src="../content/scripts/mobile-util.js"></script>
+    <style>
+        .weui-pull-to-refresh__layer {
+            font-size: 22px !important;
+            position: relative;
+            top: 20px;
+        }
+        .history_content {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+<header class="head">
+    <div class="head0">
+        <div class="menu_bar_box">
+            <a href="javascript:;" class="back_btn" onClick="historyback();">
+                <i class="icon iconfont icon-jiantou3"></i>
+            </a>
+        </div>
+        <div class="head_title">
+            <p>我的视频</p>
+        </div>
+        <div class="head_r">
+            <!--<span data-select="false" class="history_edit">编辑</span>-->
+        </div>
+    </div>
+</header>
+
+    <div class="body_content history_body">
+
+        <div class="weui-pull-to-refresh__layer">
+            <div class='weui-pull-to-refresh__arrow'></div>
+            <div class='weui-pull-to-refresh__preloader'></div>
+            <div class="down">下拉刷新</div>
+            <div class="up">释放刷新</div>
+            <div class="refresh">正在刷新</div>
+        </div>
+
+        <div class="history_content">
+
+        </div>
+        <div class="weui-footer nodata_bottom_ziding" style="display: none;font-size: 22px;color: #999999;margin-bottom: 50px;">
+            <span class="weui-over">没有更多信息了</span>
+        </div>
+        <div class="weui-loadmore" style="display: none;">
+            <i class="weui-loading"></i>
+            <span class="weui-loadmore__tips">正在加载</span>
+        </div>
+        <input type="hidden" value="" id="id" />
+        <!-- 删除 -->
+        <div class="history_delete_wrap">
+            <span onClick="checkedAll(event)" data-select="false">全选</span>
+            <span onClick="Delete()">删除（<i class="delete_num">0</i>）</span>
+        </div>
+    </div>
+
+
+
+    <script src="../content/scripts/jquery.min.js"></script>
+    <script src="../content/plugins/jqweui/js/jquery-weui.min.js"></script>
+    <script src="../content/scripts/juqery.cookie.js"></script>
+    <script src="../content/scripts/API.js"></script>
+    <script src="../content/scripts/commom.js"></script>
+    <script type="text/javascript">
+        var IDArr = [];
+        var List = [];
+        var Page = 1;
+
+        $.ajax({
+            url: api + '/teacherchild/myVideos',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                key: user_token,
+                member_id: user_member_id,
+                /*page: 1*/
+            },
+            success: function(response) {
+                if (response['code'] == 200) {
+                    if (response['result'].length == 0) {
+                        $('.history_content').html('<div class="weui-loadmore weui-loadmore_line"><span class="weui-loadmore__tips">暂无数据</span></div>');
+                    } else {
+                        List = [];
+                        let keys = Object.keys(response['result'][0]);
+                        for (var i = 0; i < keys.length; i++) {
+                            let params = new Object();
+                            params[keys[i]] = response['result'][0][keys[i]];
+                            List.push(params);
+                        }
+                        $('#id').val(response['result'][1]['id']);
+                        $('.history_content').html(HTML(List));
+                    }
+                } else {
+                    $.toast(response['message'],'forbidden');return false;
+                }
+            }
+        })
+
+        // 分页
+        var loading = false; //状态标记
+        $(document.body).infinite().on("infinite", function(event) {
+            if (loading) return;
+            loading = true;
+            setTimeout(function() {
+                /*Page = Page + 1;*/
+                Page = $('#id').val();
+                getPage(Page);
+                loading = false;
+            }, 20)
+        });
+
+        // 下拉刷新
+        $('.history_body').pullToRefresh(function() {
+            $(document.body).infinite();
+            setTimeout(function() {
+                $('.history_body').pullToRefreshDone(); // 重置下拉刷新
+            }, 1500);
+            Page = 1;
+            GetKejian();
+        });
+        // 获取课件接口
+        function GetKejian() {
+            $('.weui-footer').hide();
+            $.ajax({
+                url: api + '/teacherchild/myVideos',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    key: user_token,
+                    member_id: user_member_id,
+                    /*page: 1*/
+                },
+                success: function(response) {
+                    if (response['code'] == 200) {
+                        if (response['result'].length == 0) {
+                            $('.history_content').html('<div class="weui-loadmore weui-loadmore_line"><span class="weui-loadmore__tips">暂无数据</span></div>');
+                        } else {
+                            List = [];
+                            let keys = Object.keys(response['result'][0]);
+                            for (var i = 0; i < keys.length; i++) {
+                                let params = new Object();
+                                params[keys[i]] = response['result'][0][keys[i]];
+                                List.push(params);
+                            }
+                            $('#id').val(response['result'][1]['id']);
+                            $('.history_content').html(HTML(List));
+                        }
+                    } else {
+                        $.toast(response['message'],'forbidden');return false;
+                    }
+                }
+            })
+        }
+
+
+
+        $('.history_edit').on('click', function(event) {
+            var select = event.target.dataset.select;
+            if (select == 'false') {
+                $('.history_delete_wrap').show();
+                $('.history_check_all').show();
+                event.target.dataset.select = 'true';
+            } else {
+                $('.history_delete_wrap').hide();
+                $('.history_check_all').hide();
+                $('.weui-check').removeAttr('checked');
+                event.target.dataset.select = 'false';
+            }
+        })
+
+        function changeState(event) {
+            var ID = event.dataset.id
+            if (event.checked) {
+                IDArr.push(ID);
+                number(IDArr.length);
+            } else {
+                for (var i = 0; i < IDArr.length; i++) {
+                    if (IDArr[i] == ID) {
+                        IDArr.splice(i, 1);
+                    }
+                }
+                number(IDArr.length);
+            }
+        }
+
+        //全选
+        function checkedAll(event) {
+            IDArr = [];
+            var check = $('.weui-check');
+            var select = event.target.dataset.select;
+            if (select == 'false') {
+                $('.weui-check').prop('checked', 'checked');
+                event.target.dataset.select = true;
+                for (var i = 0; i < check.length; i++) {
+                    IDArr.push(check[i].dataset.id);
+                }
+                number(check.length);
+            } else {
+                $('.weui-check').removeAttr('checked');
+                event.target.dataset.select = false;
+                number(0);
+            }
+        }
+
+        // 删除
+        function Delete() {
+            if (IDArr.length != 0) {
+                let params = {};
+                let idString = IDArr.join(',');
+                if ($('.weui-check').length == IDArr.length) {
+                    params.key = user_token;
+                    params.userid = user_member_id;
+                    params.ids = idString;
+                    params.all = 1;
+                } else {
+                    params.key = user_token;
+                    params.userid = user_member_id;
+                    params.ids = idString;
+                }
+                $.confirm("确定要删除吗？", function() {
+                    $.ajax({
+                        url: api + '/teacherhistory/delhistory',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: params,
+                        success: function(response) {
+                            if (response['code'] == 200) {
+                                //成功后的回调函数
+                                $.toast("删除成功");
+                                for (var i = 0; i < IDArr.length; i++) {
+                                    $('.delete' + IDArr[i]).remove();
+                                }
+                                IDArr = [];
+                                number(IDArr.length)
+                            } else {
+                                $.toast(response['message'],'forbidden');return false;
+                            };
+                        }
+                    })
+                }, function() {
+                    //点击取消后的回调函数
+                    return false;
+                });
+            } else {
+                $.alert("请选择需要删除的内容！");
+            }
+        }
+
+        // 计算需要删除的数量
+        function number(data) {
+            $('.delete_num').html(data)
+        }
+
+        // 分页
+        function getPage(num) {
+            if(num != ''){
+                $(document.body).destroyInfinite();
+                $('.weui-loadmore').show();
+                $.ajax({
+                    url: api + '/teacherchild/myVideos',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        key: user_token,
+                        member_id: user_member_id,
+                        page: num
+                    },
+                    success: function(response) {
+                        if (response['code'] == 200) {
+                            if (response['result'].length == 0) {
+                                var is_data = $('.history_content>.weui-loadmore').hasClass('weui-loadmore_line');
+                                if(!is_data){
+                                    $('.weui-footer').show();
+                                }
+                                $('.weui-loadmore').hide();
+                            } else {
+                                $(document.body).infinite();
+                                List = [];
+                                let keys = Object.keys(response['result'][0]);
+                                for (var i = 0; i < keys.length; i++) {
+                                    let params = new Object();
+                                    params[keys[i]] = response['result'][0][keys[i]];
+                                    List.push(params);
+                                }
+                                $('.weui-loadmore').hide();
+                                $('#id').val(response['result'][1]['id']);
+                                $('.history_content').append(HTML(List));
+                            }
+                        } else {
+                            $('.weui-footer').show();
+                            $('.weui-loadmore').hide();
+                            $(document.body).destroyInfinite();
+                            $.toast(response['message'],'forbidden');return false;
+                        }
+                    }
+                })
+            }
+
+        }
+
+        // HTML模板
+        function HTML(data) {
+            var template = '';
+            for (var i = 0; i < data.length; i++) {
+                var Time = Object.keys(data[i]);
+                var content = '';
+                for (var s = 0; s < data[i][Time[0]].length; s++) {
+                    if (data[i][Time[0]][s]['is_click'] == 1) {
+                        content += '<div onclick="videoClick(' + data[i][Time[0]][s]['order_tid'] + ')" class="history_content_wrap clearBoth weui-cells weui-cells_checkbox delete' + data[i][Time[0]][s]['order_tid'] + '">' +
+                            '<label class="weui-cell weui-check__label float_left history_check_all">' +
+                            '<div class="weui-cell__hd checked_input">' +
+                            '<input type="checkbox" data-id="' + data[i][Time[0]][s]['order_tid'] + '" onChange="changeState(this)" class="weui-check" name="checkbox1">' +
+                            '<i class="weui-icon-checked"></i>' +
+                            '</div>' +
+                            '</label>' +
+                            '<div class="history_img_wrap float_left" style="background:url(' + data[i][Time[0]][s]['videoimg'] + ') no-repeat center;background-size:cover;">' +
+                            '</div>' +
+                            '<div class="cont_wrap float_left">' +
+                            '<p class="cont_title">' + data[i][Time[0]][s]['title'] + '</p>' +
+                            '<p class="cont_time">作者：<span>' + data[i][Time[0]][s]['author'] + '</span></p>' +
+                            '<p class="cont_time">到期时间：<span>' + data[i][Time[0]][s]['order_dieline'] + '</span></p>' +
+                            '</div>' +
+                            '</div>';
+                    } else {
+                        content += '<div onclick="forbidden()" class="history_content_wrap clearBoth weui-cells weui-cells_checkbox delete' + data[i][Time[0]][s]['order_tid'] + '">' +
+                            '<label class="weui-cell weui-check__label float_left history_check_all">' +
+                            '<div class="weui-cell__hd checked_input">' +
+                            '<input type="checkbox" data-id="' + data[i][Time[0]][s]['order_tid'] + '" onChange="changeState(this)" class="weui-check" name="checkbox1">' +
+                            '<i class="weui-icon-checked"></i>' +
+                            '</div>' +
+                            '</label>' +
+                            '<div class="history_img_wrap float_left" style="background:url(' + data[i][Time[0]][s]['videoimg'] + ') no-repeat center;background-size:cover;">' +
+                            '</div>' +
+                            '<div class="cont_wrap float_left">' +
+                            '<p class="cont_title">' + data[i][Time[0]][s]['title'] + '</p>' +
+                            '<p class="cont_time">作者：<span>' + data[i][Time[0]][s]['author'] + '</span></p>' +
+                            '<p class="cont_time">到期时间：<span>' + data[i][Time[0]][s]['order_dieline'] + '</span></p>' +
+                            '</div>' +
+                            '</div>';
+                    }
+
+                }
+                template += '<p class="time_title"><i class="dian"></i>' + Time[0] + '</p>' + '<div class="time_content">' + content + '</div>';
+            }
+            return template;
+        }
+    </script>
+
+</body>
+
+</html>

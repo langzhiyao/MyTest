@@ -1,0 +1,71 @@
+{include file="public/mall_top" /}
+{include file="public/mall_header" /}
+<div class="w1200">
+    <div class="nch-all-menu">
+        <ul class="tab-bar">
+            <li><a href="{:url('home/category/goods')}">全部商品分类</a></li>
+            <li class="current"><a href="javascript:void(0);">全部品牌</a></li>
+            <li><a href="{:url('search/index')}">全部商品</a></li>
+            <li><a href="{:url('/home/Category/store')}">全部店铺分类</a></li>
+        </ul>
+    </div>
+    <div class="nch-recommend-borand">
+        <div class="nch-barnd-list">
+            <ul>
+                {foreach name="brand_r" item="brand"}
+                <li>
+                    <dl>
+                        <dt><a href="{:url('/home/brand/brand_goods',array('brand_id'=>$brand.brand_id))}"><img src="{:brandImage($brand.brand_pic)}" rel="lazy" data-url="" alt=""/></a></dt>
+                        <dd><a href="{:url('/home/brand/brand_goods',array('brand_id'=>$brand.brand_id))}"></a>{$brand.brand_name}</dd>
+                    </dl>
+                </li>
+                {/foreach}
+            </ul>
+        </div>
+    </div>
+    <div class="nch-brand-class">
+        <div class="nch-brand-class-tab">
+            <ul class="tabs-nav">
+                {foreach name="brand_class" item="brand"}
+                <li class="{if $key eq '5'}tabs-selected{/if}">
+                    <a>{$brand.brand_class}</a>
+                </li>
+                {/foreach}
+            </ul>
+        </div>
+        {foreach name="brand_c" item="brand_c"}
+        <div class="nch-barnd-list tabs-panel {if $key eq '1'}tabs-hide{/if}">
+            <ul>
+                {foreach name="brand_c.image" item="brand"}
+                <li>
+                    <dl>
+                        <dt><a href="{:url('/home/brand/brand_goods',array('brand_id'=>$brand.brand_id))}"><img src="{:brandImage($brand.brand_pic)}"></a></dt>
+                        <dd><a href="{:url('/home/brand/brand_goods',array('brand_id'=>$brand.brand_id))}">{$brand.brand_name}</a></dd>
+                    </dl>
+                </li>
+                {/foreach}
+            </ul>
+            {present name="brand_c.text"}
+            <div class="nch-barnd-list-text"><strong>更多品牌：</strong>
+                {foreach name="brand_c.text" item="brand"}
+                <a href="{:url('/home/brand/brand_goods',array('brand_id'=>$brand.brand_id))}"></a>
+                {/foreach}
+            </div>
+             {/present}
+        </div>
+        {/foreach}
+    </div>
+</div>
+<script>
+    $(".tabs-nav > li > a").on('click', function() {
+            var tabs = $(this).parents('ul:first').children("li");
+            var panels = $(this).parents('.nch-brand-class:first').children(".tabs-panel");
+            var index = $.inArray(this, $(this).parents('ul:first').find("a"));
+            if (panels.eq(index)[0]) {
+                tabs.removeClass("tabs-selected").eq(index).addClass("tabs-selected");
+                panels.addClass("tabs-hide").eq(index).removeClass("tabs-hide");
+            }
+    });
+</script>
+{include file="public/mall_server" /}
+{include file="public/mall_footer" /}

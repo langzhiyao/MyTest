@@ -1,0 +1,51 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>咨询管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <div class="fixed-empty"></div>
+    
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>在商品详细页咨询选项卡头部显示的文字提示。</li>
+        </ul>
+    </div>
+    
+    <form method="post" name="form_consultingsetting">
+        <input type="hidden" name="form_submit" value="ok" />
+        <table class="ds-default-table">
+            <tbody>
+            <tr class="noborder">
+                <td class="required"><label>咨询头部文件提示:</label></td>
+            </tr>
+            <tr class="noborder">
+                <td class="">
+                    {$build_editor}
+                    <textarea name="consult_prompt" id="consult_prompt">{$setting_list.consult_prompt}</textarea>
+                </td>
+                <td class="vatop tips"></td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr class="tfoot">
+                <td colspan="2" ><a href="JavaScript:void(0);" class="btn" onclick="document.form_consultingsetting.submit()"><span>{$Think.lang.ds_submit}</span></a></td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
+    
+</div>

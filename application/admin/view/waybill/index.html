@@ -1,0 +1,113 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>运单模板</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>平台现有运单模板列表</li>
+            <li>点击设计按钮可以对运单模板布局进行设计，点击测试按钮可以对模板进行打印测试，点击编辑按钮可以对模板参数进行调整</li>
+            <li>设计完成后在编辑中修改模板状态为启用后，商家就可以绑定该模板进行运单打印</li>
+            <li>点击删除按钮可以删除现有模板，删除后所有使用该模板的商家将自动解除绑定，请慎重操作</li>
+        </ul>
+    </div>
+    
+    <!-- 列表 -->
+    <form id="list_form" method="post">
+        <table class="ds-default-table">
+            <thead>
+            <tr class="space">
+                <th colspan="15" class="nobg">{$Think.lang.ds_list}</th>
+            </tr>
+            <tr class="thead">
+                <th class="w12">&nbsp;</th>
+                <th>模板名称</th>
+                <th class="w200">物流公司</th>
+                <th class="w270">运单图例</th>
+                <th class="w108 align-center">上偏移量</th>
+                <th class="w108 align-center">左偏移量</th>
+                <th class="w96 align-center">启用</th>
+                <th class="w200 align-center"><span>{$Think.lang.ds_handle}</span></th>
+            </tr>
+            </thead>
+            <tbody id="treet1">
+            {notempty name="list"}
+            {volist name="list" id="value"}
+            <tr class="hover">
+                <td>&nbsp;</td>
+                <td>{$value.waybill_name}</td>
+                <td>{$value.express_name}</td>
+                <td>
+                    {present name="value.waybill_image_url"}
+                    <div class="waybill-img-thumb" style="display: inline-block">
+                        <a class="nyroModal" rel="gal" href="{$value.waybill_image_url}">
+                            <img src="{$value.waybill_image_url}" style="width: 40px">
+                        </a>
+                    </div>
+                    {/present}
+                    <div class="waybill-img-size" style="display: inline-block"><p>宽度：{$value.waybill_width}(mm)</p>
+                        <p>高度：{$value.waybill_height}(mm)</p></div>
+                </td>
+                <td class="align-center">{$value.waybill_top}</td>
+                <td class="align-center">{$value.waybill_left}</td>
+                <td class="align-center yes-onoff">{$value.waybill_usable_text}</td>
+                <td class="nowrap align-center"><a
+                        href="{:url('waybill/waybill_design',['waybill_id'=>$value.waybill_id])}">设计</a>&nbsp;|&nbsp;<a
+                        href="{:url('waybill/waybill_test',['waybill_id'=>$value.waybill_id])}"
+                        target="_blank">测试</a>&nbsp;|&nbsp;<a
+                        href="{:url('waybill/waybill_edit',['waybill_id'=>$value.waybill_id])}">编辑</a>&nbsp;|&nbsp;<a
+                        href="javascript:;" nctype="btn_del" data-waybill-id="{$value.waybill_id}">删除</a>
+                </td>
+            </tr>
+            {/volist}
+            {else /}
+            <tr class="no_data">
+                <td colspan="16">{$Think.lang.ds_no_record}</td>
+            </tr>
+            {/notempty}
+            </tbody>
+            {notempty name="list"}
+            <tfoot>
+            <tr class="tfoot">
+                <td colspan="16">
+                    <div class="pagination">{$page}</div>
+                </td>
+            </tr>
+            </tfoot>
+            {/notempty}
+        </table>
+    </form>
+
+    <form id="del_form" action="{:url('waybill/waybill_del')}" method="post">
+        <input type="hidden" id="del_waybill_id" name="waybill_id">
+    </form>
+
+</div>
+<script src="{$Think.config.url_domain_root}static/plugins/js/jquery.nyroModal/custom.min.js"></script>
+<link href="{$Think.config.url_domain_root}static/plugins/js/jquery.nyroModal/styles/nyroModal.css" rel="stylesheet" type="text/css" id="cssfile2"/>
+<script type="text/javascript">
+    $(document).ready(function(){
+        //点击查看大图
+        $('.nyroModal').nyroModal();
+
+        $('[nctype="btn_del"]').on('click', function() {
+            if(confirm('确认删除?')) {
+                $('#del_waybill_id').val($(this).attr('data-waybill-id'));
+                $('#del_form').submit();
+            }
+        });
+    });
+</script>

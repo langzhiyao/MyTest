@@ -1,0 +1,117 @@
+{include file="public/mall_top" /}
+{include file="public/mall_header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/home/css/point.css">
+
+<div class="dsp-container">
+  <div class="dsp-base-layout">
+    <div class="dsp-member-left">
+      {if $Think.session.is_login=='1'}
+     {include file="default/member/pointprod/pointshop_minfo" /}
+     {else /}
+      <div class="dsp-not-login">
+        <div class="member"><a href="javascript:login_dialog();">立即登录</a>
+          <p>获知会员信息详情</p>
+        </div>
+        <div class="function" style="border: none;">
+        <i class="voucher"></i>
+          <dl>
+            <dt>店铺代金券</dt>
+            <dd>换取店铺代金券购买商品更划算</dd>
+          </dl>
+        </div>
+        <div class="function">
+        <i class="exchange"></i>
+          <dl>
+            <dt>积分兑换礼品</dt>
+            <dd>可使用积分兑换商城超值礼品</dd>
+          </dl>
+        </div>
+        <div class="button">
+          <a href="javascript:login_dialog();" class="dsp-btn" style="width:120px;">{:lang('pointprod_list_hello_login')}</a> 
+        </div>
+      </div>
+      {/if}
+    </div>
+    <div class="dsp-banner-right">{:loadadv(35,'html')}</div>
+  </div>
+  {if $setting_config.voucher_allow == 1}
+  <div class="dsp-main-layout">
+    <div class="title">
+      <h3><i class="voucher"></i>热门代金券</h3>
+      <span class="more">
+        <a href="{:url('pointvoucher/index')}">{:lang('home_voucher_moretitle')}</a>
+      </span>
+    </div>
+    {notempty name="recommend_voucher"}
+    <ul class="dsp-voucher-list">
+      {volist name="recommend_voucher" id="v"}
+      <li>
+        <div class="dsp-voucher">
+          <div class="cut"></div>
+          <div class="info">
+            <a href="{:url('store/index',['store_id'=>$v.voucher_t_store_id])}" class="store">{$v.voucher_t_storename}</a>
+            <p class="store-classify">{$v.voucher_t_sc_name}</p>
+            <div class="pic">
+              <img class="lazyload" data-original="{$v.voucher_t_customimg}" onerror="this.src='{$Think.UPLOAD_SITE_URL}{:defaultGoodsImage(240)}'"/></div>
+          </div>
+          <dl class="value">
+            <dt>{:lang('currency')}<em>{$v.voucher_t_price}</em></dt>
+            <dd>购物满{$v.voucher_t_limit}元可用</dd>
+            <dd class="time">有效期至{:date('Y-m-d',$v.voucher_t_end_date)}</dd>
+          </dl>
+          <div class="point">
+            <p class="required">需<em>{$v.voucher_t_points}</em>积分</p>
+            <p><em>{$v.voucher_t_giveout}</em>人已兑换</p>
+          </div>
+          <div class="button">
+            <a target="_blank" href="javascript:void(0);" nc_type="exchangebtn" data-param='{"vid":"{$v.voucher_t_id}"}' class="dsp-btn dsp-btn-red">立即兑换</a>
+          </div>
+        </div>
+      </li>
+     {/volist}
+    </ul>
+    {else /}
+    <div class="norecord">{:lang('home_voucher_list_null')}</div>
+    {/notempty}
+  </div>
+  {/if}
+  {if $setting_config.pointprod_isuse == '1'}
+  <div class="dsp-main-layout mb30">
+    <div class="title">
+      <h3><i class="exchange"></i>热门礼品</h3>
+      <span class="more">
+        <a href="{:url('pointprod/plist')}">{:lang('pointprod_list_more')}</a>
+      </span>
+    </div>
+    {notempty name="recommend_pointsprod"}
+    <ul class="dsp-exchange-list">
+      {volist name="recommend_pointsprod" id="v"}
+      <li>
+        <div class="gift-pic">
+          <a target="_blank" href="{:url('pointprod/pinfo',['id'=>$v.pgoods_id])}">
+            <img class="lazyload" data-original="{$v.pgoods_image}" alt="{$v.pgoods_name}" />
+          </a>
+        </div>
+        <div class="gift-name">
+          <a href="{:url('pointprod/pinfo',['id'=>$v.pgoods_id])}" target="_blank" tile="{$v.pgoods_name}">{$v.pgoods_name}</a>
+        </div>
+        <div class="exchange-rule">
+          {if $v.pgoods_limitmgrade >0}
+          <span class="pgoods-grade">{$v.pgoods_limitgradename}</span>
+          {/if}
+          <span class="pgoods-price">{:lang('pointprod_goodsprice')}{:lang('ds_colon')}<em>{:lang('currency')}{$v.pgoods_price}</em></span>
+          <span class="pgoods-points">{:lang('pointprod_pointsname')}{:lang('ds_colon')}
+            <strong>{$v.pgoods_points}</strong>{:lang('points_unit')}
+          </span>
+        </div>
+      </li>
+      {/volist}
+    </ul>
+    {else /}
+    <div class="norecord">{:lang('pointprod_list_null')}</div>
+   {/notempty}
+  </div>
+  {/if}
+</div>
+
+{include file="public/mall_footer" /}

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>想见孩-修改密码</title>
+    <meta name="author" content="想见孩" />
+    <meta name="copyright" content="想见孩" />
+    <meta name="description" content="想见孩" />
+    <meta id="viewport" name="viewport" content="width=750" />
+    <link rel="stylesheet" href="../content/style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/iconfonts/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/lib/weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/css/jquery-weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/user.css" type="text/css" />
+    <link rel="shortcut icon" href="../content/images/ico.ico" type="image/x-icon" />
+    <script src="../content/scripts/mobile-util.js"></script>
+    <style>
+        .weui-cell {
+            padding: 30px 0;
+            font-size: 28px;
+            color: #242424;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .weui-cell:last-child {
+            border-bottom: none;
+        }
+        
+        .weui-cell .weui-label {
+            font-size: 28px;
+            color: #242424;
+        }
+        
+        .weui-cell .weui-input {
+            font-size: 28px;
+            color: #242424;
+            text-align: right;
+            padding-left: 20px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body class="infobody">
+    <header class="head">
+        <div class="head0">
+            <div class="menu_bar_box">
+                <a href="javascript:;" class="back_btn" onClick="historyback()">
+                    <i class="icon iconfont icon-jiantou3"></i>
+                </a>
+            </div>
+            <div class="head_title">
+                <p>修改密码</p>
+            </div>
+            <div class="head_r">
+
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <div class="main">
+        <div class="cont margt20">
+            <div class="container2">
+                <div class="weui-cell">
+                    <div class="weui-cell__hd"><label for="setpwd" class="weui-label">原始密码</label></div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" id="setpwd" type="password" value="" placeholder="点击输入原密码">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd"><label for="setpwd" class="weui-label">新密码</label></div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" id="setpwd" type="password" value="" placeholder="6-16位数字字母">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd"><label for="setpwd_agin" class="weui-label">确认密码</label></div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" id="setpwd_agin" type="password" value="" placeholder="再次确认新密码">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="setpwd_btns_box">
+            <input type="button" value="完成" class="setpwd_btns">
+        </div>
+    </div>
+
+
+    <script src="../content/scripts/jquery.min.js"></script>
+    <script src="../content/scripts/juqery.cookie.js"></script>
+    <script src="../content/scripts/API.js"></script>
+    <script src="../content/scripts/commom.js"></script>
+    <script>
+    </script>
+</body>
+
+</html>

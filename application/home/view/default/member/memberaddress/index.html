@@ -1,0 +1,49 @@
+{include file="public/mall_top" /} 
+{include file="public/mall_header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/home/css/member.css">
+<div class="dsm-container">
+    {include file="public/member_left" /}
+    <div class="right-layout">
+        <div class="tabmenu">
+            {include file="public/member_items" /}
+        </div>
+        <table class="dsm-default-table">
+            <thead>
+                <tr>
+                    <th class="w80">收货人</th>
+                    <th class="w150">所在地区</th>
+                    <th class="tl">街道地址</th>
+                    <th class="w120">电话/手机</th>
+                    <th class="w150"></th>
+                    <th class="w110">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {volist name="address_list" id="address"}
+                <tr class="bd-line">
+                    <td>{$address.true_name}</td>
+                    <td>{$address.area_info}</td>
+                    <td class="tl"><em class="delivery"></em>{$address.address}</td>
+                    <td><p><i class="icon-phone"></i>{$address.tel_phone}</p>
+                        <p><i class="icon-mobile-phone"></i>{$address.mob_phone}</p></td>
+                    <td></td>
+                    <td class="dsm-table-handle">
+                        <span>
+                            <a href="{:url('/home/Memberaddress/edit',['address_id'=>$address.address_id])}" class="btn-blue"><i class="icon-edit"></i>
+                                <p>编辑</p>
+                            </a>
+                        </span>
+                        <span>
+                            <a href="{:url('/home/Memberaddress/drop',['address_id'=>$address.address_id])}" class="btn-red" ><i class="icon-trash"></i>
+                                <p>删除</p>
+                            </a>
+                        </span>
+                    </td>
+                </tr>
+                {/volist}
+            </tbody>
+        </table>
+    </div>
+</div>
+{include file="public/mall_server" /}
+{include file="public/mall_footer" /}

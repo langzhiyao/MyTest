@@ -1,0 +1,29 @@
+<div class="left-layout">
+    <div class="dsm-l-top">
+        <h2><a href="{:url('/home/member/index')}" title="我的商城">我的商城</a></h2>
+    </div>
+    <div class="dsm-user-info">
+        <div class="avatar"><img src="{:getMemberAvatar($Think.session.avatar)}">
+            <div class="frame"></div>
+            <a href="{:url('/home/membermessage/message')}" class="new-message" title="新消息">{$message_num}</a>
+        </div>
+        <div class="handle"><a href="{:url('/home/memberinformation/avatar')}" title="修改头像"><i class="icon-camera"></i>修改头像</a><a href="{:url('/home/memberinformation/index')}" title="修改资料"><i class="icon-pencil"></i>修改资料</a><a href="{:url('/home/login/logout')}" title="安全退出"><i class="icon-off"></i>安全退出</a></div>
+        <div class="name">{$Think.session.member_name}&nbsp;
+            <div class="nc-grade-mini" style="cursor:pointer;" onclick="javascript:go('{:url('/home/pointgrade/index')}');">{$Think.session.level_name}</div>
+        </div>
+    </div>
+    <ul id="sidebarMenu" class="dsm-sidebar">
+        {foreach name="member_menu" item="menu" }
+        <li class="side-menu">
+            <a href="javascript:void(0)" key="{$menu.name}">
+                <h3>{$menu.text}</h3>
+            </a>
+            <ul>
+                {foreach name="menu.submenu" item="submenu" }
+                <li {if condition="$submenu.name eq $cursubmenu"}class="selected"{/if}><a href="{$submenu.url}">{$submenu.text}</a></li>
+                {/foreach}
+            </ul>
+        </li>
+        {/foreach}
+    </ul>
+</div>

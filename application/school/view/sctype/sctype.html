@@ -1,0 +1,201 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+ <link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">       
+<form class="layui-form" onsubmit="return false;" style="display: none;" id="courForm">
+  <div class="layui-form-item">
+    <input type="hidden" id="sc_id" value="">
+    <input type="hidden" id="actions" value="">
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">学校类型</label>
+    <div class="layui-input-inline">
+     <input type="text" required lay-verify="required" placeholder="请填写学校类型" autocomplete="off" class="layui-input" id="sc_type" />
+    <div class="layui-form-mid layui-word-aux">如 ‘小学’，‘初中’</div>
+    </div>
+    
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">排序</label>
+    <div class="layui-input-inline">
+     <input type="text" onkeyup="this.value=this.value.replace(/[^\d]/g,'') " onafterpaste="this.value=this.value.replace(/[^\d]/g,'') " required lay-verify="required" placeholder="只能输入数字" autocomplete="off" class="layui-input" id="sc_sort" />
+    <div class="layui-form-mid layui-word-aux">排序数字</div>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit="" lay-filter="demo1" id="course">立即提交</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+  </div>
+  
+</form>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>{$Think.lang.sctype_manage}</h3>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    
+  <div class="fixed-empty"></div>
+    <?php if(session('admin_is_super') ==1 || in_array('1',$action)){ ?>
+            <th>
+                <button class="layui-btn" onclick="sctype_edit('add',false)"><i class="layui-icon">&#xe608;</i> 添加</button>
+            </th>
+    <?php } ?>
+  <script>     
+
+$(function(){
+  $("#course").click(function(event) {
+    var pid = $("#sc_id").val();
+    var sc_sort = $("#sc_sort").val();
+    var actions = $("#actions").val();
+    var sc_type = $("#sc_type").val();
+
+      if (sc_type == '') {layer.tips('请输入学校类型', '#sc_type');return false;}
+    if (sc_sort < 1) {layer.tips('请输入正确的排序', '#sc_sort');return false;}
+    $.ajax({
+      url: "{:url('/school/Sctype/sctype_edit')}",
+      type: 'POST',
+      dataType: 'json',
+      data: {'sc_sort': sc_sort,'sc_id':pid,'actions':actions,'sc_type':sc_type},
+      success:function(sb){
+        if (sb.m) {
+          layer.msg(sb.ms, {icon: 16,time: 500},function(){
+            window.location.href="{:url('/school/Sctype/sctype_manage')}";  
+          });
+          
+        }
+      }
+    });      
+  });
+})
+  function sctype_edit(act,id=false){
+    $('#actions').val(act);
+    
+    if (id) {
+      $('#sc_id').val(id);
+      var sc_sort = $('#pid_'+id).attr('sc_sort');
+      var sc_type = $('#pid_'+id).attr('sc_type');
+      $('#sc_sort').val(sc_sort);
+      $('#sc_type').val(sc_type);
+    }else{      
+      $('#sc_id').val('');
+    } 
+    layer.open({
+      type: 1,
+      title: '学校类型',
+      shadeClose: true,
+      shade: 0.4,
+      maxmin: false, //开启最大化最小化按钮
+      area: ['400px', '300px'],
+      content: $('#courForm')
+    });
+  }
+  function check_class(id){
+    var url = '{:url("/school/Classtype/classtype_manage")}?sc_id='+id;
+    layer.open({
+      type: 2,
+      title: '学校类型',
+      shadeClose: true,
+      shade: 0.4,
+      maxmin: false, //开启最大化最小化按钮
+      area: ['90%', '90%'],
+      content: url
+    });
+  }
+
+</script>
+  
+  
+  <div class="explanation" id="explanation">
+      <div class="title" id="checkZoom">
+          <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+          <span id="explanationZoom" title="收起提示" class="arrow"></span>
+      </div>
+      <ul>
+          <li>学校类型管理</li>
+          <li>学校类型：如‘小学’，‘中学’，‘培训学校’</li>
+      </ul>
+  </div>
+  
+  
+  <form method="post" id="store_form">
+    <input type="hidden" name="form_submit" value="ok" />
+    <table class="ds-default-table">
+      <thead>
+        <tr class="thead">
+          <!-- <th><input type="checkbox" class="checkall"/></th> -->
+          <th>{$Think.lang.sc_type}</th>
+          <th class="align-center">{$Think.lang.ds_sort}</th>
+          <th class="align-center">{$Think.lang.up_time}</th>
+            <?php  if(session('admin_is_super') ==1 || (in_array('13',$action) )){?>
+          <th class="align-center">{$Think.lang.sc_enabled}</th>
+            <?php } ?>
+            <?php  if(session('admin_is_super') ==1 || (in_array('14',$action) || in_array('3',$action) || in_array('2',$action))){?>
+          <th class="align-center">{$Think.lang.ds_handle}</th>
+            <?php } ?>
+        </tr>
+      </thead>
+      <tbody>
+        <?php if(!empty($sctype_list) && is_array($sctype_list)){ ?>
+        <?php foreach($sctype_list as $k => $v){ ?>
+        <tr class="hover" id="pid_<?php echo $v['sc_id'];?>" sc_sort="<?php echo $v['sc_sort'];?>" sc_type="<?php echo str_cut($v['sc_type'], '40');?>">
+          <!-- <td class="w24"><input type="checkbox" class="checkitem" name="del_id[]" value="<?php echo $v['sc_id']; ?>" /></td> -->
+          <td><span title="<?php echo $v['sc_type'];?>"><?php echo str_cut($v['sc_type'], '40');?></span></td>          
+          <td class="align-center"><?php echo $v['sc_sort'];?></td>
+          <td class="align-center"><?php echo date('Y-m-d H:i:s', $v['up_time']);?></td>
+        <?php if(session('admin_is_super') ==1 || in_array('13',$action)){ ?>
+          <td class="align-center yes-onoff">
+              <?php if($v['sc_enabled'] == '0'){ ?>
+            <a href="JavaScript:void(0);" class=" disabled" ajax_branch="sc_enabled" nc_type="inline_edit" fieldname="sc_enabled" fieldid="<?php echo $v['sc_id']?>" fieldvalue="0" i_val='0' title="{$Think.lang.ds_editable}"><img src="{$Think.config.url_domain_root}static/admin/images/transparent.gif"></a>
+            <?php }else { ?>
+            <a href="JavaScript:void(0);" class=" enabled" ajax_branch="sc_enabled" nc_type="inline_edit" fieldname="sc_enabled" fieldid="<?php echo $v['sc_id']?>" fieldvalue="1" i_val='1' title="{$Think.lang.ds_editable}"><img src="{$Think.config.url_domain_root}static/admin/images/transparent.gif"></a>
+            <?php } ?>
+          </td>
+        <?php } ?>
+          <td class="align-center">
+              <?php if(session('admin_is_super') ==1 || in_array('14',$action)){ ?>
+              <a class="layui-btn layui-btn-sm" href="javascript:check_class('<?php echo $v['sc_id'];?>')" >{$Think.lang.classtype_manage}</a>
+              <?php } ?>
+              <?php if(session('admin_is_super') ==1 || in_array('3',$action)){ ?>
+              <a class="layui-btn layui-btn-sm" href="javascript:sctype_edit('edit','<?php echo $v['sc_id'];?>')" >{$Think.lang.ds_edit}</a>
+              <?php } ?>
+              <?php if(session('admin_is_super') ==1 || in_array('2',$action)){ ?>
+              <a class="layui-btn layui-btn-sm layui-btn-danger" href="{:url('/school/Sctype/sctype_del',['sc_id'=>$v.sc_id])}">{$Think.lang.ds_del}</a>
+              <?php } ?>
+          </td>
+        </tr>
+        <?php } ?>
+        <?php }else { ?>
+        <tr class="no_data">
+          <td colspan="15">{$Think.lang.ds_no_record}</td>
+        </tr>
+        <?php } ?>
+      </tbody>
+      <tfoot>
+        <!-- <tr class="tfoot">
+          <td><input type="checkbox" class="checkall" id="checkall"/></td>
+          <td id="batchAction" colspan="15"><span class="all_checkbox">
+            <label for="checkall">{$Think.lang.ds_select_all}</label>
+            </span>&nbsp;&nbsp;<a href="JavaScript:void(0);" class="btn" onclick="if(confirm('{$Think.lang.ap_del_sure}')){$('#store_form').submit();}"><span>{$Think.lang.ds_del}</span></a>
+          </td>
+        </tr> -->
+      </tfoot>
+    </table>
+    {$page}
+  </form>
+</div>
+
+ 
+
+
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/plugins/jquery.edit.js" charset="utf-8"></script>
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/plugins/js/dialog/dialog.js" id="dialog_js" charset="utf-8"></script>
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/plugins/js/jquery-ui/jquery-ui.min.js"></script>
+<script type="text/javascript">
+  
+</script>

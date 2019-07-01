@@ -1,0 +1,45 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<form class="layui-form" onsubmit="return false;" style="display: none;" id="courForm">
+    <div class="layui-form-item">
+        <input type="hidden" id="cl_id" value="">
+        <input type="hidden" id="actions" value="">
+        <input type="hidden" id="sc_id" value="{$sc_id}">
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">搜索选择框</label>
+            <div class="layui-input-inline">
+                <select name="modules" lay-verify="required" lay-search="" id="sc_type">
+                    <?php foreach($sc_list as $k => $v){ ?>
+                    <option id="sc_<?php echo $v['sc_id'];?>"  value="<?php echo $v['sc_id'];?>"><?php echo str_cut($v['sc_type'], '40');?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">年级设置</label>
+        <div class="layui-input-inline">
+            <input type="text" required lay-verify="required" placeholder="请填写年级" autocomplete="off" class="layui-input" id="cl_type" />
+            <div class="layui-form-mid layui-word-aux">如 ‘一年级’，‘初一’</div>
+        </div>
+
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">排序</label>
+        <div class="layui-input-inline">
+            <input type="text" onkeyup="this.value=this.value.replace(/[^\d]/g,'') " onafterpaste="this.value=this.value.replace(/[^\d]/g,'') " required lay-verify="required" placeholder="只能输入数字" autocomplete="off" class="layui-input" id="cl_sort" />
+            <div class="layui-form-mid layui-word-aux">排序数字</div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="demo1" id="course">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+
+</form>

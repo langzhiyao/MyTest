@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>想见孩-修改登录密码</title>
+    <meta name="author" content="想见孩" />
+    <meta name="copyright" content="想见孩" />
+    <meta name="description" content="想见孩" />
+    <meta id="viewport" name="viewport" content="width=750" />
+    <link rel="stylesheet" href="../content/style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/iconfonts/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/lib/weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/css/jquery-weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/user.css" type="text/css" />
+    <link rel="shortcut icon" href="../content/images/ico.ico" type="image/x-icon" />
+    <script src="../content/scripts/mobile-util.js"></script>
+</head>
+
+<body class="infobody">
+    <header class="head">
+        <div class="head0">
+            <div class="menu_bar_box">
+                <a href="javascript:;" class="back_btn" onClick="historyback()">
+                    <i class="icon iconfont icon-jiantou3"></i>
+                </a>
+            </div>
+            <div class="head_title">
+                <p>修改登录密码</p>
+            </div>
+            <div class="head_r">
+
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <div class="main">
+
+        <div class="cont margt30">
+            <div class="container2">
+                <div class="bang_list">
+                    <div class="name_box">
+                        <label for="nickname">原始密码：</label>
+                    </div>
+                    <div class="input_box">
+                        <input class="input_txt" id="pwd1" maxlength="12"  type="password" placeholder="请输入原始密码" value="" />
+                    </div>
+                </div>
+
+                <div class="bang_list">
+                    <div class="name_box">
+                        <label for="nickname">新密码：</label>
+                    </div>
+                    <div class="input_box">
+                        <input class="input_txt" id="pwd2" maxlength="12"  type="password" placeholder="请输入新密码" value="" />
+                    </div>
+                </div>
+                <div class="bang_list">
+                    <div class="name_box">
+                        <label for="nickname">确认新密码：</label>
+                    </div>
+                    <div class="input_box">
+                        <input class="input_txt" id="pwd3" maxlength="12"  type="password" placeholder="请再一次输入新密码" value="" />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="bang_submit_box" style="padding-top: 0px;">
+            <input class="bang_submit" type="button" value="保 存" />
+        </div>
+
+    </div>
+
+
+    <script src="../content/scripts/jquery.min.js"></script>
+    <script src="../content/scripts/juqery.cookie.js"></script>
+
+    <script src="../content/plugins/jqweui/js/jquery-weui.min.js"></script>
+    <script src="../content/scripts/commom.js"></script>
+    <script src="../content/scripts/API.js"></script>
+    <script>
+        $(function() {
+            $('.bang_submit').on('click', function() {
+                if ($('#pwd1').val() == '') {
+                    $.toast('请输入原始密码','forbidden');return false;
+                } else if ($('#pwd2').val() == '') {
+                    $.toast('请输入新密码','forbidden');return false;
+                } else if ($('#pwd2').val().length < 6 || $('#pwd2').val().length > 12 ) {
+                    $.toast('密码长度为6~12位','forbidden');return false;
+                } else if ($('#pwd3').val() == '') {
+                    $.toast('请再一次输入新密码','forbidden');return false;
+                } else if ($('#pwd3').val() != $('#pwd2').val()) {
+                    $.toast('两次密码输入不一致，请重新输入','forbidden');return false;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: api + '/Member/editPwd.html',
+                    data: {
+                        key: user_token,
+                        member_id: user_member_id,
+                        oldPwd: $('#pwd1').val(),
+                        newPwd: $('#pwd2').val(),
+                        reNewPwd: $('#pwd3').val()
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        if (response['code'] == 200) {
+                            $.toast('修改成功','',function(){
+                                historyback();
+                            })
+                        }else if(response['code'] == 400){
+                            layout();
+                        } else {
+                            $.toast(response['message'],'forbidden');return false;
+                        }
+                    }
+                });
+            })
+        })
+    </script>
+
+</body>
+
+</html>

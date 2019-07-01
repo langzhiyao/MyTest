@@ -1,0 +1,118 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>结算管理</h3>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <div class="fixed-empty"></div>  
+    <table class="search-form">
+        <tbody>
+            <tr><td>店铺 - <?php echo $bill_info['ob_store_name'];?>（ID：<?php echo $bill_info['ob_store_id'];?>） <?php echo $bill_info['os_month'];?> 期 结算单&emsp;
+                    <?php if ($bill_info['ob_state'] == BILL_STATE_STORE_COFIRM){?>
+                    <a class="btns" onclick="if (confirm('审核后将无法撤销，进入下一步付款环节，确认审核吗?')) {return true;} else {return false;}" href="{:url('bill/bill_check',['ob_no'=>$Request.param.ob_no])}"><span>{$Think.lang.nc_exdport}审核</span></a>
+                    <?php }elseif ($bill_info['ob_state'] == BILL_STATE_SYSTEM_CHECK){?>
+                    <a class="btns" href="{:url('bill/bill_pay',['ob_no'=>$Request.param.ob_no])}"><span>{$Think.lang.nc_exdport}付款完成</span></a>
+                    <?php }elseif ($bill_info['ob_state'] == BILL_STATE_SUCCESS){?>
+                    <a class="btns" target="_blank" href="{:url('bill/bill_print',['ob_no'=>$Request.param.ob_no])}"><span>{$Think.lang.ds_export}打印</span></a>
+                    <?php }?>
+                </td></tr>
+            <tr><td>{$Think.lang.order_time_from}结算单号{$Think.lang.ds_colon}<?php echo $bill_info['ob_no'];?></td></tr>
+            <tr><td>起止日期{$Think.lang.ds_colon}<?php echo date('Y-m-d',$bill_info['ob_start_date']);?> &nbsp;至&nbsp; <?php echo date('Y-m-d',$bill_info['ob_end_date']);?>
+                </td></tr><tr>
+                <td>出账日期{$Think.lang.ds_colon}<?php echo date('Y-m-d',$bill_info['ob_create_date']);?></td></tr><tr>
+                <td>平台应付金额：<?php echo $bill_info['ob_result_totals'];?> = <?php echo $bill_info['ob_order_totals'];?> (订单金额) - <?php echo $bill_info['ob_commis_totals'];?> (佣金金额) - <?php echo $bill_info['ob_order_return_totals'];?> (退单金额) + <?php echo $bill_info['ob_commis_return_totals'];?> (退还佣金) - <?php echo $bill_info['ob_store_cost_totals'];?> (店铺促销费用)</td>
+            </tr>
+            <tr><td>结算状态：<?php echo billState($bill_info['ob_state']);?>
+                    <?php if ($bill_info['ob_state'] == BILL_STATE_SUCCESS){?>
+                    &emsp;结算日期{$Think.lang.ds_colon}<?php echo date('Y-m-d',$bill_info['ob_pay_date']);?>，结算备注{$Think.lang.ds_colon}<?php echo $bill_info['ob_pay_content'];?>
+                    <?php }?>
+                </td></tr>
+        </tbody>
+    </table>
+    
+    
+    
+    
+    <form method="get" action="" name="formSearch" id="formSearch">
+    <table class="search-form">
+      <tbody>
+        <tr>
+        <th><label for="add_time_from">订单类型</label></th>
+          <td>
+              <select name="query_type" class="querySelect">
+                  <option value="order" {if condition="$Request.get.query_type eq 'order'"}selected{/if}>订单列表</option>
+                  <option value="refund" {if condition="$Request.get.query_type eq 'refund'"}selected{/if}>退单列表</option>
+                  <option value="cost" {if condition="$Request.get.query_type eq 'cost'"}selected{/if}>店铺费用</option>
+              </select>
+          </td>
+          <th><label for="add_time_from">退款时间</label></th>
+          <td><input class="txt date" type="text" value="{$Request.get.query_start_date}" id="query_start_date" name="query_start_date">
+            <label>~</label>
+            <input class="txt date" type="text" value="{$Request.get.query_end_date}" id="query_end_date" name="query_end_date"/></td>
+          <td><a href="javascript:document.formSearch.submit();" class="btn-search " title=""></a></a>
+            </td>
+        </tr>
+      </tbody>
+    </table>
+  </form>
+<table class="ds-default-table">
+    <thead>
+      <tr class="thead">
+        <th class="align-center">店铺</th>
+        <th class="align-center">促销名称</th>
+        <th class="align-center">促销费用</th>
+        <th class="align-center">申请日期</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php if(is_array($cost_list) && !empty($cost_list)){?>
+      <?php foreach($cost_list as $cost_info){?>
+      <tr class="hover">
+        <td class="align-center"><?php echo $store_info['store_name'];?></td>
+        <td class="align-center"><?php echo $cost_info['cost_remark'];?></td>
+        <td class="align-center"><?php echo dsPriceFormat($cost_info['cost_price']);?></td>
+        <td class="align-center"><?php echo date('Y-m-d',$cost_info['cost_time']);?></td>
+      </tr>
+      <?php }?>
+      <?php }else{?>
+      <tr class="no_data">
+        <td colspan="15">{$Think.lang.ds_no_record}</td>
+      </tr>
+      <?php }?>
+    </tbody>
+    <tfoot>
+      <tr class="tfoot">
+        <td colspan="15" id="dataFuncs">{$show_page}</td>
+      </tr>
+    </tfoot>
+  </table>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</div>
+<script type="text/javascript">
+          $(function() {
+              $('#query_start_date').datepicker({dateFormat: 'yy-mm-dd', minDate: "<?php echo date('Y-m-d',$bill_info['ob_start_date']);?>", maxDate: "<?php echo date('Y-m-d',$bill_info['ob_end_date']);?>"});
+              $('#query_end_date').datepicker({dateFormat: 'yy-mm-dd', minDate: "<?php echo date('Y-m-d',$bill_info['ob_start_date']);?>", maxDate: "<?php echo date('Y-m-d',$bill_info['ob_end_date']);?>"});
+          });
+</script> 

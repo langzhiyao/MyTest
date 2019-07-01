@@ -1,0 +1,62 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>公众号配置</h3>
+                <h5></h5>
+            </div>
+        </div>
+    </div>
+
+    <form method="post"  name="form1">
+        <div class="ncap-form-default">
+            <dl>
+                <dt>{$Think.lang.wx_url}</dt>
+                <dd>
+                    <input  name="apiurl" value="{$wx_apiurl}" class="input-txt" type="text">
+                </dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.wx_token}</dt>
+                <dd>
+                   <input  name="wx_token" value="{$wx_config.token}" class="input-txt" type="text">
+                </dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.wx_name}</dt>
+                <dd>
+                   <input  name="wx_name" value="{$wx_config.wxname}" class="input-txt" type="text">
+                </dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.wx_appid}</dt>
+                <dd>
+                   <input  name="wx_appid" value="{$wx_config.appid}" class="input-txt" type="text">
+                </dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.wx_AppSecret}</dt>
+                <dd>
+                   <input  name="wx_AppSecret" value="{$wx_config.appsecret}" class="input-txt" type="text">
+                </dd>
+            </dl>
+            <dl>
+                <dt><input type="hidden" name="wx_id" value="{$wx_config.id}"></dt>
+                <dd><a href="JavaScript:void(0);" class="btn" onclick="document.form1.submit()">确认提交</a></dd>
+            </dl>
+        </div>
+    </form>
+
+</div>
+
+
+
+
+
+
+
+

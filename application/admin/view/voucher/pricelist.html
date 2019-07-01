@@ -1,0 +1,93 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>代金券</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>{$Think.lang.admin_voucher_price_tip1}</li>
+        </ul>
+    </div>
+    
+    <form method='post' id="list_form" action="{:url('voucher/pricedrop')}">
+        <input type="hidden" id="voucher_price_id" name="voucher_price_id" value="" />
+        <table class="ds-default-table">
+            <thead>
+            <tr class="thead">
+                <th class="w24"></th>
+                <th>{$Think.lang.admin_voucher_price_describe}</th>
+                <th>{$Think.lang.admin_voucher_price_title}({$Think.lang.currency_zh})</th>
+                <th>{$Think.lang.admin_voucher_price_points}</th>
+                <th class="align-center">{$Think.lang.ds_handle}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {notempty name="list"}
+            {volist name="list" id="v"}
+            <tr class="hover">
+                <td><input type="checkbox" name='voucher_price_checkbox' value="{$v.voucher_price_id}" class="checkitem"></td>
+                <td><span>{$v.voucher_price_describe}</span></td>
+                <td><span>{$v.voucher_price}</span></td>
+                <td><span>{$v.voucher_defaultpoints}</span></td>
+                <td class="w96 align-center">
+                    <a href="{:url('voucher/priceedit',['priceid'=>$v.voucher_price_id])}">{$Think.lang.ds_edit}</a>
+                    <a href="JavaScript:void(0);" onclick="submit_delete('{$v.voucher_price_id}')">{$Think.lang.ds_del}</a>
+                </td>
+                {/volist}
+               {else /}
+            <tr class="no_data">
+                <td colspan="10">{$Think.lang.ds_no_record}</td>
+            </tr>
+            {/notempty}
+            </tbody>
+            {notempty name="list"}
+            <tfoot>
+            <tr class="tfoot">
+                <td>{notempty name="list"}
+                    <input type="checkbox" class="checkall" id="checkall_1">
+                    {/notempty}
+                <td colspan="16">
+                    <label for="checkallBottom">{$Think.lang.ds_select_all}</label>&nbsp;&nbsp;
+                    <a href="JavaScript:void(0);" class="btn" onclick="submit_delete_batch()"><span>{$Think.lang.ds_del}</span></a>
+                    <div class="pagination"> {$show_page} </div></td>
+            </tr>
+            </tfoot>
+           {/notempty}
+        </table>
+    </form>
+
+</div>
+
+<script type="text/javascript">
+    function submit_delete_batch(){
+        /* 获取选中的项 */
+        var items = '';
+        $('.checkitem:checked').each(function(){
+            items += this.value + ',';
+        });
+        if(items != '') {
+            items = items.substr(0, (items.length - 1));
+            submit_delete(items);
+        }
+    }
+    function submit_delete(voucher_price_id){
+        if(confirm('{$Think.lang.ds_ensure_del}')) {
+            $('#list_form').attr('method','post');
+            $('#voucher_price_id').val(voucher_price_id);
+            $('#list_form').submit();
+        }
+    }
+</script>

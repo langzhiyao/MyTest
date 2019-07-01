@@ -1,0 +1,105 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>{$Think.lang.packages_manage}</h3>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <div class="fixed-empty"></div>
+    <?php if(session('admin_is_super') ==1 || in_array('1',$action)){ ?>
+    <th>
+        <a class="layui-btn" href="{:url('/Admin/Revisit/edit')}"><i class="layui-icon">&#xe608;</i> 添加</a>
+    </th>
+    <?php } ?>
+
+
+
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>{$Think.lang.pkg_help1}</li>
+            <li>{$Think.lang.pkg_help2}</li>
+        </ul>
+    </div>
+
+
+    <form method="post" id="store_form">
+        <input type="hidden" name="form_submit" value="ok" />
+        <table class="ds-default-table">
+            <thead>
+            <tr class="thead">
+                <!-- <th><input type="checkbox" class="checkall"/></th> -->
+                <th class="align-center">{$Think.lang.pkg_sort}</th>
+                <th>{$Think.lang.pkg_name}</th>
+                <th class="align-center">{$Think.lang.pkg_price}</th>
+                <th class="align-center">{$Think.lang.pkg_cprice}</th>
+                <th class="align-center">{$Think.lang.pkg_length}</th>
+
+                <?php  if(session('admin_is_super') ==1 || (in_array('13',$action) )){?>
+                <th class="align-center">{$Think.lang.pkg_enabled}</th>
+                <?php } ?>
+
+                <th class="align-center">{$Think.lang.uptime}</th>
+                <?php  if(session('admin_is_super') ==1 || (in_array('3',$action) || in_array('2',$action))){?>
+                <th class="align-center">{$Think.lang.ds_handle}</th>
+                <?php } ?>
+            </tr>
+            </thead>
+            <tbody>
+            <?php if(!empty($pkg_list) && is_array($pkg_list)){ ?>
+            <?php foreach($pkg_list as $k => $v){ ?>
+            <tr class="hover">
+                <!-- <td class="w24"><input type="checkbox" class="checkitem" name="del_id[]" value="<?php echo $v['pkg_id']; ?>" /></td> -->
+                <td class="align-center"><?php echo $v['pkg_sort'];?></td>
+                <td><span title="<?php echo $v['pkg_name'];?>"><?php echo str_cut($v['pkg_name'], '40');?></span></td>
+                <td class="align-center"><?php echo $v['pkg_price'];?></td>
+                <td class="align-center"><?php echo $v['pkg_cprice'];?></td>
+
+                <td class="align-center"><?php echo $v['pkg_length']." ".axisFomat($v['pkg_axis']);?></td>
+
+                <td class="align-center yes-onoff">
+                    <?php if(session('admin_is_super') ==1 || in_array('13',$action)){ ?>
+                    <?php if($v['pkg_enabled'] == '2'){ ?>
+                    <a href="JavaScript:void(0);" class=" disabled" ajax_branch="pkg_enabled" nc_type="inline_edit" fieldname="pkg_enabled" fieldid="<?php echo $v['pkg_id']?>" fieldvalue="1" i_val='1' title="{$Think.lang.ds_editable}"><img src="{$Think.config.url_domain_root}static/admin/images/transparent.gif"></a>
+                    <?php }else { ?>
+                    <a href="JavaScript:void(0);" class=" enabled" ajax_branch="pkg_enabled" nc_type="inline_edit" fieldname="pkg_enabled" fieldid="<?php echo $v['pkg_id']?>" fieldvalue="2" i_val='2' title="{$Think.lang.ds_editable}"><img src="{$Think.config.url_domain_root}static/admin/images/transparent.gif"></a>
+                    <?php } ?>
+                    <?php } ?>
+                </td>
+
+                <td class="align-center"><?php echo date('Y-m-d H:i:s', $v['up_time']);?></td>
+                <td class="align-center">
+                    <?php if(session('admin_is_super') ==1 || in_array('3',$action)){ ?>
+                    <a class="layui-btn layui-btn-sm" href="{:url('/Admin/Revisit/edit',['pkg_id'=>$v.pkg_id])}">{$Think.lang.ds_edit}</a>
+                    <?php } ?>
+                    <?php if(session('admin_is_super') ==1 || in_array('2',$action)){ ?>
+                    <a class="layui-btn layui-btn-sm layui-btn-danger" href="{:url('/Admin/Revisit/del',['pkg_id'=>$v.pkg_id])}">{$Think.lang.ds_del}</a>
+                    <?php } ?>
+                </td>
+            </tr>
+            <?php } ?>
+            <?php }else { ?>
+            <tr class="no_data">
+                <td colspan="15">{$Think.lang.ds_no_record}</td>
+            </tr>
+            <?php } ?>
+            </tbody>
+            <tfoot>
+            </tfoot>
+        </table>
+        {$page}
+    </form>
+</div>
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/plugins/jquery.edit.js" charset="utf-8"></script>
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/plugins/js/dialog/dialog.js" id="dialog_js" charset="utf-8"></script>
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/plugins/js/jquery-ui/jquery-ui.min.js"></script>

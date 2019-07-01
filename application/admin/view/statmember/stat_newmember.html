@@ -1,0 +1,179 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>会员统计</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+  <form method="get" action="index.php" name="formSearch" id="formSearch">
+    <input type="hidden" name="" value="" />
+    <div class="w100pre" style="width: 100%;">
+        <table class="search-form">
+          <tbody>
+            <tr>
+              <td>
+              	<select name="search_type" id="search_type" class="querySelect">
+                  <option value="day" {if isset($search_arr.search_type) && $search_arr.search_type == 'day'}selected{/if}>按照天统计</option>
+                  <option value="week" {if isset($search_arr.search_type) && $search_arr.search_type == 'week'}selected{/if}>按照周统计</option>
+                  <option value="month" {if isset($search_arr.search_type) && $search_arr.search_type == 'month'}selected{/if}>按照月统计</option>
+                </select>
+              </td>
+              <td id="searchtype_day" style="display:none;">
+              	<input class="txt date" type="text" value="{:date('Y-m-d',$search_arr.day.search_time)}" id="search_time" name="search_time">
+              </td>
+              <td id="searchtype_week" style="display:none;">
+              	<select name="searchweek_year" class="querySelect">
+                  {volist name="year_arr" id="v"}
+              		<option value="{$key}" {$search_arr.week.current_year == $key ? 'selected': ''}>{$v}</option>
+                 {/volist}
+                </select>
+                <select name="searchweek_month" class="querySelect">
+                  {volist name="month_arr" id="v"}
+              		<option value="{$key}" {$search_arr.week.current_month == $key ? 'selected':''}>{$v}</option>
+                  {/volist}
+                </select>
+                <select name="searchweek_week" class="querySelect">
+                  {volist name="week_arr" id="v"}
+              		<option value="{$v.key}" {$search_arr.week.current_week == $v['key'] ? 'selected' :''}>{$v.val}</option>
+                 {/volist}
+                </select>
+              </td>
+              <td id="searchtype_month" style="display:none;">
+              	<select name="searchmonth_year" class="querySelect">
+                  {volist name="year_arr" id="v"}
+              		<option value="{$key}" {$search_arr.month.current_year == $key?'selected':''}>{$v}</option>
+                  {/volist}
+                </select>
+                <select name="searchmonth_month" class="querySelect">
+                  {volist name="month_arr" id="v"}
+              		<option value="{$key}" {$search_arr.month.current_month == $key?'selected':''}>{$v}</option>
+                  {/volist}
+                </select>
+              </td>
+              <td>
+                <a href="javascript:void(0);" id="ncsubmit" class="btn-search tooltip" title="{:lang('ds_query')}"></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <span class="right" style="margin:12px 0px 6px 4px;">
+
+        </span>
+    </div>
+  </form>
+
+   <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>统计图展示了时间段内新增会员数的走势和与前一时间段的对比</li>
+            <li>统计表展示了时间段内新增会员数值和与前一时间段的同比数值，点击每条记录后的“查看”，了解新增会员的详细信息</li>
+            <li>点击列表上方的“导出Excel”，将列表数据导出为Excel文件</li>
+        </ul>
+    </div>
+  <div id="container" class="w100pre close_float" style="height:400px"></div>
+
+  <div style="text-align:right;">
+  	<input type="hidden" id="export_type" name="export_type" data-param='{"url":"<?php echo $actionurl;?>&exporttype=excel"}' value="excel"/>
+  	<a class="btns" href="javascript:void(0);" id="export_btn"><span>导出Excel</span></a>
+  </div>
+  <table class="ds-default-table">
+    <thead>
+      <tr class="thead">
+        {volist name="statlist.headertitle" id="v"}
+        <th class="align-center">{$v}</th>
+      {/volist}
+        <th class="align-center">操作</th>
+      </tr>
+    </thead>
+    <tbody id="datatable">
+    {notempty name="statlist.data"}
+   {volist name="statlist.data" id="v"}
+      <tr class="hover">
+        <td class="align-center">{$v.timetext}</td>
+        <td class="align-center">{$v.updata}</td>
+        <td class="align-center">{$v.currentdata}</td>
+        <td class="align-center">{$v.tbrate}</td>
+        <td class="align-center">
+        	<a href="{:url('statmember/showmember',['type'=>'newbyday','t'=>$v.seartime])}>">查看</a>
+        </td>
+      </tr>
+   {/volist}
+    <tr class="hover">
+        <td class="align-center"><b>总计</b></td>
+        <td class="align-center">{$count_arr.up}</td>
+        <td class="align-center">{$count_arr.curr}</td>
+        <td class="align-center">{$count_arr.tbrate}</td>
+        <td class="align-center">
+        	<a href="{:url('statmember/showmember',['type'=>'newbyday','t'=>$count_arr.seartime])}">查看</a>
+        </td>
+      </tr>
+   {else /}
+    <tr class="no_data">
+      	<td colspan="15">{:lang('no_record')}</td>
+      </tr>
+    {/notempty}
+    </tbody>
+  </table>
+</div>
+<script src="{$Think.config.url_domain_root}static/plugins/highcharts/highcharts.js"></script>
+<script src="{$Think.config.url_domain_root}static/home/js/common.js"></script>
+<script src="{$Think.config.url_domain_root}static/common/js/statistics.js"></script>
+
+<script>
+//展示搜索时间框
+function show_searchtime(){
+    s_type = $("#search_type").val();
+    $("[id^='searchtype_']").hide();
+    $("#searchtype_"+s_type).show();
+}
+$(function () {
+    //统计数据类型
+    var s_type = $("#search_type").val();
+    $('#search_time').datepicker({dateFormat: 'yy-mm-dd'});
+
+    show_searchtime();
+    $("#search_type").change(function(){
+        show_searchtime();
+    });
+
+    //更新周数组
+    $("[name='searchweek_month']").change(function(){
+        var year = $("[name='searchweek_year']").val();
+        var month = $("[name='searchweek_month']").val();
+        $("[name='searchweek_week']").html('');
+        $.getJSON(SITE_URL+'common/getweekofmonth',{y:year,m:month},function(data){
+            if(data != null){
+                for(var i = 0; i < data.length; i++) {
+                    $("[name='searchweek_week']").append('<option value="'+data[i].key+'">'+data[i].val+'</option>');
+                }
+            }
+        });
+    });
+
+    $('#container').highcharts({$stat_json});
+
+    $('#ncsubmit').click(function(){
+        $('#formSearch').submit();
+    });
+
+    //导出图表
+    $("#export_btn").click(function(){
+        var item = $("#export_type");
+        var type = $(item).val();
+        if(type == 'excel'){
+            download_excel(item);
+        }
+    });
+});
+</script>

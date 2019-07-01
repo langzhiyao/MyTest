@@ -1,0 +1,158 @@
+{include file="public/header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>会员管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+
+    <form id="user_form" enctype="multipart/form-data" method="post">
+        <input type="hidden" name="form_submit" value="ok" />
+        <input type="hidden" name="member_id" value="<?php echo $member_array['member_id'];?>" />
+        <input type="hidden" name="old_member_avatar" value="<?php echo $member_array['member_avatar'];?>" />
+        <input type="hidden" name="member_name" value="<?php echo $member_array['member_name'];?>" />
+
+        <div class="ncap-form-default">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.member_name}</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="member_name" value="<?php echo $member_array['member_name'];?>" id="member_name" class="layui-input">
+                        <span class="err"></span>
+                    </div>
+                </div>
+            </div>
+            <!--<div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.member_index_email}</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="member_email" name="member_email" class="layui-input">
+                        <span class="err"></span>
+                    </div>
+                </div>
+            </div>-->
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.mob_phone}</label>
+                    <div class="layui-input-inline">
+                        <input type="tel" id="member_mobile" value="<?php echo $member_array['member_mobile'];?>" name="member_mobile" lay-verify="required|number" autocomplete="off" class="layui-input">
+                        <span class="err"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.member_index_true_name}</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="member_truename" name="member_truename" value="<?php echo $member_array['member_truename'];?>" class="layui-input">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">{$Think.lang.member_edit_sex}</label>
+                <div class="layui-input-inline">
+                    <input type="radio" <?php if($member_array['member_sex'] == 0){ ?>checked="checked"<?php } ?> value="0" name="member_sex" >{$Think.lang.member_edit_secret}
+                    <input type="radio" <?php if($member_array['member_sex'] == 1){ ?>checked="checked"<?php } ?> value="1" name="member_sex">{$Think.lang.member_edit_male}
+                    <input type="radio" <?php if($member_array['member_sex'] == 2){ ?>checked="checked"<?php } ?> value="2" name="member_sex">{$Think.lang.member_edit_female}
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">{$Think.lang.member_edit_sex}</label>
+                <div class="layui-input-block">
+                    <input id="memberstate_1" name="memberstate" <?php if($member_array['member_state'] == '1'){ ?>checked="checked"<?php } ?>  value="1" type="radio">{$Think.lang.member_edit_allow}
+                    <input id="memberstate_2" name="memberstate" <?php if($member_array['member_state'] == '0'){ ?>checked="checked"<?php } ?> value="0" type="radio">{$Think.lang.member_edit_deny}
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <a href="JavaScript:void(0);" class="btn" id="submitBtn">确认提交</a>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <script type="text/javascript" src="{$Think.config.url_domain_root}static/common/js/mlselection.js" charset="utf-8"></script>
+    <script type="text/javascript" src="{$Think.config.url_domain_root}static/home/js/common.js" charset="utf-8"></script>
+    <script type="text/javascript">
+        $(function(){
+            $('#reset_possword').click(function(event) {
+                layer.confirm('是否重置用户密码？重置后会以短信的方式发送给用户！', {
+                    btn: ['确定','取消'] //按钮
+                }, function(){
+                    var uid = "<?php echo $member_array['member_id'];?>";
+                    $.ajax({
+                        url: ADMIN_URL+'member/password_reset',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {'uid': uid},
+                    })
+                        .done(function(sb) {
+                            console.log(sb);
+                            if (sb.state) {
+                                layer.msg(sb.msg, {icon: 1});
+                            }else{
+                                layer.msg(sb.msg, {icon: 2});
+                            }
+                        })
+                });
+            });
+        })
+    </script>
+    <script type="text/javascript">
+        $(function() {
+	         regionInit("region");
+            $("#submitBtn").click(function() {
+                if ($("#user_form").valid()) {
+                    $("#user_form").submit();
+                }
+            });
+            $('#user_form').validate({
+                errorPlacement: function(error, element) {
+                    error.appendTo(element.parent().parent().prev().find('td:first'));
+                },
+                rules: {
+                    member_password: {
+                        maxlength: 20,
+                        minlength: 6
+                    },
+                    member_email: {
+                        required: false,
+                        email: true,
+                        remote: {
+                            url: ADMIN_URL+'member/ajax?branch=check_email',
+                            type: 'get',
+                            data: {
+                                user_name: function() {
+                                    return $('#member_email').val();
+                                },
+                                member_id : '<?php echo $member_array['member_id'];?>'
+                            }
+                        }
+                    }
+                },
+                messages: {
+                    member_password: {
+                        maxlength: '{$Think.lang.member_edit_password_tip}',
+                        minlength: '{$Think.lang.member_edit_password_tip}'
+                    },
+                    member_email: {
+                        required: '{$Think.lang.member_edit_email_null}',
+                        email: '{$Think.lang.member_edit_valid_email}',
+                        remote: '{$Think.lang.member_edit_email_exists}'
+                    }
+                }
+            });
+        });
+    </script> 
+</div>    

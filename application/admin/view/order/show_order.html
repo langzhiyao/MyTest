@@ -1,0 +1,197 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>实物订单</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    
+    
+    
+    <table class="ds-default-table order">
+        <tbody>
+            <tr class="space">
+                <th colspan="2">{$Think.lang.order_detail}</th>
+            </tr>
+            <tr>
+                <th>{$Think.lang.order_info}</th>
+            </tr>
+            <tr>
+                <td colspan="2"><ul>
+                        <li>
+                            <strong>{$Think.lang.order_number}:</strong><?php echo $order_info['order_sn'];?>
+                            ( 支付单号 {$Think.lang.ds_colon} <?php echo $order_info['pay_sn'];?> )
+                        </li>
+                        <li><strong>{$Think.lang.order_state}:</strong><?php echo orderState($order_info);?></li>
+                        <li><strong>{$Think.lang.order_total_price}:</strong><span class="red_common">{$Think.lang.currency}<?php echo $order_info['order_amount'];?> </span>
+                            <?php if($order_info['refund_amount'] > 0) { ?>
+                            ({$Think.lang.order_refund}:{$Think.lang.currency}<?php echo $order_info['refund_amount'];?>)
+                            <?php } ?></li>
+                        <li><strong>{$Think.lang.order_total_transport}:</strong>{$Think.lang.currency}<?php echo $order_info['shipping_fee'];?></li>
+                    </ul></td>
+            </tr>
+            <tr>
+                <td><ul>
+                        <li><strong>{$Think.lang.buyer_name}{$Think.lang.ds_colon}</strong><?php echo $order_info['buyer_name'];?></li>
+                        <li><strong>{$Think.lang.store_name}{$Think.lang.ds_colon}</strong><?php echo $order_info['store_name'];?></li>
+                        <li><strong>{$Think.lang.payment}{$Think.lang.ds_colon}</strong><?php echo orderPaymentName($order_info['payment_code']);?></li>
+                        <li><strong>{$Think.lang.order_time}{$Think.lang.ds_colon}</strong><?php echo date('Y-m-d H:i:s',$order_info['add_time']);?></li>
+                        <?php if(intval($order_info['payment_time'])){?>
+                        <li><strong>{$Think.lang.payment_time}{$Think.lang.ds_colon}</strong><?php echo date('Y-m-d H:i:s',$order_info['payment_time']);?></li>
+                        <?php }?>
+                        <?php if(isset($order_info['shipping_time'])){?>
+                        <li><strong>{$Think.lang.ship_time}{$Think.lang.ds_colon}</strong><?php echo date('Y-m-d H:i:s',$order_info['shipping_time']);?></li>
+                        <?php }?>
+                        <?php if(isset($order_info['finnshed_time'])){?>
+                        <li><strong>{$Think.lang.complate_time}{$Think.lang.ds_colon}</strong><?php echo date('Y-m-d H:i:s',$order_info['finnshed_time']);?></li>
+                        <?php }?>
+                        <?php if($order_info['extend_order_common']['order_message'] != ''){?>
+                        <li><strong>{$Think.lang.buyer_message}{$Think.lang.ds_colon}</strong><?php echo $order_info['extend_order_common']['order_message'];?></li>
+                        <?php }?>
+                    </ul></td>
+            </tr>
+            <tr>
+                <th>收货人信息</th>
+            </tr>
+            <tr>
+                <td><ul>
+                        <li><strong>{$Think.lang.consignee_name}{$Think.lang.ds_colon}</strong><?php echo $order_info['extend_order_common']['reciver_name'];?></li>
+                        <li><strong>{$Think.lang.tel_phone}{$Think.lang.ds_colon}</strong><?php echo @$order_info['extend_order_common']['reciver_info']['phone'];?></li>
+                        <li><strong>{$Think.lang.address}{$Think.lang.ds_colon}</strong><?php echo @$order_info['extend_order_common']['reciver_info']['address'];?></li>
+                        <?php if($order_info['shipping_code'] != ''){?>
+                        <li><strong>{$Think.lang.ship_code}{$Think.lang.ds_colon}</strong><?php echo $order_info['shipping_code'];?></li>
+                        <?php }?>
+                    </ul></td>
+            </tr>
+            <?php if (!empty($daddress_info)) {?>
+            <tr>
+                <th>发货信息</th>
+            </tr>
+            <tr>
+                <td><ul>
+                        <li><strong>发货人{$Think.lang.ds_colon}</strong><?php echo $daddress_info['seller_name']; ?></li>
+                        <li><strong>{$Think.lang.tel_phone}:</strong><?php echo $daddress_info['telphone'];?></li>
+                        <li><strong>发货地{$Think.lang.ds_colon}</strong><?php echo $daddress_info['area_info'];?>&nbsp;<?php echo $daddress_info['address'];?>&nbsp;<?php echo $daddress_info['company'];?></li>
+                    </ul></td>
+            </tr>
+            <?php } ?>
+            <?php if (!empty($order_info['extend_order_common']['invoice_info'])) {?>
+            <tr>
+                <th>发票信息</th>
+            </tr>
+            <tr>
+                <td><ul>
+                        <?php foreach ((array)$order_info['extend_order_common']['invoice_info'] as $key => $value){?>
+                        <li><strong><?php echo $key;?>{$Think.lang.ds_colon}</strong><?php echo $value;?></li>
+                        <?php } ?>
+                    </ul></td>
+            </tr>
+            <?php } ?>
+            <tr>
+                <th>{$Think.lang.product_info}</th>
+            </tr>
+            <tr>
+                <td><table class="ds-default-table goods ">
+                        <tbody>
+                            <tr>
+                                <th></th>
+                                <th>{$Think.lang.product_info}</th>
+                                <th class="align-center">单价</th>
+                                <th class="align-center">实际支付额</th>
+                                <th class="align-center">{$Think.lang.product_num}</th>
+                                <th class="align-center">佣金比例</th>
+                                <th class="align-center">收取佣金</th>
+                            </tr>
+                            <?php foreach($order_info['extend_order_goods'] as $goods){?>
+                            <tr>
+                                <td class="w60 picture"><div class="size-56x56"><span class="thumb size-56x56"><i></i><a href="{:url('/Home/Goods/index',['goods_id'=>$goods.goods_id])}" target="_blank"><img  src="{:cthumb($goods.goods_image)}" width="60" height="60"/> </a></span></div></td>
+                                <td class="w50pre"><p><a href="{:url('/Home/Goods/index',['goods_id'=>$goods.goods_id])}" target="_blank"><?php echo $goods['goods_name'];?></a></p><p><?php echo orderGoodsType($goods['goods_type']);?></p></td>
+                                <td class="w96 align-center"><span class="red_common">{$Think.lang.currency}<?php echo $goods['goods_price'];?></span></td>
+                                <td class="w96 align-center"><span class="red_common">{$Think.lang.currency}<?php echo $goods['goods_pay_price'];?></span></td>
+                                <td class="w96 align-center"><?php echo $goods['goods_num'];?></td>
+                                <td class="w96 align-center"><?php echo $goods['commis_rate'] == 200 ? '' : $goods['commis_rate'].'%';?></td>
+                                <td class="w96 align-center"><?php echo $goods['commis_rate'] == 200 ? '' : dsPriceFormat($goods['goods_pay_price']*$goods['commis_rate']/100);?></td>
+                            </tr>
+                            <?php }?>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <!-- S 促销信息 -->
+            <?php if(!empty($order_info['extend_order_common']['promotion_info']) && !empty($order_info['extend_order_common']['voucher_code'])){ ?>
+            <tr>
+                <th>其它信息</th>
+            </tr>
+            <tr>
+                <td>
+                    <?php if(!empty($order_info['extend_order_common']['promotion_info'])){ ?>
+                    <?php echo $order_info['extend_order_common']['promotion_info'];?>，
+                    <?php } ?>
+                    <?php if(!empty($order_info['extend_order_common']['voucher_code'])){ ?>
+                    使用了面额为 {$Think.lang.ds_colon} <?php echo $order_info['extend_order_common']['voucher_price'];?> 元的代金券，
+                    编码 : <?php echo $order_info['extend_order_common']['voucher_code'];?>
+                    <?php } ?>
+                </td>
+            </tr>
+            <?php } ?>
+            <!-- E 促销信息 -->
+
+            <?php if(is_array($refund_list) and !empty($refund_list)) { ?>
+            <tr>
+                <th>退款记录</th>
+            </tr>
+            <?php foreach($refund_list as $val) { ?>
+            <tr>
+                <td>发生时间{$Think.lang.ds_colon}<?php echo date("Y-m-d H:i:s",$val['admin_time']); ?>&emsp;&emsp;退款单号{$Think.lang.ds_colon}<?php echo $val['refund_sn'];?>&emsp;&emsp;退款金额{$Think.lang.ds_colon}{$Think.lang.currency}<?php echo $val['refund_amount']; ?>&emsp;备注{$Think.lang.ds_colon}<?php echo $val['goods_name'];?></td>
+            </tr>
+            <?php } ?>
+            <?php } ?>
+            <?php if(is_array($return_list) and !empty($return_list)) { ?>
+            <tr>
+                <th>退货记录</th>
+            </tr>
+            <?php foreach($return_list as $val) { ?>
+            <tr>
+                <td>发生时间{$Think.lang.ds_colon}<?php echo date("Y-m-d H:i:s",$val['admin_time']); ?>&emsp;&emsp;退货单号{$Think.lang.ds_colon}<?php echo $val['refund_sn'];?>&emsp;&emsp;退款金额{$Think.lang.ds_colon}{$Think.lang.currency}<?php echo $val['refund_amount']; ?>&emsp;备注{$Think.lang.ds_colon}<?php echo $val['goods_name'];?></td>
+            </tr>
+            <?php } ?>
+            <?php } ?>
+            <?php if(is_array($order_log) and !empty($order_log)) { ?>
+            <tr>
+                <th>{$Think.lang.order_handle_history}</th>
+            </tr>
+            <?php foreach($order_log as $val) { ?>
+            <tr>
+                <td>
+                    <?php echo $val['log_role']; ?> <?php echo $val['log_user']; ?>&emsp;{$Think.lang.order_show_at}&emsp;<?php echo date("Y-m-d H:i:s",$val['log_time']); ?>&emsp;<?php echo $val['log_msg']; ?>
+                </td>
+            </tr>
+            <?php } ?>
+            <?php } ?>
+        </tbody>
+        <tfoot>
+            <tr class="tfoot">
+                <td><a href="JavaScript:void(0);" class="btn" onclick="history.go(-1)"><span>{$Think.lang.ds_back}</span></a></td>
+            </tr>
+        </tfoot>
+    </table>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</div>

@@ -1,0 +1,129 @@
+{include file="public/seller_top" /}
+
+<div class="seller_main w1200">
+    {include file="public/seller_left" /}
+    <div class="seller_right">
+<?php if (isset($edit_goods_sign)) {?>
+        <div class="seller_items">
+            {include file="public/seller_items" /}
+        </div>
+<?php } else {?>
+<ul class="add-goods-step">
+  <li class="current"><i class="icon icon-list-alt"></i>
+    <h6>STEP.1</h6>
+    <h2>选择商品分类</h2>
+    <i class="arrow icon-angle-right"></i> </li>
+  <li><i class="icon icon-edit"></i>
+    <h6>STEP.2</h6>
+    <h2>填写商品详情</h2>
+    <i class="arrow icon-angle-right"></i> </li>
+  <li><i class="icon icon-camera-retro "></i>
+    <h6>STEP.3</h6>
+    <h2>上传商品图片</h2>
+    <i class="arrow icon-angle-right"></i> </li>
+  <li><i class="icon icon-ok-circle"></i>
+    <h6>STEP.4</h6>
+    <h2>商品发布成功</h2>
+  </li>
+</ul>
+<?php }?>
+<!--S 分类选择区域-->
+<div class="wrapper_search">
+  <div class="wp_sort">
+    <div id="dataLoading" class="wp_data_loading">
+      <div class="data_loading">{$Think.lang.store_goods_step1_loading}</div>
+    </div>
+    <div class="sort_selector">
+      <div class="sort_title">{$Think.lang.store_goods_step1_choose_common_category}
+        <div class="text" id="commSelect">
+            <div>{$Think.lang.store_goods_step1_please_select}</div>
+            <div class="select_list" id="commListArea">
+              <ul>
+                <?php if(is_array($staple_array) && !empty($staple_array)) {?>
+                <?php foreach ($staple_array as $val) {?>
+                <li  data-param="{stapleid:<?php echo $val['staple_id']?>}">
+                  <span nctype="staple_name"><?php echo $val['staple_name']?></span>
+                  <a href="JavaScript:void(0);" nctype="del-comm-cate" title="{$Think.lang.ds_delete}">X</a>
+                </li>
+                <?php }?>
+                <?php }?>
+                <li id="select_list_no" <?php if (!empty($staple_array)) {?>style="display: none;"<?php }?>><span class="title">{$Think.lang.store_goods_step1_no_common_category}</span></li>
+              </ul>
+            </div>
+        </div>
+        <i class="icon-angle-down"></i>
+      </div>
+    </div>
+    <div id="class_div" class="wp_sort_block">
+      <div class="sort_list">
+        <div class="wp_category_list">
+          <div id="class_div_1" class="category_list">
+            <ul>
+              <?php if(isset($goods_class) && !empty($goods_class) ) {?>
+              <?php foreach ($goods_class as $val) {?>
+              <li class="" nctype="selClass" data-param="{gcid:<?php echo $val['gc_id'];?>,deep:1,tid:<?php echo $val['type_id'];?>}"> <a class="" href="javascript:void(0)"><i class="icon-double-angle-right"></i><?php echo $val['gc_name'];?></a></li>
+              <?php }?>
+              <?php }?>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="sort_list">
+        <div class="wp_category_list blank">
+          <div id="class_div_2" class="category_list">
+            <ul>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="sort_list sort_list_last">
+        <div class="wp_category_list blank">
+          <div id="class_div_3" class="category_list">
+            <ul>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="alert">
+    <dl class="hover_tips_cont">
+      <dt id="commodityspan"><span style="color:#F00;">{$Think.lang.store_goods_step1_please_choose_category}</span></dt>
+      <dt id="commoditydt" style="display: none;" class="current_sort">{$Think.lang.store_goods_step1_current_choose_category}{$Think.lang.ds_colon}</dt>
+      <dd id="commoditydd"></dd>
+    </dl>
+  </div>
+  <div class="wp_confirm">
+      <form method="get" action="<?php if (isset($edit_goods_sign)) {?>{:url('/Home/Sellergoodsonline/edit_goods',['commonid'=>$commonid])}<?php } else {?>{:url('/Home/Sellergoodsadd/add_step_two')}<?php }?>">
+          <input type="hidden" name="class_id" id="class_id" value="" />
+          <input type="hidden" name="t_id" id="t_id" value="" />
+          <div class="bottom tc">
+              <label class="submit-border"><input disabled="disabled" nctype="buttonNextStep" value="{$Think.lang.store_goods_add_next}，填写商品信息" type="submit" class="submit"style=" width: 200px;" /></label>
+          </div>
+      </form>
+  </div>
+</div>
+<script src="{$Think.config.url_domain_root}static/common/js/mlselection.js"></script>
+<script src="{$Think.config.url_domain_root}static/plugins/jquery.mousewheel.js"></script>
+<script src="{$Think.config.url_domain_root}static/home/js/sellergoods_add_step1.js"></script> 
+<script>
+SEARCHKEY = '{$Think.lang.store_goods_step1_search_input_text}';
+RESOURCE_SITE_URL = '{$Think.config.url_domain_root}';
+</script>
+
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    </div>
+</div>
+{include file="public/mall_footer" /}

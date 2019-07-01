@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>想见孩-学校申请</title>
+    <meta name="author" content="想见孩" />
+    <meta name="copyright" content="想见孩" />
+    <meta name="description" content="想见孩" />
+    <meta id="viewport" name="viewport" content="width=750" />
+    <link rel="stylesheet" href="../content/style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/iconfonts/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/lib/weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/css/jquery-weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/user.css" type="text/css" />
+    <link rel="shortcut icon" href="../content/images/ico.ico" type="image/x-icon" />
+    <script src="../content/scripts/mobile-util.js"></script>
+    <style>
+        .weui-cell {
+            padding: 30px 0;
+            font-size: 28px;
+            color: #242424;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .weui-cell:last-child {
+            border-bottom: none;
+        }
+        
+        .weui-cell .weui-label {
+            font-size: 28px;
+            color: #242424;
+        }
+        
+        .weui-cell .weui-input {
+            font-size: 28px;
+            color: #242424;
+            text-align: right;
+            padding-left: 20px;
+            box-sizing: border-box;
+        }
+        .main{
+            padding-top: 0;
+        }
+    </style>
+</head>
+
+<body class="infobody">
+    <!--<header class="head">
+        <div class="head0">
+            <div class="menu_bar_box">
+                <a href="javascript:;" class="back_btn" onClick="historyback()">
+                    <i class="icon iconfont icon-jiantou3"></i>
+                </a>
+            </div>
+            <div class="head_title">
+                <p>学校申请</p>
+            </div>
+            <div class="head_r">
+
+            </div>
+        </div>
+    </header>-->
+
+    <!-- 主要内容 -->
+    <div class="main">
+        <div class="cont">
+            <div class="container2">
+                <div class="weui-cell">
+                    <div class="weui-cell__hd"><label for="sitecity" class="weui-label">所在地区</label></div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" id="sitecity" type="text" value="" placeholder="请选择所在区域">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="cont">
+            <div class="container2">
+                <div class="weui-cell">
+                    <div class="weui-cell__hd"><label class="weui-label">学校名</label></div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" name="schoolName" maxlength="10" type="text" placeholder="学校完整名称">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd"><label class="weui-label">联系人</label></div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" maxlength="10" name="userName" placeholder="我们怎么称呼您">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd"><label class="weui-label">手机号</label></div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="number" maxlength="11" name="phone" placeholder="联系人手机号">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cont">
+            <div class="container2">
+                <div class="leaveword_title_box">
+                    <h2 class="leaveword_title">留言内容</h2>
+                </div>
+                <div class="leaveword_txt">
+                    <div class="weui-cell" style="padding:20px 0;">
+                        <div class="weui-cell__bd">
+                            <textarea class="weui-textarea" name="message" maxlength="300" placeholder="请输入文本" rows="5" id="sizeStatistics"></textarea>
+                            <div class="weui-textarea-counter"><span id="currentSize">0</span>/<span id="totalSize"></span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="apply_btns_box">
+            <input type="button" value="申请" class="apply_submit">
+        </div>
+    </div>
+
+
+    <script src="../content/scripts/jquery.min.js"></script>
+    <script src="../content/plugins/jqweui/js/jquery-weui.min.js"></script>
+    <script src="../content/plugins/jqweui/js/city-picker.min.js"></script>
+    <script src="../content/scripts/juqery.cookie.js"></script>
+    <script src="../content/scripts/API.js"></script>
+    <script src="../content/scripts/commom.js"></script>
+    <script>
+        $("#sitecity").cityPicker({
+            title: "请选择区域",
+            onChange: function(picker, values, displayValues) {
+                console.log(values, displayValues);
+            }
+        });
+
+        // textarea字数限制
+        var max_length = 300;
+        $("#totalSize").text(max_length);
+        $("#sizeStatistics").on("keyup", function() {
+            var size = $("#sizeStatistics").val().length;
+            if (size > max_length) {
+                size = max_length;
+                $("#sizeStatistics").val($("#sizeStatistics").val().substring(0, 300));
+            }
+            $("#currentSize").html(size);
+        })
+
+        $(".apply_submit").click(function() {
+
+            $('.apply_submit').attr('disabled','disabled');
+            var schoolName = $('input[name=schoolName]').val();
+            var userName = $('input[name=userName]').val();
+            var phone = $('input[name=phone]').val();
+            var message = $('textarea[name=message]').val();
+            if($('#sitecity').val() ==''){
+                provinceid = '';
+                cityid = '';
+                areaid = '';
+            }else{
+                provinceid = $('#sitecity').get(0).dataset.codes.split(',')[0];
+                cityid = $('#sitecity').get(0).dataset.codes.split(',')[1];
+                areaid = $('#sitecity').get(0).dataset.codes.split(',')[2];
+            }
+            region = $('#sitecity').val();
+            if($('#city').val() =='' ||  schoolName == '' || userName == '' || phone == '' || message == '' || region == ''){
+
+                $('.apply_submit').removeAttr('disabled');
+                $.toast('请填写完整的学校信息','forbidden');return false;
+            }
+            var isPhone = /^1(3|4|5|6|7|8)\d{9}$/;
+            if(!isPhone.test(phone)){
+                $('.apply_submit').removeAttr('disabled');
+                $.toast('请填写正确的手机号码','forbidden');return false;
+            }
+            $.ajax({
+                type:'POST',
+                url:api+'/schoolapply/addapply.html',
+                data:{
+                    member_id:user_member_id,
+                    key:user_token,
+                    schoolname:schoolName,
+                    username:userName,
+                    phone:phone,
+                    provinceid:provinceid,
+                    cityid:cityid,
+                    areaid:areaid,
+                    region:region,
+                    message:message
+                },
+                dataType: "json",
+                success: function (response) {
+                    $('.apply_submit').removeAttr('disabled');
+                    if(response['code'] == 200){
+                        $.toast('申请已提交，请耐心等待！',function(){
+                            location.href='schoolapplying.html';
+                        });
+                    }else{
+                        $.toast(response['message'],'forbidden');return false;
+                    }
+                }
+            })
+
+
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>想见孩-关联帐户管理</title>
+    <meta name="author" content="想见孩" />
+    <meta name="copyright" content="想见孩" />
+    <meta name="description" content="想见孩" />
+    <meta id="viewport" name="viewport" content="width=750" />
+    <link rel="stylesheet" href="../content/style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/iconfonts/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/lib/weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/css/jquery-weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/user.css" type="text/css" />
+    <link rel="shortcut icon" href="../content/images/ico.ico" type="image/x-icon" />
+    <script src="../content/scripts/mobile-util.js"></script>
+    <style>
+        .sub_linkicon {
+            margin-left: 15px;
+            position: relative;
+            top: -2px;
+        }
+
+        .acc_sign {
+            width: 34px;
+            height: 34px;
+            display: inline-block;
+            border-radius: 50%;
+            background: #fda214;
+            font-size: 18px;
+            color: #f6f6f6;
+            line-height: 30px;
+            text-align: center;
+            position: relative;
+            top: -5px;
+            margin-right: 15px;
+        }
+
+        .acc_sign2 {
+            background: #4ec3bb;
+        }
+
+        .subacc_list_box .weui-cell__ft a {
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="head">
+        <div class="head0">
+            <div class="menu_bar_box">
+                <a href="javascript:;" class="back_btn" onClick="historyback()">
+                    <i class="icon iconfont icon-jiantou3"></i>
+                </a>
+            </div>
+            <div class="head_title">
+                <p>关联帐户管理</p>
+            </div>
+            <div class="head_r">
+                <a href="javascript:;" data-target="#full" id="open_popup" style="display: none">
+                    <i class="icon iconfont icon-jiahao"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <div class="main">
+        <div class="subacc_info">
+            <div class="container2">
+                <p class="subacc_p"></p>
+            </div>
+        </div>
+
+        <div class="subacc_list_box">
+            <div class="container2">
+
+            </div>
+        </div>
+
+        <div class="container2 tishi" style="display: none;">
+            <p class="subacc_info_p"><i class="icon iconfont icon-tixing"></i> 向左滑动进行删除操作.</p>
+        </div>
+    </div>
+
+    <!-- 新增副账户 -->
+    <div id="full" class='weui-popup__container'>
+        <div class="weui-popup__overlay"></div>
+        <div class="weui-popup__modal">
+            <header class='demos-header'>
+                <h2 class="demos-second-title add_subacctitle">
+                    <a href="javascript:;" class="quit_popup">
+                        <i class="icon iconfont icon-jiantou3"></i>
+                    </a> 新增关联账户</h2>
+            </header>
+            <article class="weui-article" style="padding-left:0;padding-right:0;">
+                <section>
+                    <div class="container2 addsubacc_listbox">
+                        <div class="bang_list addsubacc_list">
+                            <div class="name_box">
+                                <label for="nickname">亲属关系</label>
+                            </div>
+                            <div class="input_box">
+                                <input class="input_txt" id="nickname"   type="text" placeholder="请输入亲属关系" value="">
+                            </div>
+                        </div>
+
+                        <div class="bang_list addsubacc_list">
+                            <div class="name_box">
+                                <label for="nickname">手机号码</label>
+                            </div>
+                            <div class="input_box">
+                                <input class="input_txt" id="phone"   type="number" placeholder="请输入您的手机号" value="">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </article>
+            <div class="close-popup_box">
+                <a href="javascript:;" class="weui-btn weui-btn_primary close-popup_add">添 加</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="../content/scripts/jquery.min.js"></script>
+    <script src="../content/scripts/juqery.cookie.js"></script>
+
+    <script src="../content/plugins/layer/mobile/layer.js"></script>
+    <script src="../content/plugins/jqweui/js/jquery-weui.min.js"></script>
+    <script src="../content/plugins/jqweui/js/city-picker.min.js"></script>
+    <script src="../content/scripts/commom.js"></script>
+    <script src="../content/scripts/API.js"></script>
+    <script src="../content/scripts/regular.js"></script>
+
+    <script>
+
+        $(function() {
+
+            /**
+             * @desc 判断是否为副账号
+             */
+            var flag = false;
+            $.ajax({
+                type:'POST',
+                url:api+'/Member/isOwner.html',
+                data:{
+                    key:user_token,
+                    member_id:user_member_id,
+                },
+                async:false,
+                dataType: "json",
+                success: function(response){
+                    if(response['code'] == 200){
+                        if(response.result[0]['is_owner'] == 0){
+                            $('#open_popup').show();
+                            $('.tishi').show();
+                            flag = true;
+                        }else{
+                            $('#open_popup').hide();
+                            $('.tishi').hide();
+                            flag = false;
+                        }
+                    }else if(response['code'] == 400){
+                        $.toast(response['message'],'forbidden');return false;
+                    }else{
+                        $.toast(response['message'],'forbidden');return false;
+                    }
+                }
+            });
+            var num = '';
+            $.ajax({
+                type:'POST',
+                url:api+'/Common/site.html',
+                data:{
+                    member_id:user_member_id
+                },
+                dataType: 'json',
+                success: function(response){
+                    if(flag){
+                        $('.subacc_p').html('您最多可以添加'+response.result[4]['value']+'个副账号，主账号和副账号同等权限');
+                    }else{
+                        $('.subacc_p').html('副账号不具备添加权限');
+                    }
+
+
+                    num = response.result[4]['value'];
+                }
+            });
+
+            // 获取副账户列表
+            function list() {
+                $.ajax({
+                    type: "POST",
+                    url: api + '/Member/account.html',
+                    data: {
+                        key: user_token,
+                        member_id: user_member_id
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        // console.log(response);
+                        if (response['result'].length == 0) {
+                            $('.tishi').hide();
+                        } else {
+                            if(flag){
+                                $('.tishi').show();
+                            }else{
+                                $('.tishi').hide();
+                            }
+                        }
+
+                        $('.subacc_list_box .container2').html(HTML(response['result']));
+
+                        $('.weui-cell_swiped').swipeout();
+                    }
+                });
+            }
+            list();
+
+            // 删除付帐户
+            Delete = function(event, el) {
+                _this = $(el);
+                $.confirm("您确定要删除该帐号吗?", "确认删除?", function() {
+                    $.ajax({
+                        type: "POST",
+                        url: api + '/Member/accountDel.html',
+                        data: {
+                            key: user_token,
+                            member_id: user_member_id,
+                            jb_id: event.target.dataset.id
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            _this.parents('.weui-cell').remove();
+                            $.toast("该账号删除成功!");
+                            list();
+                        }
+                    });
+                }, function() {
+                    _this.parents('.weui-cell').swipeout('close');
+                });
+            }
+
+            // 关闭
+            Close = function(_this) {
+                $(_this).parents('.weui-cell').swipeout('close')
+            }
+
+            // 打开添加副账户popup
+            $("#open_popup").click(function() {
+                if ($('.subacc_list').length >= num) {
+                    $.toast('只能添加'+num+'个关联帐号，已不能再添加了！','forbidden');return false;
+                } else {
+                    $("#full").popup();
+                }
+            })
+
+            //提交添加的副帐户
+            $(document).on("click", ".close-popup_add", function() {
+                if (Tools.IsNull($('#nickname').val())) {
+                    $.toast('请输入亲属关系','forbidden');return false;
+                } else if (!Tools.IsPhoneNum($('#phone').val()) || Tools.IsNull($('#phone').val())) {
+                    $.toast('请输入您的手机号','forbidden');return false;
+                } else {
+                    // 添加副帐号
+                    $.ajax({
+                        type: "POST",
+                        url: api + '/Member/accountBind.html',
+                        data: {
+                            key: user_token,
+                            member_id: user_member_id,
+                            member_aboutname: $('#nickname').val(),
+                            member_mobile: $('#phone').val()
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                         if(response['code'] == 400){
+                             $.toast(response['message'],'forbidden',function(){
+                                 layout();
+                             })
+                         }else if(response['code'] == 200){
+                             $.toast("添加成功！", "", function() {});
+                             list();
+                             $("#nickname").val("");
+                             $("#phone").val("");
+                             $.closePopup(); //关闭添加popup弹窗
+                         }else{
+                             $.toast(response['message'],'forbidden');return false;
+                         }
+
+                        }
+                    });
+                }
+            });
+
+            //弹出popup之后，点击箭头关闭popup
+            $(".quit_popup").click(function() {
+                $("#nickname").val("");
+                $("#phone").val("");
+                $.closePopup(); //关闭添加popup弹窗
+            })
+
+            // html模板
+            function HTML(data) {
+                var template = '';
+                for (var i = 0; i < data.length; i++) {
+                    template += '<div class="weui-cells subacc_list">';
+                    if(flag) {
+                        template += '<div class="weui-cell weui-cell_swiped">';
+                    }else{
+                        template += '<div class="weui-cell">';
+                    }
+                    template +=    '<div class="weui-cell__bd">' +
+                        '<div class="weui-cell">' +
+                        '<div class="weui-cell__bd">' ;
+                    if(data[i]['is_owner'] == 0){
+                        template +=    '<p><span class="acc_sign">主</span>绑定人</p>' ;
+                    }else{
+                        template +=    '<p><span class="acc_sign acc_sign2">副</span>' + data[i]['member_aboutname'] + '</p>' ;
+                    }
+                    template +=     '</div>' +
+                        '<div class="weui-cell__ft"><span class="paddr10">' + data[i]['member_mobile'] + '</span></div>' +
+                        '</div>' +
+                        '</div>';
+                    if(flag){
+                        template += '<div class="weui-cell__ft">' +
+                            '<a class="weui-swiped-btn weui-swiped-btn_warn delete-swipeout" data-id="' + data[i]['member_id'] + '" onclick="Delete(event, this)">删除</a>' +
+                            '<a class="weui-swiped-btn weui-swiped-btn_default close-swipeout" onclick="Close(this)">关闭</a>' +
+                            '</div>' ;
+                    }
+                    template +=   '</div></div>'
+                }
+                return template;
+            }
+
+        })
+    </script>
+</body>
+
+</html>

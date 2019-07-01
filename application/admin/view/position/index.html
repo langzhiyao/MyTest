@@ -1,0 +1,279 @@
+{include file="public/header" /}
+<script src="{$Think.config.url_domain_root}static/common/js/mlselection_list.js"></script>
+<script src="{$Think.config.url_domain_root}static/home/js/common.js"></script>
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>房间管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>房间位置信息展示。</li>
+        </ul>
+    </div>
+    <form method="get" name="formSearch" id="formSearch" class="layui-form">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.school_index_classname}</label>
+                    <div class="layui-input-block">
+                        <input type="text"  name="school_index_classname" placeholder="请输入班级名称"  id="school_index_classname" value="{$_GET['school_index_classname']}" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <div class="layui-input-inline">
+                        <select  lay-filter="province"  class="select"  lay-verify="type" name="province" id="province">
+                            <option value="" selected>{$Think.lang.look_address_province}</option>
+                            {volist name="region_list" id="vo"}
+                            <option value="{$vo.area_id}" <?php if($vo['area_id'] == $_GET['province']){echo 'selected';}?> >{$vo.area_name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="layui-input-inline">
+                        <select name="city" lay-filter="city"  class="select"  lay-verify="type"  id="city">
+                            <option value="">{$Think.lang.look_address_city}</option>
+                        </select>
+                    </div>
+                    <div class="layui-input-inline">
+                        <select name="area" lay-filter="area"  class="select"  lay-verify="type"  id="area">
+                            <option value="">{$Think.lang.look_address_area}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <div class="layui-input-inline">
+                        <select  lay-filter="school"  class="select"  lay-verify="type" name="school" id="school">
+                            <option value="" selected>{$Think.lang.school_index_allschool}</option>
+                            {volist name="$schoolList" id="vo"}
+                            <option value="{$vo.schoolid}" <?php if($vo['schoolid'] == $_GET['school']){echo 'selected';}?> >{$vo.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <!--<div class="layui-input-inline">-->
+                        <!--<select name="grade" lay-filter="grade"  class="select"  lay-verify="type"  id="grade">-->
+                            <!--<option value="">{$Think.lang.school_index_type}</option>-->
+                        <!--</select>-->
+                    <!--</div>-->
+                    <!--<div class="layui-input-inline">-->
+                        <!--<select name="position" lay-filter="position"  class="select"  lay-verify="type"  id="position">-->
+                            <!--<option value="">{$Think.lang.school_index_positionname}</option>-->
+                        <!--</select>-->
+                    <!--</div>-->
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn layuiadmin-btn-admin" lay-submit="" type="submit" lay-filter="LAY-user-back-search">
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <table class="layui-table">
+        <colgroup>
+            <col >
+            <col >
+            <col>
+        </colgroup>
+        <thead>
+        <tr class="thead">
+            <th colspan="align-center">{$Think.lang.school_index_id}</th>
+            <th class="align-center">{$Think.lang.school_index_name}</th>
+            <!--<th class="align-center">{$Think.lang.school_index_type}</th>-->
+            <th class="align-center">{$Think.lang.school_index_positionname}</th>
+            <th class="align-center">{$Think.lang.school_index_region}</th>
+            <th class="align-center">{$Think.lang.school_index_status}</th>
+            <?php  if(session('admin_is_super') ==1 || (in_array('4',$action) || in_array('3',$action) || in_array('2',$action) || in_array('11',$action))){?>
+            <th class="align-center">{$Think.lang.ds_handle}</th>
+            <?php } ?>
+        </tr>
+        <tbody>
+        <?php if(!empty($position_list) && is_array($position_list)){ ?>
+        <?php foreach($position_list as $k => $v){ ?>
+        <tr class="hover member">
+            <td class="align-center"><?php if(!$_GET['page']){  echo $k+1; }else{ echo ($_GET['page']-1)*15+$k+1; }?></td>
+            <td class="align-center"><?php echo $v['school_name']; ?></td>
+            <!--<td class="align-center"><?php echo $v['type_name']; ?></td>-->
+            <td class="align-center"><?php echo $v['position']; ?></td>
+            <td class="align-center"><?php echo $v['region']; ?></td>
+            <td class="align-center">
+                <?php if($v['is_bind'] == 1){?>
+                未绑定
+                <?php }else{?>
+                已绑定
+                <?php }?>
+            </td>
+            <td class="align-center">
+                <!--<?php if(session('admin_is_super') ==1 || in_array('4',$action)){ ?>-->
+                <!--<a href="javascript:dd({$v.classid})" class="layui-btn layui-btn-xs"">{$Think.lang.ds_view}</a>-->
+                <!--<?php } ?>-->
+                <?php if(session('admin_is_super') ==1 || in_array('3',$action)){ ?>
+                <a href="{:url('/admin/position/edit',['position_id'=>$v.position_id])}" class="layui-btn layui-btn-xs">{$Think.lang.ds_edit}</a>
+                <?php } ?>
+                <?php if(session('admin_is_super') ==1 || in_array('2',$action)){ ?>
+                <a href="javascript:void(0)" onclick="if(confirm('{$Think.lang.ds_ensure_del}'))
+                location.href='{:url('/admin/position/drop',['position_id'=>$v.position_id])}';" class="layui-btn layui-btn-xs">{$Think.lang.ds_del}</a>
+                <?php } ?>
+               <!-- <?php if(session('admin_is_super') ==1 || in_array('11',$action)){ ?>
+                <a href="{:url('/admin/position/addstudent',['position_id'=>$v.position_id])}" class="layui-btn layui-btn-xs">{$Think.lang.school_class_add}</a>
+                <?php } ?>-->
+            </td>
+        </tr>
+        <?php } ?>
+        <?php }else { ?>
+        <tr class="no_data">
+            <td colspan="11">{$Think.lang.ds_no_record}</td>
+        </tr>
+        <?php } ?>
+        </tbody>
+        <tfoot class="tfoot">
+        <?php if(!empty($member_list) && is_array($member_list)){ ?>
+        <tr>
+            <td class="w24"><input type="checkbox" class="checkall" id="checkallBottom"></td>
+            <td colspan="16">
+                <label for="checkallBottom">{$Think.lang.ds_select_all}</label>
+                &nbsp;&nbsp;<a href="JavaScript:void(0);" class="btn" onclick="if(confirm('{$Think.lang.ds_ensure_del}')){$('#form_member').submit();}"><span>{$Think.lang.ds_del}</span></a>
+            </td>
+        </tr>
+        <?php } ?>
+        </tfoot>
+    </table>
+    {$page}
+    
+</div>
+
+<script type="text/javascript">
+    layui.use(['form','laypage', 'layer'], function(){
+        var form = layui.form,
+            laypage = layui.laypage
+            ,layer = layui.layer;
+        //省
+        form.on('select(province)', function(data){
+            //改变市区
+            $('#city').html('<option value="0">{$Think.lang.look_address_city}</option>');
+            //改变县区
+            $('#area').html('<option value="0">{$Think.lang.look_address_area}</option>');
+            //改变年级
+            // $('#grade').html('<option value="0">{$Think.lang.look_address_grade}</option>');
+            //改变房间位置
+            // $('#position').html('<option value="0">{$Think.lang.school_index_positionname}</option>');
+
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变市区
+                    $('#city').html(data.city);
+                    //改变县区
+                    $('#area').html(data.area);
+                    //改变学校
+                    $('#school').html(data.school);
+                    //改变年级
+                    // $('#grade').html(data.grade);
+                    //改变房间位置
+                    // $('#position').html(data.position);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //市
+        form.on('select(city)', function(data){
+            //改变县区
+            $('#area').html('<option value="0">{$Think.lang.look_address_area}</option>');
+            //改变年级
+            // $('#grade').html('<option value="0">{$Think.lang.look_address_grade}</option>');
+            //改变房间位置
+            // $('#position').html('<option value="0">{$Think.lang.school_index_positionname}</option>');
+            var province = $('#province').find('option:selected').val();
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+province+'&city='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变县区
+                    $('#area').html(data.area);
+                    //改变学校
+                    $('#school').html(data.school);
+                    //改变年级
+                    // $('#grade').html(data.grade);
+                    //改变房间位置
+                    // $('#position').html(data.position);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //县/区
+        form.on('select(area)', function(data){
+            //改变年级
+            // $('#grade').html('<option value="0">{$Think.lang.look_address_grade}</option>');
+            //改变房间位置
+            // $('#position').html('<option value="0">{$Think.lang.school_index_positionname}</option>');
+            var province = $('#province').find('option:selected').val();
+            var city = $('#city').find('option:selected').val();
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+province+'&city='+city+'&area='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变学校
+                    $('#school').html(data.school);
+                    //改变年级
+                    // $('#grade').html(data.grade);
+                    //改变房间位置
+                    // $('#position').html(data.position);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //学校
+        /*form.on('select(school)', function(data){
+            //改变年级
+            $('#grade').html('<option value="0">{$Think.lang.look_address_grade}</option>');
+            //改变房间位置
+            // $('#position').html('<option value="0">{$Think.lang.school_index_positionname}</option>');
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_school_info2?school='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变年级
+                    $('#grade').html(data.grade);
+                    //改变房间位置
+                    // $('#position').html(data.position);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });*/
+    });
+    function dd(id) {
+        var urls=ADMIN_URL+'classesinfo/index?class_id='+id;
+        //多窗口模式，层叠置顶
+        layer.open({
+            type: 2
+            , title: '查看'
+            , area: ['80%', '80%']
+            , shade: 0
+            , maxmin: true
+            , content: urls
+
+        });
+    }
+
+    $(function() {
+        regionInit("region");
+    });
+</script>

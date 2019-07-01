@@ -1,0 +1,51 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>店铺等级</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <div class="ncap-form-default">
+        <form  method="post">
+            <dl>
+                <dt>{$Think.lang.sg_name}</dt>
+                <dd><input type="text" name="sg_name" id="sg_name" value="{$storegrade.sg_name}" class="w200"/></dd>
+            </dl>
+            
+            <dl>
+                <dt>{$Think.lang.sg_goods_limit}</dt>
+                <dd><input type="text" name="sg_goods_limit" id="sg_goods_limit" value="{$storegrade.sg_goods_limit}" class="w200"/></dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.sg_album_limit}</dt>
+                <dd><input type="text" name="sg_album_limit" id="sg_album_limit" value="{$storegrade.sg_album_limit}" class="w200"/></dd>
+            </dl>
+            
+            <dl>
+                <dt>{$Think.lang.sg_price}</dt>
+                <dd><input type="text" name="sg_price" id="sg_price" value="{$storegrade.sg_price}" class="w200"/></dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.sg_description}</dt>
+                <dd><input type="text" name="sg_description" id="sg_description" value="{$storegrade.sg_description}" class="w200"/></dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.sg_sort}</dt>
+                <dd><input type="text" name="sg_sort" id="sg_sort" value="{$storegrade.sg_sort}" class="w200"/></dd>
+            </dl>
+            <dl>
+                <dt></dt>
+                <dd><input class="btn" type="submit" value="提交"/></dd>
+            </dl>
+        </form>
+    </div>
+</div>

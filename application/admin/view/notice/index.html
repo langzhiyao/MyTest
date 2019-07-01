@@ -1,0 +1,97 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+ <link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">       
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>打卡机器人</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <form method="get" name="formSearch" id="formSearch">
+        <table class="search-form">
+            <tbody>
+                <tr>
+                    <td>
+                        <select name="search_field_name" >
+                            <option <?php if($search_field_name == 'robot_school'){ ?>selected='selected'<?php } ?> value="robot_school">学校名称</option>
+                            <option <?php if($search_field_name == 'robot_name'){ ?>selected='selected'<?php } ?> value="robot_name">机器ID</option>
+                        </select>
+                    </td>
+                    <td><input type="text" value="<?php echo $search_field_value;?>" name="search_field_value" class="txt"></td>
+                    <td>
+                        <input type="submit" class="submit" value="搜索">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>平台打卡机器人管理，关联学校</li>
+        </ul>
+    </div>
+
+    <table class="ds-default-table">
+      <thead>
+        <tr class="thead">
+          <th class="align-center"><span>机器ID</span></th>
+          <th class="align-center"><span>学校名称</span></th>
+          <th class="align-center"><span>所在地区</span></th>
+          <th class="align-center"><span>添加时间</span></th>
+          <th class="align-center"><span>更新时间</span></th>
+          <th class="align-center"><span>备注</span></th>
+          <th class="align-center">使用状态</th>
+            <?php if(session('admin_is_super')==1 || in_array('3',$action) || in_array('2',$action)){?>
+              <th class="align-center">{$Think.lang.ds_handle}</th>
+            <?php }?>
+        </tr>
+      <tbody>
+        <?php if(!empty($robot_list) && is_array($robot_list)){ ?>
+        <?php foreach($robot_list as $k => $v){ ?>
+        <tr class="hover member">
+          <td class="align-center"><?php echo $v['SNNumber']; ?></td>
+          <td class="align-center"><?php echo $v['name']; ?></td>
+          <td class="align-center"><?php echo $v['region']; ?></td>
+          <td class="align-center"><?php echo Fomat($v['creattime']); ?></td>
+          <td class="align-center"><?php echo Fomat($v['updatetime']); ?></td>
+          <td class="align-center"><?php echo $v['desc']; ?></td>
+          <td class="align-center"><?php echo $v['isdel'] == 1?lang('member_edit_allow'):lang('member_edit_deny'); ?></td>
+          <td class="align-center">
+              <?php if(session('admin_is_super')==1 || in_array('3',$action)){?>
+              <a class="layui-btn layui-btn-sm" href="{:url('/admin/Robot/edit',['id'=>$v.id])}">{$Think.lang.ds_edit}</a>
+              <?php }?>
+              <?php if(session('admin_is_super')==1 || in_array('2',$action)){?>
+                <a class="layui-btn layui-btn-sm layui-btn-danger" href="javascript:robot_drop('{$v.id}')">禁用</a>
+              <?php }?>
+          </td>
+        </tr>
+        <?php } ?>
+        <?php }else { ?>
+        <tr class="no_data">
+          <td colspan="11">{$Think.lang.ds_no_record}</td>
+        </tr>
+        <?php } ?>
+      </tbody>
+      <script type="text/javascript">
+        function robot_drop(id){
+          layer.confirm('是否禁用此机器人？', {
+            btn: ['删除','取消'] //按钮
+          }, function(){
+            window.location.href="{:url('/admin/robot/drop')}?robot_id="+id;
+          });
+        }
+      </script>
+    </table>
+    {$page}
+    
+</div>

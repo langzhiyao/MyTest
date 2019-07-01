@@ -1,0 +1,48 @@
+<div class="groupbuy-gallery">
+    <a class='sample_demo' id="select_s" href="{:url('/Home/Selleralbum/pic_list',['item'=>'groupbuy'])}" style="display:none;">{$Think.lang.store_goods_batch_edit_submit}</a>
+  <div class="nav"><span class="l">{$Think.lang.store_goods_album_users} >
+    <?php if(isset($class_name) && $class_name != ''){echo $class_name;}else{?>
+    {$Think.lang.store_goods_album_all_photo}
+    <?php }?>
+    </span><span class="r">
+    <select name="jumpMenu" id="jump_menu" style="width:100px;">
+      <option value="0" style="width:80px;">{$Think.lang.ds_please_choose}</option>
+      <?php foreach($class_list as $val) { ?>
+      <option style="width:80px;" value="<?php echo $val['aclass_id']; ?>" {if condition="$val.aclass_id eq $Think.param.id"}selected{/if}><?php echo $val['aclass_name']; ?></option>
+      <?php } ?>
+    </select>
+    </span></div>
+  <ul class="list">
+    <?php if(!empty($pic_list)){?>
+    <?php foreach ($pic_list as $v){?>
+    <li onclick="insert_editor('<?php echo cthumb($v['apic_cover'], 1280,session('store_id'));?>');">
+        <a href="JavaScript:void(0);"><span class="thumb size90"><i></i><img src="<?php echo cthumb($v['apic_cover'], 60,session('store_id'));?>" onload="javascript:DrawImage(this,90,90);" title='<?php echo $v['apic_name']?>'/></span></a>
+    </li>
+    <?php }?>
+    <?php }else{?>
+    {$Think.lang.no_record}
+    <?php }?>
+  </ul>
+  <div class='clear'></div>
+  <div class="pagination">{$show_page}</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('ul.pagination li a').ajaxContent({
+		event:'click', //mouseover
+		loaderType:'img',
+		loadingMsg:SITE_URL+'public/static/home/images/loading.gif',
+		target:'#des_demo'
+	});
+	$('#jump_menu').change(function(){
+		$('#select_s').attr('href',$('#select_s').attr('href')+"?id="+$('#jump_menu').val());
+		$('.sample_demo').ajaxContent({
+			event:'click', //mouseover
+			loaderType:'img',
+			loadingMsg:SITE_URL+'public/static/home/images/loading.gif',
+			target:'#des_demo'
+		});
+		$('#select_s').click();
+	});
+});
+</script>

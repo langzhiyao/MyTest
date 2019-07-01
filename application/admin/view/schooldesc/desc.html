@@ -1,0 +1,140 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>添加/修改学校简介</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <form id="user_form" enctype="multipart/form-data" method="post">
+        <div class="ncap-form-default">
+            <input type="hidden" name="s_sid" id="s_sid" value="{$school_array.schoolid}">
+            <input type="hidden" name="actions" id="actions" value="{$actions}">
+            <input type="hidden" name="s_id" id="s_id" value="{$result.s_id}">
+            <dl>
+                <dt><label  class="validation" >{$Think.lang.desc_region}：</label></dt>
+                <dd id="region">
+                    <input type="hidden" value="" name="city_id" id="city_id">
+                    <input type="hidden" name="area_id" id="area_id" value="" class="area_ids" />
+                    <input type="hidden" name="area_info" id="area_info" value="" class="area_names" />
+                    {notempty name="$school_array.areaid"}
+                    <span>{$school_array.region}</span>
+                    <input type="button" value="{$Think.lang.ds_edit}" class="edit_region" />
+                    <select style="display:none;">
+                        <option value="0">请选择分类</option>
+                        {volist name="region_list" id="region"}
+                        <option value="{$region.area_id}">{$region.area_name}</option>
+                        {/volist}
+                    </select>
+                    {else}
+                    <select>
+                        <option value="0">请选择分类</option>
+                        {volist name="region_list" id="region"}
+                        <option value="{$region.area_id}">{$region.area_name}</option>
+                        {/volist}
+                    </select>
+                    {/notempty}
+                </dd>
+            </dl>
+            <dl>
+                <dt class="required"><label  class="validation" >{$Think.lang.desc_address}：</label></dt>
+                <dd><input type="text" name="school_address" id="school_address" value="{$school_array.address}" class="w200"/></dd>
+            </dl>
+            <dl>
+                <dt><label  class="validation" >{$Think.lang.desc_type}：</label></dt>
+                <dd>
+                    <label>
+                    <input type="radio" value="1" name="s_type" <?php if($result['s_type']!=2){ ?>checked="true"<?php } ?>>{$Think.lang.desc_public}
+                   </label>
+                    <label>
+                        <input type="radio" value="2" name="s_type" <?php if($result['s_type']==2){ ?>checked="true"<?php } ?>>{$Think.lang.desc_private}
+                    </label>
+                </dd>
+            </dl>
+            <dl>
+                <dt class="required"><label  class="validation" >{$Think.lang.desc_stage}：</label></dt>
+                <dd>
+                    {volist name="schoolType" id="type"}
+                    <input type="checkbox" name="school_type[]" id="school_index_region{$type.sc_id}" nc_province="{$type.sc_id}" {volist name="school_array.typeid" id="v"}{if condition="$v eq $type.sc_id"} checked {/if}{/volist} value="{$type.sc_id}"> {$type.sc_type}
+                    {/volist}
+                </dd>
+            </dl>
+            <dl>
+                <dt><label  class="validation" >{$Think.lang.desc_img}：</label></dt>
+                <?php if($result['s_img']!=''){ ?>
+                <dd><img src="{$img_path}{$result.s_img}" ></dd>
+                <?php } ?>
+                <dd><input type="file" name="file" id="file" /> </dd>
+            </dl>
+            <dl>
+                <dt><label  class="validation" >{$Think.lang.desc_scdesc}：</label></dt>
+                {:buildEditor(['name'=>'s_present','content'=>$result.s_present])}
+                <dd><textarea name="s_present" id="s_present"> </textarea></dd>
+            </dl>
+            <dl>
+                <dt><label  class="validation" >{$Think.lang.desc_teacher}：</label></dt>
+                {:buildEditors(['name'=>'s_teacher','content'=>$result.s_teacher])}
+                <dd><textarea name="s_teacher" id="s_teacher"></textarea></dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.school_desc}：</dt>
+                <dd><textarea name="s_desc" id="s_desc">{$result.s_desc}</textarea></dd>
+            </dl>
+            <dl>
+                <dt></dt>
+                <dd><input class="btn" type="submit" value="提交"/></dd>
+            </dl>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/common/js/mlselection.js" charset="utf-8"></script>
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/home/js/common.js" charset="utf-8"></script>
+<script type="text/javascript">
+    $(function() {
+        regionInit("region");
+    });
+    $(function() {
+        //按钮先执行验证再提交表单
+        $("#submitBtn").click(function() {
+            if ($("#user_form").valid()) {
+                $("#user_form").submit();
+            }
+        });
+        $('#user_form').validate({
+            errorPlacement: function(error, element) {
+                error.appendTo(element.parent().parent().find('dt:first'));
+            },
+            rules: {
+                school_address:{
+                    required: true
+                },
+                school_type:{
+                    required: true
+                }
+            },
+            messages: {
+                school_address: {
+                    required: '{$Think.lang.school_add_address_null}',
+                },
+                school_type: {
+                    required: '{$Think.lang.school_add_type_null}',
+                }
+            }
+        });
+    });
+</script>
+
+
+
+
+
+
+
+

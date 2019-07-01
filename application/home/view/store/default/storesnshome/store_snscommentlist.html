@@ -1,0 +1,94 @@
+{include file="public/shop_header" /}
+
+<div class="comment-widget">
+  <div class="comment-edit">
+    <form id="commentform_<?php echo $stid;?>" method="post" action="{:url('storesnshome/addcomment')}">
+      <input type="hidden" name="stid" value="<?php echo $stid;?>" />
+      <input type="hidden" name="showtype" value="<?php echo $showtype;?>" />
+      <div class="comment-add">
+        <textarea placeholder="{$Think.lang.sns_comment_contenttip}" resize="none" id="content_comment<?php echo $stid;?>" name="commentcontent"></textarea>
+        <span class="error"></span> 
+        <!-- 验证码 -->
+        <div id="commentseccode<?php echo $stid;?>" class="seccode">
+          <label for="captcha">{$Think.lang.ds_checkcode}{$Think.lang.ds_colon}</label>
+          <input name="captcha" class="text" type="text" size="4" maxlength="4"/>
+          <img src="" title="{$Think.lang.wrong_checkcode_change}" name="codeimage" onclick="this.src='{:url('seccode/makecode')}'"/> <span>{$Think.lang.wrong_seccode}</span>
+        </div>
+        <input type="text" style="display:none;" />
+        <!-- 防止点击Enter键提交 -->
+        <div class="act"> <span class="skin-blue"><span class="btn"><a href="javascript:void(0);" nc_type="scommentbtn" data-param='{"txtid":"<?php echo $stid;?>"}'>{$Think.lang.sns_comment}</a></span></span> <span id="commentcharcount<?php echo $stid;?>" style="float:right;"></span> <a class="face" nc_type="smiliesbtn" data-param='{"txtid":"comment<?php echo $stid;?>"}' href="javascript:void(0);" >{$Think.lang.sns_smiles}</a> </div>
+      </div>
+    </form>
+  </div>
+  <div class="clear"></div>
+  <?php if (count($output['commentlist'])>0){ ?>
+  <ul class="comment-list">
+    <?php if(is_array($output['commentlist'])){?>
+    <?php foreach ($output['commentlist'] as $k=>$v){?>
+    <li nc_type="commentrow_<?php echo $v['scomm_id']; ?>">
+      <a target="_blank" href="{:url('membersnshome/index',['mid'=>$v.scomm_memberid])}">
+        <img width="30" height="30" class="clogo" src="<?php if ($v['scomm_memberavatar']!='') { echo UPLOAD_SITE_URL.'/'.ATTACH_AVATAR.DS.$v['scomm_memberavatar']; } else {  echo UPLOAD_SITE_URL.'/'.ATTACH_COMMON.DS.config('default_user_portrait'); } ?>" onload="javascript:DrawImage(this,30,30);"></a>
+      <div class="detail">
+        <p class="words"><a target="_blank" href="{:url('membersnshome/index',['mid'=>$v.scomm_memberid])}" class="name"><?php echo $v['scomm_membername'];?></a>{$Think.lang.ds_colon}<?php echo parsesmiles($v['scomm_content']);?></p>
+        <p class="other">
+          <?php if (session['member_id'] == $v['scomm_memberid']){?>
+          <span class="opt"><a href="javascript:void(0);" nc_type="scomment_del" data-param='{"scid":"<?php echo $v['scomm_id'];?>","stid":"<?php echo $v['strace_id'];?>"}'>{$Think.lang.ds_delete}</a></span>
+          <?php }?>
+          <span class="time"><?php echo @date('Y-m-d H:i',$v['scomm_time']);?> - <?php echo $countnum-$k;?>&nbsp;{$Think.lang.sns_comment_floor}</span> </p>
+      </div>
+    </li>
+    <?php }?>
+    <?php }?>
+  </ul>
+  <?php if ($showtype==1 && $showmore == '1'){//展示更多连接?>
+  <div class="more"><a target="_blank" href="{:url('storesnshome/straceinfo',['st_id'=>$stid])}">{$Think.lang.sns_comment_more}</a></div>
+  <?php } elseif (!$showtype){//展示分页?>
+  <div class="pagination"><?php echo $show_page; ?></div>
+  <?php } ?>
+  <?php } ?>
+  <div style="clear:both;"></div>
+</div>
+<script type="text/javascript">
+var MAX_RECORDNUM = <?php echo $output['max_recordnum'];?>;
+$(function(){
+	$('#commentform_<?php echo $stid;?>').validate({
+		errorPlacement: function(error, element){
+			element.next('.error').append(error);
+	    },      
+	    rules : {
+	    	commentcontent : {
+	            required : true,
+	            maxlength : 140
+	        }
+	    },
+	    messages : {
+	    	commentcontent : {
+	            required : '{$Think.lang.sns_comment_null}',
+	            maxlength: '{$Think.lang.sns_content_beyond}'
+	        }
+	    }
+	});
+	<?php if (!$showtype==1){?>
+	//分页绑定异步加载事件
+	$('#tracereply_<?php echo $stid;?>').find('.demo').ajaxContent({
+		event:'click',
+		loaderType:"img",
+		loadingMsg:"{$Think.config.url_domain_root}static/admin/images/treetable/transparent.gif",
+		target:'#tracereply_<?php echo $stid;?>'
+	});
+	<?php }?>
+	//评论字符个数动态计算
+	$("#content_comment<?php echo $stid;?>").charCount({
+		allowed: 140,
+		warning: 10,
+		counterContainerID:'commentcharcount<?php echo $stid;?>',
+		firstCounterText:'{$Think.lang.sns_charcount_tip1}',
+		endCounterText:'{$Think.lang.sns_charcount_tip2}',
+		errorCounterText:'{$Think.lang.sns_charcount_tip3}'
+	});
+});
+</script>
+
+
+{include file="public/mall_server" /}
+{include file="public/mall_footer" /}

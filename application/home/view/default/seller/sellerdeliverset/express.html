@@ -1,0 +1,51 @@
+{include file="public/seller_top" /}
+<div class="seller_main w1200">
+    {include file="public/seller_left" /}
+    <div class="seller_right">
+        <div class="seller_items">
+            {include file="public/seller_items" /}
+        </div>
+        <form method="POST" id='express_form'>
+            <table class="dssc-default-table" >
+                <thead>
+                    <tr>
+                        <th class="w20"></th>
+                        <th colspan="4" class="tm">{$Think.lang.store_deliver_express_title}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if(!empty($express_list) && is_array($express_list)){?>
+                    <tr class="bd-line">
+                        <td></td>
+                        <?php $i = 1;?>
+                        <?php foreach($express_list as $key=>$value){?>
+                        <td class="tl">
+                            <label>
+                                <input type="checkbox" name="cexpress[]" <?php if (in_array($key,$express_select)) echo 'checked';?> value="<?php echo $key;?>"><?php echo $value['e_name'];?>
+                            </label>
+                        </td>
+                        <?php if ($i%4 == 0){?>
+                    </tr>
+                    <tr class="bd-line">
+                        <td></td>
+                        <?php };$i++;?>
+                        <?php }?>
+                    </tr>
+                    <?php }else{?>
+                    <tr>
+                        <td colspan="20" class="norecord"><div class="warning-option"><i class="icon-warning-sign"></i><span>{$Think.lang.no_record}</span></div></td>
+                    </tr>
+                    <?php }?>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="20" class="bottom"><label class="submit-border"><input class="submit" type="submit" value="{$Think.lang.ds_common_button_save}"></label></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </form>
+        
+        
+    </div>
+</div>
+{include file="public/mall_footer" /}

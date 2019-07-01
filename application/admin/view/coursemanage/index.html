@@ -1,0 +1,199 @@
+{include file="public/header" /}
+<script src="{$Think.config.url_domain_root}static/common/js/mlselection.js"></script>
+<script src="{$Think.config.url_domain_root}static/home/js/common.js"></script>
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>课程管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <!--<form method="get" name="formSearch" id="formSearch" class="layui-form">-->
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>系统平台全局设置,包括基础设置、购物、短信、邮件、水印和分销等相关模块。</li>
+        </ul>
+    </div>
+    <table class="ds-default-table">
+        <thead>
+        <tr class="thead">
+            <th colspan="align-center">{$Think.lang.school_index_id}</th>
+            <th class="align-center">{$Think.lang.school_index_classtype}</th>
+            <th class="align-center">{$Think.lang.school_index_classname}</th>
+            <!--<th class="align-center">{$Think.lang.school_index_courder}</th>-->
+            <!--<th class="align-center">{$Think.lang.school_index_phone}</th>-->
+            <!--<th class="align-center">{$Think.lang.school_index_username}</th>-->
+            <th class="align-center">{$Think.lang.school_index_desc}</th>
+            <th class="align-center">{$Think.lang.school_index_addtime}</th>
+            <?php  if(session('admin_is_super') ==1 || (in_array('4',$action) || in_array('3',$action) || in_array('2',$action) || in_array('10',$action) || in_array('6',$action))){?>
+            <th class="align-center">{$Think.lang.ds_handle}</th>
+            <?php }?>
+        </tr>
+        <tbody>
+        <?php if(!empty($course_list) && is_array($course_list)){ ?>
+        <?php foreach($course_list as $k => $v){ ?>
+        <tr class="hover member">
+            <td class="align-center"><?php if(!$_GET['page']){  echo $k+1; }else{ echo ($_GET['page']-1)*15+$k+1; }?></td>
+            <td class="align-center"><?php echo $v['type']; ?></td>
+            <td class="align-center"><?php echo $v['schoolname']; ?></td>
+            <!--<td class="align-center">-->
+                <!--<?php foreach($v['content'] as $key=>$val){ ?>-->
+                    <!--<?php echo $key; ?>-->
+                    <!--<?php foreach($val as $ke=>$item){ ?>-->
+                        <!--<?php echo $item['time']; ?><?php echo $item['content']; ?>-->
+                    <!--<?php } ?><br>-->
+                <!--<?php } ?>-->
+            <!--</td>-->
+            <!--<td class="align-center"><?php echo $v['common_phone']; ?></td>-->
+            <!--<td class="align-center"><?php echo $v['username']; ?></td>-->
+            <td class="align-center"><?php echo $v['desc']; ?></td>
+            <td class="align-center"><?php echo date("Y-m-d H:i:s",$v['addtime']); ?></td>
+            <td class="align-center">
+                <?php if(session('admin_is_super') ==1 || in_array('4',$action)){ ?>
+                <a href="javascript:dd({$v.id})" class="layui-btn layui-btn-xs">{$Think.lang.ds_view}</a>
+                <?php } ?>
+                <?php if(session('admin_is_super') ==1 || in_array('3',$action)){ ?>
+                <a href="{:url('/admin/Coursemanage/edit',['id'=>$v.id,'schoolid'=>$v.schoolid])}" class="layui-btn layui-btn-xs">{$Think.lang.ds_edit}</a>
+                <?php } ?>
+                <!--<?php if(session('admin_is_super') ==1 || in_array('2',$action)){ ?>-->
+                <!--<a href="javascript:void(0)" onclick="if(confirm('{$Think.lang.ds_ensure_del}'))-->
+                <!--location.href='{:url('/admin/school/drop',['school_id'=>$v.schoolid])}';" class="layui-btn layui-btn-xs">{$Think.lang.ds_del}</a>-->
+                <!--<?php } ?>-->
+            </td>
+        </tr>
+        <?php } ?>
+        <?php }else { ?>
+        <tr class="no_data">
+            <td colspan="11">{$Think.lang.ds_no_record}</td>
+        </tr>
+        <?php } ?>
+        </tbody>
+        <tfoot class="tfoot">
+        <?php if(!empty($member_list) && is_array($member_list)){ ?>
+        <tr>
+            <td class="w24"><input type="checkbox" class="checkall" id="checkallBottom"></td>
+            <td colspan="16">
+                <label for="checkallBottom">{$Think.lang.ds_select_all}</label>
+                &nbsp;&nbsp;<a href="JavaScript:void(0);" class="btn" onclick="if(confirm('{$Think.lang.ds_ensure_del}')){$('#form_member').submit();}"><span>{$Think.lang.ds_del}</span></a>
+            </td>
+        </tr>
+        <?php } ?>
+        </tfoot>
+    </table>
+    {$page}
+    
+</div>
+<script type="text/javascript">
+    function dd(id) {
+        var urls=ADMIN_URL+'coursemanage/course?course_id='+id;
+        //多窗口模式，层叠置顶
+        layer.open({
+            type: 2
+            , title: '查看'
+            , area: ['80%', '80%']
+            , shade: 0
+            , maxmin: true
+            , content: urls
+
+        });
+    }
+    $(function() {
+        regionInit("region");
+    });
+    //按钮先执行验证再提交表
+    $(document).ready(function() {
+
+        layui.use(['form', 'layedit', 'laydate'], function() {
+            var form = layui.form
+        });
+        //按钮先执行验证再提交表单
+        $("#submitBtn").click(function() {
+            if ($("#courForm").valid()) {
+                //$("#courForm").submit();
+                //$('.layui-layer-close1').click();
+                var admin_name = $("#admin_name").val();
+                var admin_password = $("#admin_password").val();
+                $.ajax({
+                    url: "{:url('/Admin/school/admin_add')}",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {'admin_name': admin_name,'admin_password':admin_password},
+                    success:function(sb){
+                        if (sb.m) {
+                            layer.msg(sb.ms, {icon: 16,time: 500},function(){
+                                window.location.href="{:url('/Admin/School/member')}";
+                            });
+
+                        }
+                    }
+                });
+
+            }
+        });
+        $("#courForm").validate({
+            errorPlacement: function(error, element) {
+                error.appendTo(element.nextAll('span.err'));
+            },
+            rules: {
+                admin_name: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 20,
+                    remote: {
+                        url: ADMIN_URL+'/Admin/ajax.html?branch=check_admin_name',
+                        type: 'get',
+                        data: {
+                            admin_name: function() {
+                                return $('#admin_name').val();
+                            }
+                        }
+                    }
+                },
+                admin_password: {
+                    required: true,
+                    minlength: 6,
+                    maxlength: 20
+                },
+                admin_rpassword: {
+                    required: true,
+                    equalTo: '#admin_password'
+                },
+                gid: {
+                    required: true
+                }
+            },
+            messages: {
+                admin_name: {
+                    required: '{$Think.lang.admin_add_username_null}',
+                    minlength: '{$Think.lang.admin_add_username_max}',
+                    maxlength: '{$Think.lang.admin_add_username_max}',
+                    remote: '{$Think.lang.admin_add_admin_not_exists}'
+                },
+                admin_password: {
+                    required: '{$Think.lang.admin_add_password_null}',
+                    minlength: '{$Think.lang.admin_add_password_max}',
+                    maxlength: '{$Think.lang.admin_add_password_max}'
+                },
+                admin_rpassword: {
+                    required: '{$Think.lang.admin_add_password_null}',
+                    equalTo: '{$Think.lang.admin_edit_repeat_error}'
+                },
+                gid: {
+                    required: '{$Think.lang.admin_add_gid_null}',
+                }
+            }
+        });
+    });
+</script>

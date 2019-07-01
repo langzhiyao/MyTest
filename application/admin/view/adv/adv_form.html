@@ -1,0 +1,89 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>{$Think.lang.adv_index_manage}</h3>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+  <div class="fixed-empty"></div>
+  <form id="adv_form" enctype="multipart/form-data" method="post" name="advForm">
+    <table class="ds-default-table">
+      <tbody>
+        <tr class="noborder">
+          <td colspan="2" class="required"><label class="validation" for="adv_name">{$Think.lang.adv_name}:</label></td>
+        </tr>
+        <tr class="noborder">
+          <td class="vatop rowform"><input type="text" name="adv_name" id="adv_name" class="txt" value="{$adv.adv_title|default=''}"></td>
+          <td class="vatop tips"></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="required"><label>{$Think.lang.adv_ap_id}:</label></td>
+        </tr>
+        <tr class="noborder">
+            <td class="vatop rowform">
+                <select name="ap_id" id="ap_id">
+                    {foreach name="ap_list" item="ap" key="ap_k" }
+                    <option value='{$ap.ap_id}' {if condition="$Think.param.ap_id eq $ap.ap_id || $adv.ap_id eq $ap.ap_id"}selected{/if}>{$ap.ap_name}[{$ap.ap_width}X{$ap.ap_height}]</option>
+                    {/foreach}
+                </select>
+            </td>
+          <td class="vatop tips"></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="required"><label for="adv_start_date">{$Think.lang.adv_start_time}:</label></td>
+        </tr>
+        <tr class="noborder">
+          <td class="vatop rowform"><input type="text" name="adv_start_date" id="adv_start_date" class="txt date" value="{:date('Y-m-d',$adv.adv_start_date)}"></td>
+          <td class="vatop tips"></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="required"><label for="adv_end_date">{$Think.lang.adv_end_time}:</label></td>
+        </tr>
+        <tr class="noborder">
+          <td class="vatop rowform"><input type="text" name="adv_end_date" id="adv_end_date" class="txt date" value="{:date('Y-m-d',$adv.adv_end_date)}"></td>
+          <td class="vatop tips"></td>
+        </tr>
+        <tr id="adv_code" >
+          <input type="hidden" name="mark" value="0">
+          <td colspan="2" class="required"><label for="file_adv_code">{$Think.lang.adv_img_upload}:</label></td>
+        </tr>
+        <tr class="noborder">
+          <td class="vatop rowform">
+              <span class="type-file-show"><img class="show_image" src="{$Think.config.url_domain_root}static/admin/images/preview.png">
+            <div class="type-file-preview"><img src="{$Think.config.url_domain_root}<?php echo '/uploads/'.ATTACH_ADV;?>/{$adv.adv_code|default=''}"></div>
+            </span>
+              <span class="type-file-box"><input type='text' name='textfield' id='textfield1' class='type-file-text' /><input type='button' name='button' id='button1' value='' class='type-file-button' />
+                  <input name="adv_code" id="file_adv_code" type="file" class="type-file-file" id="site_logo" size="30" hidefocus="true">
+              </span>
+              <input type="hidden" name="adv_code_ori" value="{$adv.adv_code|default=''}">
+          </td>
+          <td class="vatop tips">{$Think.lang.adv_edit_support}gif,jpg,jpeg,png </td>
+        </tr>
+        <tr id="adv_link">
+          <td colspan="2" class="required"><label for="adv_link">{$Think.lang.adv_link}:</label></td>
+        </tr>
+        <tr class="noborder">
+          <td class="vatop rowform"><input type="text" id="adv_link" name="adv_link" value="{$adv.adv_link|default=''}" class="txt"></td>
+          <td class="vatop tips">{$Think.lang.adv_link_donotadd}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr class="tfoot">
+          <td colspan="15"><a href="JavaScript:void(0);" class="btn" onclick="document.advForm.submit()"><span>{$Think.lang.ds_submit}</span></a></td>
+        </tr>
+      </tfoot>
+    </table>
+  </form>
+</div>
+<script type="text/javascript">
+$(function(){
+    $('#adv_start_date').datepicker({dateFormat: 'yy-mm-dd'});
+    $('#adv_end_date').datepicker({dateFormat: 'yy-mm-dd'});
+});
+</script>

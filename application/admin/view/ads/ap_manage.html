@@ -1,0 +1,145 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>{$Think.lang.adv_index_manage}</h3>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+  <div class="fixed-empty"></div>
+  <form method="get" action="" name="formSearch">
+    <table class="search-form">
+      <tbody>
+        <tr>
+          <th><label for="search_name">{$Think.lang.ap_name}</label></th>
+          <td><input class="txt" type="text" name="search_name" id="search_name" value="{$Think.get.search_name}" /></td>
+          <td>
+              <a href="javascript:document.formSearch.submit();" class="btn-search " title="{$Think.lang.ds_query}"></a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </form>
+  
+  
+  
+  <div class="explanation" id="explanation">
+      <div class="title" id="checkZoom">
+          <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+          <span id="explanationZoom" title="收起提示" class="arrow"></span>
+      </div>
+      <ul>
+          <li>{$Think.lang.adv_help2}</li>
+      </ul>
+  </div>
+  
+  
+  <form method="post" id="store_form">
+    <input type="hidden" name="form_submit" value="ok" />
+    <table class="ds-default-table">
+      <thead>
+        <tr class="thead">
+          <th><input type="checkbox" class="checkall"/></th>
+          <th>{$Think.lang.ap_name}</th>
+          <th class="align-center">{$Think.lang.ap_width}</th>
+          <th class="align-center">{$Think.lang.ap_height}</th>
+          <th class="align-center">{$Think.lang.ap_show_num}</th>
+          <th class="align-center">{$Think.lang.ap_publish_num}</th>
+            <?php if(session('admin_is_super') == 1 || in_array(13,$action)){?>
+          <th class="align-center">{$Think.lang.ap_is_use}</th>
+            <?php }?>
+            <?php if(session('admin_is_super') == 1 || in_array(2,$action) || in_array(3,$action) || in_array(5,$action)){?>
+            <th class="align-center">{$Think.lang.ds_handle}</th>
+            <?php }?>
+        </tr>
+      </thead>
+      <tbody>
+        <?php if(!empty($ap_list) && is_array($ap_list)){ ?>
+        <?php foreach($ap_list as $k => $v){ ?>
+        <tr class="hover">
+          <td class="w24"><input type="checkbox" class="checkitem" name="del_id[]" value="<?php echo $v['ap_id']; ?>" /></td>
+          <td><span title="<?php echo $v['ap_name'];?>"><?php echo str_cut($v['ap_name'], '40');?></span></td>
+          <td class="align-center"><?php echo $v['ap_width'];?></td>
+          <td class="align-center"><?php echo $v['ap_height'];?></td>
+          <td class="align-center"><?php
+					 $i    = 0;
+					 $time = time();
+					 if(!empty($adv_list)){
+					 foreach ($adv_list as $adv_k => $adv_v){
+					 	if($adv_v['ap_id'] == $v['ap_id'] && $adv_v['adv_end_date'] > $time && $adv_v['adv_start_date'] < $time && $adv_v['is_allow'] == '1'){
+					 		$i++;
+					 	}
+					 }}
+					 echo $i;
+					?></td>
+          <td class="align-center"><?php
+					 $i    = 0;
+					 if(!empty($adv_list)){
+					 foreach ($adv_list as $adv_k => $adv_v){
+					 	if($adv_v['ap_id'] == $v['ap_id']){
+					 		$i++;
+					 	}
+					 }}
+					 echo $i;
+					?></td>
+          <td class="align-center yes-onoff">
+              <?php if(session('admin_is_super') == 1 || in_array(13,$action)){?>
+                  <?php if($v['is_use'] == '0'){ ?>
+                <a href="JavaScript:void(0);" class=" disabled" ajax_branch="is_use" nc_type="inline_edit" fieldname="is_use" fieldid="<?php echo $v['ap_id']?>" fieldvalue="0" title="{$Think.lang.ds_editable}"><img src="{$Think.config.url_domain_root}static/admin/images/transparent.gif"></a>
+                <?php }else { ?>
+                <a href="JavaScript:void(0);" class=" enabled" ajax_branch="is_use" nc_type="inline_edit" fieldname="is_use" fieldid="<?php echo $v['ap_id']?>" fieldvalue="1" title="{$Think.lang.ds_editable}"><img src="{$Think.config.url_domain_root}static/admin/images/transparent.gif"></a>
+                <?php } ?></td>
+            <?php }?>
+            <?php if(session('admin_is_super') == 1 || in_array(2,$action) || in_array(3,$action) || in_array(5,$action)){?>
+          <td class="align-center">
+              <?php if(session('admin_is_super') == 1 || in_array(5,$action)){?>
+              <a href="{:url('/Admin/Adv/adv',['ap_id'=>$v.ap_id])}">管理广告</a>
+              <?php if(session('admin_is_super') == 1 || in_array(3,$action) || in_array(2,$action)){?>
+              |
+              <?php }?>
+              <?php }?>
+              <?php if(session('admin_is_super') == 1 || in_array(3,$action)){?>
+              <a href="{:url('/Admin/Ads/ap_edit',['ap_id'=>$v.ap_id])}">{$Think.lang.ds_edit}</a>
+              <?php if(session('admin_is_super') == 1 || in_array(2,$action)){?>
+              |
+              <?php }?>
+                <?php }?>
+              <?php if(session('admin_is_super') == 1 || in_array(2,$action)){?>
+              <a href="{:url('/Admin/Ads/ap_del',['ap_id'=>$v.ap_id])}">{$Think.lang.ds_del}</a>
+              <?php }?>
+          </td>
+            <?php }?>
+        </tr>
+        <?php } ?>
+        <?php }else { ?>
+        <tr class="no_data">
+          <td colspan="15">{$Think.lang.ds_no_record}</td>
+        </tr>
+        <?php } ?>
+      </tbody>
+        <?php if(!empty($ap_list) && is_array($ap_list)){ ?>
+        <?php if(session('admin_is_super') == 1 || in_array(2,$action)){?>
+      <tfoot>
+        <tr class="tfoot">
+          <td><input type="checkbox" class="checkall" id="checkall"/></td>
+          <td id="batchAction" colspan="15"><span class="all_checkbox">
+            <label for="checkall">{$Think.lang.ds_select_all}</label>
+            </span>&nbsp;&nbsp;<a href="JavaScript:void(0);" class="btn" onclick="if(confirm('{$Think.lang.ap_del_sure}')){$('#store_form').submit();}"><span>{$Think.lang.ds_del}</span></a>
+          </td>
+        </tr>
+      </tfoot>
+        <?php }?>
+        <?php }?>
+    </table>
+
+    {$page}
+  </form>
+</div>
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/plugins/jquery.edit.js" charset="utf-8"></script>
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/plugins/js/dialog/dialog.js" id="dialog_js" charset="utf-8"></script>
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/plugins/js/jquery-ui/jquery-ui.min.js"></script>

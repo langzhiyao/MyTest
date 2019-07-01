@@ -1,0 +1,46 @@
+<script type="text/javascript">
+$(document).ready(function(){
+		$('#salelog_demo').find('.demo').ajaxContent({
+			event:'click', //mouseover
+			loaderType:"img",
+			loadingMsg:"images/transparent.gif",
+			target:'#salelog_demo'
+		});
+
+});
+</script>
+
+<!--suppress ProblematicWhitespace -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0" class="mt10">
+  <thead>
+    <tr>
+      <th class="w200">{$Think.lang.goods_index_buyer}</th>
+      <th class="w100">{$Think.lang.goods_index_buy_price}</th>
+      <th class="">{$Think.lang.goods_index_buy_amount}</th>
+      <th class="w200">{$Think.lang.goods_index_buy_time}</th>
+    </tr>
+  </thead>
+  {notempty name="sales"}
+  <tbody>
+    {volist name="sales" id="sale"}
+    <tr>
+      <td><a href="{:url('/Home/Membersnshome/index',['mid'=>$sale.buyer_id])}" target="_blank" data-param="{'id':{$sale.buyer_id}}" nctype="mcard">{$sale.buyer_name}</a></td>
+      <td><em class="price">{$Think.lang.currency}{$sale.goods_price}</em> {present name="$order_type[$sale.goods_type]"}<i style="color:red;">{$order_type[$sale.goods_type]}</i>{/present}</td>
+      <td>{$sale.goods_num}</td>
+      <td><time>{:date('Y-m-d H:i:s',$sale.add_time)}</time></td>
+    </tr>
+   {/volist}
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="10" class="tr" ><div class="pagination"> {$show_page} </div></td>
+    </tr>
+  </tfoot>
+  {else /}
+  <tbody>
+    <tr>
+      <td colspan="10" class="ncs-norecord">{$Think.lang.no_record}</td>
+    </tr>
+  </tbody>
+ {/notempty}
+</table>

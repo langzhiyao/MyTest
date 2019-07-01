@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>想见孩-教孩</title>
+    <meta name="author" content="想见孩" />
+    <meta name="copyright" content="想见孩" />
+    <meta name="description" content="想见孩" />
+    <meta id="viewport" name="viewport" content="width=750" />
+    <link rel="stylesheet" href="../content/style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/iconfonts/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/lib/weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/css/jquery-weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/teachchild/teachchild.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/teachchild/myupload.css" type="text/css" />
+    <link rel="shortcut icon" href="../content/images/ico.ico" type="image/x-icon" />
+    <script src="../content/scripts/mobile-util.js"></script>
+    <style>
+        .weui-pull-to-refresh__layer {
+            font-size: 22px !important;
+            position: relative;
+        }
+        .content{
+            min-height: 1000px;
+        }
+    </style>
+</head>
+
+<body>
+<header class="head">
+    <div class="head0">
+        <div class="menu_bar_box">
+            <a href="javascript:;" class="back_btn" onClick="historyback();">
+                <i class="icon iconfont icon-jiantou3"></i>
+            </a>
+        </div>
+        <div class="head_title">
+            <p>我的上传</p>
+        </div>
+        <div class="head_r" onclick="videoUpload()">
+            <span>上传</span>
+        </div>
+    </div>
+</header>
+
+<div class="myupload_tabs">
+    <div class="myupload_tabs_wrap clearBoth">
+        <span class="float_left action" onclick="Tabs(1, this)">审核中</span>
+        <span class="float_left" onclick="Tabs(3, this)">已上传</span>
+    </div>
+
+</div>
+
+
+<div class="content">
+    <div class="weui-pull-to-refresh__layer">
+        <div class='weui-pull-to-refresh__arrow'></div>
+        <div class='weui-pull-to-refresh__preloader'></div>
+        <div class="down">下拉刷新</div>
+        <div class="up">释放刷新</div>
+        <div class="refresh">正在刷新</div>
+    </div>
+    <!-- 主要内容部分 -->
+    <div class="body_content clearBoth main_content">
+    </div>
+    <div class="weui-footer nodata_bottom_ziding" style="display: none;font-size: 22px;color: #999999;margin-bottom: 50px;">
+        <span class="weui-over">没有更多信息了</span>
+    </div>
+    <div class="weui-loadmore" style="display: none;">
+        <i class="weui-loading"></i>
+        <span class="weui-loadmore__tips">正在加载</span>
+    </div>
+</div>
+
+
+
+    <script src="../content/scripts/jquery.min.js"></script>
+    <script src="../content/plugins/jqweui/js/jquery-weui.min.js"></script>
+    <script src="../content/scripts/juqery.cookie.js"></script>
+    <script src="../content/scripts/API.js"></script>
+    <script src="../content/scripts/teachchild/myupload.js"></script>
+    <script src="../content/scripts/commom.js"></script>
+
+</body>
+
+</html>

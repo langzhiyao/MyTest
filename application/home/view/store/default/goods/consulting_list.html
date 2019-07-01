@@ -1,0 +1,264 @@
+{include file="public/mall_top" /}
+{include file="public/mall_header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/store/styles/{$store_theme}/css/goods.css">
+<div class="w1200">
+
+    <div class="ncs-goods-layout expanded">
+        <div class="ncs-goods-main">
+            <div class="ncs-goods-title-bar">
+                <h4>{$Think.lang.goods_index_goods_consult}</h4>
+            </div>
+            <div class="ncs-goods-info-content bd" id="ncGoodsRate">
+                <div class="top" style="overflow: hidden;">
+                    <div class="ncs-cosult-tips"><i></i>
+                        <p>{:html_entity_decode(config('consult_prompt'))}</p>
+                    </div>
+                    <div class="ncs-cosult-askbtn"><a href="#askQuestion" class="ncs-btn ncs-btn-red">我要提问</a></div>
+                </div>
+                <div class="ncs-goods-title-nav">
+                    <ul id="comment_tab">
+                        <li class="{if $Request.param.ctid == 0}current{/if}"><a
+                                href="{:url('Goods/consulting_list',['goods_id'=>$Request.param.goods_id])}">全部</a></li>
+                        {notempty name="consult_type"}
+                        {volist name="consult_type" id="val"}
+                        <li class="{if $Request.param.ctid == $val.ct_id}current{/if}"><a
+                                href="{:url('Goods/consulting_list',['goods_id'=>$Request.param.goods_id,'ctid'=>$val.ct_id])}">{$val.ct_name}</a>
+                        </li>
+                        {/volist}
+                        {/notempty}
+                    </ul>
+                </div>
+                <div class="ncs-commend-main">
+                    {notempty name="consult_list"}
+                    {volist name="consult_list" id="v"}
+                    <div class="ncs-cosult-list">
+                        <dl class="asker">
+                            <dt>咨询网友{$Think.lang.ds_colon}</dt>
+                            <dd>
+                                {if $v.member_id=='0'}{$Think.lang.ds_guest}
+                                {elseif $v.isanonymous == '1'}
+                                {:str_cut($v.member_name,2)}***
+                                {else /}
+                                <a href="{:url('membersnshome/index',['mid'=>$v.member_id])}" target="_blank"
+                                   data-param="{'id':{$v.member_id}}" nctype="mcard">{:str_cut($v.member_name,8)}</a>
+                                {/if}
+                                &nbsp;<span>咨询类型：{$consult_type[$v.ct_id]['ct_name']}</span>
+                                <time datetime="{:date('Y-m-d H:i:s',$v.consult_addtime)}" pubdate="pubdate"
+                                      class="ml20">{:date('Y-m-d H:i:s',$v.consult_addtime)}
+                                </time>
+                            </dd>
+                        </dl>
+                        <dl class="ask-con">
+                            <dt>{$Think.lang.goods_index_consult_content}{$Think.lang.ds_colon}</dt>
+                            <dd>
+                                <p>{:nl2br($v.consult_content)}</p>
+                            </dd>
+                        </dl>
+                        {if $v.consult_reply != ''}
+                        <dl class="reply">
+                            <dt>{$Think.lang.goods_index_seller_reply}</dt>
+                            <dd>
+                                <p>{:nl2br($v.consult_reply)}</p>
+                                <time datetime="{:date('Y-m-d H:i:s',$v.consult_reply_time)}" pubdate="pubdate">
+                                    [{:date('Y-m-d H:i:s',$v.consult_reply_time)}]
+                                </time>
+                            </dd>
+                        </dl>
+                        {/if}
+                    </div>
+                    {/volist}
+                    <div class="tr pr5 pb5">
+                        <div class="pagination"> {$show_page}</div>
+                    </div>
+                    {else /}
+                    <div class="ncs-norecord">{$Think.lang.goods_index_no_reply}</div>
+                    {/notempty}
+                </div>
+            </div>
+            {if $consult_able}
+            <!-- S 咨询表单部分 -->
+            <div class="ncs-goods-title-bar" id="askQuestion">
+                <h4>发表咨询</h4>
+            </div>
+            <form method="post" id="message" action="{:url('Goods/save_consult')}">
+                <input type="hidden" name="__token__" value="{$Request.token}" />
+                {notpresent name="type_name"}
+                <input type="hidden" name="goods_id" value="{$Request.param.goods_id}"/>
+                {/notpresent}
+                <div class="ncs-consult-form">
+                    {notempty name="consult_type"}
+                    <dl>
+                        <dt>咨询类型：</dt>
+                        <dd>
+                            {volist name="consult_type" id="val"}
+                            <label>
+                                <input type="radio" {if $key== '1'}checked="checked"{/if} nctype="ctype{$val.ct_id}"
+                                name="consult_type_id" class="radio" value="{$val.ct_id}" />
+                                {$val.ct_name}
+                            </label>
+                            {/volist}
+                        </dd>
+                    </dl>
+                    {/notempty}
+                    {volist name="consult_type" id="val"}
+                    <div class="ncs-consult-type-intro" {if $key !='1' }style="display:none;"
+                         {/if} nctype="ctype{$val.ct_id}"> {$val.ct_introduce}
+                </div>
+                {/volist}
+                <div>
+                    {if $Think.session.member_id}
+                    <label><strong>{$Think.lang.goods_index_member_name}{$Think.lang.ds_colon}</strong>{$Think.session.member_name}</label>
+                    <label for="gbCheckbox">
+                        <input type="checkbox" class="checkbox" name="hide_name" value="hide" id="gbCheckbox">
+                        {$Think.lang.goods_index_anonymous_publish}</label>
+                    {/if}
+                </div>
+                <dl class="ncs-consult">
+                    <dt>咨询内容：</dt>
+                    <dd>
+                        <textarea name="goods_content" id="textfield3" class="textarea w700 h60"></textarea>
+                        <span id="consultcharcount"></span></dd>
+                </dl>
+                <dl>
+                    <dt>&nbsp;</dt>
+                    <dd>
+                        {if $setting_config.captcha_status_goodsqa == '1'}
+                        <input name="captcha" class="text w60" type="text" id="captcha" size="4"
+                               placeholder="{$Think.lang.goods_index_checkcode}" autocomplete="off" maxlength="4"/>
+                        <div class="code">
+                <div class="arrow"></div>
+                <div class="code-img">
+                    <a href="javascript:void(0)" onclick="javascript:document.getElementById('codeimage').src='{:url('seccode/makecode')}'">
+                        <img src="{:url('seccode/makecode')}" name="codeimage" border="0" id="codeimage" onclick="this.src='{:url('seccode/makecode')}'"/>
+                    </a>
+                </div>
+                <a href="JavaScript:void(0);" id="hide" class="close" title="关闭"><i></i></a>
+                   </a>
+                        </div>
+                        {/if}
+                        <a href="JavaScript:void(0);" nctype="consult_submit"
+                           title="{$Think.lang.goods_index_publish_consult}" class="ncs-btn ncs-btn-red">{$Think.lang.goods_index_publish_consult}</a>
+                    </dd>
+                    <dd nctype="error_msg"></dd>
+                </dl>
+            </form>
+            <!-- E 咨询表单部分 -->
+            {/if}
+        </div>
+    </div>
+        <div class="ncs-sidebar">
+            <div class="ncs-sidebar-container">
+                <div class="title">
+                    <h4>商品信息</h4>
+                </div>
+                <div class="content">
+                    <dl class="ncs-comment-goods">
+                        <dt class="goods-name"><a
+                                href="{:url('Goods/index',['goods_id'=>$goods.goods_id])}"> {$goods.goods_name} </a>
+                        </dt>
+                        <dd class="goods-pic"><a
+                                href="{:url('Goods/index',['goods_id'=>$goods.goods_id])}">
+                            <img src="{:cthumb($goods.goods_image,240)}"
+                                 alt="{$goods.goods_name}"> </a></dd>
+                        <dd class="goods-price">{$Think.lang.goods_index_goods_price}{$Think.lang.ds_colon}<em
+                                class="saleP">{$Think.lang.currency}{$goods.goods_price}</em></dd>
+                        <dd class="goods-raty">{$Think.lang.goods_index_evaluation}{$Think.lang.ds_colon}
+                            <span class="raty" data-score="{$goods.evaluation_good_star}"></span>
+                        </dd>
+                    </dl>
+                </div>
+                <!--S 店铺信息-->
+                {include file="store/default/store/store_info" /}
+                <!--E 店铺信息 -->
+            </div>
+        </div>
+    </div>
+
+</div>
+{include file="public/mall_server" /}
+{include file="public/mall_footer" /}
+<script src="{$Think.config.url_domain_root}static/plugins/js/jquery.raty/jquery.raty.min.js"></script>
+<script src="{$Think.config.url_domain_root}static/plugins/jquery.charCount.js"></script>
+<script>
+    $(function () {
+        $('.raty').raty({
+            path: SITE_URL+"static/plugins/js/jquery.raty/img",
+            readOnly: true,
+        });
+        {if $consult_able}
+            $('a[nctype="consult_submit"]').click(function () {
+                $('#message').submit();
+            });
+
+            $('#message').validate({
+                errorPlacement: function (error, element) {
+                    $('dd[nctype="error_msg"]').append(error);
+                },
+                submitHandler: function (form) {
+                    ajaxpost('message', '', '', 'onerror');
+                },
+                onkeyup: false,
+                rules: {
+                    goods_content: {
+                        required: true,
+                        maxlength: 120
+                    }
+        {if $setting_config.captcha_status_goodsqa == '1'}
+        ,captcha: {
+                required : true,
+                    remote   : {
+                    url : "{:url('seccode/check')}",
+                        type:'get',
+                        data:{
+                        captcha : function(){
+                            return $('#captcha').val();
+                        }
+                    },
+                    complete: function(data) {
+                        if(data.responseText == 'false') {
+                            document.getElementById('codeimage').src='{:url('seccode/makecode')}';
+                        }
+                    }
+                }
+            }
+       {/if}
+        },
+            messages : {
+                goods_content : {
+                    required : '{$Think.lang.goods_index_cosult_not_null}',
+                        maxlength
+                :
+                    '{$Think.lang.goods_index_max_120}'
+                }
+                {if $setting_config.captcha_status_goodsqa == '1'}
+            ,captcha: {
+                    required : '{:lang('goods_index_captcha_no_noll')}',
+                    remote   : '{:lang('goods_index_captcha_error')}'
+                }
+                {/if}
+            }
+        });
+
+            // textarea 字符个数动态计算
+            $("#textfield3").charCount({
+                allowed: 120,
+                warning: 10,
+                counterContainerID: 'consultcharcount',
+                firstCounterText: '{$Think.lang.goods_index_textarea_note_one}',
+                endCounterText: '{$Think.lang.goods_index_textarea_note_two}',
+                errorCounterText: '{$Think.lang.goods_index_textarea_note_three}'
+            });
+        {/if}
+        $('input[type="radio"]').click(function () {
+            $('div[nctype^="ctype"]').hide();
+            $('div[nctype="' + $(this).attr('nctype') + '"]').show();
+        });
+        //Hide Show verification code
+        $("#hide").click(function () {
+            $(".code").fadeOut("slow");
+        });
+        $("#captcha").focus(function () {
+            $(".code").fadeIn("fast");
+        });
+    });
+</script>

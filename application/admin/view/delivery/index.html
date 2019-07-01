@@ -1,0 +1,86 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>物流自提服务站</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form method="get" name="formSearch" id="formSearch">
+        
+        <table class="search-form">
+            <tbody>
+            <tr>
+                <th><label for="search_title">真实姓名</label></th>
+                <td><input type="text" value="{$Request.get.search_name}" name="search_name" id="search_name" class="txt"></td>
+                <td><a href="javascript:document.formSearch.submit();" class="btn-search " title="{$Think.lang.ds_query}">&nbsp;</a>
+                    {notempty name="search_name"}
+                    <a href="{:url('delivery/index')}" class="btns " title="{$Think.lang.ds_cancel_search}"><span>{$Think.lang.ds_cancel_search}</span></a>
+                    {/notempty}</td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+    
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>物流自提服务站关闭后，被用户选择设置成收货地址的记录会被删除，请谨慎操作。</li>
+        </ul>
+    </div>
+    
+    <form method="post" id="form_article">
+        <table class="ds-default-table">
+            <thead>
+            <tr class="thead">
+                <th>用户名</th>
+                <th>真实姓名</th>
+                <th>收货地址</th>
+                <th class="align-center">状态</th>
+                <th class="align-center">申请时间</th>
+                <th class="w96 align-center">{$Think.lang.ds_handle}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {notempty name="dp_list"}
+            {volist name="dp_list" id="v"}
+            <tr class="hover">
+                <td>{$v.dlyp_name}</td>
+                <td>{$v.dlyp_truename}</td>
+                <td>
+                    <p>{$v.dlyp_address_name}</p>
+                    <p>{$v.dlyp_area_info}&nbsp;&nbsp;{$v.dlyp_address}</p>
+                </td>
+                <td class="align-center">{$delivery_state[$v.dlyp_state]}</td>
+                <td class="nowrap align-center">{$v.dlyp_addtime|date="Y-m-d H:i:s",###}</td>
+                <td class="align-center"><a href="{:url('delivery/edit_delivery',['d_id'=>$v.dlyp_id])}">编辑</a> | <a href="{:url('delivery/edit_order_list',['d_id'=>$v.dlyp_id])}">查看订单</a></td>
+            </tr>
+           {/volist}
+            {else }
+            <tr class="no_data">
+                <td colspan="10">{$Think.lang.ds_no_record}</td>
+            </tr>
+           {/notempty}
+            </tbody>
+            <tfoot>
+            {notempty name="dp_list"}
+            <tr class="tfoot">
+                <td colspan="16">
+                    <div class="pagination"> {$show_page} </div></td>
+            </tr>
+            {/notempty}
+            </tfoot>
+        </table>
+    </form>
+
+</div>

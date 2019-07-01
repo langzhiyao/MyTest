@@ -1,0 +1,222 @@
+{include file="public/header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>晒心情</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>用户心情信息展示。</li>
+        </ul>
+    </div>
+
+    <form method="post">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">账号/手机号</label>
+                    <div class="layui-input-block">
+                        <input type="text"  name="account" placeholder="请输入账号/手机号" value="{$member_name}" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">状态</label>
+                    <div class="layui-input-block">
+                        <select name="del">
+                            <option value="0" >请选择</option>
+                            <option value="1" <?php if($del==1){ ?>selected<?php } ?>>正常</option>
+                            <option value="2" <?php if($del==2){ ?>selected<?php } ?>>禁用</option>
+                            <option value="3" <?php if($del==3){ ?>selected<?php } ?>>被举报未处理</option>
+                            <option value="4" <?php if($del==4){ ?>selected<?php } ?>>被举报已处理</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">时间</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="stime" name="stime" class="txt date" value="{$stime}">
+                        <label>~</label>
+                        <input type="text" id="etime" name="etime" class="txt date" value="{$etime}">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn layuiadmin-btn-admin" lay-submit="" type="submit" lay-filter="LAY-user-back-search">
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form method="post" id='form_admin' class="layui-form">
+        <table class="layui-table"  >
+            <colgroup>
+                <col width="150">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+            <tr class="thead">
+                <th class="align-center">{$Think.lang.ds_number}</th>
+                <th class="align-center">{$Think.lang.ds_value}</th>
+                <th class="align-center">{$Think.lang.ds_image}</th>
+                <th class="align-center">{$Think.lang.ds_status}</th>
+                <th class="align-center">{$Think.lang.mood_member}</th>
+                <th class="align-center">{$Think.lang.mood_role}</th>
+                <th class="align-center">{$Think.lang.mood_class}</th>
+                <th class="align-center">{$Think.lang.organize_membernum_school}</th>
+                <th class="align-center">{$Think.lang.region}</th>
+                <th class="align-center">{$Think.lang.mood_time}</th>
+                <th class="align-center">{$Think.lang.mood_deltime}</th>
+                <?php if(session('office_is_super')==1 || in_array('13',$action) || in_array('2',$action) || in_array('3',$action) || in_array('12',$action)){?>
+                <th class="align-center">{$Think.lang.ds_handle}</th>
+                <?php }?>
+            </tr>
+            </thead>
+            <tbody>
+            <?php if(!empty($mood_list) && is_array($mood_list)){ ?>
+            <?php foreach($mood_list as $k => $v){ ?>
+            <tr class="hover">
+                <td class="align-center w50"><?php echo $k+1;?></td>
+                <td class="align-center w50"><a href="javascript:dd({$v.id})"><?php echo $v['content'];?></a></td>
+                <td class="align-center w50"><?php if($v['image'][0]!=''){ ?><a href="javascript:dd({$v.id})"><img src="{$path}{$v.image.0}"></a><?php } ?></td>
+                <td class="align-center w150">
+                    <?php
+                     if($v['del']==1 && $v['status'] == 0){
+                        echo '正常' ;
+                    }else if($v['del'] == 2){
+                        echo '禁用';
+                    }else if($v['del']==1 && $v['status'] == 1){
+                        echo '被举报未处理' ;
+                    }else if($v['del']==2 && $v['status'] == 1){
+                        echo '被举报已处理';
+                    }
+                    ?>
+                </td>
+                <td class="align-center w50"><?php echo $v['member_name'];?></td>
+                <td class="align-center w50"><?php if($v['member_identity']==1){ echo '家长'; }else if($v['member_identity']==2){ echo '教师'; }else{ echo '其他';}?></td>
+                <td class="align-center w50"><?php echo $v['student']['classname'];?></td>
+                <td class="align-center w50"><?php echo $v['student']['name'];?></td>
+                <td class="align-center w150"><?php echo $v['student']['s_region'];?></td>
+                <td class="align-center w50"><?php echo date('Y-m-d H:i:s',$v['pubtime']); ?></td>
+                <td class="align-center w50" style="color: #D39600"> <?php if($v['deltime']!=''){ echo date('Y-m-d H:i:s',$v['deltime']);} ?></td>
+                <?php if(session('office_is_super')==1 || in_array('13',$action) || in_array('2',$action) || in_array('3',$action) || in_array('12',$action)){?>
+                <td class="w150 align-center">
+                    <div class="layui-table-cell laytable-cell-9-8" style="height: 32px;">
+                        <?php if($v['del'] == 1){?>
+                        <a class="layui-unselect layui-form-checkbox layui-form-checked" onclick="return close_status('<?php echo $v[id];?>');"><span>{$Think.lang.admin_index_status_on}</span><i class="layui-icon layui-icon-ok"></i></a>
+                        <?php }else if($v['del'] == 2){?>
+                        <a class="layui-unselect layui-form-checkbox" onclick="return open_status('<?php echo $v[id];?>');"><i class="layui-icon layui-icon-ok"></i><span>{$Think.lang.admin_index_status_off}</span></a>
+                        <?php }?>
+                    </div>
+                </td>
+                <?php }?>
+            </tr>
+            <?php } ?>
+            <?php }else { ?>
+            <tr class="no_data">
+                <td colspan="10">{$Think.lang.ds_no_record}</td>
+            </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+        <div>
+            <?php if(!empty($admin_list) && is_array($admin_list)){ ?>
+            <tr class="tfoot">
+                {$page}
+            </tr>
+            <?php } ?>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    layui.use(['form'], function(){
+        var form = layui.form;
+    });
+    $(function () {
+        $.datepicker.regional["zh-CN"] = { closeText: "关闭", prevText: "&#x3c;上月", nextText: "下月&#x3e;", currentText: "今天", monthNames: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"], monthNamesShort: ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"], dayNames: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"], dayNamesShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"], dayNamesMin: ["日", "一", "二", "三", "四", "五", "六"], weekHeader: "周", dateFormat: "yy-mm-dd", firstDay: 1, isRTL: !1, showMonthAfterYear: !0, yearSuffix: "年" }
+        $.datepicker.setDefaults($.datepicker.regional["zh-CN"]);
+        $('#stime').datepicker({dateFormat: 'yy-mm-dd'});
+        $('#etime').datepicker({dateFormat: 'yy-mm-dd'});
+    });
+
+    //关闭
+    function close_status(id){
+        var msg = '{$Think.lang.mood_status_close_late}';
+        layer.confirm(msg, {
+            btn: ['{$Think.lang.mood_index_kl}','{$Think.lang.mood_status_close_true}'] //按钮
+            ,title:'{$Think.lang.admin_index_title}'}, function(){
+            layer.msg('{$Think.lang.mood_index_qx}', {time: 2000,icon: 2});
+        }, function(){
+            $.ajax({
+                type:'get',
+                url:ADMIN_URL+'/Office/ajax.html?branch=find_mood_name',
+                data:{del:'2',id:id},
+                success:function (data) {
+                    if(data){
+                        layer.msg('{$Think.lang.mood_status_close_success}',{time: 2000,icon: 1},function () {
+                            window.location.reload();
+                        });
+                    }else{
+                        layer.msg('{$Think.lang.mood_status_close_error}',{time: 2000,icon: 2},function(){
+                            window.location.reload();
+                        });
+                    }
+                }
+            });
+        });
+    }
+    //开启
+    function open_status(id){
+        var msg = '{$Think.lang.mood_status_close_before}';
+        layer.confirm(msg, {
+            btn: ['{$Think.lang.mood_index_kl}','{$Think.lang.mood_status_open_true}'] //按钮
+            ,title:'{$Think.lang.admin_index_title}'}, function(){
+            layer.msg('{$Think.lang.mood_index_qx}', {time: 2000,icon: 2});
+        }, function(){
+            $.ajax({
+                type:'get',
+                url:ADMIN_URL+'/Office/ajax.html?branch=find_mood_name',
+                data:{del:'1',id:id},
+                success:function (data) {
+                    if(data){
+                        layer.msg('{$Think.lang.mood_status_open_success}',{time: 2000,icon: 1},function () {
+                            window.location.reload();
+                        });
+                    }else{
+                        layer.msg('{$Think.lang.mood_status_open_error}',{time: 2000,icon: 2},function(){
+                            window.location.reload();
+                        });
+                    }
+                }
+            });
+        });
+    }
+    function dd(id) {
+        var urls=ADMIN_URL+'mood/view?id='+id;
+        //多窗口模式，层叠置顶
+        layer.open({
+            type: 2,
+            title: '心情详情',
+            area: ['80%', '80%'],
+            shadeClose: true,
+            shade: 0.4,
+            maxmin: false, //开启最大化最小化按钮
+            content: urls
+        });
+    }
+</script>

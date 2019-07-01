@@ -1,0 +1,51 @@
+{include file="public/mall_top" /} 
+{include file="public/mall_header" /}
+
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/home/css/member.css">
+<div class="dsm-container">
+    {include file="public/member_left" /}
+    <div class="right-layout">
+        <div class="tabmenu">
+            {include file="public/member_items" /}
+        </div>
+        <div class="dsm-default-form">
+            <dl>
+                <dt>{$Think.lang.predeposit_rechargesn}{$Think.lang.ds_colon}</dt>
+                <dd><?php echo $info['pdr_sn']; ?></dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.predeposit_payment}{$Think.lang.ds_colon}</dt>
+                <dd><?php echo $info['pdr_payment_name']; ?></dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.predeposit_recharge_price}{$Think.lang.ds_colon}</dt>
+                <dd><?php echo $info['pdr_amount']; ?>{$Think.lang.currency_zh}</dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.predeposit_addtime}{$Think.lang.ds_colon}</dt>
+                <dd><?php echo @date('Y-m-d H:i:s',$info['pdr_add_time']); ?></dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.predeposit_paytime}{$Think.lang.ds_colon}</dt>
+                <dd><?php echo intval(date('His',$info['pdr_payment_time'])) ? date('Y-m-d H:i:s',$info['pdr_payment_time']) : date('Y-m-d',$info['pdr_payment_time']); ?></dd>
+            </dl>
+            <dl>
+                <dt><?php echo $info['pdr_payment_name'];?>{$Think.lang.predeposit_trade_no}{$Think.lang.ds_colon}</dt>
+                <dd><?php echo $info['pdr_trade_sn']; ?></dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.predeposit_paystate}{$Think.lang.ds_colon}</dt>
+                <dd><?php echo !intval($info['pdr_payment_state']) ? lang('predeposit_rechargewaitpaying'): lang('predeposit_rechargepaysuccess'); ?></dd>
+            </dl>
+            <dl class="sumbit">
+                <dt>&nbsp;</dt>
+                <dd>
+                    <input type="submit"  class="submit" value="{$Think.lang.predeposit_backlist}" onclick="window.location = '<?php echo $_SERVER['HTTP_REFERER'];?>'"/>
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+</div>
+{include file="public/mall_server" /}
+{include file="public/mall_footer" /}

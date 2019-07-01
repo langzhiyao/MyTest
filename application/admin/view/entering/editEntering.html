@@ -1,0 +1,564 @@
+{include file="public/header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<style>
+    .layui-input{
+        width: 80%;
+    }
+    .layui-textarea{
+        width: 80%;
+    }
+    .layui-form-select  .layui-edge{
+        right: 190px;
+    }
+    .layui-input-inline .layui-edge{
+        right: 45px;
+    }
+    .layui-form-item .layui-input-inline{
+        width: 180px;
+    }
+    .layui-form-select dl{
+        min-width: 80%;
+    }
+    .layui-form-label{
+        width: 150px;
+    }
+    .layui-input-block{
+        margin-left: 180px;
+    }
+    .error{
+        color: red;
+        margin-top: 5px;
+        display: none;
+    }
+    .layui-upload-img{
+        width: 100px;
+    }
+</style>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div style="margin-top: 20px;width: 100%;">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">学校所属公司</label>
+            <div class="layui-input-block">
+                <div class="layui-input-inline">
+                    <select  lay-filter="province"  class="select"  lay-verify="type" name="province" id="province">
+                        <option value="0" selected>{$Think.lang.look_address_province}</option>
+                        {volist name="province" id="vo"}
+                            <option value="{$vo.area_id}" >{$vo.area_name}</option>
+                        {/volist}
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="city" lay-filter="city"  class="select"  lay-verify="type"  id="city">
+                        <option value="0">{$Think.lang.look_address_city}</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="area" lay-filter="area"  class="select"  lay-verify="type"  id="area">
+                        <option value="0">{$Think.lang.look_address_area}</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="agent" lay-filter="agent"  class="select"  lay-verify="type"  id="agent">
+                        <option value="" selected="">请选择所属公司</option>
+                        {volist name="agent" id="vo"}
+                        <option value="{$vo.o_id}" >{$vo.o_name}</option>
+                        {/volist}
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: #E00515;">*</span>付款学校名称</label>
+            <div class="layui-input-block">
+                <select lay-filter="school"  class="select"  lay-verify="type" name="school" id="school">
+                    <option value="">请选择学校</option>
+                    {volist name="school" id="vo"}
+                    <option value="{$vo.schoolid}" <?php if($vo['schoolid'] == $entering['schoolId']){?>selected="selected"<?php }?>>{$vo.name}</option>
+                    {/volist}
+                </select>
+                <p class="error"></p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">所在地区</label>
+            <div class="layui-input-block">
+                <input type="text" value="{$entering.schoolAddress}" name="schoolAddress" id="schoolAddress" disabled class="layui-input">
+                <p class="error"></p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">负责/联系人</label>
+            <div class="layui-input-block">
+                <input type="text" value="{$entering.schoolUserName}" name="schoolUserName" id="schoolUserName" disabled class="layui-input">
+                <p class="error"></p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">联系电话</label>
+            <div class="layui-input-block">
+                <input type="text" value="{$entering.schoolUserName}" name="schoolUserName" id="schoolMobile" disabled class="layui-input">
+                <p class="error"></p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: #E00515;">*</span>付款方式</label>
+            <div class="layui-input-block">
+                <select lay-filter="paymentType"  class="select"  lay-verify="type" name="paymentType" id="paymentType">
+                    <option value="">请选择付款方式</option>
+                    <option value="1" <?php if($entering['paymentType'] == 1){?>selected="selected"<?php }?>>网银</option>
+                    <option value="2" <?php if($entering['paymentType'] == 2){?>selected="selected"<?php }?>>微信</option>
+                    <option value="3" <?php if($entering['paymentType'] == 3){?>selected="selected"<?php }?>>支付宝</option>
+                    <option value="4" <?php if($entering['paymentType'] == 4){?>selected="selected"<?php }?>>柜台</option>
+                    <option value="5" <?php if($entering['paymentType'] == 5){?>selected="selected"<?php }?>>ATM</option>
+                    <option value="6" <?php if($entering['paymentType'] == 6){?>selected="selected"<?php }?>>其他</option>
+                </select>
+                <p class="error"></p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: #E00515;">*</span>付款银行卡/账号</label>
+            <div class="layui-input-block">
+                <input type="text" id="paymentAccount" name="paymentAccount" value="{$entering.paymentAccount}" lay-verify="paymentAccount" autocomplete="off" placeholder="请输入付款银行卡/账号" class="layui-input">
+                <p class="error"></p>
+            </div>
+        </div>
+        <div class="layui-form-item bank" style="display:none">
+            <label class="layui-form-label"><span style="color: #E00515;">*</span>所属银行</label>
+            <div class="layui-input-block">
+                <select name="bank" id="bank">
+                    <option value="">请选择所属银行</option>
+                    {volist name="bank" id="vo"}
+                    <option value="{$vo.id}" <?php if($entering['paymentBank'] == $vo.id){?>selected="selected"<?php }?>>{$vo.name}</option>
+                    {/volist}
+                </select>
+                <p class="error"></p>
+            </div>
+        </div>
+        <div class="layui-form-item bank" style="display:none">
+            <label class="layui-form-label"><span style="color: #E00515;">*</span>付款银行卡属地</label>
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <select  lay-filter="paymentBankProvince"  class="select"  lay-verify="type" name="paymentBankProvince" id="paymentBankProvince">
+                        <option value="" selected>{$Think.lang.look_address_province}</option>
+                        {volist name="province" id="vo"}
+                        <option value="{$vo.area_id}" >{$vo.area_name}</option>
+                        {/volist}
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="paymentBankCity" lay-filter="paymentBankCity"  class="select"  lay-verify="paymentBankCity"  id="paymentBankCity">
+                        <option value="">{$Think.lang.look_address_city}</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="paymentBankArea" lay-filter="paymentBankArea"  class="select"  lay-verify="paymentBankArea"  id="paymentBankArea">
+                        <option value="">{$Think.lang.look_address_area}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item bank" style="display:none">
+            <label class="layui-form-label">付款银行详细地址</label>
+            <div class="layui-input-block">
+                <input type="text" id="paymentBankAddress"  name="paymentBankAddress" value="{$entering.paymentBankAddress}" lay-verify="paymentBankAddress" autocomplete="off" placeholder="请输入付款银行详细地址" class="layui-input">
+                <p class="error"></p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: #E00515;">*</span>付款金额</label>
+            <div class="layui-input-block">
+                <input type="text" id="paymentPrice"  name="paymentPrice" value="{$entering.paymentPrice}" lay-verify="paymentPrice" autocomplete="off" placeholder="请输入付款金额" class="layui-input">
+                <p class="error"></p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: #E00515;">*</span>付款日期（凭证中的转账时间）</label>
+            <div class="layui-input-block">
+                <input type="text" id="paymentTime"  name="paymentTime" readonly value="<?php echo date('Y-m-d H:i:s',$entering['paymentTime']);?>" lay-verify="paymentTime" autocomplete="off" placeholder="请选择付款日期（凭证中的转账时间）" class="layui-input">
+                <p class="error"></p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: #E00515;">*</span>付款凭证单号</label>
+            <div class="layui-input-block">
+                <input type="text" id="paymentNumber"  name="paymentNumber" value="{$entering.paymentNumber}" lay-verify="paymentNumber" autocomplete="off" placeholder="请输入付款凭证单号" class="layui-input">
+                <p class="error"></p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: #E00515;">*</span>上传付款凭证图</label>
+            <div class="layui-upload">
+                <button type="button" class="layui-btn" id="updateImage">上传图片</button>
+                <input type="hidden" name="images" id="images" value="" />
+                <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                    预览图：
+                    <div class="layui-upload-list" id="showImage"></div>
+                </blockquote>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: #E00515;">*</span>收款银行卡号/账号</label>
+            <div class="layui-input-block">
+                <select name="ReceivablesAccount" lay-filter="ReceivablesAccount"  class="select"  lay-verify="type" id="ReceivablesAccount">
+                    <option value="">请选择收款银行卡号/账号</option>
+                    {volist name="account" id="vo"}
+                    <option value="{$vo.type}_{$vo.account}" >{$vo.type}&nbsp;&nbsp;&nbsp;&nbsp;{$vo.account}</option>
+                    {/volist}
+                </select>
+                <p class="error"></p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: #E00515;">*</span>收款金额</label>
+            <div class="layui-input-block">
+                <input type="text" id="ReceivablesPrice"  name="ReceivablesPrice" value="{$entering.ReceivablesPrice}" lay-verify="ReceivablesPrice" autocomplete="off" placeholder="请输入收款金额" class="layui-input">
+                <p class="error"></p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: #E00515;">*</span>收款日期（查询收款账户到账时间）</label>
+            <div class="layui-input-block">
+                <input type="text" id="ReceivablesTime" readonly  name="ReceivablesTime" value="<?php echo date('Y-m-d H:i:s',$entering['ReceivablesTime']);?>" lay-verify="ReceivablesTime" autocomplete="off" placeholder="请选择收款日期（查询收款账户到账时间）" class="layui-input">
+                <p class="error"></p>
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">{$Think.lang.t_content}</label>
+            <div class="layui-input-block">
+                <textarea placeholder="请输入内容" id="content" name="content" class="layui-textarea">{$entering.content}</textarea>
+                <p class="error"></p>
+            </div>
+        </div>
+        <div style="margin: 20px;margin-left: 245px;">
+            <button type="button" class="layui-btn" id="true" >保存</button>
+            <button type="button" class="layui-btn layui-layer-close layui-layer-close1" id="del">取消</button>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var index = parent.layer.getFrameIndex(window.name);
+    layui.use(['form', 'laydate','upload','layer'], function() {
+        var form = layui.form
+            , layer = layui.layer
+            , upload = layui.upload
+            , laydate = layui.laydate;
+        //日期
+        laydate.render({
+            elem: '#paymentTime'
+            , type: 'datetime'
+        });
+        //日期
+        laydate.render({
+            elem: '#ReceivablesTime'
+            , type: 'datetime'
+        });
+
+        //多图片上传
+        upload.render({
+            elem: '#updateImage'
+            , url: ADMIN_URL+'Entering/upload_img.html'
+            , multiple: true
+            ,accept: 'file'
+            ,size: 8388608 //限制文件大小，单位 KB
+            /*, before: function (obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function (index, file, result) {
+                    $('#showImage').append('<img src="' + result + '" alt="' + file.name + '" class="layui-upload-img">')
+                });
+            }*/
+            , done: function (res) {
+                //上传完毕
+                // console.log(res);
+                var images = $('#images').val();
+                if(res.code == 200){
+                    $('#showImage').append('<img src="' + res.tmp_url + '" alt="' + res.tmp_url + '" class="layui-upload-img">');
+                    if(images == ''){
+                        images = res.url;
+                    }else{
+                        images = images+','+res.url;
+                    }
+                    $('#images').val(images);
+                }else{
+                    parent.layer.msg(res.message,{icon:2});return false;
+                }
+            }
+        });
+        //省
+        form.on('select(province)', function(data){
+            //改变市区
+            $('#city').html('<option value="0">{$Think.lang.look_address_city}</option>');
+            //改变县区
+            $('#area').html('<option value="0">{$Think.lang.look_address_area}</option>');
+            //改变代理商
+            $('#agent').html('<option value="0">请选择公司</option>');
+            //改变学校
+            $('#school').html('<option value="0">请选择学校</option>');
+            //改变学校信息
+            $('#schoolAddress').val('');
+            $('#schoolUserName').val('');
+            $('#schoolMobile').val('');
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变市区
+                    $('#city').html(data.city);
+                    //改变县区
+                    $('#area').html(data.area);
+                    //改变代理商
+                    $('#agent').html(data.agent);
+                    //改变学校
+                    $('#school').html(data.school);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //市
+        form.on('select(city)', function(data){
+            //改变县区
+            $('#area').html('<option value="0">{$Think.lang.look_address_area}</option>');
+            //改变代理商
+            $('#agent').html('<option value="0">请选择公司</option>');
+            //改变学校
+            $('#school').html('<option value="0">请选择学校</option>');
+            //改变学校信息
+            $('#schoolAddress').val('');
+            $('#schoolUserName').val('');
+            $('#schoolMobile').val('');
+            var province = $('#province').find('option:selected').val();
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+province+'&city='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变县区
+                    $('#area').html(data.area);
+                    //改变代理商
+                    $('#agent').html(data.agent);
+                    //改变学校
+                    $('#school').html(data.school);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //县/区
+        form.on('select(area)', function(data){
+            var province = $('#province').find('option:selected').val();
+            var city = $('#city').find('option:selected').val();
+            //改变代理商
+            $('#agent').html('<option value="0">请选择公司</option>');
+            //改变学校
+            $('#school').html('<option value="0">请选择学校</option>');
+            //改变学校信息
+            $('#schoolAddress').val('');
+            $('#schoolUserName').val('');
+            $('#schoolMobile').val('');
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+province+'&city='+city+'&area='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变代理商
+                    $('#agent').html(data.agent);
+                    //改变学校
+                    $('#school').html(data.school);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //代理商
+        form.on('select(agent)', function(data){
+            var province = $('#province').find('option:selected').val();
+            var city = $('#city').find('option:selected').val();
+            var area = $('#area').find('option:selected').val();
+            //改变学校
+            $('#school').html('<option value="0">请选择学校</option>');
+            //改变学校信息
+            $('#schoolAddress').val('');
+            $('#schoolUserName').val('');
+            $('#schoolMobile').val('');
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+province+'&city='+city+'&area='+area+'&agent='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变学校
+                    $('#school').html(data.school);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+
+        //付款方式
+        //市
+        form.on('select(paymentType)', function(data){
+            var payId = data.value;
+            if(payId == 2 || payId == 3){
+                $(".bank").hide();
+            }else{
+                $(".bank").show();
+            }
+        });
+        //银行地区
+        //省
+        form.on('select(paymentBankProvince)', function(data){
+            //改变市区
+            $('#paymentBankCity').html('<option value="0">{$Think.lang.look_address_city}</option>');
+            //改变县区
+            $('#paymentBankArea').html('<option value="0">{$Think.lang.look_address_area}</option>');
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变市区
+                    $('#paymentBankCity').html(data.city);
+                    //改变县区
+                    $('#paymentBankArea').html(data.area);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //市
+        form.on('select(paymentBankCity)', function(data){
+            //改变县区
+            $('#paymentBankArea').html('<option value="0">{$Think.lang.look_address_area}</option>');
+            var province = $('#paymentBankProvince').find('option:selected').val();
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+province+'&city='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变县区
+                    $('#paymentBankArea').html(data.area);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+
+        //选择学校
+        //市
+        form.on('select(school)', function(data){
+            $('#schoolAddress').val('');
+            $('#schoolUserName').val('');
+            $('#schoolMobile').val('');
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_school?school='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    $('#schoolAddress').val(data.info['address']);
+                    $('#schoolUserName').val(data.info['username']);
+                    $('#schoolMobile').val(data.info['common_phone']);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+
+        //提交
+        $('#true').click(function(){
+            var id='<?php echo $entering["id"];?>';
+            var provinceId = $('#province').find('option:selected').val();
+            var cityId = $('#city').find('option:selected').val();
+            var areaId = $('#area').find('option:selected').val();
+            var agentId = $('#agent').find('option:selected').val();
+            var schoolId = $('#school').find('option:selected').val();
+            if(schoolId == ''){
+                parent.layer.msg('请选择付款学校',{icon:2});return false;
+            }
+            var schoolAddress = $('#schoolAddress').val();
+            var schoolUserName = $('#schoolUserName').val();
+            var schoolMobile = $('#schoolMobile').val();
+            var paymentType = $('#paymentType').find('option:selected').val();
+            var bank='', paymentBankProvince = '', paymentBankCity = '', paymentBankArea = '', paymentBankAddress = '';
+            if(paymentType == ''){
+                parent.layer.msg('请选择付款方式',{icon:2});return false;
+            }
+            var paymentAccount = $('#paymentAccount').val();
+            if(paymentAccount == ''){
+                parent.layer.msg('请填写付款银行卡/账号',{icon:2});return false;
+            }
+            if(paymentType != 2 && paymentType != 3){
+                bank = $("#bank").find('option:selected').val();
+                if(bank == ''){
+                    parent.layer.msg('请选择所属银行',{icon:2});return false;
+                }
+                paymentBankProvince = $('#paymentBankProvince').find('option:selected').val();
+                paymentBankCity = $('#paymentBankCity').find('option:selected').val();
+                paymentBankArea = $('#paymentBankArea').find('option:selected').val();
+                if(paymentBankProvince == '' || paymentBankCity == '' || paymentBankArea == '' ){
+                    parent.layer.msg('请选择付款银行卡属地',{icon:2});return false;
+                }
+                paymentBankAddress = $('#paymentBankAddress').val();
+            }
+            var paymentPrice = $('#paymentPrice').val();
+            if(paymentPrice == ''){
+                parent.layer.msg('请填写付款金额',{icon:2});return false;
+            }
+            var paymentTime = $('#paymentTime').val();
+            if(paymentTime == ''){
+                parent.layer.msg('请选择付款日期',{icon:2});return false;
+            }
+            var paymentNumber = $('#paymentNumber').val();
+            if(paymentNumber == ''){
+                parent.layer.msg('请填写付款凭证单号',{icon:2});return false;
+            }
+            //图片
+            var images = $('#images').val();
+            if(images == ''){
+                parent.layer.msg('请上传付款凭证图',{icon:2});return false;
+            }
+
+            var ReceivablesAccount = $('#ReceivablesAccount').find('option:selected').val();
+            if(ReceivablesAccount == ''){
+                parent.layer.msg('请选择收款银行卡/账号',{icon:2});return false;
+            }
+            var ReceivablesPrice = $('#ReceivablesPrice').val();
+            if(ReceivablesPrice == ''){
+                parent.layer.msg('请填写收款金额',{icon:2});return false;
+            }
+            var ReceivablesTime = $('#ReceivablesTime').val();
+            if(ReceivablesTime == ''){
+                parent.layer.msg('请选择收款日期',{icon:2});return false;
+            }
+            var content = $('#content').val();
+
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Entering/addEntering.html',
+                data:{id:id,provinceId:provinceId,cityId:cityId,areaId:areaId,agentId:agentId,schoolId:schoolId,schoolAddress:schoolAddress,schoolUserName:schoolUserName,
+                    schoolMobile:schoolMobile,paymentType:paymentType,bank:bank,paymentBankProvince:paymentBankProvince,paymentBankCity:paymentBankCity,paymentBankArea:paymentBankArea,
+                    paymentBankAddress:paymentBankAddress,paymentAccount:paymentAccount,paymentPrice:paymentPrice,paymentTime:paymentTime,paymentNumber:paymentNumber,
+                    paymentImage:images,ReceivablesAccount:ReceivablesAccount,ReceivablesPrice:ReceivablesPrice,ReceivablesTime:ReceivablesTime,content:content},
+                success:function(response){
+                    response = jQuery.parseJSON(response);
+                    if(response.code == 200){
+                        parent.layer.msg(response.message,{icon:1,time:2000},function(){
+                            parent.layer.close(index);
+                            window.parent.location.reload();
+                        })
+                    }else{
+                        parent.layer.msg(response.message,{icon:2});return false;
+                    }
+
+                }
+            })
+
+        });
+
+
+        //关闭iframe
+        $('#del').click(function(){
+            parent.layer.close(index);
+        });
+
+    });
+
+
+</script>

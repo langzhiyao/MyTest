@@ -1,0 +1,50 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>投诉管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    
+    <table class="ds-default-table">
+        <thead class="thead">
+        <tr class="space">
+            <th>{$Think.lang.complain_appeal_detail}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th>{$Think.lang.complain_appeal_message}</th>
+        </tr>
+        <tr class="noborder">
+            <td><ul>
+                <li><strong>{$Think.lang.complain_accused}:</strong>{$complain_info.accused_name}</li>
+                <li><strong>{$Think.lang.complain_appeal_evidence}:</strong>
+                    {empty name="complain_info.appeal_pic2"}{empty name="complain_info.appeal_pic1"}{empty name="complain_info.appeal_pic3"}
+                    {$Think.lang.complain_pic_none}
+                    {else}
+
+                    <a href="<?php echo $pic_link;?>" target="_blank">{$Think.lang.complain_pic_view}</a>
+                    {/empty} {/empty} {/empty}
+                </li>
+                <li><strong>{$Think.lang.complain_appeal_datetime}:</strong>{$complain_info.appeal_datetime|date="Y-m-d H:i:s",###}</li>
+            </ul></td>
+        </tr>
+        <tr>
+            <th>{$Think.lang.complain_appeal_content}</th>
+        </tr>
+        <tr class="noborder">
+            <td>{$complain_info.appeal_message}</td>
+        </tr>
+        </tbody>
+    </table>
+    
+    
+</div>

@@ -1,0 +1,100 @@
+{include file="public/seller_top" /}
+<div class="seller_main w1200">
+    {include file="public/seller_left" /}
+    <div class="seller_right clearfix">
+        <div class="seller_items">
+            {include file="public/seller_items" /}
+        </div>
+<div class="alert mt10" style="clear:both;">
+	<ul class="mt5">
+        <li>1、统计图展示了在搜索时间段内访问次数多的店铺商品前30名</li>
+    </ul>
+</div>
+<form method="get" target="_self">
+  <table class="search-form">
+    <tr>
+    	<td class="tr">
+    		<div class="fr">
+    			<label class="submit-border">
+                  <input type="submit" class="submit" value="{:lang('ds_common_search')}" /></label>
+    		</div>
+    		<div class="fr">
+    		  <div class="fl" style="margin-right:3px;">
+        		<select name="search_type" id="search_type" class="querySelect">
+        			<option value="week" {$search_arr.search_type == 'week'?'selected':''}>按照周统计</option>
+                  <option value="month" {$search_arr.search_type == 'month'?'selected':''}>按照月统计</option>
+        		</select>
+        	 </div>
+                <div id="searchtype_week" style="display:none;" class="fl">
+                  	<select name="searchweek_year" class="querySelect">
+                      {volist name="year_arr" id="v"}
+                  		<option value="{$key}" {$search_arr.week.current_year == $key ?'selected':''}>{$v}</option>
+                      {/volist}
+                    </select>
+                    <select name="searchweek_month" class="querySelect">
+                      {volist name="month_arr" id="v"}
+                  		<option value="{$key}" {$search_arr.week.current_month ==$key ?'selected':''}>{$v}</option>
+                      {/volist}
+                    </select>
+                    <select name="searchweek_week" class="querySelect">
+                      {volist name="week_arr" id="v"}
+                  		<option value="{$v.key}" {$search_arr.week.current_week == $v.key ?'selected':''}>{$v.val}</option>
+                      {/volist}
+                    </select>
+              </div>
+              <div id="searchtype_month" style="display:none;" class="fl">
+                  	<select name="searchmonth_year" class="querySelect">
+                      {volist name="year_arr" id="v"}
+                  		<option value="{$key}" {$search_arr.month.current_year == $key ?'selected':''}>{$v}</option>
+                      {/volist}
+                    </select>
+                    <select name="searchmonth_month" class="querySelect">
+                      {volist name="month_arr" id="v"}
+                  		<option value="{$key}" {$search_arr.month.current_month == $key ?'selected':''}>{$v}</option>
+                      {/volist}
+                    </select>
+              </div>
+    		</div>
+    	</td>
+    </tr>
+  </table>
+</form>
+<div id="container"></div>
+    </div>
+</div>
+<script src="{$Think.config.url_domain_root}static/plugins/highcharts/highcharts.js"></script>
+<script type="text/javascript">
+//展示搜索时间框
+function show_searchtime(){
+    s_type = $("#search_type").val();
+    $("[id^='searchtype_']").hide();
+    $("#searchtype_"+s_type).show();
+}
+
+$(function(){
+    //统计数据类型
+    var s_type = $("#search_type").val();
+
+    show_searchtime();
+    $("#search_type").change(function(){
+        show_searchtime();
+    });
+
+    //更新周数组
+    $("[name='searchweek_month']").change(function(){
+        var year = $("[name='searchweek_year']").val();
+        var month = $("[name='searchweek_month']").val();
+        $("[name='searchweek_week']").html('');
+        $.getJSON(SITE_URL+'common/getweekofmonth',{y:year,m:month},function(data){
+            if(data != null){
+                for(var i = 0; i < data.length; i++) {
+                    $("[name='searchweek_week']").append('<option value="'+data[i].key+'">'+data[i].val+'</option>');
+                }
+            }
+        });
+    });
+
+    $('#container').highcharts({$stat_json});
+
+});
+</script>

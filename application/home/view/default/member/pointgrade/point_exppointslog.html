@@ -1,0 +1,60 @@
+{include file="public/mall_top" /}
+{include file="public/mall_header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/home/css/point.css">
+
+<div class="dsp-container">
+  <div class="dsp-base-layout">
+    <div class="dsp-member-left">
+     {include file="default/member/pointprod/pointshop_minfo" /}
+    </div>
+    <div class="dsp-member-right">
+      <table class="dsp-table-style">
+        <thead>
+          <tr>
+            <th class="w200">添加时间</th>
+            <th class="w100">获得经验</th>
+            <th class="w200">操作阶段</th>
+            <th class="tl">描述</th>
+          </tr>
+        </thead>
+        <tbody>
+        {notempty name="list_log"}
+         {volist name="list_log" id="val"}
+          <tr class="">
+            <td class="">{:date('Y-m-d',$val.exp_addtime)}</td>
+            <td class="">{$val.exp_points>0 ?'':'-'}{$val.exp_points}</td>
+            <td>
+              {switch name="val.exp_stage"}
+              {case value="login"}会员登录{/case}
+              {case value="comments"}商品评论{/case}
+              {case value="order"}订单消费{/case}
+              {/switch}
+             </td>
+            <td class="tl">{$val.exp_desc}</td>
+          </tr>
+          {/volist}
+          {else /}
+          <tr>
+            <td colspan="20" class="norecord">
+              <div class="warning-option"><i>&nbsp;</i>
+              <span>{:lang('no_record')}</span>
+              </div>
+            </td>
+          </tr>
+          {/notempty}
+        </tbody>
+        <tfoot>
+        {notempty name="list_log"}
+          <tr>
+            <td colspan="20">
+              <div class="pagination">{$show_page}</div>
+            </td>
+          </tr>
+         {/notempty}
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>
+
+{include file="public/mall_footer" /}

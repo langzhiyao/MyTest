@@ -1,0 +1,108 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>意见反馈</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    
+    <div class="fixed-empty"></div>
+    
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>来自用户的反馈</li>
+        </ul>
+    </div>
+    
+    <form method='post' id="form_link">
+        
+        <table class="ds-default-table nobdb">
+            <thead>
+            <tr class="thead">
+                <th>&nbsp;</th>
+                <th>{$Think.lang.feedback_index_content}</th>
+                <th>用户名</th>
+                <th>{$Think.lang.feedback_index_time}</th>
+                <th>{$Think.lang.feedback_index_from}</th>
+                <th class="align-center">{$Think.lang.ds_handle}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {notempty name="list"}
+            {volist name="list" id="v"}
+            <tr class="hover edit">
+                <td class="w24"><input type="checkbox" name="del_id[]" value="{$v.id}" class="checkitem"></td>
+                <td width="705px">{$v.content}</td>
+                <td>{$v.member_name}</td>
+                <td>{:date('Y-m-d H:i:s',$v.ftime)}</td>
+                <td>{$v.type}</td>
+                <td class="w96 align-center"><a id="btn_delete" data-id="{$v.id}">{$Think.lang.ds_del}</a></td>
+            </tr>
+           {/volist}
+           {else /}
+            <tr class="no_data">
+                <td colspan="10">{$Think.lang.ds_no_record}</td>
+            </tr>
+            {/notempty}
+            </tbody>
+            <tfoot>
+            {notempty name="list"}
+            <tr class="tfoot" id="dataFuncs">
+                <td><input type="checkbox" class="checkall" id="checkallBottom"></td>
+                <td colspan="16" id="batchAction"><label for="checkallBottom">{$Think.lang.ds_select_all}</label>
+                    &nbsp;&nbsp; <a href="JavaScript:void(0);" class="btn" id="btn_delete_batch"><span>{$Think.lang.ds_del}</span></a>
+                    <div class="pagination"> {$page} </div></td>
+            </tr>
+            {/notempty}
+            </tfoot>
+
+        </table>
+    </form>
+
+</div>
+<form id="delete_form" method="post" action="{:url('mbfeedback/del')}">
+    <input id="feedback_id" name="feedback_id" type="hidden">
+</form>
+<script type="text/javascript">
+    function submit_delete_batch(){
+        /* 获取选中的项 */
+        var items = '';
+        $('.checkitem:checked').each(function(){
+            items += this.value + ',';
+        });
+        if(items != '') {
+            items = items.substr(0, (items.length - 1));
+            submit_delete(items);
+        }
+        else {
+            alert('{$Think.lang.ds_please_select_item}');
+        }
+    }
+    function submit_delete(id){
+        if(confirm('{$Think.lang.ds_ensure_del}')) {
+            $('#feedback_id').val(id);
+            $('#delete_form').submit();
+        }
+    }
+
+    $(document).ready(function(){
+        $('#btn_delete_batch').on('click', function() {
+            submit_delete_batch();
+        });
+
+        $('#btn_delete').on('click', function() {
+            submit_delete($(this).attr('data-id'));
+        });
+    });
+</script>

@@ -1,0 +1,119 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>买家动态</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form method="get" name="formSearch">
+        <table class="search-form">
+            <tbody>
+            <tr>
+                <th><label for="search_uname">{$Think.lang.admin_snstrace_membername}</label></th>
+                <td><input type="text" value="{$Request.get.search_uname}" name="search_uname" id="search_uname" class="txt"></td>
+                <th><label for="search_content">{$Think.lang.admin_snstrace_content}</label></th>
+                <td><input type="text" value="{$Request.get.search_content}" name="search_content" id="search_content" class="txt"></td>
+                <th><label>{$Think.lang.admin_snstrace_state}</label></th>
+                <td>
+                    <select name="search_state">
+                        <option value=''>{$Think.lang.ds_please_choose}...</option>
+                        <option value="0" {$Request.get.search_state == '1'?'selected':''}>{$Think.lang.admin_snstrace_stateshow}</option>
+                        <option value="1" {$Request.get.search_state == '0'?'selected':''}>{$Think.lang.admin_snstrace_statehide}</option>
+                    </select>
+                </td>
+                <th><label for="search_stime">{$Think.lang.admin_snstrace_addtime}</label></th>
+                <td>
+                    <input type="text" class="txt date" value="{$Request.get.search_stime}" name="search_stime" id="search_stime" class="txt">
+                    <label for="search_etime">~</label>
+                    <input type="text" class="txt date" value="{$Request.get.search_etime}" name="search_etime" id="search_etime" class="txt">
+                </td>
+                <th><a href="javascript:document.formSearch.submit();" class="btn-search " title="{$Think.lang.ds_query}"></a></th>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>{$Think.lang.admin_snstrace_commentlisttip}</li>
+        </ul>
+    </div>
+    
+    
+    <form method='post' id="form_comment">
+        <input type="hidden" name="form_submit" value="ok" />
+        <table class="ds-default-table">
+            <thead>
+            <tr class="thead">
+                <th class="w24"></th>
+                <th>{$Think.lang.admin_snstrace_content}</th>
+                <th class="w150 align-center">{$Think.lang.admin_snstrace_membername}</th>
+                <th class="w150 align-center">{$Think.lang.admin_snstrace_addtime}</th>
+                <th class="w150 align-center">{$Think.lang.admin_snstrace_state}</th>
+                <th class="w150 align-center">{$Think.lang.ds_handle}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {notempty name="scomm_list"}
+            {volist name="scomm_list" id="v"}
+            <tr class="hover edit">
+                <td class="w24"><input type="checkbox" name="sc_id[]" value="{$v.scomm_id}" class="checkitem"></td>
+                <td>{:parsesmiles($v.scomm_content)}</td>
+                <td class="w150 align-center">{$v.scomm_membername}</td>
+                <td class="w150 align-center">{:date('Y-m-d H:i:s',$v.scomm_time)}</td>
+                <td class="w150 align-center">
+                    {$v.scomm_state == '0' ? $Think.lang.admin_snstrace_statehide:$Think.lang.admin_snstrace_stateshow}</td>
+                <td class="w150 align-center"><a href="javascript:void(0);" onclick="if(confirm('{$Think.lang.ds_ensure_del}')){location.href='{:url('snsstrace/scomm_del',['sc_id'=>$v.scomm_id])}';}else{return false;}">{$Think.lang.ds_del}</a></td>
+            </tr>
+            {/volist}
+            <tfoot>
+            <tr class="tfoot">
+                <td><input type="checkbox" class="checkall" id="checkallBottom"></td>
+                <td colspan="16"><label for="checkallBottom">{$Think.lang.ds_select_all}</label>
+                    &nbsp;&nbsp;
+                    <a href="JavaScript:void(0);" class="btn" onclick="submit_form('del');"><span>{$Think.lang.ds_del}</span></a>
+                    <a href="JavaScript:void(0);" class="btn" onclick="submit_form('hide');"><span>{$Think.lang.admin_snstrace_statehide}</span></a>
+                    <a href="JavaScript:void(0);" class="btn" onclick="submit_form('show');"><span>{$Think.lang.admin_snstrace_stateshow}</span></a>
+                    <div class="pagination">{$show_page} </div></td>
+            </tr>
+            </tfoot>
+           {else /}
+            <tr class="no_data">
+                <td colspan="15">{$Think.lang.ds_no_record}</td>
+            </tr>
+           {/notempty}
+            </tbody>
+        </table>
+    </form>
+
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $('#search_stime').datepicker({dateFormat: 'yy-mm-dd'});
+        $('#search_etime').datepicker({dateFormat: 'yy-mm-dd'});
+    });
+    function submit_form(type){
+        if(type=='del'){
+            if(!confirm('{$Think.lang.ds_ensure_del}')){
+                return false;
+            }
+            $('#form_comment').attr('action','{:url('snstrace/commentdel')}');
+        }else if(type=='hide'){
+            $('#form_comment').attr('action','{:url('snstrace/commentedit','type=hide')}');
+        }else if(type=='show'){
+            $('#form_comment').attr('action','{:url('snstrace/commentedit','type=show')}');
+        }
+        $('#form_comment').submit();
+    }
+</script>

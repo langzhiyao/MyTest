@@ -1,0 +1,59 @@
+{include file="public/mall_top" /}
+{include file="public/mall_header" /}
+
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/home/css/member.css">
+<div class="dsm-container">
+    {include file="public/member_left" /}
+    <div class="right-layout">
+        <div class="tabmenu">
+            {include file="public/member_items" /}
+        </div>
+        <table class="dsm-default-table order">
+            <thead>
+            <tr>
+                <th class="w30"></th>
+                <th>{$Think.lang.store_consult_reply}</th>
+                <th class="w30"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {notempty name="list_consult"}
+            {volist name="list_consult" id="consult"}
+            <tr>
+                <td colspan="19" class="sep-row"></td>
+            </tr>
+            <tr>
+                <th colspan="20"><span class="ml10"><a href="{:url('goods/index',['goods_id'=>$consult.goods_id])}" target="_blank">{$consult.goods_name}</a></span><span class="ml20">{$Think.lang.store_consult_list_consult_time}{$Think.lang.ds_colon}<em class="goods-time">{$consult.consult_addtime|date="Y-m-d H:i:s",###}</em></span></th>
+            </tr>
+            <tr>
+                <td class="tl bdl"></td>
+                <td class="tl"><strong>{$Think.lang.store_consult_list_consult_content}{$Think.lang.ds_colon}</strong><span class="gray">{:nl2br($consult.consult_content)}</span></td>
+                <td class="bdr"></td>
+                {notempty name="consult.consult_reply"}
+            <tr>
+                <td class="tl bdl"></td>
+                <td class="tl"><strong>{$Think.lang.store_consult_list_reply_time}{$Think.lang.ds_colon}</strong><span class="gray">{:nl2br($consult.consult_reply)}</span><span class="ml10 goods-time">({$consult.consult_reply_time|date="Y-m-d H:i:s",###})</span></td>
+                <td class="bdr"></td>
+            </tr>
+            {/notempty}
+            {/volist}
+            {else /}
+            <tr>
+                <td colspan="20" class="norecord"><div class="warning-option"><i>&nbsp;</i><span>{$Think.lang.no_record}</span></div></td>
+            </tr>
+            {/notempty}
+            </tbody>
+            <tfoot>
+            {notempty name="list_consult"}
+            <tr>
+                <td colspan="20"><div class="pagination"> {$show_page} </div></td>
+            </tr>
+            {/notempty}
+            </tfoot>
+        </table>
+
+</div>
+</div>
+
+{include file="public/mall_server" /}
+{include file="public/mall_footer" /}

@@ -1,0 +1,1320 @@
+{include file="public/mall_top" /} 
+{include file="public/mall_header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/store/styles/{$store_theme}/css/shop.css">
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/store/styles/{$store_theme}/css/goods.css">
+<!--放大镜BEGIN-->
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/store/styles/{$store_theme}/css/jquery.jqzoom.css">
+<!--放大镜END-->
+<div class="w1200">
+    <div class="ncs-detail clearfix">
+        <div class="intro_l">
+            <div class="preview" id="photoBody">
+                <!-- 商品大图介绍 start [[-->
+                <div class="product-img jqzoom">
+                    <img id="zoomimg" src="{$goods_image.0.1}" jqimg="{$goods_image.0.2}" alt="">
+                </div>
+                <!-- 商品大图介绍 end ]]-->
+                <!-- 商品小图介绍 start [[-->
+                <div class="product-small-img fn-clear"> <a href="javascript:;" class="next-left next-btn fl"></a>
+                    <div class="pic-hide-box fl">
+                        <ul class="small-pic" style="left:0;">
+                            {foreach name="goods_image" item="value" key="key" }
+                            <li class="small-pic-li">
+                                <a href="javascript:;">
+                                    <img src="{$value.0}" data-img="{$value.0}" data-big="{$value.1}">
+                                    <i></i>
+                                </a>
+                            </li>
+                            {/foreach}
+                        </ul>
+                    </div>
+                    <a href="javascript:;" class="next-right next-btn fl"></a>
+                </div>
+                <!-- 商品小图介绍 end ]]-->
+            </div>
+                <!-- E 商品图片及收藏分享 -->
+                <div class="ncs-handle"> 
+                    <!-- S 分享 --> 
+                   <!-- <a href="javascript:void(0);" class="share" nc_type="sharegoods" data-param='{"gid":"<?php echo $goods['goods_id'];?>"}'><i></i>{$Think.lang.goods_index_snsshare_goods}<span>(<em nc_type="sharecount_<?php echo $goods['goods_id'];?>"><?php echo isset($goods['sharenum'])>0?intval($goods['sharenum']):0;?></em>)</span></a> -->
+                    <!-- S 收藏 --> 
+                    <a href="javascript:collect_goods('<?php echo $goods['goods_id']; ?>','count','goods_collect');" class="favorite"><i></i>{$Think.lang.goods_index_favorite_goods}<span>(<em nctype="goods_collect"><?php echo $goods['goods_collect']?></em>)</span></a> 
+                    <!-- S 对比 -->
+                    <input type="hidden" id="lockcompare" value="unlock" />
+                    <a href="javascript:void(0);" class="compare" nc_type="compare_<?php echo $goods['goods_id'];?>" data-param='{"gid":"<?php echo $goods['goods_id'];?>"}'><i></i>加入对比</a><!-- S 举报 -->
+                    <?php if($inform_switch) { ?>
+                    <a href="<?php if (session('is_login')) {?>{:url('/Home/Memberinform/inform_submit',['goods_id'=>$goods.goods_id])}<?php } else {?>javascript:login_dialog();<?php }?>" title="{$Think.lang.goods_index_goods_inform}" class="inform"><i></i>{$Think.lang.goods_index_goods_inform}</a>
+                    <?php } ?>
+                    <!-- End --> 
+                </div>
+        </div>
+        <div class="ncs-goods-summary">
+            <div class="name">
+                <h1>{$goods.goods_name}</h1>
+                <strong>{$goods.goods_jingle}</strong>
+            </div>
+            <div class="ncs-meta">
+                <dl>
+                    <dt>市 场 价：</dt>
+                    <dd class="marketprice"><strong>{$goods.goods_marketprice}</strong></dd>
+                </dl>
+                <dl>
+                    <dt>商城价：</dt>
+                    <dd class="price">
+                        <?php if (isset($goods['promotion_price']) && !empty($goods['promotion_price'])) {?>
+                        <strong><?php echo dsPriceFormat($goods['promotion_price']);?></strong><em>(原售价:<?php echo dsPriceFormat($goods['goods_price']);?>)</em>
+                        <?php } else {?>
+                        <strong><?php echo dsPriceFormat($goods['goods_price']);?></strong>
+                        <?php }?>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>商品评价：</dt>
+                    <dd><a href="#ncGoodsRate">共0条评价</a></dd>
+                </dl>
+                <div class="ncs-goods-code">
+                    <div class="qrcode">
+                        <img src="http://ecmall.etmall.60data.com/data/files/mall/settings/default_qrcode.png"/>
+                    </div>
+                    <p>手机端购买</p>
+                </div>
+            </div>
+            
+            
+            
+      <?php if($goods['goods_state'] != 10 && $goods['goods_verify'] == 1){?>
+      <!-- S 促销 -->
+      <?php if (isset($goods['promotion_type']) || $goods['have_gift'] == 'gift' || !empty($goods['jjg_explain']) || !empty($mansong_info)) {?>
+      <div class="ncs-sale">
+        <?php if (isset($goods['promotion_type']) || !empty($goods['jjg_explain']) || !empty($mansong_info)) {?>
+        <dl>
+          <dt>促&#12288;&#12288;销：</dt>
+          <dd class="promotion-info">
+            <?php if (isset($goods['title']) && $goods['title'] != '') {?>
+            <span class="sale-name"><?php echo $goods['title'];?></span>
+            <?php }?>
+            <!-- S 限时折扣 -->
+              <?php if (isset($goods['promotion_type'])) {?>
+            <?php if ($goods['promotion_type'] == 'xianshi') {?>
+            <span class="sale-rule w400">直降<em>{$Think.lang.currency}<?php echo dsPriceFormat($goods['down_price']);?></em>
+            <?php if($goods['lower_limit']) {?>
+            <?php echo sprintf('最低%s件起，',$goods['lower_limit']);?><?php echo $goods['explain'];?>
+            <?php } ?>
+            </span>
+            <?php }?>
+            <!-- E 限时折扣  --> 
+            <!-- S 团购-->
+            <?php if ($goods['promotion_type'] == 'groupbuy') {?>
+            <?php if ($goods['upper_limit']) {?>
+            <em><?php echo sprintf('最多限购%s件',$goods['upper_limit']);?></em>
+            <?php } ?>
+            <span><?php echo $goods['remark'];?></span><br>
+            <?php }?>
+              <?php }?>
+            <!-- E 团购 --> 
+            <!--S 满就送 -->
+            <?php if($mansong_info) { ?>
+            <div class="ncs-mansong"> <span class="sale-name">满即送</span> <span class="sale-rule">
+              <?php $rule = $mansong_info['rules'][0];?>{$Think.lang.ds_man}
+              <em>{$Think.lang.currency}<?php echo dsPriceFormat($rule['price']);?></em>
+              <?php if(!empty($rule['discount'])) { ?>
+              ，{$Think.lang.ds_reduce}<em>{$Think.lang.currency}<?php echo dsPriceFormat($rule['discount']);?></em>
+              <?php } ?>
+              <?php if(!empty($rule['goods_id'])) { ?>
+              ，{$Think.lang.ds_gift}<a href="<?php echo $rule['goods_url'];?>" title="<?php echo $rule['mansong_goods_name'];?>" target="_blank">赠品</a>
+              <?php } ?>
+              </span> <span class="sale-rule-more" nctype="show-rule"><a href="javascript:void(0);">共<strong><?php echo count($mansong_info['rules']);?></strong>项，展开查看<i></i></a></span>
+              <div class="sale-rule-content" style="display: none;" nctype="rule-content">
+                <div class="title"><span class="sale-name">满即送</span>共<strong><?php echo count($mansong_info['rules']);?></strong>项，促销活动规则<a href="javascript:;" nctype="hide-rule">关闭</a></div>
+                <div class="content">
+                  <div class="mjs-tit"><?php echo $mansong_info['mansong_name'];?>
+                    <time>( {$Think.lang.ds_promotion_time}:<?php echo date('Y-m-d',$mansong_info['start_time']).'--'.date('Y-m-d',$mansong_info['end_time']);?> )</time>
+                  </div>
+                  <ul class="mjs-info">
+                    <?php foreach($mansong_info['rules'] as $rule) { ?>
+                    <li> <span class="sale-rule">{$Think.lang.ds_man}<em>{$Think.lang.currency}<?php echo dsPriceFormat($rule['price']);?></em>
+                      <?php if(!empty($rule['discount'])) { ?>
+                      ， {$Think.lang.ds_reduce}<em>{$Think.lang.currency}<?php echo dsPriceFormat($rule['discount']);?></em>
+                      <?php } ?>
+                      <?php if(!empty($rule['goods_id'])) { ?>
+                      ， {$Think.lang.ds_gift} <a href="<?php echo $rule['goods_url'];?>" title="<?php echo $rule['mansong_goods_name'];?>" target="_blank" class="gift"> <img src="<?php echo cthumb($rule['goods_image'], 60);?>" alt="<?php echo $rule['mansong_goods_name'];?>"> </a>&nbsp;。
+                      <?php } ?>
+                      </span> </li>
+                    <?php } ?>
+                  </ul>
+                  <div class="mjs-remark"><?php echo $mansong_info['remark'];?></div>
+                </div>
+
+              </div>
+            </div>
+            <?php } ?>
+            <!--E 满就送 --> 
+            
+          </dd>
+        </dl>
+        <?php }?>
+        <!-- S 赠品 -->
+        <?php if ($goods['have_gift'] == 'gift') {?>
+        <hr/>
+        <dl>
+          <dt>赠&#12288;&#12288;品：</dt>
+          <dd class="goods-gift" id="ncsGoodsGift"> <span>数量有限，赠完为止。</span>
+            <?php if (!empty($gift_array)) {?>
+            <ul>
+              <?php foreach ($gift_array as $val){?>
+              <li>
+                <div class="goods-gift-thumb"><span><img src="<?php echo cthumb($val['gift_goodsimage'], '60', $goods['store_id']);?>"></span></div>
+                <a href="<?php echo url('Home/Goods/index',['goods_id'=>$val['gift_goodsid']]);?>" class="goods-gift-name" target="_blank"><?php echo $val['gift_goodsname']?></a><em>x<?php echo $val['gift_amount'];?></em> </li>
+              <?php }?>
+            </ul>
+            <?php }?>
+          </dd>
+        </dl>
+        <?php }?>
+        <!-- E 赠品 --> 
+        
+      </div>
+      <?php }?>
+      <!-- E 促销 -->
+      <!--送达时间 begin  -->
+        <?php if ($store_info['store_free_time'] >= '1') {?>
+        <dl>
+          <dt>服　　务：</dt>
+          <dd>由 <a href="<?php echo url('Home/Store/index',['store_id'=>$store_info['store_id']]);?>" title="进入店铺" ><font color="#D93600"><b><?php echo $store_info['store_name']; ?></b></font></a> 发货并提供售后服务。<span id="store-free-time">18:00 前完成下单，预计(<font color="#D93600"><b>
+            <?php $showtime=date("Y-m-d H:i:s"); echo date('m月d日',strtotime($showtime . '+'. $store_info['store_free_time'].' day')); ?>
+            </b></font>) 送达</span></dd>
+        </dl>
+        <?php }?>
+        <!--送达时间 end  --> 
+      
+      <div class="ncs-logistics"><!-- S 物流与运费新布局展示  -->
+        <?php if($goods['goods_state'] == 1 && $goods['goods_verify'] == 1 && $goods['is_virtual'] == 0){ ?>
+        <dl id="ncs-freight" class="ncs-freight">
+          <dt>配&nbsp;&nbsp;送&nbsp;&nbsp;至：</dt>
+          <dd class="ncs-freight_box">
+            <div id="ncs-freight-selector" class="ncs-freight-select">
+              <div class="text">
+                <div><?php echo isset($store_info['deliver_region'][1]) ? str_replace(' ','',$store_info['deliver_region'][1]) : '请选择地区'?></div>
+                <b>∨</b> </div>
+              <div class="content">
+                <div id="ncs-stock" class="ncs-stock" data-widget="tabs">
+                  <div class="mt">
+                    <ul class="tab">
+                      <li data-index="0" data-widget="tab-item" class="curr"><a href="#none" class="hover"><em><?php echo isset($store_info['deliver_region_names'][0]) ? $store_info['deliver_region_names'][0] : '请选择'?></em><i> ∨</i></a></li>
+                    </ul>
+                  </div>
+                  <div id="stock_province_item" data-widget="tab-content" data-area="0">
+                    <ul class="area-list">
+                    </ul>
+                  </div>
+                  <div id="stock_city_item" data-widget="tab-content" data-area="1" style="display: none;">
+                    <ul class="area-list">
+                    </ul>
+                  </div>
+                  <div id="stock_area_item" data-widget="tab-content" data-area="2" style="display: none;">
+                    <ul class="area-list">
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <a href="javascript:;" class="close" onclick="$('#ncs-freight-selector').removeClass('hover')">关闭</a> </div>
+            <div id="ncs-freight-prompt"> <strong><?php echo $goods['goods_storage'] > 0 ? '有货' : '无货'?></strong>
+                <?php if(!$goods['transport_id']) {?>
+              <?php echo $goods['goods_freight'] > 0 ? '运费：'.dsPriceFormat($goods['goods_freight']).' 元' : '免运费';?>
+                <?php }?>
+            </div>
+          </dd>
+        </dl>
+        <!-- S 物流与运费新布局展示  -->
+        <?php } ?>
+      </div>
+      <div class="ncs-key"> 
+        
+        <!-- S 商品规格值-->
+        <?php if (is_array($goods['spec_name'])) { ?>
+        <hr/>
+        <?php foreach ($goods['spec_name'] as $key => $val) {?>
+        <dl nctype="nc-spec">
+          <dt><?php echo $val;?>:</dt>
+          <dd>
+            <?php if (is_array($goods['spec_value'][$key]) and !empty($goods['spec_value'][$key])) {?>
+            <ul nctyle="ul_sign">
+              <?php foreach($goods['spec_value'][$key] as $k => $v) {?>
+              <?php if( $key == 1 ){?>
+              <!-- 图片类型规格-->
+              <li class="sp-img"><a href="javascript:void(0);" class="<?php if (isset($goods['goods_spec'][$k])) {echo 'hovered';}?>" data-param="{valid:<?php echo $k;?>}" title="<?php echo $v;?>"><img src="<?php echo $spec_image[$k];?>"/><?php echo $v;?><i></i></a></li>
+              <?php }else{?>
+              <!-- 文字类型规格-->
+              <li class="sp-txt"><a href="javascript:void(0)" class="<?php if (isset($goods['goods_spec'][$k])) { echo 'hovered';} ?>" data-param="{valid:<?php echo $k;?>}"><?php echo $v;?><i></i></a></li>
+              <?php }?>
+              <?php }?>
+            </ul>
+            <?php }?>
+          </dd>
+        </dl>
+        <?php }?>
+        <?php }?>
+        <!-- E 商品规格值-->
+        <?php if ($goods['is_virtual'] == 1) {?>
+        <dl>
+          <dt>提货方式：</dt>
+          <dd>
+            <ul>
+              <li class="sp-txt"><a href="javascript:void(0)" class="hovered">电子兑换券<i></i></a></li>
+            </ul>
+          </dd>
+        </dl>
+        <!-- 虚拟商品有效期 -->
+        <dl>
+          <dt>有&nbsp;效&nbsp;期：</dt>
+          <dd>即日起 到 <?php echo date('Y-m-d H:i:s', $goods['virtual_indate']);?></dd>
+        </dl>
+        <?php }else if ($goods['is_presell'] == 1) {?>
+        <!-- 预售商品发货时间 -->
+        <dl>
+          <dt>预&#12288;&#12288;售：</dt>
+          <dd>
+            <ul>
+              <li class="sp-txt"><a href="javascript:void(0)" class="hovered"><?php echo date('Y-m-d', $goods['presell_deliverdate']);?>&nbsp;日发货<i></i></a></li>
+            </ul>
+          </dd>
+        </dl>
+        <?php }?>
+        <?php if ($goods['is_fcode']) {?>
+        <!-- 预售商品发货时间 -->
+        <dl>
+          <dt>购买类型：</dt>
+          <dd>
+            <ul>
+              <li class="sp-txt"><a href="javascript:void(0)" class="hovered">F码优先购买<i></i></a></li>
+            </ul>
+          </dd>
+        </dl>
+        <?php }?>
+      </div>
+      <!-- S 购买数量及库存 -->
+      <div class="ncs-buy">
+        <?php if ($goods['goods_state'] != 0 && $goods['goods_storage'] >= 0) {?>
+        <div class="ncs-figure-input">
+           <a href="javascript:void(0)" class="decrease" <?php if ($goods['is_fcode'] != 1) {?>nctype="decrease"<?php }?>>-</a> 
+          <input type="text" name="" id="quantity" value="1" size="3" maxlength="6" class="input-text" <?php if ($goods['is_fcode'] == 1) {?>readonly<?php }?>>
+          <a href="javascript:void(0)" class="increase" <?php if ($goods['is_fcode'] != 1) {?>nctype="increase"<?php }?>>+</a>
+        </div>
+        <div class="ncs-point" style="display: none;"><i></i> 
+          <!-- S 库存 --> 
+          <span>您选择的商品库存<strong nctype="goods_stock"><?php echo $goods['goods_storage']; ?></strong>{$Think.lang.ds_jian}</span> 
+          <!-- E 库存 -->
+          <?php if ($goods['is_virtual'] == 1 && $goods['virtual_limit'] > 0) { ?>
+          <!-- 虚拟商品限购数 --> 
+          <span class="look">，每人次限购<strong> 
+          <!-- 虚拟团购 设置了虚拟团购限购数 该数小于原商品限购数 --> 
+          <?php echo (isset($goods['promotion_type']) && $goods['promotion_type'] == 'groupbuy' && $goods['upper_limit'] > 0 && $goods['upper_limit'] < $goods['virtual_limit']) ? $goods['upper_limit'] : $goods['virtual_limit'];?> </strong>件商品。</span>
+          <?php } else if (isset($goods['promotion_type']) && $goods['promotion_type'] == 'groupbuy' && $goods['upper_limit'] > 0){ ?>
+          <!-- 团购限购 --> 
+          <span class="look">，每人次限购<strong> <?php echo $goods['upper_limit'];?> </strong>件商品。</span>
+          <?php }?>
+          <?php if ($goods['is_fcode'] == 1) {?>
+          <span class="look">，每个F码可优先购买一件商品。</span>
+          <?php }?>
+        </div>
+        <?php } ?>
+        
+        <!-- S 提示已选规格及库存不足无法购买 -->
+        <?php if ($goods['goods_state'] == 0 || $goods['goods_storage'] <= 0) {?>
+        <div nctype="goods_prompt" class="ncs-point"><i></i> <span>您选择的商品<strong>库存不足</strong>；请选择店内其它商品或申请<a href="javascript:void(0);" nctype="arrival_notice" class="arrival" title="到货通知">到货通知</a>提示。</span> </div>
+        <?php }?>
+        <!-- E 提示已选规格及库存不足无法购买 --> 
+        <div class="ncs-btn"> 
+          <!-- v3-b10 限制购买-->
+          <?php if ($IsHaveBuy=="0") {?>
+          <?php if ($goods['cart'] == true) {?>
+          <!-- 加入购物车--> 
+          <a href="javascript:void(0);" nctype="addcart_submit" class="addcart <?php if ($goods['goods_state'] == 0 || $goods['goods_storage'] <= 0) {?>no-addcart<?php }?>" title="{$Think.lang.goods_index_add_to_cart}"><i class="icon-shopping-cart"></i>{$Think.lang.goods_index_add_to_cart}</a>
+          <?php } ?>
+          <!-- 立即购买--> 
+          <a href="javascript:void(0);" nctype="buynow_submit" class="buynow <?php if ($goods['goods_state'] == 0 || $goods['goods_storage'] <= 0 || ($goods['is_virtual'] == 1 && $goods['virtual_indate'] < TIMESTAMP)) {?>no-buynow<?php }?>" title="<?php echo $goods['buynow_text'];?>"><?php echo $goods['buynow_text'];?></a>
+          <?php } ?>
+          <?php if ($IsHaveBuy=="1") {?>
+          <a href="javascript:void(0);" class="buynow no-buynow" title="您已参加本次抢购">您已参加本次抢购</a>
+          <?php } ?>
+          
+          <!-- v3-b10 end--> 
+          
+          <!-- S 加入购物车弹出提示框 -->
+          <div class="ncs-cart-popup">
+            <dl>
+              <dt>{$Think.lang.goods_index_cart_success}<a title="{$Think.lang.goods_index_close}" onClick="$('.ncs-cart-popup').css({'display':'none'});">X</a></dt>
+              <dd> {$Think.lang.goods_index_cart_have}<strong id="bold_num"></strong>  {$Think.lang.goods_index_number_of_goods}{$Think.lang.goods_index_total_price}:<em id="bold_mly" class="saleP"></em></dd>
+              <dd class="btns">
+                  <a href="javascript:void(0);" class="ncs-btn-mini ncs-btn-green" onclick="location.href='{:url('/Home/Cart/index')}'">{$Think.lang.goods_index_view_cart}</a>
+                  <a href="javascript:void(0);" class="ncs-btn-mini" value="" onclick="$('.ncs-cart-popup').css({'display':'none'});">{$Think.lang.goods_index_continue_shopping}</a>
+              </dd>
+            </dl>
+          </div>
+          <!-- E 加入购物车弹出提示框 --> 
+        </div>
+        <!-- E 购买按钮 --> 
+      </div>
+      <?php }else{?>
+      <div class="ncs-buy">
+        <div class="ncs-saleout">
+          <dl>
+            <dt><i class="icon-info-sign"></i>{$Think.lang.goods_index_is_no_show}</dt>
+            <dd>{$Think.lang.goods_index_is_no_show_message_one}</dd>
+            <dd>{$Think.lang.goods_index_is_no_show_message_two_1}&nbsp;<a href="<?php echo url('Home/Store/index',['store_id'=>$goods['store_id']]);?>" class="ncbtn-mini">{$Think.lang.goods_index_is_no_show_message_two_2}</a>&nbsp;{$Think.lang.goods_index_is_no_show_message_two_3} </dd>
+          </dl>
+        </div>
+      </div>
+      <?php }?>
+      <!-- E 购买数量及库存 --> 
+    </div>
+        
+        <div class="intro_r">
+            <div class="type_more">
+                <div class="mt">
+                    <h2>看了又看</h2>
+                </div>
+                <div class="mc">
+                    {foreach name="goods_rand_list" item="goods_rand"}
+                    <div class="list">
+                        <a href="{:url('goods/index',['goods_id'=>$goods_rand.goods_id])}"><img src="{:thumb($goods_rand)}" width="150" height="150"/></a>
+                        <p class="p_name">{$goods_rand.goods_name}</p>
+                        <p class="p_price">￥{$goods_rand.goods_price}</p>
+                    </div>
+                   {/foreach}
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- S 优惠套装 -->
+<div class="ncs-promotion" id="nc-bundling" style="display:none;"></div>
+<!-- E 优惠套装 -->
+    
+<div id="content" class="ncs-goods-layout expanded" >
+  <div class="ncs-goods-main" id="main-nav-holder">
+    <div class="tabbar pngFix" id="main-nav">
+      <div class="ncs-goods-title-nav">
+        <ul id="categorymenu">
+          <li class="current"><a id="tabGoodsIntro" href="#content">{$Think.lang.goods_index_goods_info}</a></li>
+          <li><a id="tabGoodsRate" href="#content">{$Think.lang.goods_index_evaluation}<em>(<?php echo $goods_evaluate_info['all'];?>)</em></a></li>
+          <li><a id="tabGoodsTraded" href="#content">{$Think.lang.goods_index_sold_record}<em>(<?php echo $goods['goods_salenum']; ?>)</em></a></li>
+          <li><a id="tabGuestbook" href="#content">{$Think.lang.goods_index_goods_consult}</a></li>
+        </ul>
+        <div class="switch-bar"><a href="javascript:void(0)" id="fold">&nbsp;</a></div>
+      </div>
+    </div>
+    <div class="ncs-intro">
+      <div class="content bd" id="ncGoodsIntro"> 
+        <?php if(is_array($goods['goods_attr']) || isset($goods['brand_name'])){?>
+        <ul class="nc-goods-sort">
+          <?php if ($goods['goods_serial']) {?>
+          <li>商家货号：<?php echo $goods['goods_serial'];?></li>
+          <?php }?>
+          <?php if(isset($goods['brand_name'])){echo '<li>'.lang('goods_index_brand').lang('ds_colon').$goods['brand_name'].'</li>'; } ?>
+          <?php if(is_array($goods['goods_attr']) && !empty($goods['goods_attr'])){ ?>
+          <?php foreach ($goods['goods_attr'] as $val){ $val= array_values($val);echo '<li>'.$val[0].lang('ds_colon').$val[1].'</li>'; } ?>
+          <?php }?>
+        </ul>
+        <?php }?>
+        <div class="ncs-goods-info-content">
+          <?php if (isset($plate_top)) {?>
+          <div class="top-template"><?php echo $plate_top['plate_content']?></div>
+          <?php }?>
+          <div class="default"><?php echo $goods['goods_body']; ?></div>
+          <?php if (isset($plate_bottom)) {?>
+          <div class="bottom-template"><?php echo $plate_bottom['plate_content']?></div>
+          <?php }?>
+        </div>
+      </div>
+    </div>
+    <div class="ncs-comment">
+      <div class="ncs-goods-title-bar hd">
+        <h4><a href="javascript:void(0);">{$Think.lang.goods_index_evaluation}</a></h4>
+      </div>
+      <div class="ncs-goods-info-content bd" id="ncGoodsRate">
+        <div class="ncs-top">
+          <div class="rate">
+            <p><strong><?php echo $goods_evaluate_info['good_percent'];?></strong><sub>%</sub>好评</p>
+            <span>共有<?php echo $goods_evaluate_info['all'];?>人参与评分</span></div>
+          <div class="percent">
+            <dl>
+              <dt>好评<em>(<?php echo $goods_evaluate_info['good_percent'];?>%)</em></dt>
+              <dd><i style="width: <?php echo $goods_evaluate_info['good_percent'];?>%"></i></dd>
+            </dl>
+            <dl>
+              <dt>中评<em>(<?php echo $goods_evaluate_info['normal_percent'];?>%)</em></dt>
+              <dd><i style="width: <?php echo $goods_evaluate_info['normal_percent'];?>%"></i></dd>
+            </dl>
+            <dl>
+              <dt>差评<em>(<?php echo $goods_evaluate_info['bad_percent'];?>%)</em></dt>
+              <dd><i style="width: <?php echo $goods_evaluate_info['bad_percent'];?>%"></i></dd>
+            </dl>
+          </div>
+          <div class="btns"><span>您可对已购商品进行评价</span>
+            <p><a href="<?php if ($goods['is_virtual']) { echo url('Home/Membervrorder/index');} else { echo url('Home/Memberorder/index');}?>" class="ncs-btn ncs-btn-red" target="_blank"><i class="icon-comment-alt"></i>评价商品</a></p>
+          </div>
+        </div>
+        <div class="ncs-goods-title-nav">
+          <ul id="comment_tab">
+            <li data-type="all" class="current"><a href="javascript:void(0);">{$Think.lang.goods_index_evaluation}(<?php echo $goods_evaluate_info['all'];?>)</a></li>
+            <li data-type="1"><a href="javascript:void(0);">好评(<?php echo $goods_evaluate_info['good'];?>)</a></li>
+            <li data-type="2"><a href="javascript:void(0);">中评(<?php echo $goods_evaluate_info['normal'];?>)</a></li>
+            <li data-type="3"><a href="javascript:void(0);">差评(<?php echo $goods_evaluate_info['bad'];?>)</a></li>
+          </ul>
+        </div>
+        <!-- 商品评价内容部分 -->
+        <div id="goodseval" class="ncs-commend-main"></div>
+      </div>
+    </div>
+    <div class="ncg-salelog">
+      <div class="ncs-goods-title-bar hd">
+        <h4><a href="javascript:void(0);">{$Think.lang.goods_index_sold_record}</a></h4>
+      </div>
+      <div class="ncs-goods-info-content bd" id="ncGoodsTraded">
+        <div class="top">
+          <div class="price">{$Think.lang.goods_index_goods_price}<strong><?php echo $goods['goods_price'];?></strong>{$Think.lang.goods_index_yuan}<span>{$Think.lang.goods_index_price_note}</span></div>
+        </div>
+        <!-- 成交记录内容部分 -->
+        <div id="salelog_demo" class="ncs-loading"> </div>
+      </div>
+    </div>
+    <div class="ncs-consult">
+      <div class="ncs-goods-title-bar hd">
+        <h4><a href="javascript:void(0);">{$Think.lang.goods_index_goods_consult}</a></h4>
+      </div>
+      <div class="ncs-goods-info-content bd" id="ncGuestbook"> 
+        <!-- 咨询留言内容部分 -->
+        <div id="consulting_demo" class="ncs-loading"> </div>
+      </div>
+    </div>
+    <?php if(!empty($goods_commend) && is_array($goods_commend) && count($goods_commend)>1){?>
+    <div class="ncs-recommend">
+      <div class="title">
+        <h4>{$Think.lang.goods_index_goods_commend}</h4>
+      </div>
+      <div class="content">
+        <ul>
+          <?php foreach($goods_commend as $goods_commend_child){?>
+          <?php if($goods['goods_id'] != $goods_commend_child['goods_id']){?>
+          <li>
+            <dl>
+              <dt class="goods-name"><a href="<?php echo url('/Home/Goods/index',['goods_id' => $goods_commend_child['goods_id']]);?>" target="_blank" title="<?php echo $goods_commend_child['goods_jingle'];?>"><?php echo $goods_commend_child['goods_name'];?><em><?php echo $goods_commend_child['goods_jingle'];?></em></a></dt>
+              <dd class="goods-pic"><a href="<?php echo url('/Home/Goods/index',['goods_id' => $goods_commend_child['goods_id']]);?>" target="_blank" title="<?php echo $goods_commend_child['goods_jingle'];?>"><img class="lazyload" data-original="<?php echo thumb($goods_commend_child, 240);?>" alt="<?php echo $goods_commend_child['goods_name'];?>"/></a></dd>
+              <dd class="goods-price">{$Think.lang.currency}<?php echo $goods_commend_child['goods_price'];?></dd>
+            </dl>
+          </li>
+          <?php }?>
+          <?php }?>
+        </ul>
+        <div class="clear"></div>
+      </div>
+    </div>
+    <?php }?>
+  </div>
+  <div class="ncs-sidebar">
+      
+      
+
+      
+      <div class="ncs-message-bar">
+          <div class="default">
+              <h5><a href="<?php echo url('Home/Store/index',['store_id'=>$store_info['store_id']]);?>" title="进入店铺"><?php echo $store_info['store_name']; ?></a></h5>
+              <span member_id="<?php echo $store_info['member_id'];?>"></span>
+              <?php if(!empty($store_info['store_qq'])){?>
+              <a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=<?php echo $store_info['store_qq'];?>&site=qq&menu=yes" title="QQ: <?php echo $store_info['store_qq'];?>"><img border="0" src="http://wpa.qq.com/pa?p=2:<?php echo $store_info['store_qq'];?>:52" style=" vertical-align: middle;"/></a>
+              <?php }?>
+              <?php if(!empty($store_info['store_ww'])){?>
+              <a target="_blank" href="http://amos.im.alisoft.com/msg.aw?v=2&amp;uid=<?php echo $store_info['store_ww'];?>&site=cntaobao&s=1" ><img border="0" src="http://amos.im.alisoft.com/online.aw?v=2&uid=<?php echo $store_info['store_ww'];?>&site=cntaobao&s=2" alt="{$Think.lang.ds_message_me}" style=" vertical-align: middle;"/></a>
+              <?php }?>
+          </div>
+          <?php if(!empty($store_info['store_presales']) || !empty($store_info['store_aftersales']) || $store_info['store_workingtime'] !=''){?>
+          <div class="service-list" store_id="<?php echo $store_info['store_id'];?>" store_name="<?php echo $store_info['store_name'];?>">
+              <?php if(!empty($store_info['store_presales'])){?>
+              <dl>
+                  <dt>{$Think.lang.ds_message_presales}</dt>
+                  <?php foreach($store_info['store_presales'] as $val){?>
+                  <dd><span><?php echo $val['name']?></span><span>
+                          <?php if($val['type'] == 1){?>
+                          <a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=<?php echo $val['num'];?>&site=qq&menu=yes" title="QQ: <?php echo $val['num'];?>"><img border="0" src="http://wpa.qq.com/pa?p=2:<?php echo $val['num'];?>:51" style=" vertical-align: middle;"/></a>
+                          <?php }elseif($val['type'] == 2){?>
+                          <a target="_blank" href="http://amos.im.alisoft.com/msg.aw?v=2&amp;uid=<?php echo $val['num'];?>&site=cntaobao&s=1&charset=UTF-8" ><img border="0" src="http://amos.im.alisoft.com/online.aw?v=2&uid=<?php echo $val['num'];?>&site=cntaobao&s=2&charset=UTF-8" alt="{$Think.lang.ds_message_me}"/></a>
+                          <?php }elseif($val['type'] == 3){?>
+                          <span c_name="<?php echo $val['name'];?>" member_id="<?php echo $val['num'];?>"></span>
+                          <?php }?>
+                      </span></dd>
+                  <?php }?>
+              </dl>
+              <?php }?>
+              <?php if(!empty($store_info['store_aftersales'])){?>
+              <dl>
+                  <dt>{$Think.lang.ds_message_service}</dt>
+                  <?php foreach($store_info['store_aftersales'] as $val){?>
+                  <dd><span><?php echo $val['name']?></span><span>
+                          <?php if($val['type'] == 1){?>
+                          <a href="http://wpa.qq.com/msgrd?v=3&uin=<?php echo $val['num'];?>&site=qq&menu=yes" title="QQ: <?php echo $val['num'];?>" target="_blank"><img border="0" src="http://wpa.qq.com/pa?p=2:<?php echo $val['num'];?>:52" alt="{$Think.lang.ds_message_me}" style=" vertical-align: middle;"></a>
+                          <?php }elseif($val['type'] == 2){?>
+                          <a target="_blank" href="http://amos.im.alisoft.com/msg.aw?v=2&amp;uid=<?php echo $val['num'];?>&site=cntaobao&s=1&charset=UTF-8" ><img border="0" src="http://amos.im.alisoft.com/online.aw?v=2&uid=<?php echo $val['num'];?>&site=cntaobao&s=2&charset=UTF-8" alt="{$Think.lang.ds_message_me}"/></a>
+                          <?php }elseif($val['type'] == 3){?>
+                          <span c_name="<?php echo $val['name'];?>" member_id="<?php echo $val['num'];?>"></span>
+                          <?php }?>
+                      </span></dd>
+                  <?php }?>
+              </dl>
+              <?php }?>
+              <?php if($store_info['store_workingtime'] !=''){?>
+              <dl class="workingtime">
+                  <dt>{$Think.lang.ds_message_working}</dt>
+                  <dd>
+                      <p><?php echo html_entity_decode($store_info['store_workingtime']);?></p>
+                  </dd>
+              </dl>
+              <?php }?>
+          </div>
+          <?php }?>
+      </div>
+      
+      
+      
+      
+      
+<!--侧边推荐 BEGIN-->
+<div class="ncs-sidebar-container ncs-class-bar">
+  <div class="title">
+    <h4>{$Think.lang.ds_goods_class}</h4>
+  </div>
+  <div class="content">
+    <p>
+        <span><a href="<?php echo url('Home/Store/goods_all', array('store_id' => $store_info['store_id'], 'key' => '1', 'order' => '2'));?>">{$Think.lang.ds_by_new}</a></span>
+        <span><a href="<?php echo url('Home/Store/goods_all', array('store_id' => $store_info['store_id'], 'key' => '2', 'order' => '2'));?>">{$Think.lang.ds_by_price}</a></span>
+        <span><a href="<?php echo url('Home/Store/goods_all', array('store_id' => $store_info['store_id'], 'key' => '3', 'order' => '2'));?>">{$Think.lang.ds_by_sale}</a></span>
+        <span><a href="<?php echo url('Home/Store/goods_all', array('store_id' => $store_info['store_id'], 'key' => '5', 'order' => '2'));?>">{$Think.lang.ds_by_click}</a></span>
+    </p>
+    <div class="ncs-search">
+      <form id="" name="searchShop" method="get" action="{:url('/Home/Store/goods_all')}" >
+        <input type="hidden" name="store_id" value="<?php echo $store_info['store_id'];?>" />
+        <input type="text" class="text w120" name="inkeyword" value="{$Think.get.inkeyword}" placeholder="搜索店内商品">
+        <a href="javascript:document.searchShop.submit();" class="ncs-btn">{$Think.lang.ds_search}</a>
+      </form>
+    </div>
+    <ul class="ncs-submenu">
+      <li><span class="ico-none"><em>-</em></span><a href="<?php echo url('Home/Store/goods_all', array('store_id' => $store_info['store_id']));?>">{$Think.lang.ds_whole_goods}</a></li>
+      <?php if(!empty($goods_class_list) && is_array($goods_class_list)){?>
+      <?php foreach($goods_class_list as $value){?>
+      <?php if(!empty($value['children']) && is_array($value['children'])){?>
+      <li><span class="ico-none" onclick="class_list(this);" span_id="<?php echo $value['stc_id'];?>" style="cursor: pointer;"><em>-</em></span><a href="<?php echo url('Home/Store/goods_all', array('store_id' => $store_info['store_id'], 'stc_id' => $value['stc_id']));?>"><?php echo $value['stc_name'];?></a>
+        <ul id="stc_<?php echo $value['stc_id'];?>">
+          <?php foreach($value['children'] as $value1){?>
+          <li><span class="ico-sub">&nbsp;</span><a href="<?php echo url('Home/Store/goods_all', array('store_id' => $store_info['store_id'], 'stc_id' => $value1['stc_id']));?>"><?php echo $value1['stc_name'];?></a></li>
+          <?php }?>
+        </ul>
+      </li>
+      <?php }else {?>
+      <li> <span class="ico-none"><em>-</em></span><a href="<?php echo url('Home/Store/goods_all', array('store_id' => $store_info['store_id'], 'stc_id' => $value['stc_id']));?>"><?php echo $value['stc_name'];?></a></li>
+      <?php }?>
+      <?php }?>
+      <?php }?>
+    </ul>
+    
+  </div>
+</div>
+
+<div class="ncs-sidebar-container ncs-top-bar">
+  <div class="title">
+    <h4>{$Think.lang.ds_goods_rankings}</h4>
+  </div>
+  <div class="content">
+    <ul class="ncs-top-tab pngFix">
+      <li id="hot_sales_tab" class="current"><a href="<?php echo url('Home/Store/goods_all', array('store_id' => $store_info['store_id'], 'key' => '3', 'order' => '2'));?>">{$Think.lang.ds_hot_goods_rankings}</a></li>
+      <li id="hot_collect_tab"><a href="<?php echo url('Home/Store/goods_all', array('store_id' => $store_info['store_id'], 'key' => '4', 'order' => '2'));?>">{$Think.lang.ds_hot_collect_rankings}</a></li>
+    </ul>
+    <div id="hot_sales_list" class="ncs-top-panel">
+      <?php if(is_array($hot_sales) && !empty($hot_sales)){?>
+      <ol>
+        <?php foreach($hot_sales as $val){?>
+        <li>
+          <dl>
+            <dt><a href="<?php echo url('Home/Goods/index',array('goods_id'=>$val['goods_id']));?>"><?php echo $val['goods_name']?></a></dt>
+            <dd class="goods-pic"><a href="<?php echo url('Home/Goods/index', array('goods_id'=>$val['goods_id']));?>"><span class="thumb size40"><i></i><img src="<?php echo thumb($val, 60);?>"  onload="javascript:DrawImage(this,40,40);" width="40" height="40"></span></a>
+                <p><span class="thumb size100"><i></i><img src="<?php echo thumb($val, 240);?>" onload="javascript:DrawImage(this,100,100);" title="<?php echo $val['goods_name']?>" width="100" height="100"><big></big><small></small></span></p>
+            </dd>
+            <dd class="price pngFix"><?php echo $val['goods_promotion_price']?></dd>
+            <dd class="selled pngFix">{$Think.lang.ds_sell_out}<strong><?php echo $val['goods_salenum'];?></strong>{$Think.lang.ds_bi}</dd>
+          </dl>
+        </li>
+        <?php }?>
+      </ol>
+      <?php }?>
+    </div>
+    <div id="hot_collect_list" class="ncs-top-panel hide">
+      <?php if(is_array($hot_collect) && !empty($hot_collect)){?>
+      <ol>
+        <?php foreach($hot_collect as $val){?>
+        <li>
+          <dl>
+            <dt><a href="<?php echo url('Home/Goods/index', array('goods_id'=>$val['goods_id']));?>"><?php echo $val['goods_name']?></a></dt>
+            <dd class="goods-pic"><a href="<?php echo url('Home/Goods/index', array('goods_id'=>$val['goods_id']));?>" title=""><span class="thumb size40"><i></i> <img src="<?php echo thumb($val, 60);?>" onload="javascript:DrawImage(this,40,40);" width="40" height="40"></span></a>
+              <p><span class="thumb size100"><i></i><img src="<?php echo thumb($val, 240);?>" onload="javascript:DrawImage(this,100,100);" title="<?php echo $val['goods_name']?>" width="100" height="100"><big></big><small></small></span></p>
+            </dd>
+            <dd class="price pngFix"><?php echo $val['goods_promotion_price']?></dd>
+            <dd class="collection pngFix">{$Think.lang.ds_collection_popularity}{$Think.lang.ds_colon}<strong><?php echo $val['goods_collect'];?></strong></dd>
+          </dl>
+        </li>
+        <?php }?>
+      </ol>
+      <?php }?>
+    </div>
+    <p><a href="<?php echo url('Home/Store/goods_all', array('store_id' => $store_info['store_id']));?>">{$Think.lang.ds_look_more_store_goods}</a></p>
+  </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function(){
+        //热销排行切换
+        $('#hot_sales_tab').on('mouseenter', function() {
+            $(this).addClass('current');
+            $('#hot_collect_tab').removeClass('current');
+            $('#hot_sales_list').removeClass('hide');
+            $('#hot_collect_list').addClass('hide');
+        });
+        $('#hot_collect_tab').on('mouseenter', function() {
+            $(this).addClass('current');
+            $('#hot_sales_tab').removeClass('current');
+            $('#hot_sales_list').addClass('hide');
+            $('#hot_collect_list').removeClass('hide');
+        });
+    });
+    /** left.php **/
+    // 商品分类
+    function class_list(obj){
+    	var stc_id=$(obj).attr('span_id');
+    	var span_class=$(obj).attr('class');
+    	if(span_class=='ico-block') {
+    		$("#stc_"+stc_id).show();
+    		$(obj).html('<em>-</em>');
+    		$(obj).attr('class','ico-none');
+    	}else{
+    		$("#stc_"+stc_id).hide();
+    		$(obj).html('<em>+</em>');
+    		$(obj).attr('class','ico-block');
+    	}
+    }
+</script> 
+    
+    <!--侧边推荐 END-->
+    
+    
+    
+    
+    
+    <?php if (isset($viewed_goods)) { ?>
+    <!-- 最近浏览 -->
+    <div class="ncs-sidebar-container ncs-top-bar">
+      <div class="title">
+        <h4>最近浏览</h4>
+      </div>
+      <div class="content">
+        <div id="hot_sales_list" class="ncs-top-panel">
+          <ol>
+            <?php foreach ((array) $viewed_goods as $g) { ?>
+            <li>
+              <dl>
+                <dt><a href="<?php echo url('/Home/Goods/index', array('goods_id' => $g['goods_id'])); ?>"><?php echo $g['goods_name']; ?></a></dt>
+                <dd class="goods-pic"><a href="<?php echo url('/Home/Goods/index', array('goods_id' => $g['goods_id'])); ?>"><span class="thumb size40"><i></i><img src="<?php echo thumb($g, 60); ?>"  onload="javascript:DrawImage(this,40,40);"></span></a>
+                  <p><span class="thumb size100"><i></i><img src="<?php echo thumb($g, 240); ?>" onload="javascript:DrawImage(this,100,100);" title="<?php echo $g['goods_name']; ?>"><big></big><small></small></span></p>
+                </dd>
+                <dd class="price pngFix"><?php echo dsPriceFormat($g['goods_promotion_price']); ?></dd>
+              </dl>
+            </li>
+            <?php } ?>
+          </ol>
+        </div>
+        <a href="{:url('/Home/Membergoodsbrowse/listinfo')}" class="nch-sidebar-all-viewed">全部浏览历史</a> </div>
+    </div>
+    <?php } ?>
+  </div>
+</div>
+    
+<form id="buynow_form" method="post" action="{:url('/Home/Buy/buy_step1')} ">
+  <input id="cart_id" name="cart_id[]" type="hidden"/>
+</form>
+
+</div>
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/plugins/jquery.lazyload.min.js"></script>
+<script src="{$Think.config.url_domain_root}static/store/styles/default/js/jquery.jqzoom.js"></script>
+<script src="{$Think.config.url_domain_root}static/plugins/jquery.ajaxContent.pack.js"></script>
+<script src="{$Think.config.url_domain_root}static/plugins/jquery.cookie.js"></script>
+<script>
+    $("img.lazyload").lazyload({
+        effect: "fadeIn",
+        placeholder:"{$Think.config.url_domain_root}static/home/images/loading.gif"
+    });
+      $(function () {
+          /*商品缩略图放大镜*/
+          $(".jqzoom").jqueryzoom({
+              xzoom: 350,
+              yzoom: 350,
+              offset: 1,
+              position: "right",
+              preload: 1,
+              lens: 1
+          });
+          //初始化对比按钮
+          initCompare()
+      });
+    //收藏分享处下拉操作
+    jQuery.divselect = function(divselectid,inputselectid) {
+      var inputselect = $(inputselectid);
+      $(divselectid).mouseover(function(){
+          var ul = $(divselectid+" ul");
+          ul.slideDown("fast");
+          if(ul.css("display")=="none"){
+              ul.slideDown("fast");
+          }
+      });
+      $(divselectid).on('mouseleave',function(){
+          $(divselectid+" ul").hide();
+      });
+    };
+$(function(){
+	//赠品处滚条
+	$('#ncsGoodsGift').perfectScrollbar({suppressScrollX:true});
+        
+        
+    {if condition="$goods.goods_state eq '1' && $goods.goods_storage gt 0"}
+    // 加入购物车
+    $('a[nctype="addcart_submit"]').click(function(){
+    	if (typeof(allow_buy) != 'undefined' && allow_buy === false) return ;
+        addcart(<?php echo $goods['goods_id'];?>, checkQuantity(),'addcart_callback');
+    });
+        <?php if (!($goods['is_virtual'] == 1 && $goods['virtual_indate'] < TIMESTAMP)) {?>
+        // 立即购买
+        $('a[nctype="buynow_submit"]').click(function(){
+        	if (typeof(allow_buy) != 'undefined' && allow_buy === false) return ;
+            buynow(<?php echo $goods['goods_id']?>,checkQuantity());
+        });
+        <?php }?>
+    {/if}
+
+    
+    // 到货通知
+    {if condition="$goods.goods_storage eq '0' && $goods.goods_state eq '0'"}
+    $('a[nctype="arrival_notice"]').click(function(){
+            {if condition="$Think.session.is_login neq '1'"}
+        login_dialog();
+        {else/}
+        ajax_form('arrival_notice', '到货通知',"{:url('/Home/Goods/arrival_notice',['goods_id'=>$goods.goods_id])}", 350);
+        {/if}
+    });
+    {/if}
+    <?php if (($goods['goods_state'] == 0 || $goods['goods_storage'] <= 0) && $goods['is_appoint'] == 1) {?>
+    $('a[nctype="appoint_submit"]').click(function(){
+        <?php if (session('is_login') !== '1'){?>
+        login_dialog();
+        <?php }else{?>
+        ajax_form('arrival_notice', '立即预约', "{:url('/Home/Goods/arrival_notice',['goods_id'=>$goods.goods_id,'type'=>'2'])}", 350);
+        <?php }?>
+    });
+    <?php }?>
+
+    
+    // 规格选择
+    $('dl[nctype="nc-spec"]').find('a').each(function(){
+        $(this).click(function(){
+            if ($(this).hasClass('hovered')) {
+                return false;
+            }
+            $(this).parents('ul:first').find('a').removeClass('hovered');
+            $(this).addClass('hovered');
+            checkSpec();
+        });
+    });
+
+});
+function checkSpec() {
+    var spec_param = {$spec_list};
+    var spec = new Array();
+    $('ul[nctyle="ul_sign"]').find('.hovered').each(function(){
+        var data_str = ''; eval('data_str =' + $(this).attr('data-param'));
+        spec.push(data_str.valid);
+    });
+    spec1 = spec.sort(function(a,b){
+        return a-b;
+    });
+    var spec_sign = spec1.join('|');
+    $.each(spec_param, function(i, n){
+        if (n.sign == spec_sign) {
+            window.location.href = n.url;
+        }
+    });
+}
+
+// 验证购买数量
+function checkQuantity(){
+    var quantity = parseInt($("#quantity").val());
+    if (quantity < 1) {
+        alert("{$Think.lang.goods_index_pleaseaddnum}");
+        $("#quantity").val('1');
+        return false;
+    }
+    max = parseInt($('[nctype="goods_stock"]').text());
+    <?php if ($goods['is_virtual'] == 1 && $goods['virtual_limit'] > 0) {?>
+    max = <?php echo $goods['virtual_limit'];?>;
+    if(quantity > max){
+        alert('最多限购'+max+'件');
+        return false;
+    }
+    <?php } ?>
+    <?php if (!empty($goods['upper_limit'])) {?>
+    max = <?php echo $goods['upper_limit'];?>;
+    if(quantity > max){
+        alert('最多限购'+max+'件');
+        return false;
+    }
+    <?php } ?>
+    if(quantity > max){
+        alert("{$Think.lang.goods_index_add_too_much}");
+        return false;
+    }
+    return quantity;
+}
+// 立即购买js
+function buynow(goods_id,quantity){
+<?php if (session('is_login') !== '1'){?>
+	login_dialog();
+<?php }else{?>
+    if (!quantity) {
+        return;
+    }
+    <?php if (session('store_id') == $goods['store_id']) { ?>
+    alert('不能购买自己店铺的商品');return;
+    <?php } ?>
+    $("#cart_id").val(goods_id+'|'+quantity);
+    $("#buynow_form").submit();
+<?php }?>
+}
+
+$(function(){
+    //选择地区查看运费
+    $('#transport_pannel>a').click(function(){
+    	var id = $(this).attr('nctype');
+    	if (id=='undefined') return false;
+    	var _self = this,tpl_id = '<?php echo $goods['transport_id'];?>';
+	    var url = SITE_URL+'index.php/home/Goods/calc.html?rand='+Math.random();
+	    $('#transport_price').css('display','none');
+	    $('#loading_price').css('display','');
+	    $.getJSON(url, {'id':id,'tid':tpl_id}, function(data){
+	    	if (data == null) return false;
+	        if(data != 'undefined') {$('#nc_kd').html('运费{$Think.lang.ds_colon}<em>' + data + '</em>{$Think.lang.goods_index_yuan}');}else{'{$Think.lang.goods_index_trans_for_seller}';}
+	        $('#transport_price').css('display','');
+	    	$('#loading_price').css('display','none');
+	        $('#ncrecive').html($(_self).html());
+	    });
+    });
+    $("#nc-bundling").load("{:url('/Home/Goods/get_bundling',['goods_id'=>$goods.goods_id])}", function(){
+        if($(this).html() != '') {
+            $(this).show();
+        }
+    });
+    $("#salelog_demo").load("{:url('/Home/Goods/salelog',['goods_id'=>$goods.goods_id,'store_id'=>$goods.store_id,'vr'=>$goods.is_virtual])}", function(){
+        // Membership card
+       /* $(this).find('[nctype="mcard"]').membershipCard({type:'shop'});*/
+    });
+	$("#consulting_demo").load("{:url('/Home/Goods/consulting',['goods_id'=>$goods.goods_id,'store_id'=>$goods.store_id])}", function(){
+		// Membership card
+		/*$(this).find('[nctype="mcard"]').membershipCard({type:'shop'});*/
+	});
+
+/** goods.php **/
+	// 商品内容部分折叠收起侧边栏控制
+	$('#fold').click(function(){
+  		$('.ncs-goods-layout').toggleClass('expanded');
+	});
+	// 商品内容介绍Tab样式切换控制
+	$('#categorymenu').find("li").click(function(){
+		$('#categorymenu').find("li").removeClass('current');
+		$(this).addClass('current');
+	});
+	// 商品详情默认情况下显示全部
+	$('#tabGoodsIntro').click(function(){
+		$('.bd').css('display','');
+		$('.hd').css('display','');
+	});
+	// 点击地图隐藏其他以及其标题栏
+	$('#tabStoreMap').click(function(){
+		$('.bd').css('display','none');
+		$('#ncStoreMap').css('display','');
+		$('.hd').css('display','none');
+	});
+	// 点击评价隐藏其他以及其标题栏
+	$('#tabGoodsRate').click(function(){
+		$('.bd').css('display','none');
+		$('#ncGoodsRate').css('display','');
+		$('.hd').css('display','none');
+	});
+	// 点击成交隐藏其他以及其标题
+	$('#tabGoodsTraded').click(function(){
+		$('.bd').css('display','none');
+		$('#ncGoodsTraded').css('display','');
+		$('.hd').css('display','none');
+	});
+	// 点击咨询隐藏其他以及其标题
+	$('#tabGuestbook').click(function(){
+		$('.bd').css('display','none');
+		$('#ncGuestbook').css('display','');
+		$('.hd').css('display','none');
+	});
+	//商品排行Tab切换
+	$(".ncs-top-tab > li > a").mouseover(function(e) {
+		if (e.target == this) {
+			var tabs = $(this).parent().parent().children("li");
+			var panels = $(this).parent().parent().parent().children(".ncs-top-panel");
+			var index = $.inArray(this, $(this).parent().parent().find("a"));
+			if (panels.eq(index)[0]) {
+				tabs.removeClass("current ").eq(index).addClass("current ");
+				panels.addClass("hide").eq(index).removeClass("hide");
+			}
+		}
+	});
+	//信用评价动态评分打分人次Tab切换
+	$(".ncs-rate-tab > li > a").mouseover(function(e) {
+		if (e.target == this) {
+			var tabs = $(this).parent().parent().children("li");
+			var panels = $(this).parent().parent().parent().children(".ncs-rate-panel");
+			var index = $.inArray(this, $(this).parent().parent().find("a"));
+			if (panels.eq(index)[0]) {
+				tabs.removeClass("current ").eq(index).addClass("current ");
+				panels.addClass("hide").eq(index).removeClass("hide");
+			}
+		}
+	});
+
+//触及显示缩略图
+	$('.goods-pic > .thumb').hover(
+		function(){
+			$(this).next().css('display','block');
+		},
+		function(){
+			$(this).next().css('display','none');
+		}
+	);
+        
+	/* 商品购买数量增减js */
+	// 增加
+	$('a[nctype="increase"]').click(function(){
+		num = parseInt($('#quantity').val());
+	    <?php if ($goods['is_virtual'] == 1 && $goods['virtual_limit'] > 0) {?>
+	    max = <?php echo $goods['virtual_limit'];?>;
+	    if(num >= max){
+	        alert('最多限购'+max+'件');
+	        return false;
+	    }
+	    <?php } ?>
+	    <?php if (!empty($goods['upper_limit'])) {?>
+	    max = <?php echo $goods['upper_limit'];?>;
+	    if(num >= max){
+	        alert('最多限购'+max+'件');
+	        return false;
+	    }
+	    <?php } ?>
+		max = parseInt($('[nctype="goods_stock"]').text());
+		if(num < max){
+			$('#quantity').val(num+1);
+		}
+	});
+	//减少
+	$('a[nctype="decrease"]').click(function(){
+		num = parseInt($('#quantity').val());
+		if(num > 1){
+			$('#quantity').val(num-1);
+		}
+	});
+
+    //评价列表
+    $('#comment_tab').on('click', 'li', function() {
+        $('#comment_tab li').removeClass('current');
+        $(this).addClass('current');
+        load_goodseval($(this).attr('data-type'));
+    });
+    load_goodseval('all');
+    function load_goodseval(type) {
+        var url = "{:url('/Home/Goods/comments',['goods_id'=>$goods.goods_id])}";
+        url += '?type=' + type;
+        $("#goodseval").load(url, function(){
+           /* $(this).find('[nctype="mcard"]').membershipCard({type:'shop'});*/
+        });
+    }
+    
+    //记录浏览历史
+	$.get("{:url('/Home/Goods/addbrowse',['gid'=>$goods.goods_id])}");
+        
+    <?php if (isset($goods['jjg_explain'])) { ?>
+        $('.couRuleScrollbar').perfectScrollbar({suppressScrollX:true});
+    <?php }?>
+
+    // 满即送、加价购显示隐藏
+    $('[nctype="show-rule"]').click(function(){
+        $(this).parent().find('[nctype="rule-content"]').show();
+    });
+    $('[nctype="hide-rule"]').click(function(){
+        $(this).parents('[nctype="rule-content"]:first').hide()
+    });
+
+    $('.ncs-buy').bind({
+        mouseover:function(){$(".ncs-point").show();},
+        mouseout:function(){$(".ncs-point").hide();}
+    });
+    
+});
+
+/* 加入购物车后的效果函数 */
+function addcart_callback(data){
+	$('#bold_num').html(data.num);
+    $('#bold_mly').html(price_format(data.amount));
+    $('.ncs-cart-popup').fadeIn('fast');
+}
+
+<?php if($goods['goods_state'] == 1 && $goods['goods_verify'] == 1 && $goods['is_virtual'] == 0){ ?>
+var $cur_area_list,$cur_tab,next_tab_id = 0,cur_select_area = [],calc_area_id = '',calced_area = [],cur_select_area_ids = [];
+$(document).ready(function(){
+	$("#ncs-freight-selector").hover(function() {
+		//如果店铺没有设置默认显示区域，马上异步请求
+		<?php if (!$store_info['deliver_region']) { ?>
+		if (typeof nc_a === "undefined") {
+	 		$.getJSON(SITE_URL + "index.php/home/Goods/json_area?callback=?", function(data) {
+	 			nc_a = data;
+	 			$cur_tab = $('#ncs-stock').find('li[data-index="0"]');
+	 			_loadArea(0);
+	 		});
+		}
+		<?php } ?>
+		$(this).addClass("hover");
+		$(this).on('mouseleave',function(){
+			$(this).removeClass("hover");
+		});
+	});
+
+	$('ul[class="area-list"]').on('click','a',function(){
+		$('#ncs-freight-selector').unbind('mouseleave');
+		var tab_id = parseInt($(this).parents('div[data-widget="tab-content"]:first').attr('data-area'));
+		if (tab_id == 0) {cur_select_area = [];cur_select_area_ids = []};
+		if (tab_id == 1 && cur_select_area.length > 1) {
+			cur_select_area.pop();
+			cur_select_area_ids.pop();
+			if (cur_select_area.length > 1) {
+				cur_select_area.pop();
+				cur_select_area_ids.pop();
+			}
+		}
+		next_tab_id = tab_id + 1;
+		var area_id = $(this).attr('data-value');
+		$cur_tab = $('#ncs-stock').find('li[data-index="'+tab_id+'"]');
+		$cur_tab.find('em').html($(this).html());
+		$cur_tab.find('i').html(' ∨');
+		if (tab_id < 2) {
+			calc_area_id = area_id;
+			cur_select_area.push($(this).html());
+			cur_select_area_ids.push(area_id);
+			$cur_tab.find('a').removeClass('hover');
+			$cur_tab.nextAll().remove();
+			if (typeof nc_a === "undefined") {
+    	 		$.getJSON(SITE_URL + "/index.php/home/Goods/json_area?callback=?", function(data) {
+    	 			nc_a = data;
+    	 			_loadArea(area_id);
+    	 		});
+			} else {
+				_loadArea(area_id);
+			}
+		} else {
+			//点击第三级，不需要显示子分类
+			if (cur_select_area.length == 3) {
+				cur_select_area.pop();
+				cur_select_area_ids.pop();
+			}
+			cur_select_area.push($(this).html());
+			cur_select_area_ids.push(area_id);
+			$('#ncs-freight-selector > div[class="text"] > div').html(cur_select_area.join(''));
+			$('#ncs-freight-selector').removeClass("hover");
+			_calc();
+		}
+		$('#ncs-stock').find('li[data-widget="tab-item"]').on('click','a',function(){
+			var tab_id = parseInt($(this).parent().attr('data-index'));
+			if (tab_id < 2) {
+				$(this).parent().nextAll().remove();
+				$(this).addClass('hover');
+				$('#ncs-stock').find('div[data-widget="tab-content"]').each(function(){
+					if ($(this).attr("data-area") == tab_id) {
+						$(this).show();
+					} else {
+						$(this).hide();
+					}
+				});
+			}
+		});
+	});
+	function _loadArea(area_id){
+		if (nc_a[area_id] && nc_a[area_id].length > 0) {
+			$('#ncs-stock').find('div[data-widget="tab-content"]').each(function(){
+				if ($(this).attr("data-area") == next_tab_id) {
+					$(this).show();
+					$cur_area_list = $(this).find('ul');
+					$cur_area_list.html('');
+				} else {
+					$(this).hide();
+				}
+			});
+			var areas = [];
+			areas = nc_a[area_id];
+			for (i = 0; i < areas.length; i++) {
+				if (areas[i][1].length > 8) {
+					$cur_area_list.append("<li class='longer-area'><a data-value='" + areas[i][0] + "' href='#none'>" + areas[i][1] + "</a></li>");
+				} else {
+				    $cur_area_list.append("<li><a data-value='" + areas[i][0] + "' href='#none'>" + areas[i][1] + "</a></li>");
+				}
+			}
+			if (area_id > 0){
+				$cur_tab.after('<li data-index="' + (next_tab_id) + '" data-widget="tab-item"><a class="hover" href="#none" ><em>请选择</em><i> ∨</i></a></li>');
+			}
+		} else {
+			//点击第一二级时，已经到了最后一级
+			$cur_tab.find('a').addClass('hover');
+			$('#ncs-freight-selector > div[class="text"] > div').html(cur_select_area);
+			$('#ncs-freight-selector').removeClass("hover");
+			_calc();
+		}
+	}
+	//计算运费，是否配送
+	function _calc() {
+		$.cookie('dregion', cur_select_area_ids.join(' ')+'|'+cur_select_area.join(' '), { expires: 30 });
+		<?php if (! $goods['transport_id']) { ?>
+		return;
+		<?php } ?>
+		var _args = '';
+		_args += "&tid=<?php echo $goods['transport_id']?>";
+		<?php if ($store_info['is_own_shop']) { ?>
+		_args += "&super=1";
+				<?php } ?>
+		if (_args != '') {
+			_args += '&area_id=' + calc_area_id ;
+			if (typeof calced_area[calc_area_id] == 'undefined') {
+				//需要请求配送区域设置
+				$.getJSON(SITE_URL + "index.php/home/Goods/calc.html?" + _args + "&myf=<?php echo $store_info['store_free_price']?>&callback=?", function(data){
+					allow_buy = data.total ? true : false;
+					calced_area[calc_area_id] = data.total;
+					if (data.total === false) {
+						$('#ncs-freight-prompt > strong').html('无货').next().remove();
+						$('a[nctype="buynow_submit"]').addClass('no-buynow');
+						$('a[nctype="addcart_submit"]').addClass('no-buynow');
+						$('#store-free-time').hide();
+					} else {
+						$('#ncs-freight-prompt > strong').html('有货 ').next().remove();
+						$('#ncs-freight-prompt > strong').after('<span>' + data.total + '</span>');
+						$('a[nctype="buynow_submit"]').removeClass('no-buynow');
+						$('a[nctype="addcart_submit"]').removeClass('no-buynow');
+						$('#store-free-time').show();
+					}
+				});	
+			} else {
+				if (calced_area[calc_area_id] === false) {
+					$('#ncs-freight-prompt > strong').html('无货').next().remove();
+					$('a[nctype="buynow_submit"]').addClass('no-buynow');
+					$('a[nctype="addcart_submit"]').addClass('no-buynow');
+					$('#store-free-time').hide();
+				} else {
+					$('#ncs-freight-prompt > strong').html('有货 ').next().remove();
+					$('#ncs-freight-prompt > strong').after('<span>' + calced_area[calc_area_id] + '</span>');
+					$('a[nctype="buynow_submit"]').removeClass('no-buynow');
+					$('a[nctype="addcart_submit"]').removeClass('no-buynow');
+					$('#store-free-time').show();
+				}
+			}
+		}
+	}
+	//如果店铺设置默认显示配送区域
+	<?php if ($store_info['deliver_region']) { ?>
+	if (typeof nc_a === "undefined") {
+ 		$.getJSON(SITE_URL + "/index.php/home/Goods/json_area.html?callback=?", function(data) {
+ 			nc_a = data;
+ 			$cur_tab = $('#ncs-stock').find('li[data-index="0"]');
+ 			_loadArea(0);
+ 			$('ul[class="area-list"]').find('a[data-value="{$store_info.deliver_region_ids.0|default=""}"]').click();
+ 		    <?php if (isset($store_info['deliver_region_ids'][1])) { ?>
+ 			$('ul[class="area-list"]').find('a[data-value="<?php echo $store_info['deliver_region_ids'][1];?>"]').click();
+ 		    <?php } ?>
+  		    <?php if (isset($store_info['deliver_region_ids'][2])) { ?>
+ 			$('ul[class="area-list"]').find('a[data-value="<?php echo $store_info['deliver_region_ids'][2];?>"]').click();
+ 			<?php } ?>
+ 		});
+	}
+	<?php } ?>
+});
+<?php }?>
+
+
+
+                                //缩略图切换
+                                $('.small-pic-li').each(function(i, o) {
+                                    var lilength = $('.small-pic-li').length;
+                                    $(o).hover(function() {
+                                        $(o).siblings().removeClass('active');
+                                        $(o).addClass('active');
+                                        $('#zoomimg').attr('src', $(o).find('img').attr('data-img'));
+                                        $('#zoomimg').attr('jqimg', $(o).find('img').attr('data-big'));
+                                        $('.next-btn').removeClass('disabled');
+                                        if (i == 0) {
+                                            $('.next-left').addClass('disabled');
+                                        }
+                                        if (i + 1 == lilength) {
+                                            $('.next-right').addClass('disabled');
+                                        }
+                                    });
+                                })
+
+                                //前一张缩略图
+                                $('.next-left').click(function() {
+                                    var newselect = $('.small-pic>.active').prev();
+                                    $('.small-pic>.active').removeClass('active');
+                                    $(newselect).addClass('active');
+                                    $('#zoomimg').attr('src', $(newselect).find('img').attr('data-img'));
+                                    $('#zoomimg').attr('jqimg', $(newselect).find('img').attr('data-big'));
+                                    var index = $('.small-pic>li').index(newselect);
+                                    if (index == 0) {
+                                        $('.next-left').addClass('disabled');
+                                    }
+                                    $('.next-right').removeClass('disabled');
+                                })
+
+                                //后前一张缩略图
+                                $('.next-right').click(function() {
+                                    var newselect = $('.small-pic>.active').next();
+                                    $('.small-pic>.active').removeClass('active');
+                                    $(newselect).addClass('active');
+                                    $('#zoomimg').attr('src', $(newselect).find('img').attr('data-img'));
+                                    $('#zoomimg').attr('jqimg', $(newselect).find('img').attr('data-big'));
+                                    var index = $('.small-pic>li').index(newselect);
+                                    if (index + 1 == $('.small-pic>li').length) {
+                                        $('.next-right').addClass('disabled');
+                                    }
+                                    $('.next-left').removeClass('disabled');
+                                })
+
+                                /**
+                                 * 加减数量
+                                 * n 点击一次要改变多少
+                                 * maxnum 允许的最大数量(库存)
+                                 * number ，input的id
+                                 */
+                                function altergoodsnum(n) {
+                                    var num = parseInt($('#quantity').val());
+                                    var maxnum = parseInt($('#quantity').attr('max'));
+                                    num += n;
+                                    num <= 0 ? num = 1 : num;
+                                    if (num >= maxnum) {
+                                        $(this).addClass('no-mins');
+                                        num = maxnum;
+                                    }
+                                    $('#store_count').text(maxnum - num); //更新库存数量
+                                    $('#quantity').val(num)
+                                }
+
+</script>
+
+{include file="public/mall_server" /}
+{include file="public/mall_footer" /}

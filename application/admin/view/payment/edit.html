@@ -1,0 +1,220 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>支付方式</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    
+    
+    <form id="post_form" method="post" name="form1">
+    <table class="ds-default-table">
+      <tbody>
+        <tr class="noborder">
+          <td class="vatop rowform"><?php echo $payment['payment_name'];?></td>
+          <td class="vatop tips"></td>
+        </tr>
+        <?php if ($payment['payment_code'] == 'chinabank') { ?>
+        <tr>
+          <td colspan="2" class="required">{$Think.lang.payment_chinabank_account}</td>
+        </tr>
+        <tr class="noborder">
+          <td class="vatop rowform"><input type="hidden" name="config_name" value="chinabank_account,chinabank_key" />
+            <input name="chinabank_account" id="chinabank_account" value="<?php echo $config_array['chinabank_account'];?>" class="txt" type="text"></td>
+          <td class="vatop tips"></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="required">{$Think.lang.payment_chinabank_key}</td>
+        </tr>
+        <tr class="noborder">
+          <td class="vatop rowform"><input name="chinabank_key" id="chinabank_key" value="<?php echo $config_array['chinabank_key'];?>" class="txt" type="text"></td>
+          <td class="vatop tips"></td>
+        </tr>
+        <?php } elseif ($payment['payment_code'] == 'tenpay') { ?>
+        <tr>
+          <td colspan="2" class="required">{$Think.lang.payment_tenpay_account}</td>
+        </tr>
+        <tr class="noborder">
+          <td class="vatop rowform"><input type="hidden" name="config_name" value="tenpay_account,tenpay_key" />
+            <input name="tenpay_account" id="tenpay_account" value="<?php echo $config_array['tenpay_account'];?>" class="txt" type="text"></td>
+          <td class="vatop tips"></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="required">{$Think.lang.payment_tenpay_key}</td>
+        </tr>
+        <tr class="noborder">
+          <td class="vatop rowform"><input name="tenpay_key" id="tenpay_key" value="<?php echo $config_array['tenpay_key'];?>" class="txt" type="text"></td>
+          <td class="vatop tips"></td>
+        </tr>
+        <?php } elseif ($payment['payment_code'] == 'alipay') { ?>
+        <tr>
+          <td colspan="2" class="required">{$Think.lang.payment_alipay_appid}</td>
+        </tr>
+        <tr class="noborder">
+          <td class="vatop rowform">
+              <input type="hidden" name="config_name" value="alipay_service,alipay_appid,public_key,private_key" />
+          	<input type="hidden" name="alipay_service" value="alipay.trade.page.pay" />
+            <input name="alipay_appid" id="alipay_account" value="<?php echo $config_array['alipay_appid'];?>" class="txt" type="text"></td>
+          <td class="vatop tips"></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="required">{$Think.lang.payment_public_key}</td>
+        </tr>
+        <tr class="noborder">
+          <td class="vatop rowform">
+            <textarea name="public_key" id="public_key">{$config_array.public_key|default=''}</textarea>
+          </td>
+          <td class="vatop tips"></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="required">{$Think.lang.payment_private_key}</td>
+        </tr>
+        <tr class="noborder">
+          <td class="vatop rowform">
+            <textarea name="private_key" id="private_key">{$config_array.private_key|default=''}</textarea>
+          </td>
+          <td class="vatop tips"><a href="https://tech.open.alipay.com/support/knowledge/index.htm?categoryId=20069&knowledgeId=201602048372#/?_k=nw5r9a" target="_blank">获取秘钥信息</a></td>
+        </tr>
+        <!--微信支付 v3-b12-->
+        <?php } elseif ($payment['payment_code'] == 'wxpay') { ?>
+        <tr>
+        <td colspan="2">
+            <div class="explanation" id="explanation">
+                <div class="title" id="checkZoom">
+                    <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+                    <span id="explanationZoom" title="收起提示" class="arrow"></span>
+                </div>
+                <ul>
+                    <li>如果启用微信在线退款功能需要在服务器设置“证书”，证书文件不能放在web服务器虚拟目录，应放在有访问权限控制的目录中，防止被他人下载。</li>
+                    <li>证书路径在“admin\api\refund\wxpay\WxPay.Config.php”中。退款有一定延时，用零钱支付的20分钟内到账，银行卡支付的至少3个工作日。</li>
+                </ul>
+            </div>
+        </td>
+        </tr>
+        <tr>
+          <td colspan="2" class="required">商户公众号APPID: </td>
+        </tr>
+        <tr class="noborder">
+          <td class="vatop rowform"><input type="hidden" name="config_name" value="appid,mchid,key" />
+          <input name="appid" id="appid" value="<?php echo $config_array['appid'];?>" class="txt" type="text"></td>
+          <td class="vatop tips">绑定支付的APPID（必须配置，开户邮件中可查看）</td>
+        </tr>
+        <tr>
+          <td colspan="2" class="required">商户号: </td>
+        </tr>
+        <tr class="noborder">
+          <td class="vatop rowform"><input name="mchid" id="mchid" value="<?php echo $config_array['mchid'];?>" class="txt" type="text"></td>
+          <td class="vatop tips">商户号（必须配置，开户邮件中可查看）</td>
+        </tr>
+        <tr>
+          <td colspan="2" class="required">密钥: </td>
+        </tr>
+        <tr class="noborder">
+          <td class="vatop rowform"><input name="key" id="key" value="<?php echo $config_array['key'];?>" class="txt" type="text"></td>
+          <td class="vatop tips">商户支付密钥，参考开户邮件设置（必须配置，登录商户平台自行设置）</td>
+        </tr>
+        <?php } ?>
+        <!--微信支付end-->
+        <tr>
+          <td colspan="2" class="required">{$Think.lang.payment_index_enable}</td>
+        </tr>
+        <tr class="noborder">
+          <td class="vatop rowform onoff"><label for="payment_state1" class="cb-enable <?php if($payment['payment_state'] == '1'){ ?>selected<?php } ?>" ><span>{$Think.lang.ds_yes}</span></label>
+            <label for="payment_state2" class="cb-disable <?php if($payment['payment_state'] == '0'){ ?>selected<?php } ?>" ><span>{$Think.lang.ds_no}</span></label>
+            <input type="radio" <?php if($payment['payment_state'] == '1'){ ?>checked="checked"<?php }?> value="1" name="payment_state" id="payment_state1">
+            <input type="radio" <?php if($payment['payment_state'] == '0'){ ?>checked="checked"<?php }?> value="0" name="payment_state" id="payment_state2"></td>
+          <td class="vatop tips"></td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr class="tfoot">
+          <td colspan="15"><a href="JavaScript:void(0);" class="btn" id="submitBtn"  onclick="document.form1.submit()"><span>{$Think.lang.ds_submit}</span></a> <a href="JavaScript:void(0);" class="btn" onclick="history.go(-1)"><span>{$Think.lang.ds_back}</span></a></td>
+        </tr>
+      </tfoot>
+    </table>
+  </form>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+<script>
+$(document).ready(function(){
+	$('#post_form').validate({
+		<?php if($payment['payment_code'] == 'chinabank') { ?>
+        rules : {
+            chinabank_account : {
+                required   : true
+            },
+            chinabank_key : {
+                required   : true
+            }
+        },
+        messages : {
+            chinabank_account  : {
+                required  : '{$Think.lang.payment_chinabank_account}{$Think.lang.payment_edit_not_null}'
+            },
+            chinabank_key  : {
+                required   : '{$Think.lang.payment_chinabank_key}{$Think.lang.payment_edit_not_null}'
+            }
+        }
+		<?php } elseif ($payment['payment_code'] == 'tenpay') { ?>
+        rules : {
+            tenpay_account : {
+                required   : true
+            },
+            tenpay_key : {
+                required   : true
+            }
+        },
+        messages : {
+            tenpay_account  : {
+                required  : '{$Think.lang.payment_tenpay_account}{$Think.lang.payment_edit_not_null}'
+            },
+            tenpay_key  : {
+                required   : '{$Think.lang.payment_tenpay_key}{$Think.lang.payment_edit_not_null}'
+            }
+        }
+			
+		<?php } elseif ($payment['payment_code'] == 'alipay') { ?>
+        rules : {
+            alipay_account : {
+                required   : true
+            },
+            alipay_key : {
+                required   : true
+            },
+            alipay_partner : {
+                required   : true
+            }
+        },
+        messages : {
+            alipay_account  : {
+                required  : '{$Think.lang.payment_alipay_account}{$Think.lang.payment_edit_not_null}'
+            },
+            alipay_key  : {
+                required   : '{$Think.lang.payment_alipay_key}{$Think.lang.payment_edit_not_null}'
+            },
+            alipay_partner  : {
+                required   : '{$Think.lang.payment_alipay_partner}{$Think.lang.payment_edit_not_null}'
+            }
+        }
+		<?php } ?>
+    });
+});
+</script>

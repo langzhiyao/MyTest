@@ -1,0 +1,96 @@
+
+{include file="public/mall_top" /}
+{include file="public/mall_header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/home/css/invite.css">
+<?php
+$member_id = base64_encode(intval(session('member_id'))*1);
+?>
+<body>
+<div class="container-bg">
+  <div class="container">
+    <div class="span-24" id="content">
+      <div class="invite-bd">
+        <div class="invite-form">
+          <div class="invite-text"> 邀请链接： <span class="invite-help">复制下面的链接，通过QQ，旺旺，微博，论坛发帖等方式发给好友，对方通过该链接注册即可~</span> </div>
+          <div>
+            <input type="text" readonly value="<?php echo SHOP_SITE_URL;?>/#V3<?php echo $member_id;?>" class="std-input i-invite-link">
+            <a class="button copy-btn" data-url="{:config('url_domain_root')}static/home/images/invite/ZeroClipboard.swf" id="copy-button" href="javascrit:;" hidefocus="true">复制</a> </div>
+        </div>
+        <div class="invite-share-site clearfix">
+          <!-- Baidu Button BEGIN -->
+          <p id="bdshare" class="bdshare_t bds_tools get-codes-bdshare" data="{'url':'<?php echo SHOP_SITE_URL;?>/#V3<?php echo intval(session('member_id'))*1;?>'}"> <span class="bds_more">快捷邀请：</span> <a class="bds_qzone">QQ空间</a> <a class="bds_tsina">新浪微博</a> <a class="bds_tqq">腾讯微博</a> <a class="bds_taobao">我的淘宝</a> <a class="bds_renren">人人网</a> <a class="bds_douban">豆瓣</a> </p>
+          <!-- Baidu Button END -->
+        </div>
+        <div class="invite-rebate"><a href="<?php echo url('memberpoints/index');?>" target="_blank" hidefocus="true"><img src="{:config('url_domain_root')}static/home/images/invite/income.png"></a></div>
+        <div class="invite-rules">
+          <p>1. 成功邀请一个好友，可获100积分奖励；</p>
+          <p>2. 当好友成功购买了商品，可获得10%返利积分。<br />
+            (例如：好友购买100元商品，您可获得10积分)</p>
+        </div>
+      </div>
+
+      <!-- Baidu Button BEGIN -->
+      <script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=645315" ></script>
+      <script type="text/javascript" id="bdshell_js"></script>
+      <script type="text/javascript">
+    var bds_config = {'bdText':'购买这么多年，才发现，原来在【<?php echo $setting_config['site_name']; ?>】购买东西这么便宜的，赶紧试试吧，一般人我不告诉他！','bdPic':'<?php echo SHOP_SITE_URL;?>/data/upload/shop/adv/snsspic.png','bdDesc':'分享个我的购物省钱小窍门，我在【<?php echo $setting_config['site_name']; ?>】购买的都是正品，超便宜，省钱So easy！','review':'off'};
+    document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + new Date().getHours();
+</script>
+      <!-- Baidu Button END --> </div>
+  </div>
+</div>
+<script type="text/javascript" src="{:config('url_domain_root')}static/plugins/ZeroClipboard.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    initInviteForm();
+});
+
+function initInviteForm() {
+
+    $(".i-invite-link").click(function(){
+
+        $(this).select();
+
+    });
+
+    $(".invite-form .copy-btn").each(function(){
+
+        ZeroClipboard.setMoviePath($(this).attr("data-url"));
+
+        var clip = new ZeroClipboard.Client(); // 新建一个对象
+
+        clip.setHandCursor(true ); // 设置鼠标为手型
+
+        clip.setText(""); // 设置要复制的文本。
+
+        clip.setHandCursor(true);
+
+        clip.setCSSEffects(true);
+
+        clip.addEventListener('complete', function(client, text) {
+
+            alert("邀请链接复制成功！\n\n马上分享给你的好友吧!" );
+
+        } );
+
+        clip.addEventListener('mouseDown', function(client) {
+
+            clip.setText($(".i-invite-link").val());
+
+        } );
+
+        clip.glue("copy-button");
+
+        $(this).click(function(e){
+
+            e.preventDefault();
+
+            alert("啊哦，好像复制失败了……手动复制一下吧！");
+
+        });
+
+    });
+
+}
+</script>
+<!---->

@@ -1,0 +1,147 @@
+{include file="public/seller_top" /}
+<div class="seller_main w1200">
+    {include file="public/seller_left" /}
+    <div class="seller_right">
+        <div class="seller_items">
+            {include file="public/seller_items" /}
+            {present name="isOwnShop"}
+            <a class="dssc-btn dssc-btn-green" href="{:url('Sellerpromotionxianshi/xianshi_add')}"><i class="icon-plus-sign"></i>{$Think.lang.xianshi_add}</a>
+            {else /}
+            {notempty name="current_xianshi_quota"}
+            <a class="dssc-btn dssc-btn-green" style="right:100px" href="{:url('Sellerpromotionxianshi/xianshi_add')}"><i class="icon-plus-sign"></i>{$Think.lang.xianshi_add}</a>
+            <a class="dssc-btn dssc-btn-acidblue" href="{:url('Sellerpromotionxianshi/xianshi_quota_add')}" title=""><i class="icon-money"></i>套餐续费</a>
+            {else }
+            <a class="dssc-btn dssc-btn-acidblue" href="{:url('Sellerpromotionxianshi/xianshi_quota_add')}" title=""><i class="icon-money"></i>{$Think.lang.xianshi_quota_add}</a>
+            {/notempty}
+            {/present}
+        </div>
+        {present name="isOwnShop"}
+        <div class="alert alert-block mt10">
+            <ul>
+                <li>1、点击添加活动按钮可以添加限时折扣活动，点击管理按钮可以对限时折扣活动内的商品进行管理</li>
+                <li>2、点击删除按钮可以删除限时折扣活动</li>
+            </ul>
+        </div>
+        {else }
+        <div class="alert alert-block mt10">
+            {notempty name="current_xianshi_quota"}
+            <strong>套餐过期时间{$Think.lang.ds_colon}</strong><strong style="color:#F00;">{$current_xianshi_quota.end_time|date="Y-m-d H:i:s",###}</strong>
+            {else /}
+            <strong>当前没有可用套餐，请先购买套餐</strong>
+            {/notempty}
+            <ul>
+                <li>{$Think.lang.xianshi_explain1}</li>
+                <li>{$Think.lang.xianshi_explain2}</li>
+                <li>{$Think.lang.xianshi_explain3}</li>
+                <li>4、<strong style="color: red">相关费用会在店铺的账期结算中扣除</strong>。</li>
+            </ul>
+        </div>
+        {/present}
+
+        <form method="get">
+            <table class="search-form">
+                <tr>
+                    <td>&nbsp;</td>
+                    <th>状态</th>
+                    <td class="w100"><select name="state">
+                        {notempty name="xianshi_state_array"}
+                        {volist name="xianshi_state_array" id="val"}
+                        <option value="{$key}" {if $key==$Request.get.state}selected{/if}>{$val}</option>
+                        {/volist}
+                        {/notempty}
+                    </select></td>
+                    <th class="w110">{$Think.lang.xianshi_name}</th>
+                    <td class="w160"><input type="text" class="text w150" name="xianshi_name" value="{$Request.get.xianshi_name}"/></td>
+                    <td class="w70 tc"><label class="submit-border"><input type="submit" class="submit" value="{$Think.lang.ds_search}"/></label></td>
+                </tr>
+            </table>
+        </form>
+        <table class="dssc-default-table">
+            <thead>
+            <tr>
+                <th class="w30"></th>
+                <th class="tl">{$Think.lang.xianshi_name}</th>
+                <th class="w180">{$Think.lang.start_time}</th>
+                <th class="w180">{$Think.lang.end_time}</th>
+                <th class="w80">购买下限</th>
+                <th class="w80">状态</th>
+                <th class="w150">{$Think.lang.ds_handle}</th>
+            </tr>
+            </thead>
+            <tbody id="xianshi_list">
+            {notempty name="xianshi_list"}
+            {volist name="xianshi_list" id="val"}
+            <tr class="bd-line">
+                <td></td>
+                <td class="tl">
+                    <dl class="goods-name">
+                        <dt>{$val.xianshi_name}</dt>
+                    </dl>
+                </td>
+                <td class="goods-time">{$val.start_time|date="Y-m-d H:i",###}</td>
+                <td class="goods-time">{$val.end_time|date="Y-m-d H:i",###}</td>
+                <td>{$val.lower_limit}</td>
+                <td>{$val.xianshi_state_text}</td>
+                <td class="nscs-table-handle tr">
+                    {if $val.editable}
+                    <span>
+              <a href="{:url('Sellerpromotionxianshi/xianshi_edit','xianshi_id='.$val.xianshi_id)}" class="btn-blue">
+                  <i class="icon-edit"></i>
+                  <p>{$Think.lang.ds_edit}</p>
+              </a>
+          </span>
+                    {/if}
+                    <span>
+              <a href="{:url('Sellerpromotionxianshi/xianshi_manage','xianshi_id='.$val.xianshi_id)}"
+                 class="btn-green">
+                  <i class="icon-cog"></i>
+                  <p>{$Think.lang.ds_manage}</p>
+              </a>
+          </span>
+                    <span>
+              <a href="javascript:;" nctype="btn_del_xianshi" data-xianshi-id={$val.xianshi_id} class="btn-red">
+                  <i class="icon-trash"></i>
+                  <p>{$Think.lang.ds_delete}</p>
+                        </a>
+          </span>
+                </td>
+            </tr>
+            {/volist}
+            {else /}
+            <tr id="xianshi_list_norecord">
+                <td class="norecord" colspan="20">
+                    <div class="warning-option"><i class="icon-warning-sign"></i><span>{$Think.lang.no_record}</span>
+                    </div>
+                </td>
+            </tr>
+            {/notempty}
+            </tbody>
+            <tfoot>
+            {notempty name="xianshi_list"}
+            <tr>
+                <td colspan="20">
+                    <div class="pagination">{$show_page}</div>
+                </td>
+            </tr>
+            {/notempty}
+            </tfoot>
+        </table>
+        <form id="submit_form" action="" method="post">
+            <input type="hidden" id="xianshi_id" name="xianshi_id" value="">
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('[nctype="btn_del_xianshi"]').on('click', function () {
+            if (confirm('{$Think.lang.ds_ensure_del}')) {
+                var action = "{:url('Sellerpromotionxianshi/xianshi_del')}";
+                var xianshi_id = $(this).attr('data-xianshi-id');
+                $('#submit_form').attr('action', action);
+                $('#xianshi_id').val(xianshi_id);
+                ajaxpost('submit_form', '', '', 'onerror');
+            }
+        });
+    });
+</script>

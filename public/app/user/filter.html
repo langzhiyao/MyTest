@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>想见孩-筛选</title>
+    <meta name="author" content="想见孩" />
+    <meta name="copyright" content="想见孩" />
+    <meta name="description" content="想见孩" />
+    <meta id="viewport" name="viewport" content="width=750" />
+    <link rel="stylesheet" href="../content/style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/iconfonts/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/lib/weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/css/jquery-weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/user.css" type="text/css" />
+    <link rel="shortcut icon" href="../content/images/ico.ico" type="image/x-icon" />
+    <script src="../content/scripts/mobile-util.js"></script>
+    <style>
+        .picker-modal-inner .picker-items-col:first-child {
+            margin-top: .8rem;
+        }
+        
+        .picker-modal-inner .picker-items-col:nth-child(5) {
+            margin-top: .3rem;
+        }
+        
+        .picker-modal-inner .picker-items-col:nth-child(8) {
+            margin-top: -.2rem;
+        }
+        
+        .picker-modal-inner .picker-items-col:nth-child(9) {
+            margin-top: .5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="head">
+        <div class="head0">
+            <div class="menu_bar_box">
+                <a href="javascript:;" class="back_btn" onClick="historyback()">
+                    <i class="icon iconfont icon-jiantou3"></i>
+                </a>
+            </div>
+            <div class="head_title">
+                <p>筛选</p>
+            </div>
+            <div class="head_r">
+
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <div class="main">
+        <div class="container2">
+            <div class="classesname_box">
+                <h1 class="classesname">北京新东方幼儿园-小班2班<span>教师</span></h1>
+            </div>
+            <div class="weui-cells weui-cells_form">
+                <div class="weui-cell starttime">
+                    <div class="weui-cell__hd"><label for="starttime" class="weui-label"><i class="icon iconfont icon-dingshinaozhong"></i>选择开始时间</label></div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" id="starttime" type="text" value="" placeholder="请选择开始时间">
+                    </div>
+                </div>
+                <div class="weui-cell endtime">
+                    <div class="weui-cell__hd"><label for="endtime" class="weui-label"><i class="icon iconfont icon-dingshinaozhong"></i>选择结束时间</label></div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" id="endtime" type="text" value="" placeholder="请选择结束时间">
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter_submit_box">
+                <input type="button" class="filter_submit" value="确定" />
+            </div>
+        </div>
+    </div>
+
+
+    <script src="../content/scripts/jquery.min.js"></script>
+    <script src="../content/plugins/jqweui/js/jquery-weui.min.js"></script>
+    <script src="../content/scripts/juqery.cookie.js"></script>
+    <script src="../content/scripts/API.js"></script>
+    <script src="../content/scripts/commom.js"></script>
+    <script>
+        $("#starttime").datetimePicker({
+            title: '选择时间',
+            onChange: function(picker, values, displayValues) {
+                console.log(values);
+            }
+        });
+        $("#endtime").datetimePicker({
+            title: '选择时间',
+            onChange: function(picker, values, displayValues) {
+                console.log(values);
+            }
+        });
+    </script>
+</body>
+
+</html>

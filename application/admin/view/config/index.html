@@ -1,0 +1,107 @@
+{include file="public/header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<style>
+    .layui-form-label{
+        width: 200px;
+    }
+</style>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>通用设置/APP</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div class="explanation" id="explanation" style="width:100%;box-sizing: border-box;">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>设置副账号数量后，app的副账户进行按此数量显示。0为无副账户</li>
+            <li>分成比例可以填写小数，精确到2位，如果0.25%。</li>
+        </ul>
+    </div>
+    <form method="post" enctype="multipart/form-data" name="form1" class="layui-form">
+
+        <div class="ncap-form-default">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.after_start_password}</label>
+                    <div class="layui-input-inline">
+                        <input type="tel" name="after_start_password" value="{$list_config.after_start_password}" lay-verify="required|number" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.f_account_num}</label>
+                    <div class="layui-input-inline">
+                        <input type="tel" name="f_account_num" value="{$list_config.f_account_num}" lay-verify="required|number" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">个</div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.bind_student_num}</label>
+                    <div class="layui-input-inline">
+                        <input type="tel" name="bind_student_num" value="{$list_config.bind_student_num}" lay-verify="required|number" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">个</div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.video_pay_scale}</label>
+                    <div class="layui-form-mid layui-word-aux">{$Think.lang.province_agent}</div>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <input type="text" name="province_agent" lay-verify="required|number" value="{$list_config.video_pay_scale->province_agent}" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">%</div>
+                    <div class="layui-form-mid">-</div>
+                    <div class="layui-form-mid layui-word-aux">{$Think.lang.city_agent}</div>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <input type="text" name="city_agent" lay-verify="required|number" value="{$list_config.video_pay_scale->city_agent}" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">%</div>
+                    <div class="layui-form-mid">-</div>
+                    <div class="layui-form-mid layui-word-aux">{$Think.lang.area_agent}</div>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <input type="text" name="area_agent" lay-verify="required|number" value="{$list_config.video_pay_scale->area_agent}" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">%</div>
+                    <div class="layui-form-mid">-</div>
+                    <div class="layui-form-mid layui-word-aux">{$Think.lang.agent}</div>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <input type="text" name="agent" lay-verify="required|number" value="{$list_config.video_pay_scale->agent}" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">%</div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+
+
+
+
+
+
+

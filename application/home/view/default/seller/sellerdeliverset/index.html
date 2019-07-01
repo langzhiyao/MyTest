@@ -1,0 +1,71 @@
+{include file="public/seller_top" /}
+<div class="seller_main w1200">
+    {include file="public/seller_left" /}
+    <div class="seller_right">
+        <div class="seller_items">
+            {include file="public/seller_items" /}
+            <a href="javascript:void(0)" class="dssc-btn dssc-btn-green" nc_type="dialog" dialog_title="新增地址" dialog_id="my_address_add"  uri=" {:url('/home/sellerdeliverset/daddress_add')}" dialog_width="550" title="新增地址">新增地址</a>
+        </div>
+        <table class="dssc-default-table">
+            <thead>
+                <tr>
+                    <th class="w70">是否默认</th>
+                    <th class="w90">{$Think.lang.store_daddress_receiver_name}</th>
+                    <th class="tl">{$Think.lang.store_daddress_deliver_address}</th>
+                    <th class="w150">{$Think.lang.store_daddress_phone}</th>
+                    <th class="w110">{$Think.lang.ds_common_button_operate}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {if $address_list}
+                {volist name="address_list" id="address"}
+                <tr class="bd-line">
+                    <td>
+                        <label for="is_default_{$address.address_id}">
+                            <input type="radio" id="is_default_{$address.address_id}" name="is_default"
+                                   {if $address.is_default eq '1'} checked {/if} value="{$address.address_id}">
+                                   {$Think.lang.store_daddress_default}
+                        </label>
+                    </td>
+                    <td>{$address.seller_name}</td>
+                    <td class="tl">{$address.area_info}&nbsp{$address.address}</td>
+                    <td><span class="tel">{$address.telphone}</span> <br/>
+                    <td class="dssc-table-handle">
+                        <span>
+                            <a href="javascript:void(0);" dialog_id="my_address_edit" dialog_width="640" dialog_title="{$Think.lang.store_daddress_edit_address}" nc_type="dialog" uri="{:url('/home/sellerdeliverset/daddress_add',['address_id'=>$address.address_id])}" class="btn-blue"><i class="icon-edit"></i>
+                                <p>编辑</p>
+                            </a>
+                        </span>
+                        <span>
+                            <a href="javascript:void(0)" onclick="ajax_get_confirm('{$Think.lang.ds_common_op_confirm}', '{:url('/home/sellerdeliverset/daddress_del',['address_id'=>$address.address_id])}');" class="btn-red"><i class="icon-trash"></i>
+                                <p>删除</p>
+                            </a>
+                        </span>
+                    </td>
+                </tr>
+                {/volist}
+                {else}
+                <tr>
+                    <td colspan="20" class="norecord">
+                        <div class="warning-option"><i class="icon-warning-sign"></i><span>{$Think.lang.no_record}</span>
+                        </div>
+                    </td>
+                </tr>
+                {/if}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="20">&nbsp;</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+{include file="public/mall_footer" /}
+<script>
+  $(function (){
+    $('input[name="is_default"]').on('click',function(){
+      $.get(SITE_URL+'index.php/home/sellerdeliverset/daddress_default_set?address_id='+$(this).val(),function(result){})
+  });
+});
+</script>

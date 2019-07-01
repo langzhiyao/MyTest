@@ -1,0 +1,141 @@
+{include file="public/mall_top" /}
+{include file="public/mall_header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/home/css/point.css">
+<div class="dsp-container">
+  {if $Think.session.is_login == '1'}
+  <div class="dsp-member-top">
+    {include file="default/member/pointprod/pointshop_minfo" /}
+  </div>
+ {/if}
+  <div class="dsp-main-layout">
+    <div class="dsp-category">
+      <dl class="searchbox">
+        <dt>排序方式：</dt>
+        <dd><!-- 高级搜索start -->
+          <ul>
+            <input type="hidden" id="orderby" name="orderby" value="{$Request.param.orderby}?{$Request.param.orderby}:'default';?>"/>
+
+            <!-- 默认排序s -->
+            {if !$Request.param.orderby ||$Request.param.orderby=='default'}
+            <li class="selected">默认排序</li>
+           {else /}
+            <li nc_type="search_orderby" data-param='{"orderval":"default"}' style="cursor: pointer;">默认排序</li>
+           {/if}
+            <!-- 默认排序e -->
+
+            <!-- 积分值s -->
+            {if $Request.param.orderby == 'pointsdesc'}
+            <li class="selected" nc_type="search_orderby" data-param='{"orderval":"pointsasc"}'>积分值<em class="desc"></em></li>
+            {elseif $Request.param.orderby == 'pointsasc'}
+            <li class="selected" nc_type="search_orderby" data-param='{"orderval":"pointsdesc"}'>积分值<em class="asc"></em></li>
+           {else /}
+            <li nc_type="search_orderby" data-param='{"orderval":"pointsdesc"}'>积分值<em class="desc"></em></li>
+           {/if}
+            <!-- 积分值e -->
+
+            <!-- 上架时间s -->
+            {if $Request.param.orderby == 'stimedesc'}
+            <li class="selected" nc_type="search_orderby" data-param='{"orderval":"stimeasc"}'>上架时间<em class="desc"></em></li>
+             {elseif $Request.param.orderby == 'stimeasc'}
+            <li class="selected" nc_type="search_orderby" data-param='{"orderval":"stimedesc"}'>上架时间<em class="asc"></em></li>
+            {else /}
+            <li nc_type="search_orderby" data-param='{"orderval":"stimedesc"}'>上架时间<em class="desc"></em></li>
+           {/if}
+            <!-- 上架时间e -->
+            <li>&nbsp;</li>
+            <!-- 会员等级s -->
+            <li>会员等级：
+              <select id="level" onchange="javascript:searchpointprod();">
+                <option value='' selected >-请选择-</option>
+                {notempty name="membergrade_arr"}
+                {volist name="membergrade_arr" id="v"}
+                <option value="{$v.level}" {$Request.param.level == $v['level'] ? 'selected':''}>V{$v.level}</option>
+               {/volist}
+               {/notempty}
+              </select>
+            </li>
+            <!-- 会员等级e -->
+            <li>&nbsp;</li>
+            <!-- 所需积分s -->
+            <li>所需积分：
+              <input type="text" id="points_min" class="text w50" value="{$Request.param.points_min}"/>
+              ~
+              <input type="text" id="points_max" class="text w50" value="{$Request.param.points_max}" />
+              <a href="javascript:searchpointprod();" class="dsp-btn">搜索</a> </li>
+            <!-- 所需积分e -->
+            <li>&nbsp;</li>
+            {if $Think.session.is_login == '1'}
+            <li>
+              <label for="isable"><input type="checkbox" id="isable" {$Think.param.isable=='1' ?'checked=checked':''} onclick="javascript:searchpointprod();">
+              &nbsp;只看我能兑换</label></li>
+           {/if}
+          </ul>
+          <!-- 高级搜索end --> </dd>
+      </dl>
+    </div>
+    {notempty name="pointprod_list"}
+    <ul class="dsp-exchange-list">
+      {volist name="pointprod_list" id="v"}
+      <li>
+        <div class="gift-pic">
+          <a href="{:url('pointprod/pinfo',['id'=>$v.pgoods_id])}"  >
+            <img src="{$v.pgoods_image}" title="{$v.pgoods_name}" alt="{$v.pgoods_name}">
+          </a>
+        </div>
+        <div class="gift-name">
+          <a href="{:url('pointprod/pinfo',['id'=>$v.pgoods_id])}" >{$v.pgoods_name}</a>
+        </div>
+        <div class="exchange-rule">
+          {if $v.pgoods_limitmgrade >0}
+          <span class="pgoods-grade">V{$v.pgoods_limitmgrade}</span>
+         {/if}
+          <span class="pgoods-price">{:lang('pointprod_goodsprice')}{:lang('ds_colon')}<em>{:lang('currency')}{$v.pgoods_price}</em></span>
+          <span class="pgoods-points">{:lang('pointprod_pointsname')}{:lang('ds_colon')}<strong>{$v.pgoods_points}</strong>
+            {:lang('points_unit')}
+          </span>
+        </div>
+      </li>
+     {/volist}
+    </ul>
+    <div class="tc mt20 mb20">
+      <div class="pagination">{$show_page}</div>
+    </div>
+    {else /}
+    <div class="norecord">{:lang('pointprod_list_null')}</div>
+    {/notempty}
+  </div>
+</div>
+{include file="public/mall_footer" /}
+<script>
+$(function () {
+    $("[nc_type='search_orderby']").click(function(){
+        var data_str = $(this).attr('data-param');
+        eval( "data_str = "+data_str);
+        $("#orderby").val(data_str.orderval);
+        searchpointprod();
+    });
+});
+function searchpointprod(){
+    var url = "{:url('pointprod/index')}"+'?';
+    var orderby = $("#orderby").val();
+    if(orderby){
+        url += ('orderby='+orderby)+'&';
+    }
+    var level = $("#level").val();
+    if(level){
+        url += ('level='+level)+'&';
+    }
+    var points_min = $("#points_min").val();
+    if(points_min){
+        url += ('points_min='+points_min)+'&';
+    }
+    var points_max = $("#points_max").val();
+    if(points_max){
+        url += ('points_max='+points_max)+'&';
+    }
+    if($("#isable").attr("checked") == 'checked'){
+        url += 'isable=1';
+    }
+    go(url);
+}
+</script>

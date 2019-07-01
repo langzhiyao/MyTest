@@ -1,0 +1,131 @@
+.body_content{
+	width: 702px;
+	margin: 74px auto 0 auto;
+}
+.float_left{
+	float: left;
+}
+
+.float_right{
+	float: right;
+}
+
+.clearBoth:after{
+	content: '';
+	display: block;
+	clear: both;
+}
+.swiper-slide img{
+	width: 100%;
+}
+.swiper-button-prev, .swiper-container-rtl .swiper-button-next{
+	background-image: url('../../images/mall/banner_prev.png');
+}
+.swiper-button-next, .swiper-container-rtl .swiper-button-prev{
+	background-image: url('../../images/mall/banner_next.png');
+}
+.content_wrap{
+	width: 662px;
+	margin: 0 auto;
+}
+.content_wrap .comm_title{
+	font-size: 34px;
+}
+.comm_price_wrap{
+	width: 65%;
+}
+.comm_price_wrap .xianjia{
+	color: #ff4a5b;
+	font-size: 32px;
+	margin-right: 30px;
+}
+.comm_price_wrap .new{
+	display: inline-block;
+	width: 110px;
+	height: 28px;
+	font-size: 20px;
+	text-align: center;
+	line-height: 28px;
+	background: #ff4856;
+	color: #fff;
+	border-radius: 20px;
+}
+.comm_price_wrap .yuanjia{
+	display: inline-block;
+	color: #aeaeae;
+	font-size: 32px;
+	margin-right: 30px;
+	text-decoration: line-through;
+}
+.comm_price_wrap .goumai{
+	color: #aeaeae;
+	font-size: 22px;
+}
+.comm_start_wrap{
+	width: 35%;
+	text-align: center;
+}
+.comm_start_wrap i{
+	font-size: 45px;
+	height: 60px;
+}
+.comm_start_wrap p{
+	color: #aeaeae;
+	font-size: 24px;
+}
+.comm_info{
+	width: 100%;
+	height: 68px;
+	line-height: 68px;
+	color: #aeaeae;
+	font-size: 24px;
+}
+.comm_info_content{
+	color: #aeaeae;
+	padding-left: 55px;
+	overflow: hidden;
+	font-size: 24px;
+}
+.mian{
+	font-size: 30px;
+	color: #aeaeae;
+	height: 68px;
+	line-height: 68px;
+}
+.ziying{
+	font-size: 24px;
+	color: #4ec3bb;
+}
+.dizhi{
+	margin-top: 40px;
+	font-size: 24px;
+	color: #aeaeae;
+}
+.dizhi span{
+	margin-right: 30px;
+}
+.dizhi_conten{
+	color: black;
+	font-size: 28px;
+}
+.buy{
+	width: 632px;
+	height: 72px;
+	margin: 0 auto;
+	margin-top: 110px;
+}
+.buy button{
+	width: 306px;
+	height: 72px;
+	color: #fff;
+	font-size: 34px;
+	border-radius: 50px;
+	border: none;
+}
+.buy button:nth-child(1){
+	background: #4ec3bb;
+	margin-right: 15px;
+}
+.buy button:nth-child(2){
+	background: #dedede;
+}

@@ -1,0 +1,71 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <form method="post" enctype="multipart/form-data" name="form1" action="">
+        <div class="ncap-form-default">
+            <dl>
+                <dt>{$Think.lang.mood_member}：<?php echo $mview['member_name']; ?></dt>
+                <dt>{$Think.lang.mood_time}：<?php echo date('Y-m-d H:i:s',$mview['pubtime']); ?></dt>
+            </dl>
+            <dl>
+                <dt><?php echo $mview['content']; ?></dt>
+            </dl>
+                    <?php
+                     if($mview['image'][0]!=''){
+                     foreach($mview['image'] as $v ){ ?>
+                       <img src="<?php echo $path.$v; ?>" >&nbsp;&nbsp;&nbsp;
+                    <?php
+                        }
+                     } ?>
+           <br/>
+            <?php if(count($moodview)!=''){ ?>
+            <dl>
+                <dt>回复：</dt>
+            </dl>
+            <?php } ?>
+            <?php foreach($moodview as $v){ ?>
+            <dl>
+                <dt><?php echo $v['member_name']; ?>：<?php echo $v['v_content']; ?></dt>
+            </dl>
+            <?php } ?>
+            <?php if($mview['del']==1){ ?>
+            <a href="JavaScript:close_status({$mview.id})" class="btn" id="submitBtn"><span>{$Think.lang.admin_index_status_off}</span></a>
+            <?php } ?>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    function close_status(id){
+        var msg = '{$Think.lang.mood_status_close_late}';
+        layer.confirm(msg, {
+            btn: ['{$Think.lang.mood_index_kl}','{$Think.lang.mood_status_close_true}'] //按钮
+            ,title:'{$Think.lang.admin_index_title}'}, function(){
+            layer.msg('{$Think.lang.mood_index_qx}', {time: 2000,icon: 2});
+        }, function(){
+            $.ajax({
+                type:'get',
+                url:ADMIN_URL+'/Office/ajax.html?branch=find_mood_name',
+                data:{del:'2',id:id},
+                success:function (data) {
+                    if(data){
+                        layer.msg('{$Think.lang.mood_status_close_success}',{time: 2000,icon: 1},function () {
+                            window.location.reload();
+                        });
+                    }else{
+                        layer.msg('{$Think.lang.mood_status_close_error}',{time: 2000,icon: 2},function(){
+                            window.location.reload();
+                        });
+                    }
+                }
+            });
+        });
+    }
+    </script>
+
+
+
+
+
+
+

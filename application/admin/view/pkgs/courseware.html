@@ -1,0 +1,165 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+ <link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<form class="layui-form" onsubmit="return false;" style="display: none;" id="courForm">
+  <div class="layui-form-item">
+    <input type="hidden" id="pgk_id" value="">
+    <input type="hidden" id="actions" value="">
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">价格说明</label>
+    <div class="layui-input-inline">
+     <input type="text" required lay-verify="required" placeholder="EasyTeacher" autocomplete="off" class="layui-input" id="pname" />
+    <div class="layui-form-mid layui-word-aux">如不填写会有默认的名称</div>
+    </div>
+
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">价格示例</label>
+    <div class="layui-input-inline">
+     <input type="text" onkeyup="this.value=this.value.replace(/[^\d]/g,'') " onafterpaste="this.value=this.value.replace(/[^\d]/g,'') " required lay-verify="required" placeholder="请输入价格，只能输入数字" autocomplete="off" class="layui-input" id="price" />
+    <div class="layui-form-mid layui-word-aux">输入价格</div>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit="" lay-filter="demo1" id="course">立即提交</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+  </div>
+
+</form>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>{$Think.lang.packages_manage}</h3>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+  <div class="fixed-empty"></div>
+    <?php if(session('admin_is_super') ==1 || in_array('1',$action)){ ?>
+            <th>
+                <button class="layui-btn" onclick="course_edit('add',false)"><i class="layui-icon">&#xe608;</i> 添加</button>
+            </th>
+    <?php } ?>
+  <div class="explanation" id="explanation">
+      <div class="title" id="checkZoom">
+          <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+          <span id="explanationZoom" title="收起提示" class="arrow"></span>
+      </div>
+      <ul>
+          <li>{$Think.lang.pkg_help4}</li>
+          <li>{$Think.lang.pkg_help5}</li>
+      </ul>
+  </div>
+
+
+  <form method="post" id="store_form">
+    <input type="hidden" name="form_submit" value="ok" />
+    <table class="layui-table">
+      <thead>
+        <tr class="thead">
+          <!-- <th><input type="checkbox" class="checkall"/></th> -->
+          <th>{$Think.lang.pkg_name}</th>
+          <th class="align-center">{$Think.lang.pkg_price}</th>
+          <th class="align-center">{$Think.lang.pkg_enabled}</th>
+          <th class="align-center">{$Think.lang.ds_handle}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php if(!empty($pkg_list) && is_array($pkg_list)){ ?>
+        <?php foreach($pkg_list as $k => $v){ ?>
+        <tr class="hover" id="pid_<?php echo $v['pkg_id'];?>" pprice="<?php echo $v['pkg_price'];?>" pname="<?php echo str_cut($v['pkg_name'], '40');?>">
+          <!-- <td class="w24"><input type="checkbox" class="checkitem" name="del_id[]" value="<?php echo $v['pkg_id']; ?>" /></td> -->
+          <td><span title="<?php echo $v['pkg_name'];?>"><?php echo str_cut($v['pkg_name'], '40');?></span></td>
+          <td class="align-center"><?php echo $v['pkg_price'];?></td>
+
+
+          <td class="align-center yes-onoff"><?php if($v['pkg_enabled'] == '2'){ ?>
+            <a href="JavaScript:void(0);" class=" disabled" ajax_branch="pkg_enabled" nc_type="inline_edit" fieldname="pkg_enabled" fieldid="<?php echo $v['pkg_id']?>" fieldvalue="1" i_val='1' title="{$Think.lang.ds_editable}"><img src="{$Think.config.url_domain_root}static/admin/images/transparent.gif"></a>
+            <?php }else { ?>
+            <a href="JavaScript:void(0);" class=" enabled" ajax_branch="pkg_enabled" nc_type="inline_edit" fieldname="pkg_enabled" fieldid="<?php echo $v['pkg_id']?>" fieldvalue="2" i_val='2' title="{$Think.lang.ds_editable}"><img src="{$Think.config.url_domain_root}static/admin/images/transparent.gif"></a>
+            <?php } ?></td>
+          <td class="align-center">
+              <a class="layui-btn layui-btn-sm" href="javascript:course_edit('edit','<?php echo $v['pkg_id'];?>')" >{$Think.lang.ds_edit}</a>
+              <!-- <a class="layui-btn layui-btn-sm layui-btn-danger" href="{:url('/Admin/Pkgs/pkgs_del',['pkg_id'=>$v.pkg_id])}">{$Think.lang.ds_del}</a> -->
+          </td>
+        </tr>
+        <?php } ?>
+        <?php }else { ?>
+        <tr class="no_data">
+          <td colspan="15">{$Think.lang.ds_no_record}</td>
+        </tr>
+        <?php } ?>
+      </tbody>
+      <tfoot>
+        <!-- <tr class="tfoot">
+          <td><input type="checkbox" class="checkall" id="checkall"/></td>
+          <td id="batchAction" colspan="15"><span class="all_checkbox">
+            <label for="checkall">{$Think.lang.ds_select_all}</label>
+            </span>&nbsp;&nbsp;<a href="JavaScript:void(0);" class="btn" onclick="if(confirm('{$Think.lang.ap_del_sure}')){$('#store_form').submit();}"><span>{$Think.lang.ds_del}</span></a>
+          </td>
+        </tr> -->
+      </tfoot>
+    </table>
+    {$page}
+  </form>
+</div>
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/plugins/jquery.edit.js" charset="utf-8"></script>
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/plugins/js/dialog/dialog.js" id="dialog_js" charset="utf-8"></script>
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/plugins/js/jquery-ui/jquery-ui.min.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $("#course").click(function(event) {
+            var pid = $("#pgk_id").val();
+            var price = $("#price").val();
+            var actions = $("#actions").val();
+            var pname = $("#pname").val();
+            if (pname == '') {layer.tips('请输入价格说明', '#pname');return false;}
+            if (price < 1) {layer.tips('请输入正确的价格', '#price');return false;}
+            $.ajax({
+                url: "{:url('/Admin/Pkgs/course_edit')}",
+                type: 'POST',
+                dataType: 'json',
+                data: {'price': price,'pkg_id':pid,'actions':actions,'pname':pname},
+                success:function(sb){
+                    if (sb.m) {
+                        layer.msg(sb.ms, {icon: 16,time: 500},function(){
+                            window.location.href="{:url('/Admin/Pkgs/courseware',['pkg_id'=>3])}";
+                        });
+
+                    }
+                }
+            });
+        });
+    })
+    function course_edit(act,id=false){
+        $('#actions').val(act);
+
+        if (id) {
+            $('#pgk_id').val(id);
+            var price = $('#pid_'+id).attr('pprice');
+            var pname = $('#pid_'+id).attr('pname');
+            $('#price').val(price);
+            $('#pname').val(pname);
+        }else{
+
+            $('#pgk_id').val('');
+            $('#price').val('');
+        }
+        layer.open({
+            type: 1,
+            title: '价格示例',
+            shadeClose: true,
+            shade: false,
+            maxmin: false, //开启最大化最小化按钮
+            area: ['400px', '300px'],
+            content: $('#courForm')
+        });
+    }
+
+</script>

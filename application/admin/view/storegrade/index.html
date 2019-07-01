@@ -1,0 +1,66 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>店铺等级</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <form method="post" name="formSearch">
+        <table class="tb-type1 noborder search">
+            <tbody>
+                <tr>
+                    <th><label for="like_sg_name">{$Think.lang.store_grade_name}</label></th>
+                    <td><input type="text" value="{$like_sg_name|default=''}" name="like_sg_name" id="like_sg_name" class="txt"></td>
+                    <td><a href="javascript:document.formSearch.submit();" class="btn-search " title="{$Think.lang.ds_query}"></a>
+                        {notempty name="like_sg_name"}
+                        <a class="btns " href="{:url('Storegrade/index')}" title="{$Think.lang.cancel_search}"><span>{$Think.lang.cancel_search}</span></a>
+                        {/notempty}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+
+    <table class="ds-default-table">
+        <thead>
+            <tr>
+                <th>{$Think.lang.sg_sort}</th>
+                <th>{$Think.lang.sg_name}</th>
+                <th>{$Think.lang.sg_goods_limit}</th>
+                <th>{$Think.lang.sg_album_limit}</th>
+                <th>{$Think.lang.sg_template_number}</th>
+                <th>{$Think.lang.sg_price}</th>
+                <th>{$Think.lang.ds_handle}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {notempty  name="storegrade_list"}
+            {volist name="storegrade_list" id="storegrade"}
+            <tr>
+                <td>{$storegrade.sg_sort}</td>
+                <td>{$storegrade.sg_name}</td>
+                <td>{$storegrade.sg_goods_limit}</td>
+                <td>{$storegrade.sg_album_limit}</td>
+                <td>{$storegrade.sg_template_number}</td>
+                <td>{$storegrade.sg_price}</td>
+                <td>
+                    <a href="{:url('/admin/Storegrade/edit',['sg_id'=>$storegrade.sg_id])}">{$Think.lang.ds_edit}</a>
+                    <a href="{:url('/admin/Storegrade/drop',['sg_id'=>$storegrade.sg_id])}">{$Think.lang.ds_del}</a>
+                </td>
+            </tr>
+            {/volist}
+            {else /}
+            <tr class="no_data">
+                <td colspan="20">{$Think.lang.no_record}</td>
+            </tr>
+            {/notempty}
+        </tbody>
+    </table>
+</div>

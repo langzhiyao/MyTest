@@ -1,0 +1,49 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>邮箱短信</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form method="post" >
+        <input type="hidden" name="code" value="{$templates_array.code}" />
+        <div class="ncap-form-default">
+            <dl>
+                <dt>{$Think.lang.ds_current_edit}</dt>
+                <dd>{$templates_array.name}</dd>
+            </dl>
+            
+            <dl>
+                <dt>{$Think.lang.mailtemplates_edit_title}</dt>
+                <dd>
+                    <input type="text" value="{$templates_array.title}" name="title" id="title" class="txt">
+                </dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.mailtemplates_edit_content}</dt>
+                <dd>
+                    <textarea name="content" id="content" >{$templates_array.content}</textarea>
+                </dd>
+            </dl>
+            <dl>
+                <dt></dt>
+                <dd>
+                    <input class="btn" type="submit" value="提交"/>
+                </dd>
+            </dl>
+        </div>
+    </form>
+    
+    
+    
+</div>

@@ -1,0 +1,159 @@
+{include file="public/header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>{$Think.lang.pkgs_edit}</h3>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <div class="fixed-empty"></div>
+    <form id="link_form" enctype="multipart/form-data" method="post" class="layui-form">
+        <div  class="ncap-form-default">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.pkg_name}：</label>
+                    <div class="layui-input-inline">
+                        <input id="pkg_name" name="pkg_name"  type="text" value="{$pkg_info.pkg_name|default=''}"  class="layui-input">
+                        <span class="err"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.pkg_type}：</label>
+                    <div class="layui-input-inline">
+                        <input name="pkg_type" type="radio" value="1" {if condition="$pkg_info.pkg_type eq 1 || $pkg_info.pkg_type neq 1"}checked="checked"{/if} >
+                        <label>{$Think.lang.witch_manage}</label><br/>
+                        <input type="radio" name="pkg_type" value="2" {if condition="$pkg_info.pkg_type eq 2 "}checked="checked"{/if}>
+                        <label>{$Think.lang.revisit_manage}</label>
+                        <span class="err"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.pkg_enabled}：</label>
+                    <div class="layui-input-inline">
+                        <input name="pkg_enabled" type="radio" value="1" {if condition="$pkg_info.pkg_enabled eq 1 || $pkg_info.pkg_enabled neq 2"}checked="checked"{/if}>
+                        <label>{$Think.lang.pkg_use_s}</label><br/>
+                        <input type="radio" name="pkg_enabled" value="2" {if condition="$pkg_info.pkg_enabled eq 2 "}checked="checked"{/if}>
+                        <label>{$Think.lang.pkg_not_use_s}</label>
+                        <span class="err"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.pkg_axis}：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" style="line-height: 32px;" onkeyup="this.value=this.value.replace(/[^\d]/g,'') " onafterpaste="this.value=this.value.replace(/[^\d]/g,'') " placeholder="只能输入数字" name="pkg_length" id="pkg_length" value="{$pkg_info.pkg_length|default='1'}"/>
+                        <span class="err"></span>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <div class="layui-input-inline">
+                        <select name="pkg_axis" class="select">
+                            <?php foreach($axis_list as $k => $v){ ?>
+                            <option {if condition="$k eq $pkg_info.pkg_axis  "}selected{/if} value="<?php echo $k;?>"><?php echo $v ; ?></option>
+                            <?php } ?>
+                        </select>
+                        <span class="err"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.pkg_cprice}：</label>
+                    <div class="layui-input-inline">
+                        <input id="pkg_cprice" name="pkg_cprice"  type="text" value="{$pkg_info.pkg_cprice|default=''}"  class="layui-input">
+                        <span class="err"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.pkg_price}：</label>
+                    <div class="layui-input-inline">
+                        <input id="pkg_price" name="pkg_price"  type="text" value="{$pkg_info.pkg_price|default=''}"  class="layui-input">
+                        <span class="err"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.pkg_sort}：</label>
+                    <div class="layui-input-inline">
+                        <input id="pkg_sort" name="pkg_sort"  type="text" value="{$pkg_info.pkg_sort|default=''}"  class="layui-input">
+                        <span class="err"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">{$Think.lang.pkg_desc}：</label>
+                    <div class="layui-input-inline">
+                        <textarea id="pkg_desc" name="pkg_desc" class="layui-text">{$pkg_info.pkg_desc|default=''}</textarea>
+                        <span class="err"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <a href="JavaScript:void(0);" class="btn" id="submitBtn">确认提交</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    layui.use(['form','laypage', 'layer'], function(){
+        var form = layui.form,
+            laypage = layui.laypage
+            ,layer = layui.layer;
+    });
+//按钮先执行验证再提交表单
+    $(function () {
+        $("#submitBtn").click(function () {
+            if ($("#link_form").valid()) {
+                $("#link_form").submit();
+            }
+        });
+    });
+//
+    $(document).ready(function () {
+
+        $('#link_form').validate({
+            errorPlacement: function (error, element) {
+                error.appendTo(element.next());
+            },
+            rules: {
+                pkg_name: {
+                    required: true
+                },
+                pkg_price: {
+                    required: true
+                },
+                pkg_cprice: {
+                    required: true
+                },
+            },
+            messages: {
+                pkg_name: {
+                    required: '{$Think.lang.pkg_name_err}'
+                },
+                pkg_price: {
+                    required: '{$Think.lang.pkg_price_err}',
+                },
+                pkg_cprice: {
+                    required: '{$Think.lang.pkg_cprice_err}',
+                },
+            }
+        });
+    });
+</script>

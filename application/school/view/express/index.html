@@ -1,0 +1,69 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>快递公司</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <?php foreach (range('A','Z') as $v){?>
+    <a href="{:url('/school/express/index')}?letter=<?php echo $v;?>" class="btn btn-small {if $Think.get.letter eq $v}btn-red{else/}btn-default{/if}"><?php echo $v;?></a>&nbsp;&nbsp;
+    <?php }?>
+
+
+    <table class="ds-default-table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>{$Think.lang.express_name}</th>
+                <th>{$Think.lang.express_letter}</th>
+                <th>{$Think.lang.express_url}</th>
+                <th>{$Think.lang.express_order}</th>
+                <th>{$Think.lang.express_state}</th>
+                <th>{$Think.lang.zt_express}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {notempty  name="express_list"}
+            {volist name="express_list" id="v"}
+            <tr>
+                <td></td>
+                <td>{$v.e_name}</td>
+                <td>{$v.e_letter}</td>
+                <td>{$v.e_url}</td>
+                <td class="align-center yes-onoff">
+                    {if $v.e_order == 1}
+                    <a href="JavaScript:void(0);" class=" enabled" ajax_branch='order' nc_type="inline_edit" fieldname="e_order" fieldid="{$v.id}" fieldvalue="1" title="{:lang('ds_editable')}"><img src="{$Think.config.url_domain_root}static/school/images/treetable/transparent.gif"></a>
+                    {else /}
+                    <a href="JavaScript:void(0);" class=" disabled" ajax_branch='order' nc_type="inline_edit" fieldname="e_order" fieldid="{$v.id}" fieldvalue="0"  title="{:lang('ds_editable')}"><img src="{$Think.config.url_domain_root}static/school/images/treetable/transparent.gif"></a>
+                    {/if}</td>
+          <td class="align-center yes-onoff">
+              {if $v.e_state == 0}
+              <a href="JavaScript:void(0);" class=" disabled" ajax_branch='state' nc_type="inline_edit" fieldname="e_state" fieldid="{$v.id}" fieldvalue="0" title="{:lang('ds_editable')}"><img src="{$Think.config.url_domain_root}static/school/images/treetable/transparent.gif"></a>
+             {else /}
+              <a href="JavaScript:void(0);" class=" enabled" ajax_branch='state' nc_type="inline_edit" fieldname="e_state" fieldid="{$v.id}" fieldvalue="1"  title="{:lang('ds_editable')}"><img src="{$Think.config.url_domain_root}static/school/images/treetable/transparent.gif"></a>
+              {/if}</td>
+          <td class="align-center yes-onoff">
+              {if $v.e_zt_state == 0}
+              <a href="JavaScript:void(0);" class=" disabled" ajax_branch='e_zt_state' nc_type="inline_edit" fieldname="e_zt_state" fieldid="{$v.id}" fieldvalue="0" title="{:lang('ds_editable')}"><img src="{$Think.config.url_domain_root}static/school/images/treetable/transparent.gif"></a>
+              {else /}
+              <a href="JavaScript:void(0);" class=" enabled" ajax_branch='e_zt_state' nc_type="inline_edit" fieldname="e_zt_state" fieldid="{$v.id}" fieldvalue="1"  title="{:lang('ds_editable')}"><img src="{$Think.config.url_domain_root}static/school/images/treetable/transparent.gif"></a>
+              {/if}</td>
+            </tr>
+            {/volist}
+            {else /}
+            <tr class="no_data">
+                <td colspan="20">{$Think.lang.no_record}</td>
+            </tr>
+            {/notempty}
+        </tbody>
+    </table>
+    {$page}
+</div>
+
+<script type="text/javascript" src="{:config('url_domain_root')}static/plugins/jquery.edit.js" charset="utf-8"></script>

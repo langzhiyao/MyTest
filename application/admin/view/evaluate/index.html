@@ -1,0 +1,129 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>评价管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form method="get" name="formSearch">
+        <table class="search-form">
+            <tbody>
+            <tr>
+                <th><label for="goods_name">{$Think.lang.admin_evaluate_goodsname}</label></th>
+                <td><input class="txt" type="text" name="goods_name" id="goods_name" value="{$Request.get.goods_name}" /></td>
+                <th><label for="store_name">{$Think.lang.admin_evaluate_storename}</label></th>
+                <td><input class="txt" type="text" name="store_name" id="store_name" value="{$Request.get.store_name}" /></td>
+                <td>{$Think.lang.admin_evaluate_addtime}</td>
+                <td><input class="txt date" type="text" name="stime" id="stime" value="{$Request.get.stime}" />
+                    ~
+                    <input class="txt date" type="text" name="etime" id="etime" value="{$Request.get.etime}" /></td>
+                <td>
+                    <input type="submit" value="{$Think.lang.ds_query}"/>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+    
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>{$Think.lang.admin_evaluate_help1}</li>
+            <li>{$Think.lang.admin_evaluate_help2}</li>
+        </ul>
+    </div>
+    
+    
+    <table class="ds-default-table">
+        <thead>
+        <tr class="thead">
+            <th class="w300">{$Think.lang.admin_evaluate_goodsname} </th>
+            <th>{$Think.lang.admin_evaluate_buyerdesc}</th>
+            <th class="w108 align-center">{$Think.lang.admin_evaluate_frommembername} </th>
+            <th class="w108 align-center">{$Think.lang.admin_evaluate_storename}</th>
+            <th class="w72 align-center">{$Think.lang.ds_handle}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {notempty name="evalgoods_list"}
+        {volist name="evalgoods_list" id="v"}
+        <tr class="hover">
+            <td><a href="{:url('home/goods/index',['goods_id'=>$v.geval_goodsid])}" target="_blank">{$v.geval_goodsname}</a></td>
+            <td class="evaluation"><div>商品评分：<span class="raty" data-score="{$v.geval_scores}"></span><time>[{:date('Y-m-d',$v.geval_addtime)}]</time></div>
+                <div>评价内容：{$v.geval_content}</div>
+
+                {notempty name="v.geval_image"}
+                <div>晒单图片：
+                    <ul class="evaluation-pic-list">
+                        <?php $image_array = explode(',', $v['geval_image']);?>
+                        <?php foreach ($image_array as $value) { ?>
+                        <li><a nctype="nyroModal"  href="<?php echo snsThumb($value, 1024);?>"> <img src="<?php echo snsThumb($value);?>"> </a></li>
+                        <?php } ?>
+                    </ul>
+                </div>
+                {/notempty}
+
+                {notempty name="v.geval_explain"}
+                <div id="explain_div_{$v.geval_id}"> <span style="color:#996600;padding:5px 0px;">[{$Think.lang.admin_evaluate_explain}]{$v.geval_explain}</span> </div>
+                {/notempty}</td>
+            <td class="align-center">{$v.geval_frommembername}</td>
+            <td class="align-center">{$v.geval_storename}</td>
+            <td class="align-center"><a nctype="btn_del" href="javascript:void(0)" data-geval-id="{$v.geval_id}">{$Think.lang.ds_del}</a></td>
+        </tr>
+        {/volist}
+       {else /}
+        <tr class="no_data">
+            <td colspan="15">{$Think.lang.ds_no_record}</td>
+        </tr>
+        {/notempty}
+        {notempty name="evalgoods_list"}
+        <tfoot>
+        <tr class="tfoot">
+            <td colspan="15" id="dataFuncs"><div class="pagination">{$show_page}</div></td>
+        </tr>
+        </tfoot>
+        {/notempty}
+    </table>
+    <form id="submit_form" action="{:url('evaluate/evalgoods_del')}" method="post">
+        <input id="geval_id" name="geval_id" type="hidden">
+    </form>
+
+</div>
+<script src="{$Think.config.url_domain_root}static/plugins/js/jquery.nyroModal/custom.min.js"></script>
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/js/jquery.nyroModal/styles/nyroModal.css">
+<script src="{$Think.config.url_domain_root}static/plugins/js/jquery.raty/jquery.raty.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#stime').datepicker({dateFormat: 'yy-mm-dd'});
+        $('#etime').datepicker({dateFormat: 'yy-mm-dd'});
+
+        $('.raty').raty({
+            path: "SITE_URL"+'/js/jquery.raty/img',
+            readOnly: true,
+            score: function() {
+                return $(this).attr('data-score');
+            }
+        });
+
+        $('a[nctype="nyroModal"]').nyroModal();
+
+        $('[nctype="btn_del"]').on('click', function() {
+            if(confirm("{$Think.lang.ds_ensure_del}")) {
+                var geval_id = $(this).attr('data-geval-id');
+                $('#geval_id').val(geval_id);
+                $('#submit_form').submit();
+            }
+        });
+    });
+</script> 

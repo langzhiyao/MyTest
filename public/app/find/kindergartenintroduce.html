@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>学校简介</title>
+    <meta name="author" content="想见孩" />
+    <meta name="copyright" content="想见孩" />
+    <meta name="description" content="想见孩" />
+    <meta id="viewport" name="viewport" content="width=750" />
+    <link rel="stylesheet" href="../content/style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/iconfonts/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/lib/weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/css/jquery-weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/find.css" type="text/css" />
+    <link rel="shortcut icon" href="../content/images/ico.ico" type="image/x-icon" />
+    <script src="../content/scripts/mobile-util.js"></script>
+    <style>
+        .weui-cells_radio {
+            padding: 30px 40px;
+        }
+        
+        .weui-check_label {
+            font-size: 28px;
+            line-height: 80px;
+        }
+        
+        .weui-cells_radio .weui-check:checked+.weui-icon-checked:before {
+            font-size: 30px;
+        }
+        .main{
+            padding-top: 0;
+        }
+    </style>
+</head>
+
+<body class="infobody">
+    <!--<header class="head">
+        <div class="head0">
+            <div class="menu_bar_box">
+                <a href="javascript:;" class="back_btn" onClick="historyback()">
+                    <i class="icon iconfont icon-jiantou3"></i>
+                </a>
+            </div>
+            <div class="head_title">
+                <p>学校简介</p>
+            </div>
+            <div class="head_r">
+                <a href="javascript:;" class="role_switch" id="role_switch"><i class="icon iconfont icon-qiehuantuichu"></i></a>
+            </div>
+        </div>
+    </header>-->
+
+    <!-- 主要内容 -->
+    <div class="main">
+        <div class="kinkder_info">
+            <div class="cont2 margt20">
+                <div class="container2">
+                    <div class="school_imgbox" id="school_imgbox"></div>
+                </div>
+
+                <div class="container2">
+                    <h1 class="school_title" id="school_title"></h1>
+                    <!-- <h2 class="sub_school_title">Grazie International Kidergarden</h2> -->
+                    <div class="schooladdress">
+                        地址：<span id="schooladdress"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="kindergartennature"><span id="school_type"></span></div>
+            <div class="cont2 school_info_txt">
+                <div class="container3 school_info">
+                    <h3 class="school_info_title">校园简介</h3>
+                    <div id="school_info_cont"></div>
+                </div>
+            </div>
+            <!-- 师资力量 -->
+            <div class="scenery_box cont2">
+                <div class="container3">
+                    <h2 class="scenery_title">师资力量</h2>
+                    <div id="faculty"></div>
+
+                    <p class="school_remarks">备注：欢迎加入我们</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" value="0" id="childid" >
+    <input type="hidden" value="xx" id="infos" >
+    <script src="../content/scripts/jquery.min.js"></script>
+    <script src="../content/plugins/jqweui/js/jquery-weui.min.js"></script>
+    <script src="../content/scripts/juqery.cookie.js"></script>
+    <script src="../content/scripts/API.js"></script>
+    <script src="../content/scripts/commom.js"></script>
+    <script>
+        GetChildList(user_token,'reday');
+
+        // 学校形象照片模板
+        function HTML(data) {
+            var template = '<div class="school_img">' ;
+                if(data[0].s_img == undefined){
+                    template +='<img src="../content/images/find/school_img.jpg" style="width:100%;" alt="">' ;
+                }else{
+                    template +='<img src="' + data[0].s_img + '" style="width:100%;" alt="">' ;
+                }
+
+                template +='</div><div class="school_logo" style="background:url(../content/images/find/kindergarten_logo.png) no-repeat center;background-size:cover;"></div>';
+
+            return template;
+        }
+       /* $(function(){
+            setTimeout(function(){
+                var ssss = $('#infos').val();
+                ssss = $.parseJSON(ssss);
+                
+                $("#role_switch").select({
+                    title: "选择学生绑定学校",
+                    items: ssss,
+                    onChange: function(d) {
+                        console.log(d);
+                        if(d.values=='undefined' || d.values == null) return;
+                        detailinfo(d.values)
+                    },
+                    
+                    onOpen: function() {
+                        // console.log($(".cookbook_title").text());
+                        // $(".weui-cells_radio p:contains('高一或10年级')").parent().next("div").find(".weui-check").attr("checked", "true");
+                    },
+                });   
+            }, 500 );
+            
+        })*/
+
+                // 食谱详情开关 end
+            /**
+ * 获取当前家长的所有孩子列表
+ * 包含学校id
+ * 包含班级id
+ * 包含孩子id
+ * @创建时间 2018-11-05T14:05:59+0800
+ */
+function GetChildList(key,act,a){
+    if(!key){
+        key = user_token;
+    }
+    $.post(api+"/Students/get_student_info.html", {key: key}, function(data, textStatus, xhr) {
+        if(data.code==200){
+            var s_id = data.result[0]['s_schoolid'];
+
+            $('#childid').val(s_id);
+
+            var list = data.result;
+            var StudentsList = new Array;
+            for (var i = 0; i < list.length; i++) {
+                var info = {'title':list[i].name+'--'+list[i].s_name,'value':list[i].s_schoolid}
+               StudentsList.push(info);
+            }
+            // console.log(list);
+            var sssss =JSON.stringify(StudentsList);
+            $("#infos").val(sssss);
+            if (act == 'reday') {
+                detailinfo(s_id)
+            }
+        }
+        return data;
+    },'json');
+}
+
+
+function detailinfo(s_id){
+    $.ajax({
+        type: "POST",
+        url: api + "/schooldesc/detailinfo.html",
+        data: {
+            key: user_token,
+            school_id: s_id
+        },
+        dataType: "json",
+        success: function(response) {
+            $("#school_imgbox").html(HTML(response["result"]));
+            $("#school_title").text(response["result"][0].name);
+            $("#schooladdress").text(response["result"][0].address);
+            if (response["result"][0].s_type == 1) {
+                $("#school_type").text("公立---"+response["result"][0].school_type);
+            } else {
+                $("#school_type").text("私立---"+response["result"][0].school_type);
+            }
+            $("#school_info_cont").html(response["result"][0].s_present);
+            $("#faculty").html(response["result"][0].s_teacher);
+            $(".school_remarks").html(response["result"][0].s_desc);
+        }
+    });
+}
+    </script>
+</body>
+
+</html>

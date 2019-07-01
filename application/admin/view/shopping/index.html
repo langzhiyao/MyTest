@@ -1,0 +1,103 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>{$Think.lang.order_manage}</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <div class="fixed-empty"></div>
+    <form method="get" name="formSearch" id="formSearch">
+        <table class="search-form">
+            <tbody>
+            <tr>
+                <td><label>{$Think.lang.school_index_names}</label></td>
+                <td><input class="txt2" type="text" name="buyer_name" value="{$Think.get.buyer_name}" /></td>
+                <td><label>{$Think.lang.school_index_paytype}</label></td>
+                <td colspan="4">
+                    <select name="payment_code" class="querySelect">
+                        <option value="">{$Think.lang.ds_please_choose}</option>
+                        {volist name="payment" id="item"}
+                        <option value="{$item.payment_code}" {if condition="$Think.get.payment_code eq $item.payment_code"}selected{/if}>{$item.payment_name}</option>
+                        {/volist}
+                    </select>
+                </td>
+                <td><label>{$Think.lang.order_state}</label></td>
+                <td colspan="4"><select name="order_state" class="querySelect">
+                    <option value="">{$Think.lang.ds_please_choose}</option>
+                    <option value="10" {if condition="$Think.get.order_state eq '10'"}selected{/if}>{$Think.lang.order_state_new}</option>
+                    <option value="20" {if condition="$Think.get.order_state eq '20'"}selected{/if}>已付款</option>
+                    <option value="40" {if condition="$Think.get.order_state eq '40'"}selected{/if}>{$Think.lang.order_state_success}</option>
+                    <option value="0" {if condition="$Think.get.order_state eq '0'"}selected{/if}>{$Think.lang.order_state_cancel}</option>
+                </select></td>
+                <td>
+                    <input type="submit" id="submit" value="{$Think.lang.ds_query}">
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+
+    <!--<div style="text-align:right;"><a class="btns" target="_blank" href="index.php?<?php echo $_SERVER['QUERY_STRING'];?>&op=export_step1"><span>{$Think.lang.ds_export}Excel</span></a></div>-->
+    <table class="ds-default-table">
+        <thead>
+        <tr class="thead">
+            <th colspan="align-center">{$Think.lang.school_index_id}</th>
+            <th colspan="align-center">{$Think.lang.school_index_names}</th>
+            <th colspan="align-center">{$Think.lang.school_index_extend}</th>
+            <th class="align-center">{$Think.lang.school_index_order}</th>
+            <th class="align-center">{$Think.lang.school_index_sing}</th>
+            <th class="align-center">{$Think.lang.school_index_price}</th>
+            <th class="align-center">{$Think.lang.school_index_orderstatus}</th>
+            <th class="align-center">{$Think.lang.school_index_paytype}</th>
+            <th class="align-center">{$Think.lang.school_order_dieline}</th>
+            <th class="align-center">{$Think.lang.school_order_createtime}</th>
+            <th class="align-center">{$Think.lang.school_index_paytime}</th>
+            <th class="align-center">{$Think.lang.school_index_desc}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php if(!empty($order_list) && is_array($order_list)){ ?>
+        <?php foreach($order_list as $k => $v){ ?>
+        <tr class="hover member">
+            <td class="align-center"><?php if(!$_GET['page']){  echo $k+1; }else{ echo ($_GET['page']-1)*15+$k+1; }?></td>
+            <td class="align-center"><?php echo $v['buyer_name']; ?></td>
+            <td class="align-center"><?php echo $v['student_name']; ?></td>
+            <td class="align-center"><?php echo $v['order_name']; ?></td>
+            <td class="align-center"><?php echo $v['length']; ?></td>
+            <td class="align-center"><?php echo $v['order_amount']; ?></td>
+            <td class="align-center"><?php if($v['order_state']==10){echo "待付款";}
+            elseif($v['order_state']==20){echo "已付款";}
+            elseif($v['order_state']==30){echo "已发货";}
+            elseif($v['order_state']==40){echo "已收货";}
+            elseif($v['order_state']==0){echo "已取消";}?></td>
+            <td class="align-center"><?php foreach($payment as $key=>$item){
+                if($item['payment_code']==$v['payment_code']){echo $item['payment_name'];}
+                }  ?></td>
+            <td class="align-center"><?php echo date("Y-m-d H:i:s",$v['order_dieline']); ?></td>
+            <td class="align-center"><?php echo date("Y-m-d H:i:s",$v['add_time']); ?></td>
+            <td class="align-center"><?php echo date("Y-m-d H:i:s",$v['payment_time']); ?></td>
+            <td class="align-center"><?php echo $v['order_desc']; ?></td>
+        </tr>
+        <?php } ?>
+        <?php }else { ?>
+        <tr class="no_data">
+            <td colspan="11">{$Think.lang.ds_no_record}</td>
+        </tr>
+        <?php } ?>
+        </tbody>
+    </table>
+    {$show_page}
+</div>
+<script type="text/javascript">
+    $(function () {
+        $('#query_start_time').datepicker({dateFormat: 'yy-mm-dd'});
+        $('#query_end_time').datepicker({dateFormat: 'yy-mm-dd'});
+    });
+</script> 

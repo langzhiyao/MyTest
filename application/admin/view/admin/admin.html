@@ -1,0 +1,267 @@
+{include file="public/header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>权限设置</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>员工账号信息展示。</li>
+        </ul>
+    </div>
+
+    <form method="get">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">账号/手机号</label>
+                    <div class="layui-input-block">
+                        <input type="text"  name="account" placeholder="请输入账号/手机号" value="{$_GET['account']}" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">权限组</label>
+                    <div class="layui-input-inline">
+                        <select name="role" lay-filter="role"  class="select"  lay-verify="type"  id="role">
+                            <option value="0" selected="">请选择角色</option>
+                            {volist name="gadmin_list" id="vo"}
+                            <option value="{$vo.gid}" <?php if($vo['gid'] == $_GET['role']){echo 'selected';}?> >{$vo.gname}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn layuiadmin-btn-admin" lay-submit="" type="submit" lay-filter="LAY-user-back-search">
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form method="post" id='form_admin' class="layui-form">
+        <table class="layui-table"  >
+            <colgroup>
+                <col width="200">
+                <col width="200">
+                <col width="200">
+                <col width="400">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+            <tr class="thead">
+                <th class="align-center">{$Think.lang.admin_index_username}</th>
+                <th class="align-center">{$Think.lang.admin_index_truename}</th>
+                <th class="align-center">{$Think.lang.mob_phone}</th>
+                <th class="align-center">{$Think.lang.gadmin_name}</th>
+                <th class="align-center">{$Think.lang.admin_index_last_login}</th>
+                <?php if(session('admin_is_super')==1 || in_array('13',$action) || in_array('2',$action) || in_array('3',$action) || in_array('12',$action)){?>
+                <th class="align-center">{$Think.lang.ds_handle}</th>
+                <?php }?>
+            </tr>
+            </thead>
+            <tbody>
+            <?php if(!empty($admin_list) && is_array($admin_list)){ ?>
+            <?php foreach($admin_list as $k => $v){ ?>
+            <tr class="hover">
+                <td class="align-center w50"><?php echo $v['admin_name'];?></td>
+                <td class="align-center w50"><?php echo $v['admin_true_name'];?></td>
+                <td class="align-center w50"><?php echo $v['admin_phone'];?></td>
+                <?php if($v['admin_is_super']){?>
+                    <td class="align-center w50" style="color: #D90909">{$Think.lang.super_admin}</td>
+                <?php }else if($v['gname']){?>
+                    <td class="align-center w50" style="color: #D39600">总公司 ->
+                        <?php if($v['admin_gid'] == $company_role_id){?>
+                            {$Think.lang.super_admin}
+                        <?php }else{?>
+                            <?php echo $v['gname']; ?>
+                        <?php }?>
+                    </td>
+                <?php }else{?>
+                    <td class="align-center w50" style="color: #0C0C0C"> {$Think.lang.admin_no_role}</td>
+                <?php }?>
+                <td class="align-center w150"><?php echo $v['admin_login_time'] ? date('Y-m-d H:i:s',$v['admin_login_time']) : lang('admin_index_login_null'); ?></td>
+                <?php if(session('admin_is_super')==1 || in_array('13',$action) || in_array('2',$action) || in_array('3',$action) || in_array('12',$action)){?>
+                <td class="w150 align-center">
+                    <div class="layui-table-cell laytable-cell-9-8" style="height: 32px;">
+                        <?php if($v['admin_is_super']){?>
+                            <a class="layui-btn layui-btn-disabled layui-btn-sm" >{$Think.lang.admin_index_sys_admin_no}</a>
+                        <?php }else{?>
+                        <?php if(session('admin_is_super')==1 || in_array('13',$action)){?>
+                            <?php if($v['admin_status'] == 1){?>
+                                <a class="layui-unselect layui-form-checkbox layui-form-checked" onclick="return close_status('<?php echo $v[admin_name];?>','<?php echo $v[admin_id];?>');"><span>{$Think.lang.admin_index_status_on}</span><i class="layui-icon layui-icon-ok"></i></a>
+                            <?php }else if($v['admin_status'] == -1){?>
+                                <a class="layui-unselect layui-form-checkbox" onclick="return open_status('<?php echo $v[admin_name];?>','<?php echo $v[admin_id];?>');"><i class="layui-icon layui-icon-ok"></i><span>{$Think.lang.admin_index_status_off}</span></a>
+                            <?php }?>
+                        <?php }?>
+                        <?php if(session('admin_is_super')==1 || in_array('3',$action)){?>
+                            <a href="{:url('/Admin/admin/admin_edit',['admin_id'=>$v.admin_id])}" class="layui-btn layui-btn-normal layui-btn-sm" lay-event="edit">{$Think.lang.ds_edit}</a>
+                        <?php }?>
+                        <?php if(session('admin_is_super')==1 || in_array('2',$action)){?>
+                        <a href="javascript:void(0)" onclick="return del('<?php echo $v[admin_name];?>','<?php echo $v[admin_id];?>');" class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del">{$Think.lang.admin_index_del_admin}</a>
+                        <?php }?>
+                        <?php if(session('admin_is_super')==1 || in_array('12',$action)){?>
+                        <a href="javascript:void(0)" onclick="return reset_pwd('<?php echo $v[admin_name];?>','<?php echo $v[admin_id];?>');" class="layui-btn  layui-btn-sm" lay-event="reset">{$Think.lang.admin_index_reset_password}</a>
+                        <?php }?>
+                        <?php }?>
+                    </div>
+                </td>
+                <?php }?>
+            </tr>
+            <?php } ?>
+            <?php }else { ?>
+            <tr class="no_data">
+                <td colspan="10">{$Think.lang.ds_no_record}</td>
+            </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+        <div>
+            <?php if(!empty($admin_list) && is_array($admin_list)){ ?>
+            <tr class="tfoot">
+                {$page}
+            </tr>
+            <?php } ?>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    layui.use(['form'], function(){
+        var form = layui.form;
+        var role = '<?php if(!empty($_GET["role"])){echo $_GET["role"];}?>';
+        if(!role){
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_role?role='+role,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变市区
+                    $('#role').html(data.role);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        }
+
+
+    });
+    //关闭
+    function close_status(name,id){
+        var msg = '{$Think.lang.admin_status_close_before}'+name+'{$Think.lang.admin_status_close_after}';
+        layer.confirm(msg, {
+            btn: ['{$Think.lang.admin_index_kl}','{$Think.lang.admin_status_close_true}'] //按钮
+            ,title:'{$Think.lang.admin_index_title}'}, function(){
+            layer.msg('{$Think.lang.admin_index_qx}', {time: 2000,icon: 2});
+        }, function(){
+            $.ajax({
+               type:'get',
+               url:ADMIN_URL+'/Admin/ajax.html?branch=change_admin_status',
+                data:{admin_status:'-1',admin_name:name,admin_id:id},
+                success:function (data) {
+                    if(data){
+                        layer.msg('{$Think.lang.admin_status_close_success}',{time: 2000,icon: 1},function () {
+                            window.location.reload();
+                        });
+                    }else{
+                        layer.msg('{$Think.lang.admin_status_close_error}',{time: 2000,icon: 2},function(){
+                            window.location.reload();
+                        });
+                    }
+                }
+            });
+        });
+    }
+    //开启
+    function open_status(name,id){
+        var msg = '{$Think.lang.admin_status_open_before}'+name+'{$Think.lang.admin_status_open_after}';
+        layer.confirm(msg, {
+            btn: ['{$Think.lang.admin_index_kl}','{$Think.lang.admin_status_open_true}'] //按钮
+            ,title:'{$Think.lang.admin_index_title}'}, function(){
+            layer.msg('{$Think.lang.admin_index_qx}', {time: 2000,icon: 2});
+        }, function(){
+            $.ajax({
+                type:'get',
+                url:ADMIN_URL+'/Admin/ajax.html?branch=change_admin_status',
+                data:{admin_status:'1',admin_name:name,admin_id:id},
+                success:function (data) {
+                    if(data){
+                        layer.msg('{$Think.lang.admin_status_open_success}',{time: 2000,icon: 1},function () {
+                            window.location.reload();
+                        });
+                    }else{
+                        layer.msg('{$Think.lang.admin_status_open_error}',{time: 2000,icon: 2},function(){
+                            window.location.reload();
+                        });
+                    }
+                }
+            });
+        });
+    }
+    //重置密码
+    function reset_pwd(name,id){
+        var msg = '{$Think.lang.admin_reset_pwd_before}'+name+'{$Think.lang.admin_reset_pwd_after}';
+        layer.confirm(msg, {
+            btn: ['{$Think.lang.admin_index_kl}','{$Think.lang.admin_reset_pwd_true}'] //按钮
+        ,title:'{$Think.lang.admin_index_title}'},function(){
+            layer.msg('{$Think.lang.admin_index_qx}', {time: 2000,icon: 2});
+        }, function(){
+            $.ajax({
+                type:'get',
+                url:ADMIN_URL+'/Admin/ajax.html?branch=reset_admin_password',
+                data:{admin_name:name,admin_id:id},
+                success:function (data) {
+                    if(data){
+                        layer.msg('{$Think.lang.admin_reset_pwd_success}',{time: 2000,icon: 1},function () {
+                            window.location.reload();
+                        });
+                    }else{
+                        layer.msg('{$Think.lang.admin_reset_pwd_error}',{time: 2000,icon: 2},function(){
+                            window.location.reload();
+                        });
+                    }
+                }
+            });
+        });
+    }
+    //删除
+    function del(name,id){
+        var msg = '{$Think.lang.admin_delete_before}'+name+'{$Think.lang.admin_delete_after}';
+        layer.confirm(msg, {
+            btn: ['{$Think.lang.admin_index_kl}','{$Think.lang.admin_delete_true}'] //按钮
+            ,title:'{$Think.lang.admin_index_title}'},function(){
+            layer.msg('{$Think.lang.admin_index_qx}', {time: 2000,icon: 2});
+        }, function(){
+            $.ajax({
+                type:'get',
+                url:ADMIN_URL+'/Admin/ajax.html?branch=delete_admin',
+                data:{admin_name:name,admin_id:id},
+                success:function (data) {
+                    if(data){
+                        layer.msg('{$Think.lang.admin_delete_success}',{time: 2000,icon: 1},function () {
+                            window.location.reload();
+                        });
+                    }else{
+                        layer.msg('{$Think.lang.admin_delete_error}',{time: 2000,icon: 2},function(){
+                            window.location.reload();
+                        });
+                    }
+                }
+            });
+        });
+    }
+
+</script>

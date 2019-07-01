@@ -1,0 +1,55 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>文章管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <form method="post">
+        <div class="ncap-form-default">
+            <dl>
+                <dt>{$Think.lang.article_title}</dt>
+                <dd><input type="text" name="article_title" id="article_title" value="{$article.article_title}" class="w200"/></dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.article_cate}</dt>
+                <dd>
+                    <select name="ac_id">
+                        <option value="">请选择</option>
+                        {foreach name="ac_list" item="cate"}
+                        <option value="{$cate.ac_id}" {if $cate.ac_id === $article.ac_id }selected{/if}>{if $cate.ac_parent_id > 0}&nbsp&nbsp{/if}{$cate.ac_name}</option>
+                        {/foreach}
+                    </select>
+                </dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.article_url}</dt>
+                <dd><input type="text" name="article_url" id="article_url" value="{$article.article_url}" class="w200"/></dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.article_show}</dt>
+                <dd><input type="text" name="article_show" id="article_show" value="{$article.article_show}" class="w200"/></dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.article_sort}</dt>
+                <dd><input type="text" name="article_sort" id="article_sort" value="{$article.article_sort}" class="w200"/></dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.article_content}</dt>
+                {:buildEditor(['name'=>'article_content','content'=>$article.article_content])}
+                <dd><textarea name="article_content" id="article_content"> </textarea></dd>
+            </dl>
+            <dl>
+                <dt></dt>
+                <dd><input class="btn" type="submit" value="提交"/></dd>
+            </dl>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,123 @@
+{include file="public/mall_top" /}
+{include file="public/mall_header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/home/css/member.css">
+<div class="dsm-container">
+    {include file="public/member_left" /}
+    <div class="right-layout">
+        <div class="tabmenu">
+            {include file="public/member_items" /}
+        </div>
+      {if $setting_config.qq_isuse == 1}
+      <div class="dsm-bind">
+        {notempty name="member_info.member_qqopenid"}
+        <div class="alert">
+      <h4>提示信息：</h4>
+      <ul>
+        <li>{:lang('member_qqconnect_binding_tip_1')}<em>“{:session('member_name')}”</em>
+         {:lang('member_qqconnect_binding_tip_2')}<em>“{$member_info.member_qqinfoarr.nickname}”</em>
+          {:lang('member_qqconnect_binding_tip_3')}</li>
+        <li>{:lang('member_qqconnect_modpw_tip_1')}<em>“{:session('member_name')}”</em>{:lang('member_qqconnect_modpw_tip_2')}</li>
+      </ul>
+    </div>
+    <input type="hidden" name="form_submit" value="ok"  />
+    <div class="relieve">
+      <form method="post" id="editbind_form" name="editbind_form" action="{:url('memberconnect/qqunbind')}">
+        <input type='hidden' id="is_editpw" name="is_editpw" value='no'/>
+        <div class="ico-qq"></div>
+        <p>{:lang('member_qqconnect_unbind_click')}</p>
+        <div class="bottom">
+          <label class="submit-border">
+            <input class="submit" type="submit" value="{:lang('member_qqconnect_unbind_submit')}" />
+          </label>
+        </div>
+      </form>
+    </div>
+    <div class="revise dsm-default-form ">
+      <form method="post" id="editpw_form" name="editpw_form" action="{:url('memberconnect/qqunbind')}">
+        <input type='hidden' id="is_editpw" name="is_editpw" value='yes'/>
+        <dl>
+          <dt>{:lang('member_qqconnect_modpw_newpw')}{:lang('ds_colon')}</dt>
+          <dd>
+            <input type="password"  name="new_password" id="new_password"/>
+            <label for="new_password" generated="true" class="error"></label>
+          </dd>
+        </dl>
+        <dl>
+          <dt>{:lang('member_qqconnect_modpw_two_password')}{:lang('ds_colon')}</dt>
+          <dd>
+            <input type="password"  name="confirm_password" id="confirm_password" />
+            <label for="confirm_password" generated="true" class="error"></label>
+          </dd>
+        </dl>
+        <dl class="bottom">
+          <dt></dt>
+          <dd>
+            <label class="submit-border">
+              <input class="submit" type="submit" value="{:lang('member_qqconnect_unbind_updatepw_submit')}" />
+            </label>
+          </dd>
+        </dl>
+      </form>
+    </div>
+        {else /}
+        <div class="relieve pt50">
+      <p class="ico">
+        <a href="<?php echo SHOP_SITE_URL;?>/api/oa_qq/index"><img src="{:config('url_domain_root')}static/home/images/qq_bind_small.gif"></a>
+      <p class="hint">{:lang('member_qqconnect_binding_click')}</p>
+    </div>
+    <div class="revise pt50">
+      <p class="qq">{:lang('member_qqconnect_binding_goodtip_1')}</p>
+      <p>{:lang('member_qqconnect_binding_goodtip_2')}</p>
+      <p class="hint">{:lang('member_qqconnect_binding_goodtip_3')}</p>
+    </div>
+        {/notempty}
+  </div>
+     {else /}
+      <div class="warning-option"><i>&nbsp;</i><span>{:lang('member_qqconnect_unavailable')}</span></div>
+     {/if}
+
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function(){
+    $("#unbind").hide();
+
+    $('#editpw_form').validate({
+        errorPlacement: function(error, element){
+            var error_td = element.parent('td').next('td');
+            error_td.find('.field_notice').hide();
+            error_td.append(error);
+        },
+        rules : {
+            new_password : {
+                required   : true,
+                minlength  : 6,
+                maxlength  : 20
+            },
+            confirm_password : {
+                required   : true,
+                equalTo    : '#new_password'
+            }
+        },
+        messages : {
+            new_password  : {
+                required   : '<i class="icon-exclamation-sign"></i>{:lang('member_qqconnect_new_password_null')}',
+                minlength  : '<i class="icon-exclamation-sign"></i>{:lang('member_qqconnect_password_range')}'
+            },
+            confirm_password : {
+                required   : '<i class="icon-exclamation-sign"></i>{:lang('member_qqconnect_ensure_password_null')}',
+                equalTo    : '<i class="icon-exclamation-sign"></i>{:lang('member_qqconnect_input_two_password_again')}'
+            }
+        }
+    });
+});
+function showunbind(){
+    $("#unbind").show();
+}
+function showpw(){
+    $("#is_editpw").val('yes');
+    $("#editbinddiv").hide();
+    $("#editpwul").show();
+}
+</script>

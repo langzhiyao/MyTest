@@ -1,0 +1,48 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>地区管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <table class="ds-default-table">
+        <thead>
+            <tr>
+                <th width="5%"></th>
+                <th width="50%">{$Think.lang.area_name}</th>
+                <th width="15%">{$Think.lang.area_region}</th>
+                <th width="15%">{$Think.lang.ds_handle}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {volist name="region_list" id="area"}
+            <tr>
+                <td><input type="checkbox" class="checkitem" value="{$area.area_id}"></td>
+                <td class="name">
+                    {if $area.switchs}<img src="{$Think.config.url_domain_root}static/admin/images/treetable/tv-expandable.gif" ectype="flex" status="open" fieldid="{$area.area_id}">{else}<img src="{$Think.config.url_domain_root}static/admin/images/treetable/tv-item.gif">{/if}
+                    <span class="node_name editable" ectype="inline_edit" fieldname="gc_name" fieldid="{$area.area_id}" required="1" >{$area.area_name}</span>
+                </td>
+                <td class="name">{$area.area_region}</td>
+                <td>
+                    <a href="{:url('/admin/Region/edit',['area_id'=>$area.area_id])}">{$Think.lang.ds_edit}</a> |
+                    <a href="{:url('/admin/Region/drop',['area_id'=>$area.area_id])}">{$Think.lang.ds_del}</a> |
+                    <a href="{:url('/admin/Region/add',['area_id'=>$area.area_id])}">{$Think.lang.add_child}</a>
+                </td>
+            </tr>
+            {/volist}
+        </tbody>
+    </table>
+</div>
+<script>
+    AJAX_URL_REGION = "{:url('/admin/Region/ajax_cate')}";
+</script>
+<script src="{$Think.config.url_domain_root}static/admin/js/region_tree.js"></script>

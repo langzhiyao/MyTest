@@ -1,0 +1,76 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>分类图片设置</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <div class="fixed-empty"></div>
+    
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>{$Think.lang.link_help1}</li>
+        </ul>
+    </div>
+    
+    
+    <form method='post' id="form_link">
+        <table class="ds-default-table">
+            <thead>
+            <tr class="thead">
+                <th>&nbsp;</th>
+                <th>{$Think.lang.link_index_title}</th>
+                <th>{$Think.lang.link_index_pic_sign}</th>
+                <th class="align-center">{$Think.lang.ds_handle}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {notempty name="link_list"}
+           {volist name="link_list" id="v"}
+            <tr class="hover edit">
+                <td class="w24"><input type="checkbox" name="del_id[]" value="{$v.gc_id}" class="checkitem"></td>
+                <td>{$goods_class[$v.gc_id]['gc_name']}</td>
+                <td class="picture">
+                    {if $v.gc_thumb != ''}
+                    <div class="size-88x31">
+                   <span class='thumb size-88x31'><i></i>
+                       <img width="88" height="31" src="{$v.gc_thumb}" onload='javascript:DrawImage(this,88,31);' /></span>
+                    </div>
+                   {/if}
+                </td>
+     <td class="w96 align-center">
+         <a href="{:url('mbcategorypic/mb_category_edit',['gc_id'=>$v.gc_id])}">{$Think.lang.ds_edit}</a> | 
+         <a href="javascript:if(confirm('{$Think.lang.ds_ensure_del}'))window.location = '{:url('mbcategorypic/mb_category_del',['gc_id'=>$v.gc_id])}';">{$Think.lang.ds_del}</a></td>
+</tr>
+{/volist}
+{else /}
+<tr class="no_data">
+    <td colspan="10">{$Think.lang.ds_no_record}</td>
+</tr>
+{/notempty}
+</tbody>
+<tfoot>
+{notempty name="link_list"}
+<tr class="tfoot" id="dataFuncs">
+    <td><input type="checkbox" class="checkall" id="checkallBottom"></td>
+    <td colspan="16" id="batchAction"><label for="checkallBottom">{$Think.lang.ds_select_all}</label>
+        &nbsp;&nbsp; <a href="JavaScript:void(0);" class="btn" onclick="if(confirm('{$Think.lang.ds_ensure_del}')){$('#form_link').submit();}"><span>{$Think.lang.ds_del}</span></a>
+</tr>
+</tfoot>
+{/notempty}
+</table>
+</form>
+
+</div>

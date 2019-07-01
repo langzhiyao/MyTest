@@ -1,0 +1,196 @@
+{include file="public/header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<!-- 操作说明 -->
+<div class="explanation" id="explanation" style="width:100%;box-sizing: border-box;">
+    <div class="title" id="checkZoom">
+        <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+        <span id="explanationZoom" title="收起提示" class="arrow"></span>
+    </div>
+    <ul>
+        <li>{$Think.lang.student_import_ts}</li>
+    </ul>
+</div>
+<div style="margin-left: 100px;margin-top: 20px;">
+    <form class="layui-form">
+        <div class="layui-form-item" >
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <select  lay-filter="province"  class="select"  lay-verify="type" name="province" id="province">
+                        <option value="0" selected>{$Think.lang.look_address_province}</option>
+                        {volist name="province" id="vo"}
+                        <option value="{$vo.area_id}" >{$vo.area_name}</option>
+                        {/volist}
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="city" lay-filter="city"  class="select"  lay-verify="type"  id="city">
+                        <option value="0">{$Think.lang.look_address_city}</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="area" lay-filter="area"  class="select"  lay-verify="type"  id="area">
+                        <option value="0">{$Think.lang.look_address_area}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <select name="school" lay-filter="school"  class="select"  lay-verify="type"  id="school">
+                        <option value="0" selected="">{$Think.lang.look_address_school}</option>
+                        {volist name="school" id="vo"}
+                        <option value="{$vo.schoolid}" >{$vo.name}</option>
+                        {/volist}
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-card-body" style="margin-top: 100px;">
+            <div class="layui-upload">
+                <div class="layui-col-md5">
+                    <input name="sxt_name"  placeholder="{$Think.lang.student_import_name}" class="layui-input" readonly />
+                </div>
+                <button type="button" class="layui-btn layui-btn-normal" id="upload-change" >{$Think.lang.look_camera_file}</button>
+                <input class="layui-upload-file" accept="undefined" name="file" type="text">
+            </div>
+        </div>
+        <div style="margin-top: 100px;margin-left: 245px;">
+            <button type="button" class="layui-btn" id="true" >{$Think.lang.look_camera_true}</button>
+            <button type="button" class="layui-btn layui-layer-close layui-layer-close1" id="del">{$Think.lang.look_camera_del}</button>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var index = parent.layer.getFrameIndex(window.name);
+
+    layui.use(['form'], function(){
+        var form = layui.form;
+        //省
+        form.on('select(province)', function(data){
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变市区
+                    $('#city').html(data.city);
+                    //改变县区
+                    $('#area').html(data.area);
+                    //改变学校
+                    $('#school').html(data.school);
+                    //改变年级
+                    $('#grade').html(data.grade);
+                    //改变班级
+                    $('#class').html(data.class);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //市
+        form.on('select(city)', function(data){
+            var province = $('#province').find('option:selected').val();
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+province+'&city='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变县区
+                    $('#area').html(data.area);
+                    //改变学校
+                    $('#school').html(data.school);
+                    //改变年级
+                    $('#grade').html(data.grade);
+                    //改变班级
+                    $('#class').html(data.class);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //县/区
+        form.on('select(area)', function(data){
+            var province = $('#province').find('option:selected').val();
+            var city = $('#city').find('option:selected').val();
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+province+'&city='+city+'&area='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变学校
+                    $('#school').html(data.school);
+                    //改变年级
+                    $('#grade').html(data.grade);
+                    //改变班级
+                    $('#class').html(data.class);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+
+    });
+    layui.use(['upload'],function(){
+
+        var upload = layui.upload;
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#upload-change' //绑定元素
+            , url: ADMIN_URL + 'Common/student_file_upload.html' //上传接口
+            , accept: 'file' //普通文件
+            , method: 'POST'
+            ,data:{school:function(){return $('#school').find('option:selected').val();}}
+            , auto: false  //是否自主上传
+            , bindAction: '#true'  //确认上传按钮
+            , exts: 'xlsx' //只允许上传文件类型
+            , size: 0
+            ,choose: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+                var flag = true;
+                obj.preview(function(index, file, result){
+                    // console.log(flag);
+                    var school = $('#school').find('option:selected').val();
+                    if(school == 0){
+                        flag = false;
+                        parent.layer.msg("{$Think.lang.look_address_school}",{icon:2});
+                        return false;
+                    }else{
+                        // obj.upload(index, file); //满足条件调用上传方法
+                        $('.layui-upload-file').after( '<input type="hidden" name="school" value="'+school+'" />' );
+                        $('input[name=sxt_name]').val(file.name);
+                    }
+                    return flag;
+                });
+            }
+            , done: function (res) {
+                // console.log(res);
+                parent.layer.closeAll('loading');
+                //上传完毕回调
+                if(res.code == 0){
+
+                    var index = layer.open({
+                        type:2,
+                        title:'{$Think.lang.look_camera_import_true}',
+                        area: ['1230px', '550px'],
+                        fixed: false, //不固定
+                        maxmin: true,
+                        content: 'excelTrue.html'
+                    });
+                    layer.full(index);
+                }else{
+                    parent.layer.msg(res.msg,{icon:2});
+                }
+
+            }
+            , error: function () {
+                //请求异常回调
+                parent.layer.closeAll('loading');
+                parent.layer.msg('网络异常，请稍后重试！');
+            }
+        });
+    });
+
+
+    //关闭iframe
+    $('#del').click(function(){
+        parent.layer.close(index);
+    });
+</script>

@@ -1,0 +1,53 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>导航管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <div class="ncap-form-default">
+        <form method="post">
+            <dl>
+                <dt>{$Think.lang.nav_title}</dt>
+                <dd><input type="text" name="nav_title" id="nav_title" value="{$nav.nav_title}" class="w200"/></dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.nav_url}</dt>
+                <dd><input type="text" name="nav_url" id="nav_url" value="{$nav.nav_url}" class="w200"/></dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.nav_location}</dt>
+                <dd>
+                    <input type="radio" name="nav_location" value="header" title="{$Think.lang.nav_top}" {if $nav.nav_location eq 'header'}checked{/if}>{$Think.lang.nav_top}
+                           <input type="radio" name="nav_location" value="middle" title="{$Think.lang.nav_midd}" {if $nav.nav_location eq 'middle'}checked{/if}>{$Think.lang.nav_midd}
+                           <input type="radio" name="nav_location" value="footer" title="{$Think.lang.nav_foo}" {if $nav.nav_location eq 'footer'}checked{/if}>{$Think.lang.nav_foo}
+                </dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.nav_new_open}</dt>
+                <dd>
+                    <div class="onoff">
+                            <label for="sms_login_show1" class="cb-enable {if condition="$nav.nav_new_open eq 1"}selected{/if}">是</label>
+                        <label for="sms_login_show0" class="cb-disable {if condition="$nav.nav_new_open eq 0"}selected{/if}">否</label>
+                        <input id="sms_login_show1" name="nav_new_open" value="1" type="radio" {if condition="$nav.nav_new_open eq 1"} checked="checked"{/if}>
+                                   <input id="sms_login_show0" name="nav_new_open" value="0" type="radio" {if condition="$nav.nav_new_open eq 0"} checked="checked"{/if}>
+                        </div>
+
+            </dl>
+            <dl>
+                <dt>{$Think.lang.nav_sort}</dt>
+                <dd><input type="text" name="nav_sort" id="nav_sort" value="{$nav.nav_sort}" class="w200"/></dd>
+            </dl>
+            <dl>
+                <dt></dt>
+                <dd><input class="btn" type="submit" value="提交"/></dd>
+            </dl>
+        </form>
+    </div>
+</div>

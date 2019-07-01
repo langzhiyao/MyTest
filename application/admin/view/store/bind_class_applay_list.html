@@ -1,0 +1,93 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>店铺管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <form method="get" name="formSearch">
+      
+        <table class="search-form">
+            <tbody>
+            <tr>
+                <th><label for="store_name">{$Think.lang.store_name}ID</label></th>
+                <td><input type="text" value="" name="store_id" id="store_id" class="txt"></td>
+                <th>申请状态</th>
+                <td>
+                    <select name="state">
+                        <option value="">{$Think.lang.ds_please_choose}...</option>
+                        <option {if $Request.param.state == '0'}selected {/if} value="0">待审核</option>
+                        <option {if $Request.param.state == '1'}selected {/if} value="1">已经审核</option>
+                    </select>
+                </td>
+                <td><a href="javascript:document.formSearch.submit();" class="btn-search " title="{$Think.lang.ds_query}"></a>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+    
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>此处可以对商家新申请的经营类目进行 审核/删除 操作</li>
+        </ul>
+    </div>
+    
+    <form method="post" id="store_form" name="store_form">
+        <table class="ds-default-table">
+            <thead>
+            <tr class="thead">
+                <th class="align-center" colspan="3">经营类目</th>
+                <th>{$Think.lang.store_name}</th>
+                <th>{$Think.lang.store_user_name}</th>
+                <th>分佣比例</th>
+                <th class="align-center">{$Think.lang.ds_handle}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {notempty name="bind_list"}
+            {volist name="bind_list" id="v"}
+            <tr class="hover edit">
+                <td>{$v.class_1_name}</td>
+                <td>{$v.class_2_name ? '>' : null} {$v.class_2_name}</td>
+                <td>{$v.class_3_name ? '>' : null} {$v.class_3_name}</td>
+                <td>{$bind_store_list[$v.store_id]['store_name']}[ID:{$v.store_id}]</td>
+                <td>{$bind_store_list[$v.store_id]['seller_name']}</td>
+                <td class="w150">{$v.commis_rate} %</td>
+                <td class="w72 align-center">
+                    {if $v.state == '0'}
+                    <a href="javascript:if(confirm('确认审核吗？'))window.location = '{:url('store/store_bind_class_applay_check',['bid'=>$v.bid,'store_id'=>$v.store_id])}';">审核</a> |
+                    {/if}
+                    <a href="javascript:if(confirm('{$v.state == '1' ? '该类目已经审核通过，删除它可能影响到商家的使用，' : null}确认删除吗？'))window.location = '{:url('store/store_bind_class_applay_del',['bid'=>$v.bid,'store_id'=>$v.store_id])}';">{$Think.lang.ds_del}</a>
+                </td>
+            </tr>
+            {/volist}
+            {else /}
+            <tr class="no_data">
+                <td colspan="10">{$Think.lang.ds_no_record}</td>
+            </tr>
+            {/notempty}
+            </tbody>
+            <tfoot>
+            <tr class="tfoot">
+                <td></td>
+                <td colspan="15">
+                    {notempty name="bind_list"}
+                    <div class="pagination">{$page}</div>
+                   {/notempty}
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
+</div>

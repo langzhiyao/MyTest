@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>想见孩-支付</title>
+    <meta name="author" content="想见孩" />
+    <meta name="copyright" content="想见孩" />
+    <meta name="description" content="想见孩" />
+    <meta id="viewport" name="viewport" content="width=750" />
+    <link rel="stylesheet" href="../content/style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/iconfonts/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/lib/weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/css/jquery-weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/user.css" type="text/css" />
+    <link rel="shortcut icon" href="../content/images/ico.ico" type="image/x-icon" />
+    <script src="../content/scripts/mobile-util.js"></script>
+    <link rel="stylesheet" href="/static/plugins/layer/css/layui.css">
+</head>
+
+<body class="infobody">
+<header class="head">
+    <div class="head0">
+        <div class="menu_bar_box">
+            <a href="javascript:;" class="back_btn" onClick="historyback();">
+                <i class="icon iconfont icon-jiantou3"></i>
+            </a>
+        </div>
+        <div class="head_title">
+            <p>重温课堂购买</p>
+        </div>
+        <div class="head_r">
+
+        </div>
+    </div>
+</header>
+
+<!-- 主要内容 -->
+<div class="main">
+    <div class="cont">
+        <div class="container2">
+            <div class="pay_info">
+                <h2 class="pay_dingdan">订单金额：<span></span></h2>
+                <h2 class="pay_detail">订单详情: <span></span></h2>
+                <p class="pay_remarks"></p>
+            </div>
+        </div>
+    </div>
+    <div class="cont">
+        <div class="payment_mode_box">
+            <div class="container2">
+                <div class="weui-cells weui-cells_checkbox clearfix">
+                    <label class="weui-cell weui-check__label" for="s11">
+                        <div class="weui-cell__bd">
+                            <p><img class="zhifulogo" src="../content/images/icons/weixin.png" alt="">
+                                微信支付
+                            </p>
+                        </div>
+                        <div class="weui-cell__hd">
+                            <input type="radio" class="weui-check" name="payment_code" checked="checked" id="s11" value="wxpay_app">
+                            <i class="weui-icon-checked"></i>
+                        </div>
+                    </label>
+                    <label class="weui-cell weui-check__label" for="s12">
+                        <div class="weui-cell__bd">
+                            <p><img class="zhifulogo" src="../content/images/icons/zhifubao.png" alt="" >
+                                支付宝支付
+                            </p>
+                        </div>
+                        <div class="weui-cell__hd">
+                            <input type="radio" name="payment_code" class="weui-check" id="s12" value="alipay_app">
+                            <i class="weui-icon-checked"></i>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="pay_btn_box">
+        <input type="button" class="pay_btn" value="立即支付" />
+    </div>
+</div>
+
+<script src="../content/scripts/jquery.min.js"></script>
+<script src="../content/plugins/jqweui/js/jquery-weui.min.js"></script>
+<script src="../content/scripts/juqery.cookie.js"></script>
+<script src="../content/scripts/API.js"></script>
+<script src="../content/scripts/commom.js"></script>
+<script>
+    $.ajax({
+        type:'POST',
+        url:api+'/Common/site.html',
+        data:{},
+        dataType: 'json',
+        success: function(response){
+            $('.pay_remarks').html('该视频片段购买成功后，'+response.result[1]['value']+'小时内可以重复观看，过'+response.result[1]['value']+'小时需要重新购买才能观看');
+            $('.pay_dingdan span').html('￥'+response.result[12]['value']);
+            var begin = timestampToTime(GetQueryString("begintime"));
+            var end = timestampToTime2(GetQueryString("endtime"));
+            $('.pay_detail span').html(begin+'-'+end+'（课堂片段）');
+        }
+    });
+
+    $(".pay_btn").click(function() {
+        var payment_code = $('input[name=payment_code]:checked').val();
+        var resid = GetQueryString('resid');
+        var begintime = GetQueryString('begintime');
+        var endtime = GetQueryString('endtime');
+        $.confirm("确认支付?", "", function() {
+            $.ajax({
+                type:'POST',
+                url:api+'/Reclass/buyOrder.html',
+                data:{
+                    key:user_token,
+                    member_id:user_member_id,
+                    resid:resid,
+                    begintime:begintime,
+                    endtime:endtime,
+                    payment_code:payment_code
+                },
+                dataType: 'json',
+                success: function(response){
+                    if(response['code'] == 200){
+                        // 微信支付
+                        if(payment_code=='wxpay_app'){
+                            var mbs = response.result[0];
+                            if (mbs.result_code== 'SUCCESS') {
+                                if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) { //判断iPhone|iPad|iPod|iOS
+                                    window.webkit.messageHandlers.wxpayClick.postMessage(mbs);
+                                } else if (/(Android)/i.test(navigator.userAgent)) { //判断Android
+                                    mbs  = mbs['prepay_id']+','+mbs['nonce_str']+','+mbs['timestamp']+','+mbs['sign']+','+mbs['orderSn'];
+                                    Android.wxpayClick(mbs);
+                                } else { //pc
+                                };
+                            }else{
+
+                            }
+                        }
+                        //支付宝支付
+                        if (payment_code == 'alipay_app') {
+                            var mbs = response.result[0];
+                            if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) { //判断iPhone|iPad|iPod|iOS
+                                window.webkit.messageHandlers.aliapyClick.postMessage(mbs);
+                            } else if (/(Android)/i.test(navigator.userAgent)) { //判断Android
+                                mbs  = mbs['content']+','+mbs['orderSn'];
+                                Android.aliapyClick(mbs);
+                            } else { //pc
+                            };
+                        }
+                    }else if(response['code'] == 400){
+                        $.toast('请先前往登陆','forbidden');return false;
+                    }else{
+                        $.toast(response['message'],'forbidden');return false;
+                    }
+                }
+            })
+
+        }, function() {
+            //取消操作
+        });
+    });
+    function payTo(orderSn){
+        $.ajax({
+            type:'POST',
+            url:api+'/Reclasspayment/getOrderByOrdersn.html',
+            data:{
+                key:user_token,
+                order_sn:orderSn
+            },
+            dataType: "json",
+            success: function(response){
+                if(response['code'] == 200){
+                    location.href=http_url+'app/user/paysuccessclass.html?over_amount='+response.result[0]['over_amount'];
+                }else if(response['code'] == 400){
+                    $.toast('请前往登陆','forbidden',function () {
+                        layout();
+                    })
+                }else{
+                    $.toast(response['message'],'forbidden');
+                }
+            }
+        });
+
+    }
+
+    function timestampToTime(timestamp) {
+        var date = new Date(timestamp * 1000);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+        var Y = date.getFullYear() + '-';
+        var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+        var D = date.getDate() + ' ';
+        var h = date.getHours() + ':';
+        var m = date.getMinutes() + ':';
+        var s = date.getSeconds();
+        return Y+M+D+h+m+s;
+    }
+    function timestampToTime2(timestamp) {
+        var date = new Date(timestamp * 1000);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+        // var Y = date.getFullYear() + '-';
+        // var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+        // var D = date.getDate() + ' ';
+        var h = date.getHours() + ':';
+        var m = date.getMinutes() + ':';
+        var s = date.getSeconds();
+        return h+m+s;
+    }
+
+
+
+
+
+</script>
+
+</body>
+
+</html>

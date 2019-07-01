@@ -1,0 +1,51 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>会员协议</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>{$Think.lang.document_index_help1}</li>
+        </ul>
+    </div>
+    
+    <table class="ds-default-table">
+        <thead>
+        <tr class="thead">
+            <th>{$Think.lang.document_index_title}</th>
+            <th class="align-center">{$Think.lang.document_edit_time}</th>
+            <th>{$Think.lang.ds_handle}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {notempty name="doc_list"}
+        {volist name="doc_list" id="v"}
+        <tr class="hover">
+            <td >{$v.doc_title}</td>
+            <td class="w25pre align-center">{$v.doc_time|date="Y-m-d H:i:s",###}</td>
+            <td class="w96"><a href="{:url('document/edit',['doc_id'=>$v.doc_id])}">{$Think.lang.ds_edit}</a></td>
+        </tr>
+       {/volist}
+        {else}
+        <tr class="no_data">
+            <td colspan="15">{$Think.lang.ds_no_record}</td>
+        </tr>
+        {/notempty}
+        </tbody>
+    </table>
+
+</div>

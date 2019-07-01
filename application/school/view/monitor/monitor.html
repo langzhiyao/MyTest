@@ -1,0 +1,353 @@
+{include file="public/header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<script src="{$Think.config.url_domain_root}static/ckplayer/ckplayer.js"></script>
+<style>
+    .info_p{
+        height: 36px;
+        line-height: 36px;
+        font-size: 16px;
+        color: #666;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .info_p a{
+        color: #0D93BF;
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+</style>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>{$Think.lang.look_monitor_title}</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form method="post" class="layui-form">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <input name="phone" lay-verify="required|phone" autocomplete="off" placeholder="请输入关键字搜索" class="layui-input" type="tel">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <select  lay-filter="province"  class="select"  lay-verify="type" name="province" id="province">
+                        <option value="0" selected>{$Think.lang.look_address_province}</option>
+                        {volist name="province" id="vo"}
+                        <option value="{$vo.area_id}" >{$vo.area_name}</option>
+                        {/volist}
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="city" lay-filter="city"  class="select"  lay-verify="type"  id="city">
+                        <option value="0">{$Think.lang.look_address_city}</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="area" lay-filter="area"  class="select"  lay-verify="type"  id="area">
+                        <option value="0">{$Think.lang.look_address_area}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <select name="school" lay-filter="school"  class="select"  lay-verify="type"  id="school">
+                        <option value="0" selected="">{$Think.lang.look_address_school}</option>
+                        {volist name="school" id="vo"}
+                        <option value="{$vo.schoolid}" >{$vo.name}</option>
+                        {/volist}
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="grade" lay-filter="grade"  class="select"  lay-verify="type"  id="grade">
+                        <option value="0">{$Think.lang.look_address_grade}</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="class" lay-filter="class"  class="select"  lay-verify="type"  id="class">
+                        <option value="0">{$Think.lang.look_address_class}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <button class="layui-btn" data-type="reload" id="submitBtn">{$Think.lang.look_camera_search}</button>
+            </div>
+
+        </div>
+    </form>
+
+    <div class="layui-card-header">
+        <h3 class="panel-title" style="text-align: center;">
+            <span style="color:#E00515;">（北京市房山区彩虹幼儿园）</span>{$Think.lang.look_revisit_jk_ts}
+        </h3>
+    </div>
+    <div class="layui-fluid layui-card-body" id="LAY-component-grid-list">
+        <div class="layui-row layui-col-space10 demo-list">
+            <div class="layui-col-sm4">
+                <!-- 填充内容 -->
+                <div class="layui-card">
+                    <div id="video" style="width: 600px; height: 400px;"></div>
+                    <script type="text/javascript">
+                        var videoObject = {
+                            container: '#video', //容器的ID或className
+                            variable: 'player',//播放函数名称
+                            autoplay:false,
+                            live:true,
+                            debug:true,
+                            video: 'rtmp://101.201.75.83/hls/365_1_1',
+                            poster:'http://101.201.75.83:10000/365_1_1.jpg'
+                        };
+                        var player = new ckplayer(videoObject);
+                    </script>
+                </div>
+                <p class="info_p">能想<a href="#">4545</a></p>
+            </div>
+            <div class="layui-col-sm4">
+                <!-- 填充内容 -->
+                <div class="layui-card">
+                    <div id="videos" style="width: 600px; height: 400px;"></div>
+                    <script type="text/javascript" src="../ckplayer/ckplayer.js"></script>
+                    <script type="text/javascript">
+                        var videoObject = {
+                            container: '#videos', //容器的ID或className
+                            variable: 'player',//播放函数名称
+                            autoplay:false,
+                            live:true,
+                            debug:true,
+                            video: 'rtmp://101.201.75.83/hls/365_2_1',
+                            poster:'http://101.201.75.83:10000/365_2_1.jpg'
+                        };
+                        var player = new ckplayer(videoObject);
+                    </script>
+                </div>
+                <p class="info_p">能想<a href="#">4545</a></p>
+            </div>
+            <div class="layui-col-sm4">
+                <!-- 填充内容 -->
+                <div class="layui-card">
+                    <div id="videoa" style="width: 600px; height: 400px;"></div>
+                    <script type="text/javascript">
+                        var videoObject = {
+                            container: '#videoa', //容器的ID或className
+                            variable: 'player',//播放函数名称
+                            autoplay:false,
+                            live:true,
+                            debug:true,
+                            video: 'rtmp://101.201.75.83/hls/365_1_1',
+                            poster:'http://101.201.75.83:10000/365_1_1.jpg'
+                        };
+                        var player = new ckplayer(videoObject);
+                    </script>
+                </div>
+                </div>
+                <p class="info_p">能想<a href="#">4545</a></p>
+            </div>
+            <div class="layui-col-sm4">
+            <!-- 填充内容 -->
+            <div class="layui-card">
+                <div id="videob" style="width: 600px; height: 400px;"></div>
+                <script type="text/javascript">
+                    var videoObject = {
+                        container: '#videob', //容器的ID或className
+                        variable: 'player',//播放函数名称
+                        autoplay:false,
+                        live:true,
+                        debug:true,
+                        video: 'rtmp://101.201.75.83/hls/365_2_1',
+                        poster:'http://101.201.75.83:10000/365_2_1.jpg'
+                    };
+                    var player = new ckplayer(videoObject);
+                </script>
+            </div>
+                <p class="info_p">能想<a href="#">4545</a></p>
+        </div>
+            <div class="layui-col-sm4">
+                <!-- 填充内容 -->
+                <div class="layui-card">
+                    <div id="videoc" style="width: 600px; height: 400px;"></div>
+                    <script type="text/javascript">
+                        var videoObject = {
+                            container: '#videoc', //容器的ID或className
+                            variable: 'player',//播放函数名称
+                            autoplay:false,
+                            live:true,
+                            debug:true,
+                            video: 'rtmp://101.201.75.83/hls/365_1_1',
+                            poster:'http://101.201.75.83:10000/365_1_1.jpg'
+                        };
+                        var player = new ckplayer(videoObject);
+                    </script>
+                </div>
+                <p class="info_p">能想<a href="#">4545</a></p>
+            </div>
+            <div class="layui-col-sm4 ">
+                <!-- 填充内容 -->
+                <div class="layui-card">
+                    <div id="videod" style="width: 600px; height: 400px;"></div>
+                    <script type="text/javascript">
+                        var videoObject = {
+                            container: '#videod', //容器的ID或className
+                            variable: 'player',//播放函数名称
+                            autoplay:false,
+                            live:true,
+                            debug:true,
+                            video: 'rtmp://101.201.75.83/hls/365_2_1',
+                            poster:'http://101.201.75.83:10000/365_2_1.jpg'
+                        };
+                        var player = new ckplayer(videoObject);
+                    </script>
+                </div>
+                <p class="info_p">能想<a href="#">4545</a></p>
+            </div>
+        </div>
+    </div>
+    <!--<div class="layui-box layui-laypage layui-laypage-default" id="layui-laypage-1">
+        <a href="javascript:;" class="layui-laypage-prev layui-disabled" data-page="0">上一页</a>
+        <span class="layui-laypage-curr"><em class="layui-laypage-em"></em><em>1</em></span>
+        <a href="javascript:;" data-page="2">2</a>
+        <a href="javascript:;" data-page="3">3</a>
+        <a href="javascript:;" data-page="4">4</a>
+        <a href="javascript:;" data-page="5">5</a>
+        <a href="javascript:;" class="layui-laypage-next" data-page="2">下一页</a>
+    </div>-->
+</div>
+<script type="text/javascript">
+    layui.use(['form'], function(){
+        var form = layui.form;
+        //省
+        form.on('select(province)', function(data){
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变市区
+                    $('#city').html(data.city);
+                    //改变县区
+                    $('#area').html(data.area);
+                    //改变学校
+                    $('#school').html(data.school);
+                    //改变年级
+                    $('#grade').html(data.grade);
+                    //改变班级
+                    $('#class').html(data.class);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //市
+        form.on('select(city)', function(data){
+            var province = $('#province').find('option:selected').val();
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+province+'&city='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变县区
+                    $('#area').html(data.area);
+                    //改变学校
+                    $('#school').html(data.school);
+                    //改变年级
+                    $('#grade').html(data.grade);
+                    //改变班级
+                    $('#class').html(data.class);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //县/区
+        form.on('select(area)', function(data){
+            var province = $('#province').find('option:selected').val();
+            var city = $('#city').find('option:selected').val();
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+province+'&city='+city+'&area='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变学校
+                    $('#school').html(data.school);
+                    //改变年级
+                    $('#grade').html(data.grade);
+                    //改变班级
+                    $('#class').html(data.class);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //学校
+        form.on('select(school)', function(data){
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_school_info?school='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变年级
+                    $('#grade').html(data.grade);
+                    //改变班级
+                    $('#class').html(data.class);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //年级
+        form.on('select(grade)', function(data){
+            var school = $('#school').find('option:selected').val();
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_school_info?school='+school+'&grade='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变班级
+                    $('#class').html(data.class);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+    });
+
+    $("#submitBtn").click(function() {
+            var province = $("#province").val();
+            if(province==0){
+                alert("请先选择省份！");
+            }else {
+                var city=$("#city").val();
+                if(city==0) {
+                    alert("请先选择市！");
+                }else{
+                    var area=$("#area").val();
+                    if(area==0){
+                        alert("请先选择县区！");
+                    }else{
+                        var school=$("#school").val();
+                        if(school==0){
+                            alert("请先选择学校！")
+                        }else{
+                            $.ajax({
+                                url: "{:url('/school/monitor/monitor')}",
+                                type: 'POST',
+                                dataType: 'json',
+                                data: {'province': province,'city':city,'area':area,'school':school},
+                                success:function(sb){
+                                    if (sb.m) {
+                                        layer.msg(sb.ms, {icon: 16,time: 500},function(){
+                                            window.location.href="{:url('/school/Company/index')}";
+                                        });
+
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+    });
+</script>

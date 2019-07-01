@@ -1,0 +1,137 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>抢购管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>抢购分类最多为2级分类，商家发布抢购活动时选择分类，用于抢购聚合页对抢购活动进行筛选</li>
+        </ul>
+    </div>
+
+    <form id="list_form" method='post'>
+        <input id="class_id" name="class_id" type="hidden"/>
+        <table class="ds-default-table">
+            <thead>
+            <tr class="thead">
+                <th></th>
+                <th>{$Think.lang.ds_sort}</th>
+                <th>{$Think.lang.goods_class_index_name}</th>
+                <th class="align-center">{$Think.lang.ds_handle}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {notempty name="list"}
+            {volist name="list" id="val"}
+            <tr class="hover edit {if $val.class_parent_id != '0'} two{/if} parent{$val.class_parent_id}">
+                <td class="w36"><input type="checkbox" value="{$val.class_id}" class="checkitem">
+                    {eq name="val.have_child" value="1"}
+                    <img class="node_parent" state="close" node_id="parent{$val.class_id}"
+                         src="{$Think.config.url_domain_root}static/admin/images/treetable/tv-expandable.gif">
+                    {/eq}
+                </td>
+                <td class="w48 sort">
+                    <span title="{$Think.lang.ds_editable}" ajax_branch="class_sort" datatype="number"
+                          fieldid="{$val.class_id}" fieldname="sort" nc_type="inline_edit"
+                          class="editable ">{$val.sort}</span></td>
+                <td class="name">
+                    {neq name="val.class_parent_id" value="0"}
+                    <img fieldid="{$val.class_id}" status="close" nc_type="flex"
+                         src="{$Think.config.url_domain_root}static/admin/images/treetable/tv-item-last.gif">
+                    {/neq}
+                    <span title="{$Think.lang.ds_editable}" required="1" fieldid="{$val.class_id}"
+                          ajax_branch="class_name" fieldname="class_name" nc_type="inline_edit"
+                          class="node_name editable ">
+                        {$val.class_name}
+                        </span>
+                    {eq name="val.class_parent_id" value="0"}
+                    <a href="{:url('groupbuy/class_add',['parent_id'=>$val.class_id])}"
+                       class="btn-add-nofloat marginleft"><span>{$Think.lang.ds_add_sub_class}</span></a>
+                    {/eq}</td>
+                <td class="w156 align-center">
+
+                    <a href="JavaScript:void(0);" onclick="submit_delete('{$val.class_id}')">{$Think.lang.ds_del}</a>
+                </td>
+            </tr>
+           {/volist}
+            {else /}
+            <tr class="no_data">
+                <td colspan="10">{$Think.lang.ds_no_record}</td>
+            </tr>
+            {/notempty}
+            <tr>
+                <td colspan="20"><a class="btn-add marginleft" href="{:url('groupbuy/class_add')}">添加分类</a>
+                </td>
+            </tr>
+            </tbody>
+            {notempty name="list"}
+            <tfoot>
+            <tr class="tfoot">
+                <td><input type="checkbox" class="checkall" id="checkall_1"></td>
+                <td id="batchAction" colspan="15"><span class="all_checkbox">
+            <label for="checkall_1">{$Think.lang.ds_select_all}</label>
+            </span>&nbsp;&nbsp; <a href="JavaScript:void(0);" class="btn" onclick="submit_delete_batch();"><span>{$Think.lang.ds_del}</span></a>
+            </tr>
+            </tfoot>
+            {/notempty}
+        </table>
+    </form>
+
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(".two").hide();
+        $(".node_parent").click(function(){
+            var node_id = $(this).attr('node_id');
+            var state = $(this).attr('state');
+            if(state == 'close') {
+                $("."+node_id).show();
+                $(this).attr('state','open');
+                $(this).attr('src',"{$Think.config.url_domain_root}static/admin/images/treetable/tv-collapsable.gif");
+            }
+            else {
+                $("."+node_id).hide();
+                $(this).attr('state','close');
+                $(this).attr('src',"{$Think.config.url_domain_root}static/admin/images/treetable/tv-expandable.gif");
+            }
+        });
+    });
+    function submit_delete_batch(){
+        /* 获取选中的项 */
+        var items = '';
+        $('.checkitem:checked').each(function(){
+            items += this.value + ',';
+        });
+        if(items != '') {
+            items = items.substr(0, (items.length - 1));
+            submit_delete(items);
+        }
+        else {
+            alert('{$Think.lang.ds_please_select_item}');
+        }
+    }
+    function submit_delete(id){
+        if(confirm('{$Think.lang.ds_ensure_del}')) {
+            $('#list_form').attr('method','post');
+            $('#list_form').attr('action',"{:url('groupbuy/class_drop')}");
+            $('#class_id').val(id);
+            $('#list_form').submit();
+        }
+    }
+
+</script>

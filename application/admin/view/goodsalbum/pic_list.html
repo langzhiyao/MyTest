@@ -1,0 +1,118 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>空间管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form method="get" name="formSearch">
+        <table class="search-form">
+            <tbody>
+            <tr>
+                <th><label for="pic_name">{$Think.lang.g_album_keyword}</label></th>
+                <td><input class="txt" name="keyword" id="keyword" value="" type="text"></td>
+                <td><a href="javascript:document.formSearch.submit();" class="btn-search " title="{$Think.lang.ds_query}">&nbsp;</a>
+                    <?php if($store_name != '' && !empty($list) ){?>
+                    <a class="btns"
+                       href="{:url('home/showstore/index',['store_id'=>$list.0.store_id])}">
+                        <span>{$store_name}</span>
+                    </a>
+                    <?php }?>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+    <form method='post' action="{:url('Goodsalbum/del_more_pic')}" name="picForm" id="picForm">
+        <table class="ds-default-table">
+            <tbody>
+            {notempty name="list"}
+            <tr>
+                <td colspan="20">
+                    <ul class="thumblists">
+                        {volist name="list" id="v"}
+                        <li class="picture">
+                            <div class="size-64x64">
+              <span class="thumb">
+                <i></i>
+                  {notempty name="v.apic_cover"}
+                  <a nctype="nyroModal" href="{:cthumb($v.apic_cover,1280,$v.store_id)}" rel="gal">
+                      <img title='{$v.upload_time|date="Y-m-d",###}<br>{$v.apic_spec}px<br>{:number_format($v.apic_size/1024,2)}k' width="64" height="64" class="tip"
+                           src="{:cthumb($v.apic_cover,60,$v.store_id)}">
+                  </a>
+                  {else}
+                  <img height="64" src="{$Think.config.url_domain_root}" max-height='70px' max-width="70px">
+                  {/notempty}
+             </span>
+                            </div>
+                            <p>
+                                <span><input class="checkitem" type="checkbox" name="delbox[]"
+                                             value="{$v.apic_id}"></span><span><a
+                                    href="javascript:void(0);" nc_type="delete"
+                                    nc_key="{$v.apic_id}|{$v.apic_cover}">{$Think.lang.ds_del}</a></span>
+                            </p>
+                        </li>
+                        {/volist}
+                    </ul>
+                </td>
+            </tr>
+            {else /}
+            <tr class="no_data">
+                <td colspan="15">{$Think.lang.ds_no_record}</td>
+            </tr>
+            {/notempty}
+            </tbody>
+            <tfoot>
+            <tr class="tfoot">
+                <td class="w48"><input id="checkallBottom" class="checkall" type="checkbox"/></td>
+                <td colspan="16">
+                    <label for="checkallBottom">{$Think.lang.ds_select_all}</label>
+                    <a class="btn" href="javascript:void(0);"
+                       onclick="if(confirm('{$Think.lang.ds_ensure_del}')){$('#picForm').submit();}"><span>{$Think.lang.ds_del}</span></a>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+         {$page}
+    </form>
+
+</div>
+<script>
+    jQuery.browser={};(function(){jQuery.browser.msie=false; jQuery.browser.version=0;if(navigator.userAgent.match(/MSIE ([0-9]+)./)){ jQuery.browser.msie=true;jQuery.browser.version=RegExp.$1;}})();
+</script>
+<script src="{$Think.config.url_domain_root}static/plugins/jquery.poshytip.min.js"></script>
+<script src="{$Think.config.url_domain_root}static/plugins/js/jquery.nyroModal/custom.min.js"></script>
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/js/jquery.nyroModal/styles/nyroModal.css">
+<script>
+    $(function () {
+        $('a[nctype="nyroModal"]').nyroModal();
+        $('a[nc_type="delete"]').on('click', function () {
+            if (!confirm('{$Think.lang.ds_ensure_del}'))
+                return false;
+            cur_note = this;
+            $.get("{:url('Goodsalbum/del_album_pic')}", {'key': $(this).attr('nc_key')}, function (data) {
+                if (data == 1)
+                    $(cur_note).parent().parent().parent().remove();
+                else
+                    alert('{$Think.lang.ds_common_del_fail}');
+            });
+        });
+        $('.tip').poshytip({
+            className: 'tip-yellowsimple',
+            alignTo: 'target',
+            alignX: 'center',
+            alignY: 'bottom',
+            offsetX: 0,
+            offsetY: 5,
+            allowTipHover: false
+        });
+    });
+</script>

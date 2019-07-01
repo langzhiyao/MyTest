@@ -1,0 +1,64 @@
+{include file="public/seller_top" /} 
+<div class="seller_main w1200">
+    {include file="public/seller_left" /}
+    <div class="seller_right">
+        <div class="seller_items">
+            {include file="public/seller_items" /}
+            <a href="{:url('Home/Selleraccount/account_add')}" class="dssc-btn dssc-btn-green"  title="添加账号">添加账号</a>
+        </div>
+
+        <table class="dssc-default-table">
+            <thead>
+                <tr><th class="w60"></th>
+                    <th class="tl">账号名</th>
+                    <th class="w200">账号组</th>
+                    <th class="w100">{$Think.lang.ds_handle}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if(!empty($seller_list) && is_array($seller_list)){?>
+                <?php foreach($seller_list as $key => $value){?>
+                <tr class="bd-line">
+                    <td></td>
+                    <td class="tl"><?php echo $value['seller_name'];?></td>
+                    <td><?php echo $seller_group_array[$value['seller_group_id']]['group_name'];?></td>
+                    <td class="nscs-table-handle">
+                        <span><a href="{:url('/home/Selleraccount/account_edit',['seller_id'=>$value.seller_id])}" class="btn-blue"><i class="icon-edit"></i>
+                                <p>{$Think.lang.ds_edit}</p></a>
+                        </span><span><a nctype="btn_del_account" data-seller-id="<?php echo $value['seller_id'];?>" href="javascript:;" class="btn-red"><i class="icon-trash"></i>
+                                <p>{$Think.lang.ds_del}</p></a></span>
+                    </td>
+                </tr>
+                <?php }?>
+                <?php }else{?>
+                <tr>
+                    <td colspan="20" class="norecord"><div class="warning-option"><i class="icon-warning-sign"></i><span>{$Think.lang.no_record}</span></div></td>
+                </tr>
+                <?php }?>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="20"><div class="pagination">{$page}</div></td>
+                </tr>
+            </tfoot>
+        </table>
+        <form id="del_form" method="post" action="{:url('/home/Selleraccount/account_del')}">
+            <input id="del_seller_id" name="seller_id" type="hidden" />
+        </form>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('[nctype="btn_del_account"]').on('click', function() {
+                    var seller_id = $(this).attr('data-seller-id');
+                    if (confirm('确认删除？')) {
+                        $('#del_seller_id').val(seller_id);
+                        ajaxpost('del_form', '', '', 'onerror');
+                    }
+                });
+            });
+        </script>
+
+        
+        
+    </div>
+</div>
+{include file="public/mall_footer" /}

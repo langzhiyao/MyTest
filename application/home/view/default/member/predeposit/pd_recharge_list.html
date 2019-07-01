@@ -1,0 +1,90 @@
+{include file="public/mall_top" /} 
+{include file="public/mall_header" /}
+
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/home/css/member.css">
+<div class="dsm-container">
+    {include file="public/member_left" /}
+    <div class="right-layout">
+        <div class="tabmenu">
+            {include file="public/member_items" /}
+            <a class="dsm-btn dsm-btn-orange" title="在线充值" href="{:url('/home/predeposit/recharge_add')}"> <i class="icon-shield"></i> 在线充值 </a>
+        </div>
+        
+
+        <div class="alert"><span class="mr30">{$Think.lang.predeposit_pricetype_available}{$Think.lang.ds_colon}<strong class="mr5 red" style="font-size: 18px;"><?php echo $member_info['available_predeposit']; ?></strong>{$Think.lang.currency_zh}</span><span>{$Think.lang.predeposit_pricetype_freeze}{$Think.lang.ds_colon}<strong class="mr5 blue" style="font-size: 18px;"><?php echo $member_info['freeze_predeposit']; ?></strong>{$Think.lang.currency_zh}</span></div>
+        <form method="get">
+            <table class="dsm-search-table">
+                <tr>
+                    <td>&nbsp;</td>
+                    <th>{$Think.lang.predeposit_rechargesn}</th>
+                    <td class="w160 tc"><input type="text" class="text w150" name="pdr_sn" value="{$Request.param.pdr_sn}"/></td>
+                    <td class="w70 tc"><label class="submit-border">
+                            <input type="submit" class="submit" value="{$Think.lang.ds_search}" />
+                        </label></td>
+                </tr>
+            </table>
+        </form>
+        <table class="dsm-default-table">
+            <thead>
+                <tr>
+                    <th>{$Think.lang.predeposit_rechargesn}</th>
+                    <th class="w150">{$Think.lang.predeposit_addtime}</th>
+                    <th class="w150">{$Think.lang.predeposit_payment}</th>
+                    <th class="w150">{$Think.lang.predeposit_recharge_price}({$Think.lang.currency_zh})</th>
+                    <th class="w150">{$Think.lang.predeposit_paystate}</th>
+                    <th class="w110">{$Think.lang.ds_handle}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (count($list)>0) { ?>
+                <?php foreach($list as $val) { ?>
+                <tr class="bd-line">
+                    <td><?php echo $val['pdr_sn'];?></td>
+                    <td><?php echo date('Y-m-d H:i:s',$val['pdr_add_time']);?></td>
+                    <td><?php echo $val['pdr_payment_name'];?></td>
+                    <td class="red">+<?php echo $val['pdr_amount'];?></td>
+                    <td><?php echo intval($val['pdr_payment_state']) ? '已支付' : '未支付';?></td>
+                    <td class="dsm-table-handle"><?php if (!intval($val['pdr_payment_state'])){?>
+                        <span><a class="btn-green" href="{:url('/home/buy/pd_pay',['pay_sn'=>$val.pdr_sn])}"> <i class="icon-shield"></i>
+                                <p>支付</p>
+                            </a></span> <span><a class="btn-red" href="javascript:void(0)" onclick="ajax_get_confirm('{$Think.lang.ds_ensure_del}', '{:url('/home/predeposit/recharge_del',['id'=>$val.pdr_id])}');"><i class="icon-trash"></i>
+                                <p>{$Think.lang.ds_del}</p>
+                            </a></span>
+                        <?php }else{?>
+                        <span><a href="{:url('/home/predeposit/recharge_show',['id'=>$val.pdr_id])}" class="btn-blue"><i class="icon-eye-open"></i>
+                                <p>{$Think.lang.ds_view}</p>
+                            </a></span>
+                        <?php }?></td>
+                </tr>
+                <?php } ?>
+                <?php } else {?>
+                <tr>
+                    <td colspan="20" class="norecord"><div class="warning-option"><i>&nbsp;</i><span>{$Think.lang.no_record}</span></div></td>
+                </tr>
+                <?php } ?>
+            </tbody>
+            <tfoot>
+                <?php if (count($list)>0) { ?>
+                <tr>
+                    <td colspan="20"><div class="pagination">{$page}</div></td>
+                </tr>
+                <?php } ?>
+            </tfoot>
+        </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+</div>
+{include file="public/mall_server" /}
+{include file="public/mall_footer" /}

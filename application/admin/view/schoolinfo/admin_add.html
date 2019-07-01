@@ -1,0 +1,163 @@
+{include file="public/header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<style>
+    .layui-form-label{
+        width: 200px;
+    }
+</style>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<!-- 操作说明 -->
+<div class="explanation" id="explanation">
+    <div class="title" id="checkZoom">
+        <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+        <span id="explanationZoom" title="收起提示" class="arrow"></span>
+    </div>
+    <ul>
+        <li>给学校分配管理账号。</li>
+    </ul>
+</div>
+<form method="post" id="add_form" class="layui-form">
+    <div  class="ncap-form-default">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">{$Think.lang.admin_index_username}：</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="admin_name" name="admin_name" class="layui-input">
+                    <span class="err"></span>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">{$Think.lang.gadmin_name}：</label>
+                <div class="layui-input-inline">
+                    <select name="gid" id="gid" class="select" >
+                        <option value="5">{$Think.lang.super_admin}</option>
+                        <?php foreach((array)$gadmin_list as $v){?>
+                        <option value="<?php echo $v['gid'];?>"><?php echo $v['gname'];?></option>
+                        <?php }?>
+                    </select>
+                    <span class="err"></span>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">{$Think.lang.admin_index_password}：</label>
+                <div class="layui-input-inline">
+                    <input type="password" id="admin_password" name="admin_password" class="layui-input">
+                    <span class="err"></span>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">{$Think.lang.admin_rpassword}：</label>
+                <div class="layui-input-inline">
+                    <input type="password" id="admin_rpassword" name="admin_rpassword" class="layui-input">
+                    <span class="err"></span>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"></label>
+            <div class="layui-input-block">
+                <a href="JavaScript:void(0);" class="btn" id="submitBtn">确认提交</a>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    layui.use(['form','laypage', 'layer'], function(){
+        var form = layui.form,
+            laypage = layui.laypage
+            ,layer = layui.layer;
+    });
+    //按钮先执行验证再提交表
+    $(document).ready(function() {
+        //按钮先执行验证再提交表单
+        $("#submitBtn").click(function() {
+            if ($("#add_form").valid()) {
+                // $("#add_form").submit();
+                var school_id="{$_GET['school_id']}";
+                var company_id="{$_GET['company_id']}";
+                var admin_name=$('#admin_name').val();
+                var gid = $('#gid').find('option:selected').val();
+                var admin_password = $('#admin_password').val();
+                var admin_rpassword = $('#admin_rpassword').val();
+                $.ajax({
+                    type:'post',
+                    url:ADMIN_URL+'schoolinfo/admin_add.html?school_id='+school_id+'&company_id='+company_id,
+                    data:{admin_name:admin_name,gid:gid,admin_rpassword:admin_rpassword,admin_password:admin_password},
+                    success:function(response){
+                        response = jQuery.parseJSON(response);
+                        if(response.status == 200){
+                            layer.msg(response.message,{time:2000,icon:1},function(){
+                                parent.location.reload();
+                            });
+                        }else{
+                            layer.msg(response.message,{time:2000,icon:2},function(){
+                                parent.location.reload();
+                            });
+                        }
+                    }
+                })
+
+            }
+        });
+        $("#add_form").validate({
+            errorPlacement: function(error, element) {
+                error.appendTo(element.nextAll('span.err'));
+            },
+            rules: {
+                admin_name: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 20,
+                    remote: {
+                        url: ADMIN_URL+'Admin/ajax.html?branch=check_admin_name',
+                        type: 'get',
+                        data: {
+                            admin_name: function() {
+                                return $('#admin_name').val();
+                            }
+                        }
+                    }
+                },
+                admin_password: {
+                    required: true,
+                    minlength: 6,
+                    maxlength: 20
+                },
+                admin_rpassword: {
+                    required: true,
+                    equalTo: '#admin_password'
+                },
+                gid: {
+                    required: true
+                }
+            },
+            messages: {
+                admin_name: {
+                    required: '{$Think.lang.admin_add_username_null}',
+                    minlength: '{$Think.lang.admin_add_username_max}',
+                    maxlength: '{$Think.lang.admin_add_username_max}',
+                    remote: '{$Think.lang.admin_add_admin_not_exists}'
+                },
+                admin_password: {
+                    required: '{$Think.lang.admin_add_password_null}',
+                    minlength: '{$Think.lang.admin_add_password_max}',
+                    maxlength: '{$Think.lang.admin_add_password_max}'
+                },
+                admin_rpassword: {
+                    required: '{$Think.lang.admin_add_password_null}',
+                    equalTo: '{$Think.lang.admin_edit_repeat_error}'
+                },
+                gid: {
+                    required: '{$Think.lang.admin_add_gid_null}',
+                }
+            }
+        });
+    });
+</script>

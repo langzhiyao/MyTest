@@ -1,0 +1,46 @@
+{include file="public/mall_top" /} 
+<style>
+    .w1200{width:1000px;}
+</style>
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/home/css/home_cart.css">
+<script src="{$Think.config.url_domain_root}static/home/js/goods_cart.js"></script>
+<div class="dsc-header">
+    <div class="logo">
+        <a href="{$Think.config.url_domain_root}index.php"><img src="{$Think.config.url_attach_common}/{$Think.config.site_logo}"/></a>
+    </div>
+    <ul class="dsc-flow">
+        <li class="current"><i class="step1"></i>
+            <p>我的购物车</p>
+            <sub></sub>
+            <div class="hr"></div>
+        </li>
+        <li class=""><i class="step2"></i>
+            <p>填写核对购物信息</p>
+            <sub></sub>
+            <div class="hr"></div>
+        </li>
+        <li class=""><i class="step3"></i>
+            <p>支付提交</p>
+            <sub></sub>
+            <div class="hr"></div>
+        </li>
+        <li class=""><i class="step4"></i>
+            <p>订单完成</p>
+            <sub></sub>
+            <div class="hr"></div>
+        </li>
+    </ul>
+</div>
+
+<div class="dsc-main">
+    <div class="dsc-title">
+        <h3>我的购物车</h3>
+        <h5>查看购物车商品清单，增加减少商品数量，并勾选想要的商品进入下一步操作。</h5>
+    </div>
+    <div class="dsc-null-shopping">
+        <i class="ico"></i>
+        <h4>您的购物车还没有商品</h4>
+    </div>
+</div>
+
+{include file="public/mall_footer" /}

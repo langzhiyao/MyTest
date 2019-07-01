@@ -1,0 +1,65 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>文本回复</h3>
+                <h5>添加文本回复内容</h5>
+            </div>
+        </div>
+    </div>
+    <div class="ncap-form-default">
+        <form method="post" id="keyword_form">
+            <dl>
+                <dt><span class="error">*</span> 关键词</dt>
+                <dd><input type="text" name="keyword" id="keyword" value="{$key.keyword}" placeholder="关键词"style="width: 300px"/></dd>
+            </dl>
+            <dl>
+                <dt><span class="error">*</span> 回复内容</dt>
+                <dd><textarea name="text" id="text"  placeholder="回复内容">{$key.text}</textarea></dd>
+            </dl>
+            <dl>
+                <dt><input type="hidden" name="id" value="{$key.id}"></dt>
+                <dd><input class="btn" type="submit" value="确认提交"/></dd>
+            </dl>
+        </form>
+    </div>
+</div>
+
+<script>
+    //按钮先执行验证再提交表单
+    $(function(){
+        $("#btn").click(function(){
+            if($("#keyword_form").valid()){
+                $("#keyword_form").submit();
+            }
+        });
+    });
+
+    $(document).ready(function(){
+        $('#keyword_form').validate({
+            errorPlacement: function (error, element) {
+
+            },
+            rules : {
+                keyword  : {
+                    required : true,
+                },
+                text  : {
+                    required : true,
+                }
+            }
+        });
+    });
+</script>
+
+
+
+
+
+
+
+

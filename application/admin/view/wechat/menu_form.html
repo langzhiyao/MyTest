@@ -1,0 +1,67 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>微信菜单</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>1.自定义菜单最多包括3个一级菜单，每个一级菜单最多包含5个二级菜单</li>
+            <li>2.一级菜单最多4个汉字，二级菜单最多7个汉字，多出来的部分将会以“...”代替。</li>
+            <li>3.创建自定义菜单后，菜单的刷新策略是，在用户进入公众号会话页或公众号profile页时，如果发现上一次拉取菜单的请求在5分钟以前，就会拉取一下菜单，如果菜单有更新，就会刷新客户端的菜单。测试时可以尝试取消关注公众账号后再次关注，则可以看到创建后的效果。</li>
+            <li>4.目前支持的菜单类型的命令：hot点击率高的商品 commend店铺推荐商品 sale销售量 colleect收藏量</li>
+        </ul>
+    </div>
+     <div class="ncap-form-default">
+        <form method="post">
+            <dl>
+                <dt>{$Think.lang.menu_name}</dt>
+                <dd><input type="text" name="menu_name"  value="{$menu.name}" class="w300"/></dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.menu_p_name}</dt>
+                <dd>
+                     <select name="menu_pid">
+                            <option value="0">顶级</option>
+                            {foreach name="parents" item="parent"}
+                            <option value="{$parent.id}" {if $parent.id eq $menu.pid}selected{/if}>{$parent.name}</option>
+                         {/foreach}
+                        </select>
+                </dd>
+
+            </dl>
+            <dl>
+                <dt>{$Think.lang.menu_type}</dt>
+                <dd>
+                    <input type="radio" name="menu_type" value="view" title="{$Think.lang.menu_type_1}" {if $menu.type eq 'view'}checked{/if}>{$Think.lang.menu_type_1}
+                    <input type="radio" name="menu_type" value="click" title="{$Think.lang.menu_type_2}" {if $menu.type eq 'click'}checked{/if}>{$Think.lang.menu_type_2}
+                    <!--<input type="radio" name="menu_type" value="3" title="{$Think.lang.menu_type_3}" {if $menu.type eq '3'}checked{/if}>{$Think.lang.menu_type_3}-->
+                </dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.menu_value}</dt>
+                <dd><input type="text" name="menu_value" value="{$menu.value}" style="width: 300px"/></dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.menu_sort}</dt>
+                <dd><input type="text" name="menu_sort"  value="{$menu.sort}" class="w300"/></dd>
+            </dl>
+            <dl>
+                <dt><input type="hidden" name="id" value="{$menu.id}" ></dt>
+                <dd><input class="btn" type="submit" value="提交"/></dd>
+            </dl>
+        </form>
+    </div>
+</div>

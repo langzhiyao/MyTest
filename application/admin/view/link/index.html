@@ -1,0 +1,75 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>友情链接</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <form method="get" name="formSearch">
+        <table class="search-form">
+            <tbody>
+                <tr>
+                    <th>{$Think.lang.link_index_title}</th>
+                    <td><input type="text" value="{$Think.get.search_link_title}" name="search_link_title" class="txt"></td>
+                    <td>
+                        <a href="javascript:document.formSearch.submit();" class="btn-search" title="{$Think.lang.ds_query}"></a>
+                        {notempty name="$Think.get.search_link_title"}
+                        <a href="{:url('Link/index')}" class="btns tooltip" title="{$Think.get.nc_cancel_search}"><span>{$Think.get.nc_cancel_search}</span></a>
+                        {/notempty}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>通过合作伙伴管理你可以，编辑、查看、删除合作伙伴信息</li>
+            <li>在搜索处点击图片则表示将搜索图片标识仅为图片的相关信息，点击文字则表示将搜索图片标识仅为文字的相关信息，点击全部则搜索所有相关信息</li>
+        </ul>
+    </div>
+
+    <table class="ds-default-table">
+        <thead>
+            <tr>
+                <th>{$Think.lang.link_sort}</th>
+                <th>{$Think.lang.link_title}</th>
+                <th>{$Think.lang.link_pic}</th>
+                <th>{$Think.lang.link_url}</th>
+                <th>{$Think.lang.ds_handle}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {notempty  name="link_list"}
+            {volist name="link_list" id="link"}
+            <tr>
+                <td>{$link.link_sort}</td>
+                <td>{$link.link_title}</td>
+                <td><img class="img-responsive" src="{$Think.config.url_domain_root}/uploads/admin/link/{$link.link_pic}" width="31px" height="31px"></td>
+                <td>{$link.link_url}</td>
+                <td>
+                    <a href="{:url('/admin/link/edit',['link_id'=>$link.link_id])}">{$Think.lang.ds_edit}</a>
+                    <a href="javascript:if(confirm('{$Think.lang.sure_drop}'))window.location ='{:url('/admin/link/drop',['link_id'=>$link.link_id])}'" >{$Think.lang.ds_del}</a>
+                </td>
+            </tr>
+            {/volist}
+            {else /}
+            <tr class="no_data">
+                <td colspan="20">{$Think.lang.no_record}</td>
+            </tr>
+            {/notempty}
+        </tbody>
+    </table>
+    {$page}
+</div>

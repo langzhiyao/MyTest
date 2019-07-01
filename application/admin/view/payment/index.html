@@ -1,0 +1,51 @@
+{include file="public/header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>支付方式</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>支付方式管理</li>
+        </ul>
+    </div>
+
+    <table class="layui-table">
+        <thead>
+            <tr>
+                <th width="70%">支付方式</th>
+                <th width="20%">启用</th>
+                <?php  if(session('admin_is_super') ==1 || (in_array('3',$action))){?>
+                <th>{$Think.lang.ds_handle}</th>
+                <?php } ?>
+            </tr>
+        </thead>
+        <tbody>
+            {volist name="payment_list" id="payment"}
+            <tr>
+                <td>{$payment.payment_name}</td>
+                <td>{if $payment.payment_state eq '1'}开启中{else}关闭中{/if}</td>
+                <td>
+                    <?php if(session('admin_is_super') ==1 || in_array('3',$action)){ ?>
+                    <a href="{:url('/admin/Payment/edit',['payment_id'=>$payment.payment_id])}">{$Think.lang.ds_edit}</a>
+                    <?php } ?>
+                </td>
+            </tr>
+            {/volist}
+        </tbody>
+    </table>
+</div>
+
+

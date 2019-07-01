@@ -1,0 +1,95 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>视频分类管理</h3>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>点击分类名前“+”符号，显示当前分类的下级分类</li>
+        </ul>
+    </div>
+    
+  <form method='post'>
+      <input type="hidden" id="admin_is_super" value='<?php echo session("admin_is_super");?>'>
+      <input type="hidden" id="adminAction" value='<?php echo json_encode($action);?>'>
+    <table class="ds-default-table">
+        <input type="hidden" name="submit_type" id="submit_type" value="" />
+      <thead>
+        <tr class="thead">
+          <th></th>
+          <th>{$Think.lang.ds_sort}</th>
+          <th>{$Think.lang.teacher_type_index_name}</th>
+          <th>{$Think.lang.teacher_type_index_type}</th>
+            <?php  if(session('admin_is_super') ==1 || in_array('3',$action) || in_array('2',$action)){?>
+          <th>{$Think.lang.ds_handle}</th>
+            <?php } ?>
+        </tr>
+      </thead>
+      <tbody>
+        <?php if(!empty($class_list) && is_array($class_list)){ ?>
+        <?php foreach($class_list as $k => $v){ ?>
+        <tr class="hover edit">
+          <td class="w48"><input type="checkbox" name="check_gc_id[]" value="<?php echo $v['gc_id'];?>" class="checkitem">
+            <?php if(isset($v['have_child']) && $v['have_child'] == '1'){ ?>
+            <img fieldid="<?php echo $v['gc_id'];?>" status="open" nc_type="flex" src="{$Think.config.url_domain_root}static/admin/images/treetable/tv-expandable.gif">
+            <?php }else{ ?>
+            <img fieldid="<?php echo $v['gc_id'];?>" status="close" nc_type="flex" src="{$Think.config.url_domain_root}static/admin/images/treetable/tv-item.gif">
+            <?php } ?></td>
+          <td class="w48 sort"><span title="{$Think.lang.ds_editable}" ajax_branch="goods_class_sort" datatype="number" fieldid="<?php echo $v['gc_id'];?>" fieldname="gc_sort" nc_type="inline_edit" class="editable "><?php echo $v['gc_sort'];?></span></td>
+          <td class="w50pre name">
+          <span title="{$Think.lang.ds_editable}" required="1" fieldid="<?php echo $v['gc_id'];?>" ajax_branch="goods_class_name" fieldname="gc_name" nc_type="inline_edit" class="editable "><?php echo $v['gc_name'];?></span>
+              <?php if(session('admin_is_super') ==1 || in_array('1',$action)){ ?>
+              <a class="btn-add-nofloat marginleft" href="{:url('/Admin/Teachtype/type_class_add',['gc_parent_id'=>$v.gc_id])}">
+              <span>{$Think.lang.ds_add_sub_class}</span>
+          </a>
+              <?php } ?>
+          </td>
+          <td><?php echo $v['type_name'];?></td>
+          <td class="w96">
+              <!--<a href="{:url('/Admin/Teachtype/nav_edit',['gc_id'=>$v.gc_id])}">设置</a> |-->
+              <?php if(session('admin_is_super') ==1 || (in_array('3',$action)&&in_array('2',$action))){ ?>
+              <a href="{:url('/Admin/Teachtype/type_class_edit',['gc_id'=>$v.gc_id])}">{$Think.lang.ds_edit}</a> |
+              <?php }elseif(session('admin_is_super') ==1 || in_array('3',$action)){ ?>
+              <a href="{:url('/Admin/Teachtype/type_class_edit',['gc_id'=>$v.gc_id])}">{$Think.lang.ds_edit}</a>
+              <?php } ?>
+              <?php if(session('admin_is_super') ==1 || in_array('2',$action)){ ?>
+              <a href="javascript:if(confirm('{$Think.lang.goods_class_index_ensure_del}'))window.location = '{:url('/Admin/Teachtype/type_class_del',['gc_id'=>$v.gc_id])}';">{$Think.lang.ds_del}</a>
+              <?php } ?>
+          </td>
+        </tr>
+        <?php } ?>
+        <?php }else { ?>
+        <tr class="no_data">
+          <td colspan="10">{$Think.lang.ds_no_record}</td>
+        </tr>
+        <?php } ?>
+      </tbody>
+      <?php if(!empty($class_list) && is_array($class_list)){ ?>
+      <tfoot>
+        <tr class="tfoot">
+          <td><input type="checkbox" class="checkall" id="checkall_2"></td>
+          <td id="batchAction" colspan="15"><span class="all_checkbox">
+            <label for="checkall_2">{$Think.lang.ds_select_all}</label>
+            </span>&nbsp;&nbsp;<a href="JavaScript:void(0);" class="btn" onclick="if(confirm('{$Think.lang.goods_class_index_ensure_del}')){$('#submit_type').val('del');$('form:first').submit();}"><span>{$Think.lang.ds_del}</span></a>
+            </td>
+        </tr>
+      </tfoot>
+      <?php } ?>
+    </table>
+  </form>
+</div>
+
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/plugins/jquery.edit.js" charset="utf-8"></script>
+<script src="{$Think.config.url_domain_root}static/admin/js/jquery.teachtype.js"></script>

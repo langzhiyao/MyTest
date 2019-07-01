@@ -1,0 +1,240 @@
+{include file="public/seller_top" /} 
+
+<div class="seller_main w1200">
+    {include file="public/seller_left" /}
+    <div class="seller_right clearfix">
+        
+        <div class="seller_items">
+            {include file="public/seller_items" /}
+        </div>
+        
+        <form method="get" action="" target="_self">
+            <table class="search-form">
+                {if condition="$Think.get.state_type"}
+                <input type="hidden" name="state_type" value="{$Think.get.state_type}" />
+                {/if}
+                <tr>
+                    <td>&nbsp;</td>
+                    <th>{$Think.lang.store_order_add_time}</th>
+                    <td class="w240">
+                        <input type="text" class="text w70" name="query_start_date" id="query_start_date" value="{$Think.get.query_start_date}" />
+                        <label class="add-on"><i class="icon-calendar"></i></label>&nbsp;&#8211;&nbsp;
+                        <input id="query_end_date" class="text w70" type="text" name="query_end_date" value="{$Think.get.query_end_date}" />
+                        <label class="add-on"><i class="icon-calendar"></i></label>
+                    </td>
+                    <th>{$Think.lang.store_order_buyer}</th>
+                    <td class="w100"><input type="text" class="text w80" name="buyer_name" value="{$Think.get.buyer_name}" /></td>
+                    <th>{$Think.lang.store_order_order_sn}</th>
+                    <td class="w160"><input type="text" class="text w150" name="order_sn" value="{$Think.get.order_sn}" /></td>
+                    <td class="w70 tc">
+                        <label class="submit-border">
+                            <input type="submit" class="submit" value="{$Think.lang.store_order_search}" />
+                        </label>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        
+        
+        <table class="dssc-default-table order">
+            <thead>
+                <tr>
+                    <th class="w10"></th>
+                    <th colspan="2">{$Think.lang.store_order_goods_detail}</th>
+                    <th class="w100">{$Think.lang.store_order_goods_single_price}</th>
+                    <th class="w40">{$Think.lang.store_show_order_amount}</th>
+                    <th class="w110">{$Think.lang.store_order_buyer}</th>
+                    <th class="w120">{$Think.lang.store_order_sum}</th>
+                    <th class="w100">交易状态</th>
+                    <th class="w150">交易操作</th>
+                </tr>
+            </thead>
+            <?php if (is_array($order_list) and !empty($order_list)) { ?>
+            <?php foreach($order_list as $order_id => $order) { ?>
+            <tbody>
+                <tr>
+                    <td colspan="20" class="sep-row"></td>
+                </tr>
+                <tr>
+                    <th colspan="20"><span class="ml10">{$Think.lang.store_order_order_sn}{$Think.lang.ds_colon}<em><?php echo $order['order_sn']; ?></em>
+                            <?php if ($order['order_from'] == 2){?>
+                            <i class="icon-mobile-phone"></i>
+                            <?php }?>
+                        </span> <span>{$Think.lang.store_order_add_time}{$Think.lang.ds_colon}<em class="goods-time"><?php echo date("Y-m-d H:i:s",$order['add_time']); ?></em></span> 
+                        <span class="fr mr5"> <a href="{:url('/home/sellerorderprint/index',['order_id'=>$order_id])}" class="dssc-btn-mini" target="_blank" title="打印发货单"/><i class="icon-print"></i>打印发货单</a></span>
+                    </th>
+                </tr>
+                <?php $i = 0;?>
+                <?php foreach($order['goods_list'] as $k => $goods) { ?>
+                <?php $i++;?>
+                <tr>
+                    <td class="bdl"></td>
+                    <td class="w70"><div class="dssc-goods-thumb"><a href="<?php echo $goods['goods_url'];?>" target="_blank"><img src="<?php echo thumb($goods,60);?>"/></a></div></td>
+                    <td class="tl"><dl class="goods-name">
+                            <dt><a target="_blank" href="<?php echo $goods['goods_url'];?>"><?php echo $goods['goods_name']; ?></a></dt>
+                            <dd>
+                                <?php if (!empty($goods['goods_type_cn'])){ ?>
+                                <span class="sale-type"><?php echo $goods['goods_type_cn'];?></span>
+                                <?php } ?>
+                            </dd>
+                        </dl></td>
+                    <td><?php echo $goods['goods_price']; ?></td>
+                    <td><?php echo $goods['goods_num']; ?></td>
+
+                    <!-- S 合并TD -->
+                    <?php if (($order['goods_count'] > 1 && $k ==0) || ($order['goods_count']) == 1){ ?>
+                    <td class="bdl" rowspan="<?php echo $order['goods_count'];?>"><div class="buyer"><?php echo $order['buyer_name'];?>
+                            <p member_id="<?php echo $order['buyer_id'];?>">
+                                <?php if(!empty($order['extend_member']['member_qq'])){?>
+                                <a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=<?php echo $order['extend_member']['member_qq'];?>&site=qq&menu=yes" title="QQ: <?php echo $order['extend_member']['member_qq'];?>"><img border="0" src="http://wpa.qq.com/pa?p=2:<?php echo $order['extend_member']['member_qq'];?>:52" style=" vertical-align: middle;"/></a>
+                                <?php }?>
+                                <?php if(!empty($order['extend_member']['member_ww'])){?>
+                                <a target="_blank" href="http://amos.im.alisoft.com/msg.aw?v=2&uid=<?php echo $order['extend_member']['member_ww'];?>&site=cntaobao&s=2&charset=utf-8" ><img border="0" src="http://amos.im.alisoft.com/online.aw?v=2&uid=<?php echo $order['extend_member']['member_ww'];?>&site=cntaobao&s=2&charset=utf-8" alt="Wang Wang" style=" vertical-align: middle;" /></a>
+                                <?php }?>
+                            </p>
+                            <div class="buyer-info"> <em></em>
+                                <div class="con">
+                                    <h3><i></i><span>{$Think.lang.store_order_buyer_info}</span></h3>
+                                    <dl>
+                                        <dt>{$Think.lang.store_order_receiver}{$Think.lang.ds_colon}</dt>
+                                        <dd><?php echo $order['extend_order_common']['reciver_name'];?></dd>
+                                    </dl>
+                                    <dl>
+                                        <dt>{$Think.lang.store_order_phone}{$Think.lang.ds_colon}</dt>
+                                        <dd><?php echo $order['extend_order_common']['reciver_info']['phone'];?></dd>
+                                    </dl>
+                                    <dl>
+                                        <dt>地址{$Think.lang.ds_colon}</dt>
+                                        <dd><?php echo $order['extend_order_common']['reciver_info']['address'];?></dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div></td>
+                    <td class="bdl" rowspan="<?php echo $order['goods_count'];?>"><p class="dssc-order-amount"><?php echo $order['order_amount']; ?></p>
+                        <p class="goods-freight">
+                            <?php if ($order['shipping_fee'] > 0){?>
+                            ({$Think.lang.store_show_order_shipping_han}运费<?php echo $order['shipping_fee'];?>)
+                            <?php }else{?>
+                            {$Think.lang.ds_common_shipping_free}
+                            <?php }?>
+                        </p>
+                        <p class="goods-pay" title="{$Think.lang.store_order_pay_method}{$Think.lang.ds_colon}<?php echo $order['payment_name']; ?>"><?php echo $order['payment_name']; ?></p></td>
+                    <td class="bdl bdr" rowspan="<?php echo $order['goods_count'];?>"><p><?php echo $order['state_desc']; ?>
+                            <?php if(isset($order['evaluation_time'])) { ?>
+                            <br/>
+                            {$Think.lang.store_order_evaluated}
+                            <?php } ?>
+                        </p>
+
+                        <!-- 订单查看 -->
+                        <p><a href="{:url('/home/sellerorder/show_order',['order_id'=>$order_id])}" target="_blank">{$Think.lang.store_order_view_order}</a></p>
+
+                        <!-- 物流跟踪 -->
+                        <p>
+                            <?php if ($order['if_deliver']) { ?>
+                            <a href="{:url('/home/sellerdeliver/search_deliver',['order_sn'=>$order.order_sn])}">{$Think.lang.store_order_show_deliver}</a>
+                            <?php } ?>
+                        </p>
+
+
+                    </td>
+
+                    <!-- 取消订单 -->
+                    <td class="bdl bdr" rowspan="<?php echo $order['goods_count'];?>">
+                        <?php if($order['if_cancel']) { ?>
+                        <p><a href="javascript:void(0)" class="dssc-btn dssc-btn-red mt5" nc_type="dialog" uri="{:url('/home/sellerorder/change_state',['state_type'=>'order_cancel','order_id'=>$order.order_id,'order_sn'=>$order.order_sn])}" dialog_title="{$Think.lang.store_order_cancel_order}" dialog_id="seller_order_cancel_order" dialog_width="400" id="order<?php echo $order['order_id']; ?>_action_cancel" /><i class="icon-remove-circle"></i>{$Think.lang.store_order_cancel_order}</a></p>
+                        <?php } ?>
+
+                        <!-- 修改运费 -->
+                        <?php if ($order['if_modify_price']) { ?>
+                        <p><a href="javascript:void(0)" class="dssc-btn-mini dssc-btn-orange mt10" uri="{:url('/home/sellerorder/change_state',['state_type'=>'modify_price','order_sn'=>$order.order_sn,'order_id'=>$order.order_id])}" dialog_width="480" dialog_title="{$Think.lang.store_order_modify_price}" nc_type="dialog"  dialog_id="seller_order_adjust_fee" id="order<?php echo $order['order_id']; ?>_action_adjust_fee" /><i class="icon-pencil"></i>修改运费</a></p>
+                        <?php }?>
+                        <!-- 修改价格 -->
+                        <?php if ($order['if_spay_price']) { ?>
+                        <p><a href="javascript:void(0)" class="dssc-btn-mini dssc-btn-green mt10" uri="{:url('/home/sellerorder/change_state',['state_type'=>'spay_price','order_sn'=>$order.order_sn,'order_id'=>$order.order_id])}" dialog_width="480" dialog_title="{$Think.lang.store_order_modify_price}" nc_type="dialog"  dialog_id="seller_order_adjust_fee" id="order<?php echo $order['order_id']; ?>_action_adjust_fee" /><i class="icon-pencil"></i>修改价格</a></p>
+                        <?php }?>
+
+                        <!-- 发货 -->
+                        <?php if ($order['if_send']) { ?>
+                        <p><a class="dssc-btn dssc-btn-green mt10" href="{:url('/home/sellerdeliver/send',['order_id'=>$order.order_id])}"/><i class="icon-truck"></i>{$Think.lang.store_order_send}</a></p>
+                        <?php } ?>
+
+                        <!-- 锁定 -->
+                        <?php if ($order['if_lock']) {?>
+                        <p><?php echo '退款退货中';?></p>
+                        <?php }?></td>
+
+                    <?php } ?>
+                    <!-- E 合并TD -->
+                </tr>
+
+                <!-- S 赠品列表 -->
+                <?php if (!empty($order['zengpin_list']) && $i == count($order['goods_list'])) { ?>
+                <tr>
+                    <td class="bdl"></td>
+                    <td colspan="4" class="tl"><div class="dssc-goods-gift">赠品：
+                            <ul><?php foreach ($order['zengpin_list'] as $zengpin_info) { ?><li>
+                                    <a title="赠品：<?php echo $zengpin_info['goods_name'];?> * <?php echo $zengpin_info['goods_num'];?>" href="<?php echo $zengpin_info['goods_url'];?>" target="_blank"><img src="<?php echo thumb($zengpin_info,60);?>" /></a></li></ul>
+                            <?php } ?>
+                        </div></td>
+                </tr>
+                <?php } ?>
+                <!-- E 赠品列表 -->
+
+                <?php }?>
+                <?php } } else { ?>
+                <tr>
+                    <td colspan="20" class="norecord"><div class="warning-option"><i class="icon-warning-sign"></i><span>{$Think.lang.no_record}</span></div></td>
+                </tr>
+                <?php } ?>
+            </tbody>
+            <tfoot>
+                <?php if (is_array($order_list) and !empty($order_list)) { ?>
+                <tr>
+                    <td colspan="20">{$page}</td>
+                </tr>
+                <?php } ?>
+            </tfoot>
+        </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+$(function(){
+    $('#query_start_date').datepicker({dateFormat: 'yy-mm-dd'});
+    $('#query_end_date').datepicker({dateFormat: 'yy-mm-dd'});
+    $('.checkall_s').click(function(){
+        var if_check = $(this).attr('checked');
+        $('.checkitem').each(function(){
+            if(!this.disabled)
+            {
+                $(this).attr('checked', if_check);
+            }
+        });
+        $('.checkall_s').attr('checked', if_check);
+    });
+    $('#skip_off').click(function(){
+        url = location.href.replace(/&skip_off=\d*/g,'');
+        window.location.href = url + '&skip_off=' + ($('#skip_off').attr('checked') ? '1' : '0');
+    });
+});
+</script>
+
+
+
+    </div>
+</div>
+{include file="public/mall_footer" /}

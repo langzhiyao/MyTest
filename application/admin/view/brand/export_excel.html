@@ -1,0 +1,25 @@
+<div class="page">
+  <div class="fixed-bar">
+    <div class="item-title">
+      <h3>{:lang('download_lang')}</h3>
+      <ul class="tab-base">
+        <li><a href="JavaScript:void(0);" class="current">
+          <span>{:lang('ds_export')}</span>
+        </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="fixed-empty"></div>
+    <table class="tb-type1">
+      <tbody>
+      <tr><td>&nbsp;</td></tr>
+        <tr>
+          <td>
+            {volist name="list" id="v"}
+          	<a href="index.php?<?php echo $_SERVER['QUERY_STRING'].'&curpage='.$k;?>">{:lang('nc_download')}{$key}({$v})</a> |
+            {/volist}
+          </td>
+        </tr>
+    </table>
+</div>

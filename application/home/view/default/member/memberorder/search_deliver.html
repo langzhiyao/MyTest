@@ -1,0 +1,147 @@
+{include file="public/mall_top" /} 
+{include file="public/mall_header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/home/css/member.css">
+<div class="dsm-container">
+    {include file="public/member_left" /}
+    <div class="right-layout">
+        <div class="tabmenu">
+            {include file="public/member_items" /}
+        </div>
+
+
+<div class="dsm-flow-layout">
+  <div class="dsm-flow-container">
+    <div class="title">
+      <h3>{$Think.lang.member_show_express_detail}</h3>
+    </div>
+    <div class="alert alert-block alert-info">
+    
+     <ul><li><strong>{$Think.lang.member_show_receive_info}{$Think.lang.ds_colon}</strong><?php echo $order_info['extend_order_common']['reciver_name']?>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $order_info['extend_order_common']['reciver_info']['phone'];?>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $order_info['extend_order_common']['reciver_info']['address'];?></li>
+      <li><strong>{$Think.lang.member_show_expre_my_fdback}{$Think.lang.ds_colon}</strong><?php echo $order_info['extend_order_common']['order_message']; ?></li>
+      <li><strong>{$Think.lang.member_show_deliver_info}{$Think.lang.ds_colon}</strong><?php echo $daddress_info['seller_name']; ?>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $daddress_info['telphone'];?>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $daddress_info['area_info'];?>&nbsp;&nbsp;<?php echo $daddress_info['address'];?>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $daddress_info['company'];?></li></ul>
+    </div>
+    <div class="tabmenu">
+      <ul class="tab pngFix">
+        <li class="active"><a>{$Think.lang.member_show_express_ship_dstatus}</a></li>
+      </ul>
+    </div>
+    <ul class="express-log" id="express_list">
+      <?php if($order_info['extend_order_common']['shipping_time']) { ?>
+      <li class="loading">{$Think.lang.ds_common_loading}</li>
+      <?php } ?>
+    </ul>
+    <div class="alert">{$Think.lang.member_show_express_ship_tips}</div>
+  </div>
+  <div class="dsm-flow-item">
+    <div class="title">{$Think.lang.member_show_order_info}</div>
+    <div class="item-goods">
+      <?php if(is_array($order_info['extend_order_goods']) and !empty($order_info['extend_order_goods'])) { foreach($order_info['extend_order_goods'] as $val) { ?>
+      <dl>
+        <dt>
+          <div class="dsm-goods-thumb-mini"><a href="{:url('/Home/Goods/index',['goods_id'=>$val.goods_id])}" target="_blank"><img src="<?php echo thumb($val,60);?>"/></a></div>
+        </dt>
+        <dd><a href="{:url('/home/goods/index',['goods_id'=>$val.goods_id])}" target="_blank"><?php echo $val['goods_name']; ?></a> <span class="rmb-price"><?php echo $val['goods_price']; ?>&nbsp;*&nbsp;<?php echo $val['goods_num']; ?>
+        <?php if ($val['goods_type'] != 1) {?>
+        <font color="#AAA">（<?php echo orderGoodsType($val['goods_type']);?>）</font>
+        <?php } ?>
+        </span></dd>
+      </dl>
+      <?php } } ?>
+    </div>
+    <div class="item-order">
+      <dl>
+        <dt>运费：</dt>
+        <dd><?php echo $order_info['shipping_fee'];?></dd>
+      </dl>
+      <dl>
+        <dt>订单总额：</dt>
+        <dd><strong>{$Think.lang.currency}<?php echo $order_info['order_amount'];?></strong></dd>
+      </dl>
+      <dl>
+        <dt>{$Think.lang.member_change_order_no}{$Think.lang.ds_colon}</dt>
+        <dd><a href="javascript:void(0);"><?php echo $order_info['order_sn']; ?></a><a href="javascript:void(0);" class="a">更多<i class="icon-angle-down"></i>
+          <div class="more"> <span class="arrow"></span>
+            <ul>
+              <li>支付方式：<span><?php echo $order_info['payment_name']; ?>
+                <?php if($order_info['payment_code'] != 'offline' && !in_array($order_info['order_state'],array(ORDER_STATE_CANCEL,ORDER_STATE_NEW))) { ?>
+                (付款单号{$Think.lang.ds_colon}<?php echo $order_info['pay_sn']; ?>)
+                <?php } ?>
+                </span> </li>
+              <li>{$Think.lang.member_order_time}{$Think.lang.ds_colon}<span><?php echo date('Y-m-d H:i:s',$order_info['add_time']);?></span></li>
+              <?php if(intval($order_info['payment_time'])) { ?>
+              <li>{$Think.lang.member_show_order_pay_time}{$Think.lang.ds_colon}<span><?php echo date("Y-m-d H:i:s",$order_info['payment_time']); ?></span></li>
+              <?php } ?>
+              <?php if($order_info['extend_order_common']['shipping_time']) { ?>
+              <li>{$Think.lang.member_show_order_send_time}{$Think.lang.ds_colon}<span><?php echo date("Y-m-d H:i:s",$order_info['extend_order_common']['shipping_time']); ?></span></li>
+              <?php } ?>
+              <?php if(intval($order_info['finnshed_time'])) { ?>
+              <li>{$Think.lang.member_show_order_finish_time}{$Think.lang.ds_colon}<span><?php echo date("Y-m-d H:i:s",$order_info['finnshed_time']); ?></span></li>
+              <?php } ?>
+            </ul>
+          </div>
+          </a></dd>
+      </dl>
+      <dl>
+        <dt>{$Think.lang.member_show_express_ship_code}{$Think.lang.ds_colon}</dt>
+        <dd><?php echo $order_info['shipping_code']; ?><a href="<?php echo $e_url;?>" class="a" target="_blank"><?php echo $e_name;?></a></dd>
+      </dl>
+      <dl class="line">
+        <dt>商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;家：</dt>
+        <dd><?php echo $store_info['store_name'];?><a href="javascript:void(0);" class="a">更多<i class="icon-angle-down"></i>
+          <div class="more"><span class="arrow"></span>
+            <ul>
+              <li>{$Think.lang.member_address_location}{$Think.lang.ds_colon}<span><?php echo $store_info['area_info'].'&nbsp;'.$store_info['store_address'];?></span></li>
+              <li>联系电话：<span><?php echo $store_info['store_phone'];?></span></li>
+            </ul>
+          </div>
+          </a>
+          <div><span member_id="<?php echo $store_info['member_id'];?>"></span>
+          <?php if (!empty($store_info['store_qq'])) { ?>
+          <a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=<?php echo $store_info['store_qq'];?>&site=qq&menu=yes" title="QQ: <?php echo $store_info['store_qq'];?>"><img border="0" src="http://wpa.qq.com/pa?p=2:<?php echo $store_info['store_qq'];?>:52" style=" vertical-align: middle;"/></a>
+          <?php } ?>
+          <?php if (!empty($store['store_ww'])) { ?>
+          <a target="_blank" href="http://amos.im.alisoft.com/msg.aw?v=2&uid=<?php echo $store_info['store_ww'];?>&site=cntaobao&s=2&charset=utf-8"  class="vm" ><img border="0" src="http://amos.im.alisoft.com/online.aw?v=2&uid=<?php echo $store_info['store_ww'];?>&site=cntaobao&s=2&charset=utf-8" alt="Wang Wang"  style=" vertical-align: middle;"/></a>
+          <?php } ?>
+          </div>
+        </dd>
+      </dl>
+    </div>
+  </div>
+</div>
+      <script src="https://cdn.bootcss.com/jquery-migrate/1.2.1/jquery-migrate.js"></script>
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/plugins/jquery.poshytip.min.js" charset="utf-8"></script>
+<script>
+$(function(){
+	//Ajax提示
+	$('.tip').poshytip({
+		className: 'tip-yellowsimple',
+		showTimeout: 1,
+		alignTo: 'target',
+		alignX: 'center',
+		alignY: 'bottom',
+		offsetX: 5,
+		offsetY: 0,
+		allowTipHover: false
+	});
+      var_send = '<?php echo date("Y-m-d H:i:s",$order_info['extend_order_common']['shipping_time']); ?>&nbsp;&nbsp;{$Think.lang.member_show_seller_has_send}<br/>';
+	$.getJSON(SITE_URL+'index.php/home/Memberorder/get_express.html?e_code={$e_code}&shipping_code={$order_info.shipping_code}',function(data){
+		if(data){
+			data = var_send+data.join('<br/>');
+			$('#express_list').html(data).next().css('display','');
+		}else{
+			$('#express_list').html(var_send);
+		}
+	});
+});
+</script>
+
+
+
+
+
+    </div>
+</div>
+
+
+{include file="public/mall_server" /}
+{include file="public/mall_footer" /}

@@ -1,0 +1,64 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <h2>{$Think.lang.organize_membernum_num}{$count}个</h2>
+    <form method="post" enctype="multipart/form-data" name="form1" action="">
+        <table class="ds-default-table">
+            <thead>
+            <tr class="thead">
+                <th class="w272">{$Think.lang.ds_number}</th>
+                <th class="w172">{$Think.lang.organize_membernum_name}</th>
+                <th class="w172">{$Think.lang.mob_phone}</th>
+                <th class="w272 align-center">{$Think.lang.organize_membernum_school}</th>
+                <th class="w172">{$Think.lang.organize_membernum_class}</th>
+                <th class="w172">{$Think.lang.organize_membernum_area}</th>
+                <th class="w172">{$Think.lang.ds_organize_time}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {notempty name="member_list"}
+            {volist name="member_list" id="v" key="k"}
+            <tr class="hover edit">
+                <td class="sort"><?php if(!$_GET['page']){  echo $k; }else{ echo ($_GET['page']-1)*15+$k; }?></td>
+                <td class="name">{$v.member_name}</td>
+                <td class="name">{$v.member_mobile}</td>
+                <td class="name">{$v.schoolname}</td>
+                <td class="name">{$v.classname}</td>
+                <td class="name">{$v.member_areainfo}</td>
+                <td class="picture"><?php echo date('Y-m-d H:i:s',$v['member_add_time']); ?></td>
+            </tr>
+            {/volist}
+            {else /}
+            <tr class="no_data">
+                <td colspan="10">{$Think.lang.ds_no_record}</td>
+            </tr>
+            {/notempty}
+            </tbody>
+        </table>
+    </form>
+    <tfoot>
+    {notempty name="member_list"}
+    <tr colspan="15" class="tfoot">
+        <td colspan="16">
+            <div class="pagination"> {$page} </div></td>
+    </tr>
+    {/notempty}
+    </tfoot>
+</div>
+
+
+
+
+
+
+
+

@@ -1,0 +1,20 @@
+{include file="public/mall_top" /}
+{include file="public/mall_header" /}
+
+<div class="nch-article-con" style="margin:0 auto 20px; width:1160px">
+  <h1>{$doc.doc_title}</h1>
+  <h2><?php echo date('Y-m-d H:i',$doc['doc_time']);?></h2>
+  <div class="default">
+    <p><?php echo nl2br($doc['doc_content']);?></p>
+  </div>
+</div>
+
+
+{include file="public/mall_server" /}
+{include file="public/mall_footer" /}
+
+
+
+
+
+

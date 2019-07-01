@@ -1,0 +1,84 @@
+<div class="eject_con">
+    <div id="warning" class="alert alert-error"></div>
+    <form id="category_form" method="post" target="_parent" action="{:url('Sellergoodsclass/goods_class_save')}" onsubmit="ajaxpost('category_form', '', '', 'onerror'); return false;">
+        <input type="hidden" name="stc_id" value="{$Request.param.top_class_id}" />
+        <input type="hidden" name="type" value="{$type}" />
+        <dl>
+            <dt><i class="required">*</i>{$Think.lang.store_goods_class_name}{$Think.lang.ds_colon}</dt>
+            <dd>
+                <input class="text w200" type="text" name="stc_name" id="stc_name" value="{present name='class_info.stc_name'}{$class_info.stc_name}{/present}" />
+            </dd>
+        </dl>
+
+        <dl>
+            <dt>{$Think.lang.store_goods_class_sup_class}{$Think.lang.ds_colon}</dt>
+            <dd>
+                <select name="stc_parent_id" id="stc_parent_id">
+                    <option value="0">{$Think.lang.store_create_please_choose}</option>
+                    {notempty name="goods_class"}
+                    {volist name="goods_class" id="val"}
+                    <option value="{$val.stc_id}" {if $val.stc_id == $class_info.stc_parent_id}selected="selected"{/if}>{$val.stc_name}</option>
+                    {/volist}
+                   {/notempty}
+                </select>
+            </dd>
+        </dl>
+
+        <dl>
+            <dt>{$Think.lang.store_goods_class_sort}{$Think.lang.ds_colon}</dt>
+            <dd>
+                <input class="text w60" type="text" name="stc_sort" value="{present name='class_info.stc_sort'}{:intval($class_info.stc_sort)}{/present}"  />
+            </dd>
+        </dl>
+
+        <dl>
+            <dt>{$Think.lang.store_goods_class_display_state}{$Think.lang.ds_colon}</dt>
+            <dd>
+                <label>
+                    <input type="radio" name="stc_state" value="1"
+                           {present name="class_info.stc_state"}
+                    {if $class_info.stc_state == 1}
+                    checked="checked"
+                    {/if}{else}checked="checked"{/present}/>
+                    {$Think.lang.store_create_yes}</label>
+                <label>
+                    <input type="radio" name="stc_state" value="0" {present name="class_info.stc_state"}{if $class_info.stc_state == 0 }checked="checked"{/if}{/present} />
+                    {$Think.lang.store_create_no}</label>
+            </dd>
+        </dl>
+        <div class="bottom">
+            <label class="submit-border"><input type="submit" class="submit" value="{$Think.lang.store_goods_class_submit}" /></label>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $('#category_form').validate({
+            errorLabelContainer: $('#warning'),
+            invalidHandler: function(form, validator) {
+                $('#warning').show();
+            },
+            submitHandler:function(form){
+                ajaxpost('category_form', '', '', 'onerror')
+            },
+            rules : {
+                stc_name : {
+                    required : true
+                },
+                stc_sort : {
+                    number   : true
+                }
+            },
+            messages : {
+                stc_name : {
+                    required : '<i class="icon-exclamation-sign"></i>{$Think.lang.store_goods_class_name_null}'
+
+                },
+                stc_sort  : {
+                    number   : '<i class="icon-exclamation-sign"></i>{$Think.lang.store_goods_class_input_int}'
+                }
+            }
+        });
+    });
+</script> 

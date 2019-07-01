@@ -1,0 +1,54 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>手机支付</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <div class="fixed-empty"></div>
+    
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>此处列出了手机支持的支付方式，点击编辑可以设置支付参数及开关状态</li>
+        </ul>
+    </div>
+    
+    <table class="ds-default-table">
+        <thead>
+        <tr class="thead">
+            <th>支付方式</th>
+            <th class="align-center">启用</th>
+            <th class="align-center">{$Think.lang.ds_handle}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {notempty name="mb_payment_list"}
+        {volist name="mb_payment_list" id="v"}
+        <tr class="hover">
+            <td>{$v.payment_name}</td>
+            <td class="w25pre align-center">{$v.payment_state_text}</td>
+            <td class="w156 align-center"><a href="{:url('mbpayment/payment_edit',['payment_id'=>$v.payment_id])}">{$Think.lang.ds_edit}</a></td>
+        </tr>
+      {/volist}
+        {/notempty}
+        </tbody>
+        <tfoot>
+        <tr class="tfoot">
+            <td colspan="15"></td>
+        </tr>
+        </tfoot>
+    </table>
+
+</div>

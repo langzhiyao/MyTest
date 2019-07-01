@@ -1,0 +1,67 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>规格管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <form class="" method="post">
+
+        <div class="ncap-form-default">
+            <dl>
+                <dt></dt>
+                <dd>
+                    <div id="gcategory" class="default_select">
+                        <input type="hidden" name="gc_id" value="{$spec.gc_id}" class="mls_id" />
+                        <input type="hidden" name="gc_name" value="{$spec.gc_name}" class="mls_name" />
+                        {if $spec.gc_id}
+                        <span>{$spec.gc_name}</span>
+                        <input type="button" value="{$Think.lang.ds_edit}" class="edit_gcategory" />
+                        {/if}
+                        <select {if $spec.gc_id}style="display:none"{/if}>
+                            <option value="0">请选择分类</option>
+                            {volist name="gc_list" id="gc"}
+                            <option value="{$gc.gc_id}">{$gc.gc_name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                </dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.sp_name}</dt>
+                <dd>
+                    <input type="text" name="sp_name" id="sp_name" value="{$spec.sp_name}" class="w200"/>
+                </dd>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.sp_sort}</dt>
+                <dd>
+                    <input type="text" name="sp_sort" id="sp_sort" value="{$spec.sp_sort}" class="w200"/>
+                </dd>
+            </dl>
+            <dl>
+                <dt></dt>
+                <dd>
+                    <input class="btn" type="submit" value="提交"/>
+                </dd>
+            </dl>
+        </div>
+    </form>
+</div>
+<!--载入-->
+<script src="{$Think.config.url_domain_root}static/common/js/mlselection.js"></script>
+
+<script>
+    $(function() {
+        gcategoryInit("gcategory");
+    });
+</script>

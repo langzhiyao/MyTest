@@ -1,0 +1,200 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>行业分析</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form method="get"  name="formSearch" id="formSearch">
+
+        <div class="w100pre" style="width: 100%;">
+            <table class="search-form">
+                <tbody>
+                <tr>
+                    <td id="searchgc_td"></td>
+                    <input type="hidden" id="choose_gcid" name="choose_gcid" value="0"/>
+                    <td>
+                        <select name="search_type" id="search_type" class="querySelect">
+                            <option value="day" {if $Request.get.search_type == 'day'}selected{/if}>按照天统计</option>
+                            <option value="week" {if $Request.get.search_type == 'week'}selected{/if}>按照周统计</option>
+                            <option value="month" {if $Request.get.search_type == 'month'}selected{/if}>按照月统计</option>
+                        </select></td>
+                    <td id="searchtype_day" style="display:none;">
+                        <input class="txt date" type="text" value="{$search_arr.day.search_time|date='Y-m-d',###}" id="search_time" name="search_time">
+                    </td>
+                    <td id="searchtype_week" style="display:none;">
+                        <select name="searchweek_year" class="querySelect">
+                            {volist name="year_arr" id="v"}
+                            <option value="{$key}"{if $search_arr.week.current_year == $key} selected{/if}>{$v}</option>
+                            {/volist}
+                        </select>
+                        <select name="searchweek_month" class="querySelect">
+                            {volist name="month_arr" id="v"}
+                            <option value="{$key}" {if $search_arr.week.current_month == $key} selected{/if}>{$v}</option>
+                            {/volist}
+                        </select>
+                        <select name="searchweek_week" class="querySelect">
+                            {volist name="week_arr" id="v"}
+                            <option value="{$v.key}" {if $search_arr.week.current_week == $v.key}selected{/if}>{$v.val}</option>
+                            {/volist}
+                        </select>
+                    </td>
+                    <td id="searchtype_month" style="display:none;">
+                        <select name="searchmonth_year" class="querySelect">
+                            {volist name="year_arr" id="v"}
+                            <option value="{$key}" {if $search_arr.month.current_year == $key}selected{/if}>{$v}</option>
+                            {/volist}
+                        </select>
+                        <select name="searchmonth_month" class="querySelect">
+                            {volist name="month_arr" id="v"}
+                            <option value="{$key}" {if $search_arr.month.current_month == $key}selected{/if}>{$v}</option>
+                            {/volist}
+                        </select>
+                    </td>
+                    <td><a href="javascript:document.formSearch.submit();" class="btn-search tooltip" title="{$Think.lang.ds_query}"></a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </form>
+
+    
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>统计某行业在不同时间段下单量前50名商品和前30名店铺</li>
+        </ul>
+    </div>
+
+    <table class="ds-default-table">
+        <thead class="thead">
+        <tr class="space">
+            <th>行业商品50强</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <div id="container_goods" class="w100pre close_float" style="height:400px"></div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="ds-default-table">
+        <thead>
+        <tr class="thead sortbar-array">
+            <th class="align-center w18pre">序号</th>
+            <th class="align-center">商品名称</th>
+            <th class="align-center">下单商品数</th>
+        </tr>
+        </thead>
+        <tbody id="datatable">
+        {notempty name="goods_list"}
+        {volist name="goods_list" id="v"}
+        <tr class="hover">
+            <td class="align-center w18pre">{$key+1}</td>
+            <td class="alignleft"><a href="{:url('home/goods/index',['goods_id'=>$v.goods_id])}" target="_blank">{$v.goods_name}</a></td>
+            <td class="align-center">{$v.goodsnum}</td>
+        </tr>
+       {/volist}
+        {else /}
+        <tr class="no_data">
+            <td colspan="11">{$Think.lang.no_record}</td>
+        </tr>
+        {/notempty}
+        </tbody>
+    </table>
+
+    <table class="ds-default-table">
+        <thead class="thead">
+        <tr class="space">
+            <th colspan="15">行业店铺30强</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <div id="container_store" class="w100pre close_float" style="height:400px"></div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="table tb-type2 nobdb">
+        <thead>
+        <tr class="thead sortbar-array">
+            <th class="align-center w18pre">序号</th>
+            <th class="align-center">店铺名称</th>
+            <th class="align-center">下单量</th>
+        </tr>
+        </thead>
+        <tbody id="datatable">
+        {notempty name="store_list"}
+        {volist name="store_list" id="v"}
+        <tr class="hover">
+            <td class="align-center w18pre">{$key+1}</td>
+            <td class="alignleft">{$v.store_name}</td>
+            <td class="align-center">{$v.ordernum}</td>
+        </tr>
+       {/volist}
+       {else }
+        <tr class="no_data">
+            <td colspan="11">{$Think.lang.no_record}</td>
+        </tr>
+       {/notempty}
+        </tbody>
+    </table>
+</div>
+<script src="{$Think.config.url_domain_root}static/common/js/mlselection.js"></script>
+<script src="{$Think.config.url_domain_root}static/plugins/highcharts/highcharts.js"></script>
+<script>
+    //展示搜索时间框
+    function show_searchtime(){
+        s_type = $("#search_type").val();
+        $("[id^='searchtype_']").hide();
+        $("#searchtype_"+s_type).show();
+    }
+    $(function () {
+        //统计数据类型
+        var s_type = $("#search_type").val();
+        $('#search_time').datepicker({dateFormat: 'yy-mm-dd'});
+
+        show_searchtime();
+        $("#search_type").change(function(){
+            show_searchtime();
+        });
+
+        //更新周数组
+        $("[name='searchweek_month']").change(function(){
+            var year = $("[name='searchweek_year']").val();
+            var month = $("[name='searchweek_month']").val();
+            $("[name='searchweek_week']").html('');
+            $.getJSON("{:url('common/getweekofmonth')}",{y:year,m:month},function(data){
+                if(data != null){
+                    for(var i = 0; i < data.length; i++) {
+                        $("[name='searchweek_week']").append('<option value="'+data[i].key+'">'+data[i].val+'</option>');
+                    }
+                }
+            });
+        });
+        //商品分类
+        init_gcselect({$gc_choose_json},{$gc_json});
+
+        $('#container_goods').highcharts({$goods_statjson});
+        $('#container_store').highcharts({$store_statjson});
+
+
+    });
+</script>

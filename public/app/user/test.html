@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>想见孩-选择套餐</title>
+    <meta name="author" content="想见孩" />
+    <meta name="copyright" content="想见孩" />
+    <meta name="description" content="想见孩" />
+    <meta id="viewport" name="viewport" content="width=750" />
+    <link rel="stylesheet" href="../content/style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/iconfonts/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/lib/weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/css/jquery-weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/user.css" type="text/css" />
+    <link rel="shortcut icon" href="../content/images/ico.ico" type="image/x-icon" />
+    <script src="../content/scripts/mobile-util.js"></script>
+    <link rel="stylesheet" href="/static/plugins/layer/css/layui.css">      
+</head>
+
+<body>
+    <header class="head">
+        <div class="head0">
+            <div class="menu_bar_box">
+                <a href="javascript:;" class="back_btn" onClick="javascript:history.back(-1);">
+                    <i class="icon iconfont icon-jiantou3"></i>
+                </a>
+            </div>
+            <div class="head_title">
+                <p>选择套餐</p>
+            </div>
+            <div class="head_r">
+
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <div class="main paddb120">
+        <div class="cont margt50">
+            <div class="container3">
+                <ul class="level_list clearfix">
+                    <li class="active">
+                        <div class="level_item">
+                            <span class="level_hot">热门推荐</span>
+                            <p class="level_item_p1">12个月</p>
+                            <p class="level_item_p2">￥<strong>360</strong></p>
+                            <p class="level_item_p3">￥360</p>
+                            <p class="level_item_p4"><span>每天不到一块钱</span></p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="level_item">
+                            <p class="level_item_p1">3个月</p>
+                            <p class="level_item_p2">￥<strong>180</strong></p>
+                            <p class="level_item_p3">￥300</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="level_item">
+                            <p class="level_item_p1">1个月</p>
+                            <p class="level_item_p2">￥<strong>60</strong></p>
+                            <p class="level_item_p3">￥100</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="choosed_box">
+                <div class="container2">
+                    <p class="choosed_info">
+                        <i class="icon iconfont icon-tixingtishi"></i> 您选择的套餐<span class="date">2019-09-11</span>到期
+                    </p>
+                </div>
+            </div>
+
+            <div class="payment_mode_box">
+                <div class="container2">
+                    <div class="weui-cells weui-cells_checkbox clearfix">
+                        <label class="weui-cell weui-check__label" for="s11">
+                            <div class="weui-cell__bd">
+                                <p><img class="zhifulogo" src="../content/images/icons/weixin.png" alt="">
+                                    微信支付
+                                </p>
+                            </div>
+                            <div class="weui-cell__hd">
+                                <input type="radio" class="weui-check" name="payment_code" checked="checked" id="s11" value="wxpay_h5">
+                                <i class="weui-icon-checked"></i>
+                            </div>
+                        </label>
+                        <label class="weui-cell weui-check__label" for="s12">
+                            <div class="weui-cell__bd">
+                                <p><img class="zhifulogo" src="../content/images/icons/zhifubao.png" alt="" >
+                                    支付宝支付
+                                </p>
+                            </div>
+                            <div class="weui-cell__hd">
+                                <input type="radio" name="payment_code" class="weui-check" id="s12" value="alipay_app">
+                                <i class="weui-icon-checked"></i>
+                                </div>
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="total_box">
+        <div class="total_cont">
+            <div class="total_cont_l">
+                <dl class="total_info">
+                    <dt>总计：￥<strong>360</strong> <span>已优惠5元</span></dt>
+                    <dd>您已选择看孩12月套餐</dd>
+                </dl>
+            </div>
+            <div class="total_cont_r">
+                <a class="total_cont_btn" href="javascript:;">确认支付</a>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="../content/scripts/jquery.min.js"></script>
+    <script src="../content/plugins/jqweui/js/jquery-weui.min.js"></script>
+    <script src="../content/plugins/jqweui/js/city-picker.min.js"></script>
+    <script src="/static/plugins/layer/layui.all.js"></script>
+    <script src="/static/plugins/layer/layui.js"></script>
+    <script src="/static/plugins/layer/layer.js"></script>
+    <script src="../content/scripts/juqery.cookie.js"></script>
+    <script src="../content/scripts/commom.js"></script>
+    <script src="../content/scripts/API.js"></script>
+
+    <script>
+        $(function() {
+            // 选择套餐
+            $(".level_list>li").click(function() {
+                $(this).siblings().removeClass("active").end().addClass("active");
+            })
+
+            $('.total_cont_btn').click(function(event) {
+                var pay = $("input[name='payment_code']:checked").val();
+                 //api = 'http://www.chenganxjh.com/index.php/Wap';
+                user_token = '74db5c057bf603370584ee935bd5e461';
+                $.post(api+'/Teacherbuy/buyOrder',
+                {
+                    'key': user_token,
+                    'tid': "103",
+                    'payment_code': pay,
+                    'member_id':10018,
+                    'student_id': "10"
+                }, function(data, textStatus, xhr) {
+                /*optional stuff to do after success */
+                    
+                     data =$.parseJSON(data);
+                        var mbs = data.result[0];
+                    if (pay == 'alipay_app') {
+                        if (mbs.result_code== 'SUCCESS') {
+                            window.location.href=mbs.mweb_url;
+                        }
+                    }
+                    if(pay=='wxpay_h5'){
+                        if (mbs.result_code== 'SUCCESS') {
+                            window.location.href=mbs.mweb_url;
+                        }
+                    }
+                });
+            });
+        })
+
+       /* $.alert(window.location.href,'URL',function(){
+            
+        })*/
+
+  // $.alert("AlphaGo 就是天网的前身，人类要完蛋了！", "警告！",function(){
+  //       alert("看来真的药丸");
+  // });
+
+    </script>
+</body>
+
+</html>

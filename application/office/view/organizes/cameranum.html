@@ -1,0 +1,67 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <h2>{$Think.lang.organize_camera_num}<?php echo count($cameraList); ?>个</h2>
+    <form method="post" enctype="multipart/form-data" name="form1" action="">
+        <table class="ds-default-table">
+            <thead>
+            <tr class="thead">
+                <th class="w272">{$Think.lang.ds_number}</th>
+                <th class="w172">{$Think.lang.organize_camera_name}</th>
+                <th class="align-center">通道id</th>
+                <th class="align-center">设备id</th>
+                <th class="align-center">摄像头id</th>
+                <th class="align-center">资源id</th>
+                <th class="align-center">在线</th>
+                <th class="w172">安装时间</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php if(!empty($cameraList) && is_array($cameraList)){ ?>
+            <?php foreach($cameraList as $k => $v){ ?>
+            <tr class="hover edit">
+                <td class="align-center"><?php if(!$_GET['page']){  echo $k+1; }else{ echo ($_GET['page']-1)*10+$k+1; }?></td>
+                <td class="align-center"><?php echo $v['name']; ?></td>
+                <td class="align-center"><?php echo $v['channelid']; ?></td>
+                <td class="align-center"><?php echo $v['deviceid']; ?></td>
+                <td class="align-center"><?php echo $v['id']; ?></td>
+                <td class="align-center"><?php echo $v['parentid']; ?></td>
+                <td class="align-center"><?php if($v['online']==1){echo "在线";}else{echo "不在线";} ?></td>
+                <td class="align-center"><?php echo date("Y-m-d H:i:s",$v['sq_time']); ?></td>
+            </tr>
+            <?php } ?>
+            <?php }else { ?>
+            <tr class="no_data">
+                <td colspan="10">{$Think.lang.ds_no_record}</td>
+            </tr>
+            <?php } ?>
+            </tbody>
+            <tfoot>
+            {notempty name="cameraList"}
+            <tr colspan="15" class="tfoot">
+                <td colspan="16">
+                    <div class="pagination"> {$page} </div></td>
+            </tr>
+            {/notempty}
+            </tfoot>
+        </table>
+    </form>
+
+</div>
+
+
+
+
+
+
+
+

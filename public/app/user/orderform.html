@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>想见孩-我的订单-我的订单</title>
+    <meta name="author" content="想见孩" />
+    <meta name="copyright" content="想见孩" />
+    <meta name="description" content="想见孩" />
+    <meta id="viewport" name="viewport" content="width=750" />
+    <link rel="stylesheet" href="../content/style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/iconfonts/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/user.css" type="text/css" />
+    <link rel="shortcut icon" href="../content/images/ico.ico" type="image/x-icon" />
+    <script src="../content/scripts/mobile-util.js"></script>
+</head>
+
+<body class="infobody">
+    <header class="head">
+        <div class="head0">
+            <div class="menu_bar_box">
+                <a href="javascript:;" class="back_btn" onClick="historyback()">
+                    <i class="icon iconfont icon-jiantou3"></i>
+                </a>
+            </div>
+            <div class="head_title">
+                <p>我的订单</p>
+            </div>
+            <div class="head_r">
+
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <div class="main">
+        <div class="cont2">
+            <div class="container2">
+                <ul class="orderforms_nav clearfix" style="padding-top:20px;margin-bottom:20px;">
+                    <li id="jobs1" onclick="setTab('jobs',1,3)" class="active">
+                        <a href="javascript:;">看孩</a>
+                    </li>
+                    <li id="jobs2" onclick="setTab('jobs',2,3)">
+                        <a href="javascript:;">重温</a>
+                    </li>
+                    <li id="jobs3" onclick="setTab('jobs',3,3)">
+                        <a href="javascript:;">教孩</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="orderforms_cont clear hover" id="order_jobs_1">
+            <ul class="orderforms_list3">
+               <!-- <li class="clear">
+                    <a href="pay.html" class="clearfix">
+                        <div class="orderforms_l">
+                            <img src="../content/images/user/month_meal.png" alt="">
+                        </div>
+                        <div class="orderforms_r">
+                            <p class="orderforms_type"><span class="nopay fr">未支付</span></p>
+                            <h2 class="orderforms_h2 clear">一月套餐<span>￥30</span></h2>
+                            <p class="orderforms_p">购买时间：2018-10-14</p>
+                        </div>
+                    </a>
+                </li>
+                <li class="clear">
+                    <a href="javascript:;" class="clearfix">
+                        <div class="orderforms_l">
+                            <img src="../content/images/user/quarter_meal.png" alt="">
+                        </div>
+                        <div class="orderforms_r">
+                            <p class="orderforms_type"><span class="fr">已过期</span></p>
+                            <h2 class="orderforms_h2 clear">三个月套餐<span>￥120</span></h2>
+                            <p class="orderforms_p">购买时间：2018-10-14</p>
+                        </div>
+                    </a>
+                </li>
+                <li class="clear">
+                    <a href="javascript:;" class="clearfix">
+                        <div class="orderforms_l">
+                            <img src="../content/images/user/year_meal.png" alt="">
+                        </div>
+                        <div class="orderforms_r">
+                            <p class="orderforms_type"><span class="fr">已完成</span></p>
+                            <h2 class="orderforms_h2 clear">一年套餐<span>￥360</span></h2>
+                            <p class="orderforms_p">购买时间：2018-10-14</p>
+                            <p class="orderforms_p">到期时间：2019-10-13</p>
+                        </div>
+                    </a>
+                </li>-->
+            </ul>
+        </div>
+        <div class="orderforms_cont clear hover" id="order_jobs_2" style="display: none;">
+            <ul class="orderforms_list3">
+               <!-- <li class="clear">
+                    <a href="javascript:;" class="clearfix">
+                        <div class="orderforms_l">
+                            <img src="../content/images/user/review_img.png" alt="">
+                        </div>
+                        <div class="orderforms_r">
+                            &lt;!&ndash;<p class="orderforms_type"><span class="nopay fr">未支付</span></p>&ndash;&gt;
+                            <h2 class="orderforms_h2 clear">暂未开放<span>（敬请期待）</span></h2>
+                            <p class="orderforms_p">程序猿正在努力攻城中...</p>
+                        </div>
+                    </a>
+                </li>-->
+                <!--<li class="clear">
+                    <a href="pay.html" class="clearfix">
+                        <div class="orderforms_l">
+                            <img src="../content/images/user/review_img.png" alt="">
+                        </div>
+                        <div class="orderforms_r">
+                            <p class="orderforms_type"><span class="nopay fr">未支付</span></p>
+                            <h2 class="orderforms_h2 clear">课堂片段<span>￥30</span></h2>
+                            <p class="orderforms_p">购买时间：2018-10-14 17:54:23</p>
+                        </div>
+                    </a>
+                </li>
+                <li class="clear">
+                    <a href="javascript:;" class="clearfix">
+                        <div class="orderforms_l">
+                            <img src="../content/images/user/review_img.png" alt="">
+                        </div>
+                        <div class="orderforms_r">
+                            <p class="orderforms_type"><span class="fr">已过期</span></p>
+                            <h2 class="orderforms_h2 clear">课堂片段<span>￥120</span></h2>
+                            <p class="orderforms_p">购买时间：2018-10-14 17:54:23</p>
+                        </div>
+                    </a>
+                </li>
+                <li class="clear">
+                    <a href="javascript:;" class="clearfix">
+                        <div class="orderforms_l">
+                            <img src="../content/images/user/review_img.png" alt="">
+                        </div>
+                        <div class="orderforms_r">
+                            <p class="orderforms_type"><span class="fr">已完成</span></p>
+                            <h2 class="orderforms_h2 clear">课堂片段<span>￥360</span></h2>
+                            <p class="orderforms_p">购买时间：2018-10-14 17:54:23</p>
+                            <p class="orderforms_p">到期时间：2018-10-14 17:54:23</p>
+                        </div>
+                    </a>
+                </li>-->
+            </ul>
+        </div>
+        <div class="orderforms_cont clear hover" id="order_jobs_3" style="display: none;">
+            <ul class="orderforms_list3">
+
+            </ul>
+        </div>
+    </div>
+
+
+    <script src="../content/scripts/jquery.min.js"></script>
+    <script src="../content/scripts/juqery.cookie.js"></script>
+    <script src="../content/scripts/API.js"></script>
+    <script src="../content/scripts/commom.js"></script>
+
+    <script type="text/javascript">
+        $.ajax({
+            url: api + '/Member/order.html',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                key: user_token,
+                member_id: user_member_id,
+                type_id: 1
+            },
+            success: function(response) {
+                var data = response['result'];
+                if (response['code'] == 200) {
+                    if (response['result'].length > 0) {
+                        var html = '';
+                            for(var i=0;i<response['result'].length;i++){
+                                html += '<li class="clear">\n' ;
+                                if(data[i]['order_state'] == 10){
+                                    var url = http_url+'app/user/chooselevel.html?pkg_type=1&child_id='+data[i]['s_id'];
+                                    html += '<a href="'+url+'" class="clearfix">\n';
+                                }else{
+                                    html += '<a  class="clearfix">\n';
+                                }
+                                html +=     '                                           <div class="orderforms_r2">\n' +
+                                    '                                           <h2 class="orderforms_h2 orderforms_h22 clear">'+data[i]['pkg_name']+'<span class="nopay fr">';
+                                if(data[i]['order_state'] == 10){
+                                    html += '待支付';
+                                }else if(data[i]['order_state'] == 40){
+                                    if(data[i]['is_gq'] == 1){
+                                        html += '已支付';
+                                    }else{
+                                        html += '已过期';
+                                    }
+                                }else if(data[i]['order_state'] == 0){
+                                    html += '已取消';
+                                }
+                                html +=   '</span></h2>\n' +
+                                    '                                       <p class="orderforms_p5">下单时间：'+data[i]['starTime']+'<span>￥'+data[i]['order_amount']+'</span></p>\n' ;
+                                if(data[i]['is_gq'] != 0){
+                                    html += '<p class="orderforms_p5">到期时间：'+data[i]['endTime']+'</p>' ;
+                                }
+                                html +=    ' </div>\n' +
+                                    '                                       </a>\n' +
+                                    '                                       </li>';
+                            $('#order_jobs_1 >.orderforms_list3').html(html);
+                        }
+                    }
+                } else {
+                    console.log(response['message']);
+                }
+            }
+        })
+
+        function setTab(name, cursel, n) {
+            for (i = 1; i <= n; i++) {
+                var menu = $("#" + name + i)
+                var con = $("#" + "order_" + name + "_" + i)
+                if (i == cursel) {
+                    menu.addClass("active");
+                    con.fadeIn();
+                    $.ajax({
+                        url: api + '/Member/order.html',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {
+                            key: user_token,
+                            member_id: user_member_id,
+                            type_id: cursel
+                        },
+                        success: function(response) {
+                            var data = response['result'];
+                            if (response['code'] == 200) {
+                                if (response['result'].length > 0) {
+                                    var html = '';
+                                    if(cursel == 3){
+                                        for(var i=0;i<response['result'].length;i++){
+                                       html += '<li class="clear">\n' ;
+                                            if(data[i]['order_state'] == 10){
+                                                var url = http_url+'app/teachchild/pay.html?t_id='+data[i]['order_tid'];
+                                                html += '<a href="'+url+'" class="clearfix">\n';
+                                            }else{
+                                                html += '<a  class="clearfix">\n';
+                                            }
+                                            html +=     '                                           <div class="orderforms_r2">\n' +
+                                                '                                           <h2 class="orderforms_h2 orderforms_h22 clear">'+data[i]['order_name']+'<span class="nopay fr">';
+
+                                            if(data[i]['order_state'] == 10){
+                                            html += '待支付';
+                                        }else if(data[i]['order_state'] == 20){
+                                            if(data[i]['is_gq'] == 1){
+                                                html += '已支付';
+                                            }else{
+                                                html += '已过期';
+                                            }
+                                        }else if(data[i]['order_state'] == 0){
+                                            html += '已取消';
+                                        }
+                                       html +=   '</span></h2>\n' +
+                                            '                                       <p class="orderforms_p5">下单时间：'+data[i]['starTime']+'<span>￥'+data[i]['order_amount']+'</span></p>\n' ;
+                                        if(data[i]['is_gq'] != 0){
+                                            html += '<p class="orderforms_p5">到期时间：'+data[i]['endTime']+'</p>' ;
+                                        }
+                                       html +=    ' </div>\n' +
+                                            '                                       </a>\n' +
+                                            '                                       </li>'
+                                   }
+                                       $('#order_jobs_3 >.orderforms_list3').html(html);
+                                    }else if(cursel == 1){
+                                        for(var i=0;i<response['result'].length;i++){
+                                            html += '<li class="clear">\n' ;
+                                            if(data[i]['order_state'] == 10){
+                                                var url = http_url+'app/user/chooselevel.html?pkg_type=1&child_id='+data[i]['s_id'];
+                                                html += '<a href="'+url+'" class="clearfix">\n';
+                                            }else{
+                                                html += '<a  class="clearfix">\n';
+                                            }
+                                            html +=     '                                           <div class="orderforms_r2">\n' +
+                                                '                                           <h2 class="orderforms_h2 orderforms_h22 clear">'+data[i]['pkg_name']+'<span class="nopay fr">';
+                                            if(data[i]['order_state'] == 10){
+                                                html += '待支付';
+                                            }else if(data[i]['order_state'] == 40){
+                                                if(data[i]['is_gq'] == 1){
+                                                    html += '已支付';
+                                                }else{
+                                                    html += '已过期';
+                                                }
+                                            }else if(data[i]['order_state'] == 0){
+                                                html += '已取消';
+                                            }
+                                            html +=   '</span></h2>\n' +
+                                                '                                       <p class="orderforms_p5">下单时间：'+data[i]['starTime']+'<span>￥'+data[i]['order_amount']+'</span></p>\n' ;
+                                            if(data[i]['is_gq'] != 0){
+                                                html += '<p class="orderforms_p5">到期时间：'+data[i]['endTime']+'</p>' ;
+                                            }
+                                            html +=    ' </div>\n' +
+                                                '                                       </a>\n' +
+                                                '                                       </li>'
+                                        }
+                                        $('#order_jobs_1 >.orderforms_list3').html(html);
+                                    }
+                                }
+                            } else {
+                                console.log(response['message']);
+                            }
+                        }
+                    })
+
+                } else {
+                    menu.removeClass("active");
+                    con.hide();
+                }
+            }
+        }
+
+    </script>
+</body>
+
+</html>

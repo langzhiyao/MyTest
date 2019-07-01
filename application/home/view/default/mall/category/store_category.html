@@ -1,0 +1,39 @@
+{include file="public/mall_top" /}
+{include file="public/mall_header" /}
+<div class="w1200">
+    <div class="nch-all-menu">
+        <ul class="tab-bar">
+            <li><a href="{:url('/home/Category/goods')}">全部商品分类</a></li>
+            <li><a href="{:url('brand/index')}">全部品牌</a></li>
+            <li><a href="{:url('search/index')}">全部商品</a></li>
+            <li class="current"><a href="">全部店铺分类</a></li>
+        </ul>
+    </div>
+    <div class="box">
+        <div class="nc-store-class">
+            <dl>
+                <dt>店铺分类</dt>
+                <dd>
+                    <a href="">全部</a>
+                    {foreach name="sc_list" item="sc"}
+                    <a href="">{$sc.sc_name}</a>
+                    {/foreach}
+                </dd>
+            </dl>
+        </div>
+    </div>
+</div>
+<style>
+    .nch-all-menu{border-bottom: solid 2px #ff4040;margin-top: 15px;}
+    .nch-all-menu .tab-bar{font-size: 0;}
+    .nch-all-menu li{vertical-align: top;letter-spacing: normal;word-spacing: normal;display: inline-block;padding: 0;margin-left: 10px;overflow: hidden;box-shadow: 1px 0 1px rgba(0, 0, 0, 0.05);}
+    .nch-all-menu .tab-bar li a{font: normal 14px/20px "microsoft yahei";color: #777;background-color: #F5F5F5;display: block;height: 20px;padding: 5px 12px;border: solid #D7D7D7;border-width: 1px 1px 0 1px;}
+    .nch-all-menu .tab-bar li.current a{font-weight: 600;text-decoration: none;color: #FFF;background-color: #ff4040;border-color: #ff4040;cursor: default;}
+    .nc-store-class{border: solid 1px #E7E7E7;padding: 8px 0;overflow: hidden;margin-bottom: 10px;zoom: 1;}
+    .nc-store-class dl{line-height: 32px;}
+    .nc-store-class dl dt{width: 78px;float: left;text-align: right;}
+    .nc-store-class dl dd{width: 1110px;float: left;}
+    .nc-store-class dl dd a{display: inline-block;width: 150px;height: 32px;overflow: hidden;padding: 0 10px;}
+</style>
+{include file="public/mall_server" /}
+{include file="public/mall_footer" /}

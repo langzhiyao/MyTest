@@ -1,0 +1,74 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>会员相册</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form method="get" name="formSearch">
+        <table class="search-form">
+            <tbody>
+            <tr>
+                <th><label for="class_name">{$Think.lang.snsalbum_class_name}</label></th>
+                <td><input type="text" value="{$Request.get.class_name}" name="class_name" id="class_name" class="txt"></td>
+                <th><label for="user_name">{$Think.lang.snsalbum_member_name}</label></th>
+                <td><input type="text" value="{$Request.get.user_name}" name="user_name" id="user_name" class="txt"></td>
+                <td><a href="javascript:document.formSearch.submit();" class="btn-search " title="{$Think.lang.ds_query}"></a></td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+    <form method='post' id="form_goods">
+        <input type="hidden" name="type" id="type" value="" />
+        <table class="ds-default-table">
+            <thead>
+            <tr class="thead">
+                <th class="w24"></th>
+                <th class="w60" colspan="2">{$Think.lang.snsalbum_class_name}</th>
+                <th class="">{$Think.lang.snsalbum_member_name}</th>
+                <th>{$Think.lang.snsalbum_add_time}</th>
+                <th class="">{$Think.lang.snsalbum_pic_count}</th>
+                <th class="w48 align-center">{$Think.lang.ds_handle}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {notempty name="ac_list"}
+            {volist name="ac_list" id="v"}
+            <tr class="hover edit">
+                <td></td>
+                <td class="w60 picture">
+                    <div class="size-44x44">
+                        <span class="thumb size-44x44"><i></i>
+                            <img src="{$Think.config.url_domain_root}<?php if($v['ac_cover'] != ''){echo UPLOAD_SITE_URL.DS.ATTACH_MALBUM.DS.$v['member_id'].DS.$v['ac_cover'];}else{echo '/uploads/home/common/default_goods_image.gif';}?>"  onload="javascript:DrawImage(this,44,44);"/>
+                        </span>
+                    </div>
+                </td>
+                <td>{$v.ac_name}</td>
+                <td>{$v.member_name}</td>
+                <td>{:date('Y-m-d',$v.upload_time)}</td>
+                <td>{$v.count}</td>
+                <td class="align-center"><a href="{:url('snsmalbum/pic_list',['id'=>$v.ac_id])}">{$Think.lang.ds_view}</a></td>
+            </tr>
+            {/volist}
+            {else /}
+            <tr class="no_data">
+                <td colspan="15">{$Think.lang.ds_no_record}</td>
+            </tr>
+           {/notempty}
+            </tbody>
+        </table>
+         <tfoot>
+            <tr class="tfoot">
+                <td colspan="16"><div class="pagination">{$showpage} </div></td>
+            </tr>
+            </tfoot>
+    </form>
+</div>

@@ -1,0 +1,140 @@
+{include file="public/seller_top" /}
+<div class="seller_main w1200">
+    {include file="public/seller_left" /}
+    <div class="seller_right">
+        <div class="seller_items">
+            {include file="public/seller_items" /}
+            {present name="isOwnShop"}
+            <a class="dssc-btn dssc-btn-green" href="{:url('Sellervoucher/templateadd')}"><i class="icon-plus-sign"></i>{$Think.lang.voucher_templateadd}</a>
+            {else /}
+            {notempty name="current_quota"}
+            <a class="dssc-btn dssc-btn-green" style="right:100px" href="{:url('Sellervoucher/templateadd')}"><i class="icon-plus-sign"></i>{$Think.lang.voucher_templateadd}</a>
+            <a class="dssc-btn dssc-btn-acidblue" href="{:url('Sellervoucher/quotaadd')}" title=""><i class="icon-money"></i>套餐续费</a>
+            {else /}
+            <a class="dssc-btn dssc-btn-acidblue" href="{:url('Sellervoucher/quotaadd')}" title=""><i class="icon-money"></i>购买套餐</a>
+            {/notempty}
+            {/present}
+        </div>
+        
+        {present name="isOwnShop"}
+        <div class="alert alert-block mt10 mb10">
+            <ul>
+                <li>{$Think.lang.voucher_template_list_tip1}</li>
+                <li>{$Think.lang.voucher_template_list_tip2}</li>
+            </ul>
+        </div>
+        {else /}
+        <div class="alert alert-block mt10 mb10">
+            {notempty name="current_quota"}
+            <strong>套餐过期时间{$Think.lang.ds_colon}</strong><strong style="color:#F00;">{$current_quota.quota_endtime|date="Y-m-d H:i:s",###}</strong>
+            {else}
+            <strong>当前没有可用套餐，请先购买套餐</strong>
+            {/notempty}
+            <ul>
+                <li>{$Think.lang.voucher_template_list_tip1}</li>
+                <li>{$Think.lang.voucher_template_list_tip2}</li>
+                <li>3、<strong style="color: red">相关费用会在店铺的账期结算中扣除</strong>。</li>
+            </ul>
+        </div>
+        {/present}
+
+        <form method="get">
+            <table class="search-form">
+                <tr>
+                    <td>&nbsp;</td>
+
+                    <th>{$Think.lang.voucher_template_enddate}</th>
+                    <td class="w240">
+                        <input type="text" class="text w70"  readonly="readonly" value="{$Request.get.txt_startdate}" id="txt_startdate" name="txt_startdate"/><label class="add-on">
+                        <i class="icon-calendar"></i>
+                    </label>
+                        &#8211;
+                        <input type="text" class="text w70"  readonly="readonly" value="{$Request.get.txt_enddate}" id="txt_enddate" name="txt_enddate"/><label class="add-on">
+                        <i class="icon-calendar"></i>
+                    </label>
+                    </td>
+                    <th>{$Think.lang.ds_status}</th>
+                    <td class="w120"><select class="w80" name="select_state">
+                        <option value="0" {if $Request.get.select_state == '0'}selected{/if}>{$Think.lang.ds_please_choose}</option>
+                        {notempty name="templatestate_arr"}
+                        {volist name="templatestate_arr" id="v"}
+                        <option value="{$v.0}" {if $Request.get.select_state == $v.0}selected{/if}>{$v.1}</option>
+                        {/volist}
+                        {/notempty}
+                    </select></td><th class="w60">{$Think.lang.voucher_template_title}</th>
+                    <td class="w160"><input type="text" class="text w150"  value="" id="txt_keyword" name="txt_keyword" /></td>
+                    <td class="tc w70"><label class="submit-border"><input type="submit" class="submit" value="{$Think.lang.ds_search}" /></label></td>
+            </table>
+        </form>
+        <table class="dssc-default-table">
+            <thead>
+            <tr>
+
+                <th class="w50"></th>
+                <th class="tl">{$Think.lang.voucher_template_title}</th>
+                <th class="w100">{$Think.lang.voucher_template_orderpricelimit}</th>
+                <th class="w60">{$Think.lang.voucher_template_price}</th>
+                <th class="w200">{$Think.lang.voucher_template_enddate}</th>
+                <th class="w60">{$Think.lang.ds_status}</th>
+                <th class="w100">{$Think.lang.ds_handle}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {notempty name="list"}
+            {volist name="list" id="val"}
+            <tr class="bd-line">
+                <td><div class="pic-thumb"><img src="{$val.voucher_t_customimg}"/></div></td>
+                <td class="tl">{$val.voucher_t_title}</td>
+                <td>￥{$val.voucher_t_limit}</td>
+                <td class="goods-price">￥{$val.voucher_t_price}</td>
+                <td class="goods-time">{$val.voucher_t_start_date|date="Y-m-d",###}~{:date('Y-m-d',$val.voucher_t_end_date)}</td>
+                <td>{if $val.voucher_t_state == $templatestate_arr.usable.0}{$templatestate_arr.usable.1}{/if}
+                    {if $val.voucher_t_state == $templatestate_arr.disabled.0}{$templatestate_arr.disabled.1}{/if}
+                </td>
+                <td class="dssc-table-handle">
+                    {if $val.voucher_t_state == $templatestate_arr.usable.0 && !$val.voucher_t_giveout}
+                    <span>
+        		  <a class="btn-blue" href="{:url('Sellervoucher/templateedit',['tid'=>$val.voucher_t_id])}">
+        		      <i class="icon-edit"></i><p>编辑</p>
+        		  </a>
+        	   </span>
+                    {else}
+                    <span>
+        		  <a class="btn-blue" href="{:url('Sellervoucher/templateinfo',['tid'=>$val.voucher_t_id])}"><i class="icon-th-list"></i>
+        		      <p>详细</p>
+        		  </a>
+        	   </span>
+                    {/if}
+                    {if !$val.voucher_t_giveout}
+                    <span>
+        	   <a class="btn-red" href="javascript:void(0)" onclick="ajax_get_confirm('{$Think.lang.ds_ensure_del}','{:url('Sellervoucher/templatedel',['tid'=>$val.voucher_t_id])}');">
+        	       <i class="icon-trash"></i><p>删除</p>
+        	   </a>
+        	</span>
+                    {/if}
+                </td>
+            </tr>
+            {/volist}
+            {else /}
+            <tr>
+                <td colspan="20" class="norecord"><div class="warning-option"><i class="icon-warning-sign"></i><span>{$Think.lang.no_record}</span></div></td>
+            </tr>
+            {/notempty}
+            </tbody>
+            <tfoot>
+            {notempty name="list"}
+            <tr>
+                <td colspan="20"><div class="pagination">{$show_page}</div></td>
+            </tr>
+            {/notempty}
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#txt_startdate').datepicker({dateFormat: 'yy-mm-dd'});
+        $('#txt_enddate').datepicker({dateFormat: 'yy-mm-dd'});
+    });
+</script>

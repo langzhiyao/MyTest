@@ -1,0 +1,71 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>账号同步</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>启用前需打通短信平台，路经：后台-设置-短信设置-短信平台设置</li>
+            <li>各项功能默认为关闭状态，根据实际情况选择是否开启。</li>
+        </ul>
+    </div>
+    <form method="post">
+        <div class="ncap-form-default">
+            <dl>
+                <dt>{$Think.lang.sms_register}</dt>
+                <dd>
+                    <div class="onoff">
+                        <label for="sms_register_show1" class="cb-enable {if condition="$list_config.sms_register eq 1"}selected{/if}">是</label>
+                                   <label for="sms_register_show0" class="cb-disable {if condition="$list_config.sms_register eq 0"}selected{/if}">否</label>
+                                   <input id="sms_register_show1" name="sms_register" value="1" type="radio" {if condition="$list_config.sms_register eq 1"} checked="checked"{/if}>
+                                          <input id="sms_register_show0" name="sms_register" value="0" type="radio" {if condition="$list_config.sms_register eq 0"} checked="checked"{/if}>
+                        </div>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>{$Think.lang.sms_login}</dt>
+                    <dd>
+                        <div class="onoff">
+                            <label for="sms_login_show1" class="cb-enable {if condition="$list_config.sms_login eq 1"}selected{/if}">是</label>
+                            <label for="sms_login_show0" class="cb-disable {if condition="$list_config.sms_login eq 0"}selected{/if}">否</label>
+                            <input id="sms_login_show1" name="sms_login" value="1" type="radio" {if condition="$list_config.sms_login eq 1"} checked="checked"{/if}>
+                                   <input id="sms_login_show0" name="sms_login" value="0" type="radio" {if condition="$list_config.sms_login eq 0"} checked="checked"{/if}>
+                        </div>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>{$Think.lang.sms_password}</dt>
+                    <dd>
+                        <div class="onoff">
+                            <label for="sms_password_show1" class="cb-enable {if condition="$list_config.sms_password eq 1"}selected{/if}">是</label>
+                            <label for="sms_password_show0" class="cb-disable {if condition="$list_config.sms_password eq 0"}selected{/if}">否</label>
+                            <input id="sms_password_show1" name="sms_password" value="1" type="radio" {if condition="$list_config.sms_password eq 1"} checked="checked"{/if}>
+                                   <input id="sms_password_show0" name="sms_password" value="0" type="radio" {if condition="$list_config.sms_password eq 0"} checked="checked"{/if}>
+                        </div>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt></dt>
+                    <dd>
+                        <input class="btn" type="submit" value="提交"/>
+                    </dd>
+                </dl>
+            </div>
+        </form>
+    </div>

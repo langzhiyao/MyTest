@@ -1,0 +1,84 @@
+{include file="public/header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">       
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>邮箱短信</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+
+
+    <form method="post">
+        <div class="ncap-form-default">
+            <dl>
+                <dt>AccountSid:</dt>
+                <dd>
+                    <input type="text" name="mobile_AccountSid" id="mobile_AccountSid" value="{$list_config.mobile_AccountSid}" class="w300"/>
+                </dd>
+            </dl>
+            
+            <dl>
+                <dt>AccountToken:</dt>
+                <dd>
+                    <input type="text" name="mobile_AccountToken" id="mobile_AccountToken" value="{$list_config.mobile_AccountToken}" class="w300"/>
+                </dd>
+            </dl>
+            <dl>
+                <dt>AppId:</dt>
+                <dd>
+                    <input type="text" name="mobile_AppId" id="mobile_AppId" value="{$list_config.mobile_AppId}" class="w300"/>
+                </dd>
+            </dl>
+            <dl>
+                <dt>ServerIP:</dt>
+                <dd>
+                    <input type="text" name="mobile_ServerIP" id="mobile_ServerIP" value="{$list_config.mobile_ServerIP}" class="w300"/>
+                </dd>
+            </dl>
+            <dl>
+                <dt>ServerPort:</dt>
+                <dd>
+                    <input type="text" name="mobile_ServerPort" id="mobile_ServerPort" value="{$list_config.mobile_ServerPort}" class="w300"/>
+                </dd>
+            </dl>
+            <dl>
+                <dt>SoftVersion:</dt>
+                <dd>
+                    <input type="text" name="mobile_SoftVersion" id="mobile_SoftVersion" value="{$list_config.mobile_SoftVersion}" class="w300"/>
+                </dd>
+            </dl>
+            
+            <dl>
+                <dt>短信内容签名</dt>
+                <dd>
+                    <input type="text" name="mobile_signature" id="mobile_signature" value="{$list_config.mobile_signature}" class="w300"/>
+                </dd>
+            </dl>
+            
+            <dl>
+                <dt>备注信息</dt>
+                <dd>
+                    <input type="text" name="mobile_memo" id="mobile_memo" value="{$list_config.mobile_memo}" class="w300"/>
+                </dd>
+            </dl>
+            <dl>
+                <dt></dt>
+                <dd>
+                    <input class="btn" type="submit" value="提交"/>
+                </dd>
+            </dl>
+            
+        </div>
+    </form>
+    
+</div>

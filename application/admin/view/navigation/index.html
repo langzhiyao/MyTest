@@ -1,0 +1,44 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>导航管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <table class="ds-default-table">
+        <thead>
+            <tr>
+                <th>{$Think.lang.nav_sort}</th>
+                <th>{$Think.lang.nav_title}</th>
+                <th>{$Think.lang.nav_url}</th>
+                <th>{$Think.lang.nav_location}</th>
+                <th>{$Think.lang.nav_new_open}</th>
+                <th>{$Think.lang.ds_handle}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {volist name="nav_list" id="nav"}
+            <tr>
+                <td>{$nav.nav_sort}</td>
+                <td>{$nav.nav_title}</td>
+                <td>{$nav.nav_url}</td>
+                <td>{if $nav.nav_location eq 'header'}{$Think.lang.nav_top}{elseif $nav.nav_location eq 'middle'}{$Think.lang.nav_midd}{else}{$Think.lang.nav_foo}{/if}</td>
+                <td>{if $nav.nav_new_open eq '0'}否{else}是{/if}</td>
+                <td>
+                    <a href="{:url('/admin/Navigation/edit',['nav_id'=>$nav.nav_id])}">{$Think.lang.ds_edit}</a>
+                    <a href="javascript:if(confirm('{$Think.lang.sure_drop}'))window.location ='{:url('/admin/Navigation/drop',['nav_id'=>$nav.nav_id])}'">{$Think.lang.ds_del}</a>
+                </td>
+            </tr>
+            {/volist}
+        </tbody>
+    </table>
+    {$page}
+</div>

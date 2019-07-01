@@ -1,0 +1,141 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>代金券</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form method="get" name="formSearch">
+        <table class="search-form">
+            <tbody>
+            <tr>
+                <th><label for="store_name">{$Think.lang.admin_voucher_storename}</label></th>
+                <td><input type="text" value="{$Request.get.store_name}" name="store_name" id="store_name" class="txt"
+                           style="width:100px;"></td>
+                <th><label for="store_name">{$Think.lang.admin_voucher_template_adddate}</label></th>
+                <td><input type="text" id="sdate" name="sdate" class="txt date" value="{$Request.get.sdate}">~<input
+                        type="text" id="edate" name="edate" class="txt date" value="{$Request.get.edate}"></td>
+                <th><label>{$Think.lang.ds_state}</label></th>
+                <td>
+                    <select name="state">
+                        <option value="0"
+                         {eq name="Request.get.state" value="0"}selected{/eq}>{$Think.lang.ds_status}</option>
+                        {notempty name="templatestate_arr"}
+                        {volist name="templatestate_arr" id="val"}
+                        <option value="<?php echo $val[0];?>" {eq name="val.0" value="$Request.get.state" }selected{
+                        /eq}>{$val.1}</option>
+                        {/volist}
+                        {/notempty}
+                    </select></td>
+                <td>
+                    <select name="recommend">
+                        <option value="" selected>是否推荐</option>
+                        <option value="1" {eq name="Request.get.recommend" value="1" }selected{/eq}>已推荐</option>
+                        <option value="0" {eq name="Request.get.recommend" value="0" }selected{/eq}>未推荐</option>
+                    </select></td>
+                <td><a href="javascript:document.formSearch.submit();" class="btn-search" title="{$Think.lang.ds_query}"></a></td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+    <!-- 帮助 -->
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>{$Think.lang.admin_voucher_template_list_tip}</li>
+        </ul>
+    </div>
+    
+    
+    <!-- 列表 -->
+    <form id="list_form" method="post">
+        <table class="ds-default-table">
+            <thead>
+            <tr class="thead">
+                <th class="w24">&nbsp;</th>
+                <th class="align-left"><span>{$Think.lang.admin_voucher_storename}</span></th>
+                <th class="align-left"><span>{$Think.lang.admin_voucher_template_title}</span></th>
+                <th class="align-center"><span>{$Think.lang.admin_voucher_template_price}</span></th>
+                <th class="align-center"><span>{$Think.lang.admin_voucher_template_orderpricelimit}</span></th>
+                <th class="align-center"><span>{$Think.lang.admin_voucher_template_enddate}</span></th>
+                <th class="align-center"><span>{$Think.lang.admin_voucher_template_adddate}</span></th>
+                <th class="align-center"><span>{$Think.lang.ds_state}</span></th>
+                <th class="align-center">{$Think.lang.ds_recommend}</th>
+                <th class="align-center"><span>{$Think.lang.ds_handle}</span></th>
+            </tr>
+            </thead>
+            <tbody id="treet1">
+            {notempty name="list"}
+            {volist name="list" id="val"}
+            <tr class="hover">
+                <td>&nbsp;</td>
+                <td class="align-left"><a
+                        href="{:url('home/showstore/index',['store_id'=>$val.voucher_t_store_id])}"><span>{$val.voucher_t_storename}</span></a>
+                    {present name="flippedOwnShopIds[$val.voucher_t_store_id]"}
+                    <span class="ownshop">[自营]</span>
+                    {/present}
+                </td>
+                <td class="align-left"><span>{$val.voucher_t_title}</span></td>
+                <td class="align-center"><span>{$val.voucher_t_price}</span></td>
+                <td class="align-center"><span>{$val.voucher_t_limit}</span></td>
+                <td class="align-center"><span>{$val.voucher_t_end_date|date="Y-m-d",###}</span></td>
+                <td class="align-center"><span>{$val.voucher_t_add_date|date="Y-m-d",###}</span></td>
+                <td class="align-center"><span>
+                    {volist name="templatestate_arr" id="v"}
+            {eq name="val.voucher_t_state" value="$v.0"}
+            		{$v.1}
+            {/eq}
+                    {/volist}
+            </span></td>
+                <td class="align-center yes-onoff">
+                    {eq name="val.voucher_t_recommend" value="0"}
+                    <a href="JavaScript:void(0);" class="disabled" ajax_branch='voucher_t_recommend'
+                       nc_type="inline_edit" fieldname="voucher_t_recommend" fieldid="{$val.voucher_t_id}"
+                       fieldvalue="0" title="{$Think.lang.ds_editable}"><img
+                            src="/images/transparent.gif"></a>
+                    {else /}
+                    <a href="JavaScript:void(0);" class="enabled" ajax_branch='voucher_t_recommend'
+                       nc_type="inline_edit" fieldname="voucher_t_recommend" fieldid="{$val.voucher_t_id}"
+                       fieldvalue="1" title="{$Think.lang.ds_editable}"><img
+                            src="/images/transparent.gif"></a>
+                    {/eq}</td>
+                <td class="nowrap align-center"><a href="{:url('voucher/templateedit',['tid'=>$val.voucher_t_id])}">{$Think.lang.ds_edit}</a>
+                </td>
+            </tr>
+           {/volist}
+           {else}
+            <tr class="no_data">
+                <td colspan="16">{$Think.lang.ds_no_record}</td>
+            </tr>
+            {/notempty}
+            </tbody>
+            {notempty name="list"}
+            <tfoot>
+            <tr class="tfoot">
+                <td colspan="16">
+                    <div class="pagination"> {$show_page} </div>
+                </td>
+            </tr>
+            </tfoot>
+            {/notempty}
+        </table>
+    </form>
+
+</div>
+
+<script language="javascript">
+    $(function () {
+        $('#sdate').datepicker({dateFormat: 'yy-mm-dd'});
+        $('#edate').datepicker({dateFormat: 'yy-mm-dd'});
+    });
+</script>

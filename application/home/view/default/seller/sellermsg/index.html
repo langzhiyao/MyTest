@@ -1,0 +1,68 @@
+{include file="public/seller_top" /}
+<div class="seller_main w1200">
+    {include file="public/seller_left" /}
+    <div class="seller_right">
+        <div class="seller_items">
+            {include file="public/seller_items" /}
+        </div>
+
+        <div class="alert alert-block mt10"> <strong>说明：</strong>
+            <ul class="mt5">
+                <li>1、管理员可以看见全部消息。</li>
+                <li>2、只有管理员可以删除消息，删除后其他账户的该条消息也将被删除。</li>
+            </ul>
+        </div>
+        <table class="dssc-default-table">
+            <thead>
+            <tr>
+                <th class="w30"></th>
+                <th>消息内容</th>
+                <th class="w200">发送时间</th>
+                <th class="w70">操作</th>
+            </tr>
+            <tr>
+                <td class="tc"><input id="all" class="checkall" type="checkbox" /></td>
+                <td colspan="20"><label for="all">全选</label>
+                    <a href="javascript:void(0);" nc_type="batchbutton" uri="{:url('sellermsg/mark_as_read')}" name="smids" class="dssc-btn-mini"><i class="icon-flag"></i>标记为已读</a>
+                    {if session('seller_is_admin')}
+                    <a href="javascript:void(0);" nc_type="batchbutton" uri="{:url('sellermsg/del_msg')}" name="smids" class="dssc-btn-mini"><i class="icon-trash"></i>删除</a>
+                    {/if}
+                </td>
+            </tr>
+            </thead>
+            <tbody>
+            {notempty name="msg_list"}
+           {volist name="msg_list" id="val"}
+            <tr class="bd-line">
+                <td class="tc"><input class="checkitem" type="checkbox" value="{$val.sm_id}" /></td>
+                <td class="tl <?php if (empty($val['sm_readids']) || !in_array(session('seller_id'), $val['sm_readids'])) {?>fb dark<?php }?>">{$val.sm_content}</td>
+                <td>{:date('Y-m-d H:i:s',$val.sm_addtime)}</td>
+                <td class="dssc-table-handle"><span><a href="javascript:void(0);" class="btn-blue" dialog_id="store_msg_info" dialog_title="系统消息" dialog_width="480" nc_type="dialog" uri="{:url('sellermsg/msg_info',['sm_id'=>$val.sm_id])}"><i class="icon-eye-open"></i>
+        <p>查看</p>
+        </a></span></td>
+            </tr>
+            {/volist}
+            {else}
+            <tr>
+                <td colspan="20" class="norecord"><div class="warning-option"><i class="icon-warning-sign"></i><span>{$Think.lang.no_record}</span></div></td>
+            </tr>
+            {/notempty}
+            </tbody>
+            <tfoot>
+            {notempty name="msg_list"}
+            <tr>
+                <td colspan="20"><div class="pagination">{$show_page}</div></td>
+            </tr>
+            {/notempty}
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(function(){
+        $('a[nc_type="dialog"]').click(function(){
+            $(this).parents('tr:first').children('.tl').removeClass('fb dark');
+        });
+    });
+</script>

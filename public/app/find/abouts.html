@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>想见孩-发现-关于我们</title>
+    <meta name="author" content="想见孩" />
+    <meta name="copyright" content="想见孩" />
+    <meta name="description" content="想见孩" />
+    <meta id="viewport" name="viewport" content="width=750" />
+    <link rel="stylesheet" href="../content/style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/iconfonts/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/find.css" type="text/css" />
+    <link rel="shortcut icon" href="../content/images/ico.ico" type="image/x-icon" />
+    <script src="../content/scripts/mobile-util.js"></script>
+</head>
+
+<body>
+    <header class="head">
+        <div class="head0">
+            <div class="menu_bar_box">
+                <a href="javascript:;" class="back_btn" onClick="historyback()">
+                    <i class="icon iconfont icon-jiantou3"></i>
+                </a>
+            </div>
+            <div class="head_title">
+                <p>关于我们</p>
+            </div>
+            <div class="head_r"></div>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <div class="main">
+        <div class="aboutus_cont1">
+            <div class="container2">
+                <div class="aboutus_title_box">
+                    Company introduction
+                    <h1 class="aboutus_title_h1">公司介绍</h1>
+                </div>
+                <div class="aboutus_text">
+                    <p>北京诚安天下网络技术股份有限公司2016年成立，注册资本2041万元，公司主营项目想见孩·视频“云”，专注于少年儿童提供安全与教育服务。该平台是为幼儿健康成长（安全、亲情、培训、产品等）提供增值服务的运营平台，同时最终将打造成围绕幼儿用品（吃、喝、玩、乐、穿）、幼儿园用品（教具、教材、设备等）的生态产业链。</p>
+                    <p>想见孩作为少年儿童安全的守护者，依托“校内安全视频防范系统、阳光厨房视频监测系统、校外儿童实时定位系统”等平台，解决校内虐童与霸陵”、“幼儿园食品安全”，校园外“儿童丢失”等社会难题。</p>
+                    <p>目前“想见孩”项目已落地山西、山东、江苏、四川、河北、黑龙江、重庆等地，覆盖幼儿园近千所。并运用先进的远程视频技术与互联网模式运作，迅速成为了集公益与盈利于一体的大数据平台。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="aboutus_cont2">
+            <div class="container2">
+                <div class="aboutus_title_box">
+                    Project introduction
+                    <h1 class="aboutus_title_h1">项目简介</h1>
+                </div>
+                <div class="aboutus_text">
+                    <p>想见孩”视频云项目是由北京诚安天下网络技术股份有限公司运营的青少儿安全预防与共享教育服务平台，是幼儿园/中小学公共视频与儿童定位安全信息的结合，围绕0-14岁的青少儿安全与教育，展开增值服务与产品销售。目前“想见孩”项目已在山西、山东、江苏、四川、河北、重庆、河南、甘肃、辽宁、黑龙江等全国多地落地实施，覆盖幼儿园近千所。</p>
+                    <img src="../content/images/find/aboutus_img.jpg" width="100%" style="margin:30px 0;" alt="">
+                </div>
+            </div>
+        </div>
+
+        <div class="aboutus_cont3">
+            <div class="container2">
+                <div class="aboutus_title_box">
+                    Mission vision
+                    <h1 class="aboutus_title_h1">使命愿景</h1>
+                </div>
+                <div class="aboutus_text2">
+                    <p>我们的使命 以服务青少儿安全为终身事业</p>
+                    <p>我们的愿景 成为业界受人尊重的民族企业</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="aboutus_cont4">
+            <div class="container2">
+                <div class="aboutus_title_box" style="margin-bottom:35px;">
+                    brand positioning
+                    <h1 class="aboutus_title_h1">品牌定位</h1>
+                </div>
+                <div class="aboutus_text">
+                    <p>北京诚安天下网络技术股份有限公司以服务青少儿安全为终身事业。想见孩视频云项目以“全心全意为孩子服务”为核心价值和奋斗目标！为校内外少年儿童提供全方位的安全与教育解决方案。</p>
+                    <p>诚安天下以公益捐赠与资本运作为手段，通过总公司控股，省公司运作，城市公司联营的模式面向全国的产业投资管控平台。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../content/scripts/jquery.min.js"></script>
+    <script src="../content/scripts/juqery.cookie.js"></script>
+    <script src="../content/scripts/API.js"></script>
+    <script src="../content/scripts/commom.js"></script>
+    <script>
+        $.ajax({
+            type: "POST",
+            url: api + "/schooldesc/detailinfo?key=1234",
+            data: {
+                key: user_token,
+                school_id: 6
+            },
+            dataType: "json",
+            success: function(response) {
+                $("#school_imgbox").html(HTML(response["result"]));
+                $("#school_title").text(response["result"][0].name);
+                $("#schooladdress").text(response["result"][0].address);
+                if (response["result"][0].s_type == 1) {
+                    $("#school_type").text("公立");
+                } else {
+                    $("#school_type").text("私立");
+                }
+                $("#school_info_cont").html(response["result"][0].s_present);
+                $("#faculty").html(response["result"][0].s_teacher);
+            }
+        });
+
+        // 学校形象照片模板
+        function HTML(data) {
+            var template = '<div class="school_img" style="background:url(' + data[0].s_img + ') no-repeat center;background-size:cover;">' +
+                '<img src="' + data[0].s_img + '" class="visibility_hide" alt="">' +
+                '</div>' +
+                '<div class="school_logo" style="background:url(../content/images/find/kindergarten_logo.png) no-repeat center;background-size:cover;"></div>';
+
+            return template;
+        }
+    </script>
+</body>
+
+</html>

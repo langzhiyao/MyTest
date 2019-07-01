@@ -1,0 +1,85 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+
+ <link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <table class="layui-table">
+      {notempty name="childs"}
+        {volist name="childs" id="v"}
+        <thead>
+          <tr>
+            <th style="width: 100px;" colspan='10'></th>
+            <th></th>
+          </tr> 
+        </thead>
+        <tbody>
+          <tr>
+            <td>学生姓名</td>
+            <td>{$v.s_name}</td>
+          </tr>
+          <tr>
+            <td>学生性别</td>
+            <td>{:SexFomat($v.s_sex)}</td>
+          </tr>
+          <tr>
+            <td>学生生日</td>
+            <td>{:Fomat($v.s_birthday)}</td>
+          </tr>
+          <tr>
+            <td>学生身份证号</td>
+            <td>{:empty($v.s_card)?'未设置':$v.s_card}</td>
+          </tr>
+          <tr>
+            <td>学校类型</td>
+            <td>{:schooltype($v.typeid)}</td>
+          </tr>
+          <tr>
+            <td>学校名称</td>
+            <td>{$v.schoolname}</td>
+          </tr>
+          <tr>
+            <td>所在班级</td>
+            <td>{$v.classname}</td>
+          </tr>
+          <tr>
+            <td>学校所在地区</td>
+            <td>{$v.region}</td>
+          </tr>
+          <tr>
+            <td>绑定硬件设置</td>
+            <td>未绑定</td>
+          </tr>
+          <tr>
+            <td>备注说明</td>
+            <td>{:empty($v.remark)?'无':$v.remark}</td>
+          </tr>
+          <tr>
+        </tr>
+      </tbody>
+        {/volist}
+        {else /}
+        <tbody>
+        <tr class="no_data">
+            <td colspan="10">{$Think.lang.ds_no_record}</td>
+        </tr>
+        </tbody>
+        {/notempty}
+    </table>
+        
+</div>
+
+
+
+
+
+
+
+

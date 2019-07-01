@@ -1,0 +1,146 @@
+{include file="public/joinin_header" /}
+<div class="breadcrumb"><span class="icon-home"></span><span><a href="{:url('/Home/Index/index')}">首页</a></span> <span class="arrow">></span> <span>商家入驻申请</span> </div>
+<div class="main">
+    <div class="sidebar">
+        <div class="title">
+            <h3>商家入驻申请</h3>
+        </div>
+        <div class="content">
+            <dl>
+                <dt class="<?php echo $sub_step == 'step0' ? 'current' : '';?>"> <i class="hide"></i>签订入驻协议</dt>
+            </dl>
+            <dl show_id="0">
+                <dt onclick="show_list('0');" style="cursor: pointer;"> <i class="show"></i>提交申请</dt>
+                <dd>
+                    <ul>
+                        <li class="<?php echo $sub_step == 'step1' ? 'current' : '';?>"><i></i>店铺资质信息</li>
+                        <li class="<?php echo $sub_step == 'step2' ? 'current' : '';?>"><i></i>财务资质信息</li>
+                        <li class="<?php echo $sub_step == 'step3' ? 'current' : '';?>"><i></i>店铺经营信息</li>
+                    </ul>
+                </dd>
+            </dl>
+            <dl>
+                <dt class="<?php echo $sub_step == 'pay' ? 'current' : '';?>"> <i class="hide"></i>合同签订及缴费</dt>
+            </dl>
+            <dl>
+                <dt> <i class="hide"></i>店铺开通</dt>
+            </dl>
+        </div>
+        <div class="title">
+            <h3>平台联系方式</h3>
+        </div>
+        <div class="content">
+            <ul>
+                <li>电话：<?php echo config('site_phone');?></li>
+                <li>邮箱：<?php echo config('site_email');?></li>
+            </ul> 
+        </div>
+    </div>
+    <div class="right-layout">
+        <div class="joinin-step">
+            <ul>
+                <li class="step1 <?php echo $sub_step >= 'step0' ? 'current' : '';?><?php echo $sub_step == 'pay' ? 'current' : '';?>"><span>签订入驻协议</span></li>
+                <li class="<?php echo $sub_step >= 'step1' ? 'current' : '';?><?php echo $sub_step == 'pay' ? 'current' : '';?>"><span>店铺资质信息</span></li>
+                <li class="<?php echo $sub_step >= 'step2' ? 'current' : '';?><?php echo $sub_step == 'pay' ? 'current' : '';?>"><span>财务资质信息</span></li>
+                <li class="<?php echo $sub_step >= 'step3' ? 'current' : '';?><?php echo $sub_step == 'pay' ? 'current' : '';?>"><span>店铺经营信息</span></li>
+                <li class="<?php echo $sub_step >= 'step4' ? 'current' : '';?><?php echo $sub_step == 'pay' ? 'current' : '';?>"><span>合同签订及缴费</span></li>
+                <li class="step6"><span>店铺开通</span></li>
+            </ul>
+        </div>
+        <div class="joinin-concrete">
+
+
+
+
+
+
+
+
+
+
+<div class="explain"><i></i><?php echo $joinin_message;?></div>
+<?php if (is_array($joinin_detail) && !empty($joinin_detail)) { ?>
+<table border="0" cellpadding="0" cellspacing="0" class="all">
+  <tbody>
+    <tr>
+      <th>付款清单列表</th>
+      <td></td>
+    </tr>
+    <tr>
+      <td colspan="2"><table  border="0" cellpadding="0" cellspacing="0" class="type">
+          <tbody>
+            <tr>
+              <td class="w80">收费标准：</td>
+              <td class="w250 tl"><?php echo $joinin_detail['sg_info']['sg_price'];?>元/年 ( <?php echo $joinin_detail['sg_name'];?> )</td>
+              <td class="w80">开店时长：</td>
+              <td class="tl"><?php echo $joinin_detail['joinin_year'];?> 年</td>
+            </tr>
+            <tr>
+              <td class="w80">店铺分类：</td>
+              <td class="tl"><?php echo $joinin_detail['sc_name'];?></td>
+              <td class="w80">开店保证金：</td>
+              <td class="tl"><?php echo $joinin_detail['sc_bail'];?> 元</td>
+            </tr>
+            <tr>
+              <td>应付金额：</td>
+              <td class="tl" colspan="3"><?php echo $joinin_detail['paying_amount'];?> 元</td>
+            </tr>
+          </tbody>
+        </table></td>
+    </tr>
+    <tr>
+      <th>经营类目列表</th>
+      <td></td>
+    </tr>
+    <tr>
+      <td colspan="2"><table border="0" cellpadding="0" cellspacing="0" id="table_category" class="type">
+          <thead>
+            <tr>
+              <th class="w120 tc">一级类目</th>
+              <th class="w120 tc">二级类目 </th>
+              <th class="tc">三级类目</th>
+              <th class="tc">分佣比例</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php foreach ($joinin_detail['store_class_names'] as $k => $name) {?>
+            <?php $name = explode(',', $name);?>
+            <tr>
+              <td><?php echo $name[0];?></td>
+              <td><?php echo $name[1];?></td>
+              <td><?php echo isset($name[2])?$name[2]:'';?></td>
+              <td><?php echo $joinin_detail['store_class_commis_rates'][$k]; ?> %</td>
+            </tr>
+            <?php } ?>
+          </tbody>
+        </table></td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="20">&nbsp;</td>
+    </tr>
+  </tfoot>
+</table>
+<?php } ?>
+<div class="bottom">
+    <?php if($btn_next) { ?>
+    <a id="" href="<?php echo $btn_next;?>" class="btn">下一步</a>
+    <?php } ?>
+</div>
+
+
+
+
+
+
+
+
+
+        </div>
+    </div>
+</div>
+
+
+
+{include file="public/mall_footer" /}

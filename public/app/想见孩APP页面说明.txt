@@ -1,0 +1,62 @@
+
+我-绑定学生：views/user/boundstudent.html    完成
+
+个人信息：views/user/personalinfo.html      完成  
+
+副账户管理：views/user/subaccountman.html    完成
+
+我的订单-看孩订单：views/user/orderform.html*
+我的订单-看孩订单：views/user/orderform1.html  完成  这个不用了。
+
+我的收藏：views/user/mycollect.html  - 修改去掉商城的收藏*
+
+
+重温课堂：选择套餐：views/user/chooselevel.html  完成
+重温课堂：单个套餐支付页面：views/user/pay.html  *
+重温课堂：支付成功：views/user/paysuccess.html  *
+重温课堂：支付失败：views/user/payfail.html  *
+重温课堂：主页：views/user/reviewclassroom.html  *
+重温课堂-筛选：views/user/filter.html  *
+
+安全密码：views/user/securepwd.html			1合并
+安全密码-设置成功：views/user/securepwdsuccess.html	1合并
+安全密码-修改登录密码：views/user/revisesecurepwd.html	alert弹窗需要修改。$.toast('请输入6位数字。')
+
+意见反馈：views/user/feedback.html  完成
+
+
+
+发现-宝宝课堂：views/find/curriculum.html*
+发现-宝宝食谱：views/find/cookbook.html*~
+发现-幼儿园介绍：views/find/kindergartenintroduce.html*
+发现-校园简介：views/find/schoolintroduction.html  此页去掉了
+发现-晒心情：views/find/mood.html*
+发现-心情记录：views/find/moodrecord.html*
+发现-心情动态详情：views/find/mooddetail.html*
+发现-校车：views/find/schoolbus.html*~
+发现-商学院：views/find/businesscollege.html*
+发现-消息：views/find/mesages.html*~
+发现-消息-详情：views/find/mesagesdetail.html  此页去掉了
+
+学校申请：/user/schoolapply.html*
+学校申请中：/user/schoolapplying.html*
+学校申请完成：/user/schoolapplyed.html*
+
+设置密码：/user/setpwd.html*
+修改密码：/user/revisepwd.html*
+
+教孩-首页：views/teachchild/index.html **
+教孩-我的收藏：views/teachchild/collect.html **   不用这个
+教孩-观看历史：views/teachchild/history.html **
+教孩-我的上传：views/teachchild/myupload.html **
+教孩-上传视频：views/teachchild/upload.html **
+教孩-详情：views/teachchild/datails.html **
+
+
+商城-：views/mall/index.html 首页
+商城-：views/mall/content.html 详情
+商城-：views/mall/cart.html 购物车
+
+
+
+

@@ -1,0 +1,81 @@
+{include file="public/mall_top" /} 
+{include file="public/mall_header" /}
+
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/home/css/member.css">
+<div class="dsm-container">
+    {include file="public/member_left" /}
+    <div class="right-layout">
+        <div class="tabmenu">
+            {include file="public/member_items" /}
+        </div>
+        <form method="post" target="_self">
+            <table class="ncm-search-table">
+                <tr>
+                    <th>会员名</th>
+                    <td class="w160"><input type="text" class="text w150" name="member_name" value="{$Think.post.member_name}"></td>
+                    <td class="w70 tc">
+                        <label class="submit-border">
+                            <input type="submit" class="submit" value="{$Think.lang.ds_search}"/>
+                        </label>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <table class="dsm-default-table">
+            <thead>
+                <tr>
+                    <th class="w10"></th>
+                    <th class="w150 tl">会员</th>
+                    <th class="w150 tl">注册时间</th>
+                    <th class="w150 tl">最后登录</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php  if (count($list)>0) { ?>
+                <?php foreach($list as $v) { ?>
+                <tr class="bd-line">
+                    <td>
+                        <div class="size-44x44">
+                            <span class="thumb"><i></i>
+                                <img src="{:getMemberAvatar($v.member_avatar)}?{:microtime()}"  onload="javascript:DrawImage(this,44,44);"/>
+                            </span>
+                        </div>
+                    </td>
+
+                    <td class="tl">
+                        <strong><?php echo $v['member_name']; ?></strong>
+                        <?php foreach($v['inviters'] as $i) { ?>
+                        -><?php echo $i; ?>
+                        <?php } ?>
+                    </td>
+                    <td class="tl"><?php echo $v['member_add_time']; ?></td>
+                    <td class="tl"><?php echo $v['member_login_time']; ?></td>
+              
+                </tr>
+                <?php } ?>
+                <?php } else {?>
+                <tr>
+                    <td colspan="20" class="norecord"><div class="warning-option"><i>&nbsp;</i><span>{$Think.lang.no_record}</span></div></td>
+                </tr>
+                <?php } ?>
+            </tbody>
+            <tfoot>
+                <?php  if (count($list)>0) { ?>
+                <tr>
+                    <td colspan="20"><div class="pagination">{$page}</div></td>
+                </tr>
+                <?php } ?>
+            </tfoot>
+        </table>
+
+
+
+
+
+
+
+
+    </div>
+</div>
+{include file="public/mall_server" /}
+{include file="public/mall_footer" /}

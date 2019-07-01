@@ -1,0 +1,74 @@
+{include file="public/mall_top" /} 
+{include file="public/mall_header" /}
+
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/home/css/member.css">
+<div class="dsm-container">
+    {include file="public/member_left" /}
+    <div class="right-layout">
+        <div class="tabmenu">
+            {include file="public/member_items" /}
+            <a class="dsm-btn dsm-btn-green" title="在线充值" href="{:url('/Home/Membersecurity/auth',['type'=>'pd_cash'])}"> <i class="icon-money"></i>申请提现 </a>
+        </div>
+        <div class="alert"><span class="mr30">{$Think.lang.predeposit_pricetype_available}{$Think.lang.ds_colon}<strong class="mr5 red" style="font-size: 18px;"><?php echo $member_info['available_predeposit']; ?></strong>{$Think.lang.currency_zh}</span><span>{$Think.lang.predeposit_pricetype_freeze}{$Think.lang.ds_colon}<strong class="mr5 blue" style="font-size: 18px;"><?php echo $member_info['freeze_predeposit']; ?></strong>{$Think.lang.currency_zh}</span></div>
+        <form method="post" action="">
+            <table class="dsm-search-table">
+                <tr>
+                    <th></th><td></td>
+                    <th>{$Think.lang.predeposit_paystate}{$Think.lang.ds_colon}</th>
+                    <td class="w90">
+                        <select id="paystate_search" name="paystate_search">
+                            <option value="0">{$Think.lang.ds_please_choose}</option>
+                            <option {if condition="$Think.post.paystate_search eq '0'"}selected{/if} value="0">未支付</option>
+                            <option {if condition="$Think.post.paystate_search eq '1'"}selected{/if} value="1">已支付</option>
+                        </select>
+                    </td>
+                    <th>{$Think.lang.predeposit_cashsn}</th>
+                    <td class="w160 tc"><input type="text" class="text w150" name="sn_search" value="{$Think.post.sn_search}"/></td>
+                    <td class="w70 tc"><label class="submit-border"><input type="submit" class="submit" value="{$Think.lang.ds_search}" /></label></td>
+                </tr>
+            </table>
+        </form>
+        <table class="dsm-default-table">
+            <thead>
+                <tr>
+                    <th>{$Think.lang.predeposit_cashsn}</th>
+                    <th>{$Think.lang.predeposit_apptime}</th>
+                    <th>{$Think.lang.predeposit_cash_price}({$Think.lang.currency_zh})</th>
+                    <th class="w150">{$Think.lang.predeposit_paystate}</th>
+                    <th class="w100">{$Think.lang.ds_handle}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php  if (count($list)>0) { ?>
+                <?php foreach($list as $val) { ?>
+                <tr class="bd-line">
+                    <td><?php echo $val['pdc_sn'];?></td>
+                    <td><?php echo @date('Y-m-d H:i:s',$val['pdc_add_time']);?></td>
+                    <td><?php echo $val['pdc_amount'];?></td>
+                    <td><?php echo str_replace(array('0','1'),array('未支付','已支付'),$val['pdc_payment_state']);?></td>
+                    <td><p><a href="{:url('/home/predeposit/pd_cash_info',['id'=>$val.pdc_id])} ">{$Think.lang.ds_view}</a></p></td>
+                </tr>
+                <?php } ?>
+                <?php } else {?>
+                <tr>
+                    <td colspan="20" class="norecord"><div class="warning-option"><i>&nbsp;</i><span>{$Think.lang.no_record}</span></div></td>
+                </tr>
+                <?php } ?>
+            </tbody>
+            <tfoot>
+                <?php  if (count($list)>0) { ?>
+                <tr>
+                    <td colspan="20"><div class="pagination">{$page}</div></td>
+                </tr>
+                <?php } ?>
+            </tfoot>
+        </table>
+        
+        
+        
+        
+
+    </div>
+</div>
+{include file="public/mall_server" /}
+{include file="public/mall_footer" /}

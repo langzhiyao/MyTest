@@ -1,0 +1,220 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>学校管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+
+    <form id="user_form" enctype="multipart/form-data" method="post">
+        <input type="hidden" name="form_submit" value="ok" />
+        <input type="hidden" name="school_id" value="<?php echo $school_array['schoolid'];?>" />
+        <table class="ds-default-table">
+            <tbody>
+                <tr class="noborder">
+                    <td colspan="2" class="required"><label>{$Think.lang.school_index_name}:</label></td>
+                </tr>
+                <tr class="noborder">
+                    <td class="vatop rowform"><input type="text" value="<?php echo $school_array['name'];?>" id="school_name" name="school_name" class="txt"></td>
+                    <td class="vatop tips"></td>
+                </tr>
+                <tr class="noborder">
+                    <td colspan="2" class="required"><label for="school_region">{$Think.lang.school_index_region}:</label></td>
+                </tr>
+                <tr>
+                    <td id="region">
+                        <input type="hidden" value="{$address.city_id}" name="city_id" id="city_id">
+                        <input type="hidden" name="area_id" id="area_id" value="{$school_array.areaid}" class="area_ids" />
+                        <input type="hidden" name="area_info" id="area_info" value="{$school_array.region}" class="area_names" />
+                        {notempty name="$school_array.areaid"}
+                        <span>{$school_array.region}</span>
+                        <input type="button" value="{$Think.lang.ds_edit}" class="edit_region" />
+                        <select style="display:none;">
+                            <option value="0">请选择分类</option>
+                            {volist name="region_list" id="region"}
+                            <option value="{$region.area_id}">{$region.area_name}</option>
+                            {/volist}
+                        </select>
+                        {else}
+                        <select>
+                            <option value="0">请选择分类</option>
+                            {volist name="region_list" id="region"}
+                            <option value="{$region.area_id}">{$region.area_name}</option>
+                            {/volist}
+                        </select>
+                        {/notempty}
+
+                    </td>
+                </tr>
+                <tr class="noborder">
+                    <td colspan="2" class="required"><label>{$Think.lang.school_index_type}:</label></td>
+                    <td class="vatop tips"></td>
+                </tr>
+                <tr class="noborder">
+                    <td class="vatop rowform" name="school_type">
+                        {volist name="schoolType" id="type"}
+                        <input type="checkbox" name="school_type[]" id="school_index_region{$type.sc_id}" nc_province="{$type.sc_id}" {volist name="school_array.typeid" id="v"}{if condition="$v eq $type.sc_id"} checked {/if}{/volist} value="{$type.sc_id}"> {$type.sc_type}
+                        {/volist}
+                    </td>
+                    <td class="vatop tips"></td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" class="required"><label for="school_address">{$Think.lang.school_index_address}:</label></td>
+                </tr>
+                <tr class="noborder">
+                    <td class="vatop rowform"><input type="text" value="<?php echo $school_array['address'];?>" id="school_address" name="school_address" class="txt"></td>
+                    <td class="vatop tips"></td>
+                </tr>
+
+
+                <tr>
+                    <td colspan="2" class="required"><label class="school_phone">{$Think.lang.school_index_phone}:</label></td>
+                </tr>
+                <tr class="noborder">
+                    <td class="vatop rowform"><input type="text" value="<?php echo $school_array['common_phone'];?>" id="school_phone" name="school_phone" class="txt"></td>
+                    <td class="vatop tips"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="required"><label class="school_username">{$Think.lang.school_index_username}:</label></td>
+                </tr>
+                <tr class="noborder">
+                    <td class="vatop rowform"><input type="text" value="<?php echo $school_array['username'];?>" id="school_username" name="school_username" class="txt"></td>
+                    <td class="vatop tips"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="required"><label class="school_dieline">{$Think.lang.school_index_dieline}:</label></td>
+                </tr>
+                <tr class="noborder">
+                    <td class="vatop rowform"><input type="text" value="<?php echo $school_array['dieline'];?>" id="school_dieline" name="school_dieline" class="txt"></td>
+                    <td class="vatop tips"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="required"><label class="school_desc">{$Think.lang.school_index_desc}:</label></td>
+                </tr>
+                <tr class="noborder">
+                    <td class="vatop rowform"><input type="text" value="<?php echo $school_array['desc'];?>" id="school_desc" name="school_desc" class="txt"></td>
+                    <td class="vatop tips"></td>
+                </tr>
+
+            </tbody>
+            <tfoot>
+                <tr class="tfoot">
+                    <td colspan="15"><a href="JavaScript:void(0);" class="btn" id="submitBtn"><span>{$Think.lang.ds_submit}</span></a></td>
+                </tr>
+            </tfoot>
+        </table>
+    </form>
+
+</div>
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/common/js/mlselection.js" charset="utf-8"></script>
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/home/js/common.js" charset="utf-8"></script>
+<script type="text/javascript">
+    $(function() {
+        $("#submitBtn").click(function() {
+            if ($("#user_form").valid()) {
+                $("#user_form").submit();
+            }
+        });
+    });
+    $(function() {
+        //按钮先执行验证再提交表单
+        $("#submitBtn").click(function() {
+            if ($("#user_form").valid()) {
+                $("#user_form").submit();
+            }
+        });
+        $.datepicker.regional["zh-CN"] = { closeText: "关闭", prevText: "&#x3c;上月", nextText: "下月&#x3e;", currentText: "今天", monthNames: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"], monthNamesShort: ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"], dayNames: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"], dayNamesShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"], dayNamesMin: ["日", "一", "二", "三", "四", "五", "六"], weekHeader: "周", dateFormat: "yy-mm-dd", firstDay: 1, isRTL: !1, showMonthAfterYear: !0, yearSuffix: "年" }
+        $.datepicker.setDefaults($.datepicker.regional["zh-CN"]);
+
+        $("#activity_start_date").datepicker({dateFormat: 'yy-mm-dd'});
+        $("#activity_end_date").datepicker({dateFormat: 'yy-mm-dd'});
+        $('#user_form').validate({
+
+            errorPlacement: function(error, element) {
+                error.appendTo(element.parent().parent().prev().find('td:first'));
+            },
+            rules: {
+                school_name: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 20
+//                    remote: {
+//                        url: "{:url('office/school/ajax',['branch'=>'check_user_name'])}",
+//                        type: 'get',
+//                        data: {
+//                            user_name: function() {
+//                                return $('#school_name').val();
+//                            },
+//                            area_id: function () {
+//                                return $('#area_id').val();
+//                            }
+//                        }
+//                    }
+                },
+                school_phone:{
+                    required: true,
+                    minlength: 8,
+                    maxlength: 12
+                },
+                school_username:{
+                    required: true
+                },
+                school_address:{
+                    required: true
+                },
+                school_type:{
+                    required: true
+                },
+                school_dieline:{
+                    required: true
+                },
+                typeid:{
+                    required: true
+                }
+            },
+            messages: {
+                school_name: {
+                    required: '{$Think.lang.school_add_sname_null}',
+                    maxlength: '{$Think.lang.school_add_name_length}',
+                    minlength: '{$Think.lang.school_add_name_length}',
+                    //remote: '{$Think.lang.school_add_name_exists}'
+                },
+                school_phone: {
+                    required: '{$Think.lang.school_add_phone_null}',
+                    maxlength: '{$Think.lang.school_add_phone_length}',
+                    minlength: '{$Think.lang.school_add_phone_length}',
+                },
+                school_username: {
+                    required: '{$Think.lang.school_add_name_null}',
+                },
+                school_address: {
+                    required: '{$Think.lang.school_add_address_null}',
+                },
+                school_type: {
+                    required: '{$Think.lang.school_add_type_null}',
+                },
+                school_dieline: {
+                    required: '{$Think.lang.school_dieline_null}',
+                },
+                typeid: {
+                    required: '{$Think.lang.school_add_area_null}',
+                }
+            }
+        });
+    });
+    $(function(){
+        $('#school_dieline').datepicker({dateFormat: 'yy-mm-dd'});
+    });
+
+    $(function() {
+        regionInit("region");
+    });
+</script>

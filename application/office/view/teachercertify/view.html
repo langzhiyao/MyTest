@@ -1,0 +1,23 @@
+<div class="page">
+    <form method="post" enctype="multipart/form-data" name="form1" action="">
+        <div class="ncap-form-default">
+            <dl>
+                <dt>图片：<?php if($type==1){echo "身份证图";}elseif($type==2){echo "身份证反面图";}elseif($type==3){echo "教师资格证图";} ?></dt>
+            </dl>
+            <?php if($type==1){ ?>
+            <img src="<?php echo $path.$teachinfo['cardimg']; ?>" height="500px">
+            <?php }elseif($type==2){  ?>
+            <img src="<?php echo $path.$teachinfo['cardimg_fan']; ?>" height="500px">
+            <?php }elseif($type==3){  ?>
+            <img src="<?php echo $path.$teachinfo['certificate']; ?>" height="500px">
+            <?php } ?>
+        </div>
+    </form>
+</div>
+
+
+
+
+
+
+

@@ -1,0 +1,419 @@
+<div class="header clearfix">
+    <div class="w1200">
+        <div class="logo">
+            <a href="{$Think.config.url_domain_root}index.php"><img src="{$Think.config.url_attach_common}/{$Think.config.site_logo}"/></a>
+        </div>
+        <div class="top_search">
+            <div class="top_search_box">
+                <div id="search">
+                    <ul class="tab">
+                        <li act="store_list" class="current"><span>店铺</span><i class="arrow"></i></li>
+                        <li act="store_list" style="display: none;"><span>商品</span></li>
+                    </ul>
+                </div>
+                <div class="form_fields">
+                    <form class="search-form" id="search-form" method="get" action="{:url('/Home/Search/goods')}">
+                        <input placeholder="请输入您要搜索的店铺关键字" name="keyword" id="keyword" type="text" class="keyword" value="" maxlength="60" />
+                        <input type="submit" id="button" value="搜索" class="submit">
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="user_menu">
+            <dl class="my-mall">
+                <dt><span class="ico"></span>我的商城<i class="arrow"></i></dt>
+                <dd>
+                    <div class="sub-title">
+                        <h4></h4>
+                        <a href="{:url('/home/member/index')}" class="arrow">我的用户中心<i></i></a>
+                    </div>
+                    <div class="user-centent-menu">
+                        <ul>
+                            <li><a href="{:url('/home/membermessage/message')}">站内消息(<span>0</span>)</a></li>
+                            <li><a href="{:url('/home/memberorder/index')}" class="arrow">我的订单<i></i></a></li>
+                            <li><a href="{:url('/home/memberconsult/index')}">咨询回复(<span id="member_consult">0</span>)</a></li>
+                            <li><a href="{:url('/home/memberfavorites/fglist')}" class="arrow">我的收藏<i></i></a></li>
+                            <li><a href="{:url('/home/membervoucher/index')}">代金券(<span id="member_voucher">0</span>)</a></li>
+                            <li><a href="{:url('/home/memberpoints/index')}" class="arrow">我的积分<i></i></a></li>
+                        </ul>
+                    </div>
+                    <div class="browse-history">
+                        <div class="part-title">
+                            <h4>最近浏览的商品</h4>
+                            <span style="float:right;"><a href="{:url('/home/membergoodsbrowse/listinfo')}">全部浏览历史</a></span>
+                        </div>
+                        <ul>
+                            <li class="no-goods"><img class="loading" src="{$Think.config.url_domain_root}static/home/images/loading.gif"></li>
+                        </ul>
+                    </div>
+                </dd>
+            </dl>
+            <dl class="my-cart">
+                <dt><span class="ico"></span>购物车结算<i class="arrow"></i></dt>
+                <dd>
+                    <div class="sub-title">
+                        <h4>最新加入的商品</h4>
+                    </div>
+                    <div class="incart-goods-box">
+                        <div class="incart-goods"><div class="no-order"><span>您的购物车中暂无商品，赶快选择心爱的商品吧！</span></div></div>
+                    </div>
+                    <div class="checkout"> <span class="total-price"></span><a href="{:url('/home/Cart/index')}" class="btn-cart">结算购物车中的商品</a> </div>
+                </dd>
+            </dl>
+        </div>
+    </div>
+</div>
+
+
+<div class="mall_nav">
+    <div class="w1200">
+        <div class="all_categorys">
+            <div class="mt">
+                <i></i>
+                <h3><a href="{:url('/home/Category/goods')}">所有商品分类</a></h3>
+            </div>
+            <div class="mc">
+                <ul class="menu">
+                    <?php if (!empty($header_categories) && is_array($header_categories)) { $i = 0; ?>
+                    <?php foreach ($header_categories as $key => $val) { $i++; ?>
+                    <li cat_id="<?php echo $val['gc_id'];?>" class="<?php echo $i%2==1 ? 'odd':'even';?>" <?php if($i>11){?>style="display:none;"<?php }?>>
+                        <div class="class">
+                            <span class="arrow"></span>
+                            <span class="iconfont category-ico-{$i}"></span>
+                            <?php if(!empty($val['pic'])) { ?>
+                            <span class="ico"><img src="<?php echo $val['pic'];?>"></span>
+                            <?php } ?>
+                            <?php if (!empty($val['channel_id'])) {?>
+                            <h4><a href="{:url('/Home/Channel/index',['id'=>$val.channel_id])}"><?php echo $val['gc_name'];?></a></h4>
+                            <?php }else{?>
+                            <h4><a href="{:url('/Home/Search/index',['cate_id'=>$val.gc_id])}"><?php echo $val['gc_name'];?></a></h4>
+                            <?php } ?>
+                        </div>
+                        <div class="sub-class" cat_menu_id="<?php echo $val['gc_id'];?>">
+                            <div class="sub-class-content">
+                                <div class="recommend-class">
+                                    <?php if (!empty($val['cn_classs']) && is_array($val['cn_classs'])) { ?>
+                                    <?php foreach ($val['cn_classs'] as $k => $v) { ?>
+                                    <span><a href="{:url('/Home/Search/index',['cate_id'=>$v.gc_id])}" title="<?php echo $v['gc_name']; ?>"><?php echo $v['gc_name'];?></a></span>
+                                    <?php } ?>
+                                    <?php } ?>
+                                </div>
+                                <?php if (!empty($val['class2']) && is_array($val['class2'])) { ?>
+                                <?php foreach ($val['class2'] as $k => $v) { ?>
+                                <dl>
+                                    <dt>
+                                    <?php if (!empty($v['channel_id'])) {?>
+                                    <h3><a href="{:url('/Home/Channel/index',['id'=>$v.channel_id])}"><?php echo $v['gc_name'];?></a></h3>
+                                    <?php }else{?>
+                                    <h3><a href="{:url('/Home/Search/index',['cate_id'=>$v.gc_id])}"><?php echo $v['gc_name'];?></a></h3>
+                                    <?php } ?>
+                                    </dt>
+                                    <dd class="goods-class">
+                                        <?php if (!empty($v['class3']) && is_array($v['class3'])) { ?>
+                                        <?php foreach ($v['class3'] as $k3 => $v3) { ?>
+                                        <a href="{:url('/Home/Search/index',['cate_id'=>$v3.gc_id])}"><?php echo $v3['gc_name'];?></a>
+                                        <?php } ?>
+                                        <?php } ?>
+                                    </dd>
+                                </dl>
+                                <?php } ?>
+                                <?php } ?>
+                            </div>
+                            <div class="sub-class-right">
+                                <?php if (!empty($val['cn_brands'])) {?>
+                                <div class="brands-list">
+                                    <ul>
+                                        <?php foreach ($val['cn_brands'] as $brand) {?>
+                                        <li> <a href="{:url('/Home/Brand/list',['brand'=>$brand.brand_id])}" title="<?php echo $brand['brand_name'];?>"><?php if ($brand['brand_pic'] != '') {?><img src="<?php echo brandImage($brand['brand_pic']);?>"/><?php }?>
+                                                <span><?php echo $brand['brand_name'];?></span>
+                                            </a></li>
+                                        <?php }?>
+                                    </ul>
+                                </div>
+                                <?php }?>
+                                <div class="adv-promotions">
+                                    <?php if(isset($val['cn_adv1']) && $val['cn_adv1'] != '') { ?>
+                                    <a <?php echo $val['cn_adv1_link'] == '' ? 'href="javascript:;"' : 'target="_blank" href="'.$val['cn_adv1_link'].'"';?>><img src="<?php echo $val['cn_adv1'];?>" data-url="<?php echo $val['cn_adv1'];?>" class="scrollLoading" /></a>
+                                    <?php } ?>
+                                    <?php if(isset($val['cn_adv2']) && $val['cn_adv2'] != '') { ?>
+                                    <a <?php echo $val['cn_adv2_link'] == '' ? 'href="javascript:;"' : 'target="_blank" href="'.$val['cn_adv2_link'].'"';?>><img src="<?php echo $val['cn_adv2'];?>" data-url="<?php echo $val['cn_adv2'];?>" class="scrollLoading" /></a>
+                                    <?php } ?></div>
+                            </div>
+                        </div>
+                    </li>
+                    <?php } ?>
+                    <?php } ?>
+                </ul>
+            </div>
+        </div>
+        <ul class="site_menu">
+            <li><a href="{:url('/Home/Index/index')}" class="current">首页</a></li>
+            {foreach $navs.middle as $nav}
+            <li><a href="{$nav.nav_url}">{$nav.nav_title}</a></li>
+            {/foreach}
+        </ul>
+    </div>
+</div>
+<!--左侧导航栏-->
+
+<div id="vToolbar" class="ds-appbar">
+    <div class="ds-appbar-tabs" id="appBarTabs">
+        {if $Think.session.is_login}
+        <div class="user" nctype="a-barUserInfo">
+            <div class="avatar"><img src="{:getMemberAvatar($Think.session.avatar)}"/></div>
+            <p>我</p>
+        </div>
+        <div class="user-info" nctype="barUserInfo" style="display:none;"><i class="arrow"></i>
+            <div class="avatar"><img src="{:getMemberAvatar($Think.session.avatar)}"/>
+                <div class="frame"></div>
+            </div>
+            <dl>
+                <dt>Hi, {$Think.session.member_name}</dt>
+                <dd>当前等级：<strong nctype="barMemberGrade">{$Think.session.level_name}</strong></dd>
+                <dd>当前经验值：<strong nctype="barMemberExp">{$Think.session.member_exppoints}</strong></dd>
+            </dl>
+        </div>
+       {else /}
+        <div class="user TA_delay" nctype="a-barLoginBox">
+            <div class="avatar TA"><img src="{:getMemberAvatar($Think.session.avatar)}"/></div>
+            <p class="TA">未登录</p>
+        </div>
+        <div class="user-login-box" nctype="barLoginBox" style="display:none;"> <i class="arrow"></i> <a href="javascript:void(0);" class="close-a" nctype="close-barLoginBox" title="关闭">X</a>
+            <form id="login_form" method="post" action="{:url('login/login')}" onsubmit="ajaxpost('login_form', '', '', 'onerror')">
+                <dl>
+                    <dt><strong>登录名</strong></dt>
+                    <dd>
+                        <input type="text" class="text" tabindex="1" autocomplete="off"  name="user_name" autofocus >
+                        <label></label>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt><strong>登录密码</strong><a href="{:url('login/forget_password')}" target="_blank">忘记登录密码？</a></dt>
+                    <dd>
+                        <input tabindex="2" type="password" class="text" name="password" autocomplete="off">
+                        <label></label>
+                    </dd>
+                </dl>
+                <?php if(config('captcha_status_login') == '1') { ?>
+                <dl>
+                    <dt>
+                    <strong>验证码</strong>
+                    <a href="javascript:void(0);" onclick="javascript:document.getElementById('codeimage').src='{:url('Seccode/makecode')}';">更换验证码</a>
+                    </dt>
+                    <dd>
+                        <input tabindex="3" type="text" name="captcha" autocomplete="off" class="text w130" id="captcha2" maxlength="4" size="10" />
+                        <img src='{:url('Seccode/makecode')}' name="codeimage" border="0" id="codeimage" class="vt" />
+                        <label></label>
+                    </dd>
+                </dl>
+                <?php } ?>
+                <div class="bottom">
+                    <input class="btn btn_red" type="submit" value="确认">
+                    <input type="hidden" value="{$Request.param.ref_url}" name="ref_url">
+                    <a href="{:url('login/register')}" target="_blank">注册新用户</a>
+                    {if $setting_config.qq_isuse == 1 || $setting_config.sina_isuse == 1 ||$setting_config.weixin_isuse == 1}
+                    {if $setting_config.weixin_isuse == 1}
+                    <a class="mr20" title="微信账号登录" onclick="ajax_form('weixin_form', '微信账号登录', '{:url('connectwx/index')}', 360);" href="javascript:void(0);">微信</a>
+                  {/if}
+                    {if $setting_config.sina_isuse == 1}
+                    <a class="mr20" title="新浪微博账号登录" href="">新浪微博</a>
+                    {/if}
+                    {if $setting_config.qq_isuse == 1}
+                    <a class="mr20" title="QQ账号登录" href="">QQ账号</a>
+                    {/if}
+                   {/if}
+                </div>
+            </form>
+        </div>
+        {/if}
+        <ul class="tools">
+            <li><a href="javascript:void(0);" id="chat_show_user" class="chat TA_delay"><div class="tools_img"></div><span class="tit">聊天</span><i id="new_msg" class="new_msg" style="display:none;"></i></a></li>
+            <li><a href="javascript:void(0);" id="rtoolbar_cart" class="cart TA_delay"><div class="tools_img"></div><span class="tit">购物车</span><i id="rtoobar_cart_count" class="new_msg" style="display:none;"></i></a></li>
+            <li><a href="javascript:void(0);" id="compare" class="compare TA_delay"><div class="tools_img"></div><span class="tit">对比</span></a></li>
+            <li><a href="javascript:void(0);" id="gotop" class="gotop TA_delay"><div class="tools_img"></div><span class="tit">顶部</span></a></li>
+        </ul>
+        <div class="content-box" id="content-compare">
+            <div class="top">
+                <h3>商品对比</h3>
+                <a href="javascript:void(0);" class="close" title="隐藏"></a></div>
+            <div id="comparelist"></div>
+        </div>
+        <div class="content-box" id="content-cart">
+            <div class="top">
+                <h3>我的购物车</h3>
+                <a href="javascript:void(0);" class="close" title="隐藏"></a></div>
+            <div id="rtoolbar_cartlist"></div>
+        </div>
+        <a id="activator" href="javascript:void(0);" class="ds-appbar-hide TA"></a> </div>
+    <div class="ds-hidebar" id="ncHideBar">
+        <div class="ds-hidebar-bg">
+            {if $Think.session.is_login}
+            <div class="user-avatar"><img src="{:getMemberAvatar($Think.session.avatar)}"/></div>
+            {else /}
+            <div class="user-avatar"><img src="{:getMemberAvatar($Think.session.avatar)}"/></div>
+            {/if}
+            <div class="frame"></div>
+            <div class="show"></div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!--面包屑导航 BEGIN-->
+{notempty name="nav_link_list"}
+<div class="nch-breadcrumb-layout">
+    <div class="nch-breadcrumb w1200"><i class="icon-home"></i>
+        {foreach $nav_link_list as $nav_link} 
+        {empty name="nav_link.link"}
+        <span>{$nav_link.title}</span>
+        {else /}
+        <span><a href="{$nav_link.link}">{$nav_link.title}</a></span><span class="arrow">></span>
+        {/empty}
+        {/foreach}
+    </div>
+</div>
+{/notempty}
+<!--面包屑导航 END-->
+
+
+<script>
+    $(function() {
+	//首页左侧分类菜单
+	$(".all_categorys ul.menu").find("li").each(
+		function() {
+			$(this).hover(
+				function() {
+				    var cat_id = $(this).attr("cat_id");
+					var menu = $(this).find("div[cat_menu_id='"+cat_id+"']");
+					menu.show();
+					$(this).addClass("hover");					
+					var menu_height = menu.height();
+					if (menu_height < 60) menu.height(80);
+					menu_height = menu.height();
+					var li_top = $(this).position().top;
+					$(menu).css("top",-li_top + 40);
+				},
+				function() {
+					$(this).removeClass("hover");
+				    var cat_id = $(this).attr("cat_id");
+					$(this).find("div[cat_menu_id='"+cat_id+"']").hide();
+				}
+			);
+		}
+	);
+
+        $(".user_menu dl").hover(function() {
+            $(this).addClass("hover");
+        }, function() {
+            $(this).removeClass("hover");
+        });
+        $('.user_menu .my-mall').mouseover(function() {
+            // 最近浏览的商品
+            load_history_information();
+            $(this).unbind('mouseover');
+        });
+        $('.user_menu .my-cart').mouseover(function() {
+            // 运行加载购物车
+            load_cart_information();
+            $(this).unbind('mouseover');
+        });
+    });
+    //返回顶部
+    backTop=function (btnId){
+        var btn=document.getElementById(btnId);
+        var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        window.onscroll=set;
+        btn.onclick=function (){
+            //btn.style.opacity="0.5";
+            window.onscroll=null;
+            this.timer=setInterval(function(){
+                scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+                scrollTop-=Math.ceil(scrollTop*0.1);
+                if(scrollTop==0) clearInterval(btn.timer,window.onscroll=set);
+                if (document.documentElement.scrollTop > 0) document.documentElement.scrollTop=scrollTop;
+                if (document.body.scrollTop > 0) document.body.scrollTop=scrollTop;
+            },10);
+        };
+        function set(){
+            scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            //btn.style.opacity=scrollTop?'1':"0.5";
+        }
+    };
+    backTop('gotop');
+    //动画显示边条内容区域
+    $(function() {
+        $(function() {
+            $('#activator').click(function() {
+                $('#content-cart').animate({'right': '-250px'});
+                $('#content-compare').animate({'right': '-250px'});
+                $('#vToolbar').animate({'right': '-60px'}, 300,
+                    function() {
+                        $('#ncHideBar').animate({'right': '59px'},	300);
+                    });
+                $('div[nctype^="bar"]').hide();
+            });
+            $('#ncHideBar').click(function() {
+                $('#ncHideBar').animate({
+                        'right': '-86px'
+                    },
+                    300,
+                    function() {
+                        $('#content-cart').animate({'right': '-250px'});
+                        $('#content-compare').animate({'right': '-250px'});
+                        $('#vToolbar').animate({'right': '0px'},300);
+                    });
+            });
+        });
+        $("#compare").click(function(){
+            if ($("#content-compare").css('right') == '-250px') {
+                loadCompare(false);
+                $('#content-cart').animate({'right': '-250px'});
+                $("#content-compare").animate({right:'35px'});
+            } else {
+                $(".close").click();
+                $(".chat-list").css("display",'none');
+            }
+        });
+        $("#rtoolbar_cart").click(function(){
+            if ($("#content-cart").css('right') == '-250px') {
+                $('#content-compare').animate({'right': '-250px'});
+                $("#content-cart").animate({right:'35px'});
+                if (!$("#rtoolbar_cartlist").html()) {
+                    $("#rtoolbar_cartlist").load("{:url('cart/ajax_load','type=html')}");
+                }
+            } else {
+                $(".close").click();
+                $(".chat-list").css("display",'none');
+            }
+        });
+        $(".close").click(function(){
+            $(".content-box").animate({right:'-250px'});
+        });
+
+        $(".quick-menu dl").hover(function() {
+                $(this).addClass("hover");
+            },
+            function() {
+                $(this).removeClass("hover");
+            });
+
+        // 右侧bar用户信息
+        $('div[nctype="a-barUserInfo"]').click(function(){
+            $('div[nctype="barUserInfo"]').toggle();
+        });
+        // 右侧bar登录
+        $('div[nctype="a-barLoginBox"]').click(function(){
+            $('div[nctype="barLoginBox"]').toggle();
+//            document.getElementById('codeimage').src='';
+        });
+        $('a[nctype="close-barLoginBox"]').click(function(){
+            $('div[nctype="barLoginBox"]').toggle();
+        });
+
+        {if $cart_goods_num > 0}
+            $('#rtoobar_cart_count').html({$cart_goods_num}).show();
+        {/if}
+    });
+</script>

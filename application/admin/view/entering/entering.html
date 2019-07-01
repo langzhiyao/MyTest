@@ -1,0 +1,268 @@
+{include file="public/header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <!-- 操作说明 -->
+    <div class="explanation" id="explanation" style="width:100%;box-sizing: border-box;margin-bottom: 10px;">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>批量导入学生信息，请先完成线下资金转账登记信息后，才能进行批量导入学生并开通家长会员账号及管理订单等，请谨慎操作！！！！！
+            </li>
+        </ul>
+    </div>
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>{$Think.lang.student_title}</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <form method="get" id='form_admin' class="layui-form">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <input name="name"  autocomplete="off" placeholder="请输入学校名称" value="<?php echo $_GET['name'];?>" class="layui-input" type="text">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <select  lay-filter="province"  class="select"  lay-verify="type" name="province" id="province">
+                        <option value="0" selected>{$Think.lang.look_address_province}</option>
+                        {volist name="province" id="vo"}
+                        <option value="{$vo.area_id}" <?php if($vo['area_id'] == $_GET['province']){echo 'selected';}?> >{$vo.area_name}</option>
+                        {/volist}
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="city" lay-filter="city"  class="select"  lay-verify="type"  id="city">
+                        <option value="0">{$Think.lang.look_address_city}</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="area" lay-filter="area"  class="select"  lay-verify="type"  id="area">
+                        <option value="0">{$Think.lang.look_address_area}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <select name="school" lay-filter="school"  class="select"  lay-verify="type"  id="school">
+                        <option value="0" selected="">{$Think.lang.look_address_school}</option>
+                        {volist name="school" id="vo"}
+                        <option value="{$vo.schoolid}" <?php if($vo['schoolid'] == $_GET['school']){echo 'selected';}?> >{$vo.name}</option>
+                        {/volist}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <button class="layui-btn" data-type="reload">{$Think.lang.look_camera_search}</button>
+            </div>
+
+        </div>
+        <table class="layui-table">
+            <colgroup>
+                <col >
+                <col >
+                <col>
+            </colgroup>
+            <thead>
+            <tr class="thead">
+                <th colspan="11">
+                    <p class="layui-table-tool-temp" >总凭证数：<span style="font-size: 24px;color: #D90909" id="count">0</span> </p>
+                    <div class="layui-table-tool-self">
+                        <?php if(session('admin_is_super')==1 || in_array('9',$action)){?>
+                        <a class="layui-btn layui-btn-sm" href="{$Think.config.url_domain_root}/static/admin/{$Think.lang.look_camera_download_mb}.xlsx">{$Think.lang.look_camera_download}</a>
+                        <?php }?>
+                        <?php if(session('admin_is_super')==1 || in_array('8',$action)){?>
+                            <a class="layui-btn layui-btn-sm " lay-event="getCheckData" id="entering">转账资金录入</a>
+                        <?php }?>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+            <thead>
+            <tr class="thead">
+                <th class="align-center">付款学校名称</th>
+                <th class="align-center">付款银行卡号/账号</th>
+                <!--<th class="align-center">付款银行所属地</th>-->
+                <!--<th class="align-center">所属银行</th>-->
+                <th class="align-center">付款金额</th>
+                <th class="align-center">付款方式</th>
+                <th class="align-center">付款日期（凭证中转账时间）</th>
+                <th class="align-center">付款单据/凭证号</th>
+                <!--<th class="align-center">付款凭证图片</th>-->
+                <th class="align-center">收款银行卡/帐号</th>
+                <!--<th class="align-center">所属银行</th>-->
+                <th class="align-center">收款金额</th>
+                <th class="align-center">确认收款时间（查询收款账户到账时间）</th>
+                <th class="align-center">录入/修改时间</th>
+                <!--<th class="align-center">备注</th>-->
+                <th class="align-center">{$Think.lang.ds_handle}</th>
+            </tr>
+            </thead>
+            <tbody id="html">
+            </tbody>
+        </table>
+        <div style="float: right;">
+            <tr class="tfoot">
+                <div id="page"></div>
+            </tr>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    layui.use(['form','laypage', 'layer'], function(){
+        var form = layui.form,
+            laypage = layui.laypage
+            ,layer = layui.layer;
+        //关键字搜索
+        var name = '<?php if(!empty($_GET["name"])){echo $_GET["name"];}?>';
+        //省 市 区
+        var province = '<?php if(!empty($_GET["province"])){echo $_GET["province"];}?>';
+        var city = '<?php if(!empty($_GET["city"])){echo $_GET["city"];}?>';
+        var area = '<?php if(!empty($_GET["area"])){echo $_GET["area"];}?>';
+        //学校 年级 班级
+        var school = '<?php if(!empty($_GET["school"])){echo $_GET["school"];}?>';
+        if(province != 0){
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+province+'&city='+city+'&area='+area+'&school='+school,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变市区
+                    $('#city').html(data.city);
+                    //改变县区
+                    $('#area').html(data.area);
+                    //改变学校
+                    $('#school').html(data.school);
+
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        }
+
+        //省
+        form.on('select(province)', function(data){
+            //改变市区
+            $('#city').html('<option value="0">{$Think.lang.look_address_city}</option>');
+            //改变县区
+            $('#area').html('<option value="0">{$Think.lang.look_address_area}</option>');
+
+
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变市区
+                    $('#city').html(data.city);
+                    //改变县区
+                    $('#area').html(data.area);
+                    //改变学校
+                    $('#school').html(data.school);
+
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //市
+        form.on('select(city)', function(data){
+            //改变县区
+            $('#area').html('<option value="0">{$Think.lang.look_address_area}</option>');
+
+            var province = $('#province').find('option:selected').val();
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+province+'&city='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变县区
+                    $('#area').html(data.area);
+                    //改变学校
+                    $('#school').html(data.school);
+
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //县/区
+        form.on('select(area)', function(data){
+
+            var province = $('#province').find('option:selected').val();
+            var city = $('#city').find('option:selected').val();
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+province+'&city='+city+'&area='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变学校
+                    $('#school').html(data.school);
+
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+
+
+        //分页
+        laypage.render({
+            elem: 'page'
+            ,count: '<?php echo $list_count;?>'
+            ,limit:10
+            ,layout: ['count', 'prev', 'page', 'next',  'skip']
+            ,jump: function(obj){
+                // console.log(obj);
+                var page = obj.curr,
+                    page_count = obj.limit;
+                $.ajax({
+                    type:'POST',
+                    url:ADMIN_URL+'Entering/get_list.html',
+                    data:{name:name,school:school,page:page,page_count:page_count},
+                    success:function(data){
+                        data = jQuery.parseJSON(data);
+                        $('#html').html(data.html);
+                        $('#count').html(data.count+'个');
+                        $('.edit').click(function(){
+                            var id = $(this).attr('data-id');
+                            //页面层
+                            layer.open({
+                                type: 2,
+                                title:'录入线下转账资金信息',
+                                area: ['1000px', '750px'],
+                                fixed: false, //不固定
+                                maxmin: true,
+                                content: ADMIN_URL+'Entering/editEntering.html?id='+id,
+                            });
+                        });
+                    }
+                })
+
+            }
+        });
+    });
+
+    $('#entering').click(function(){
+        //页面层
+        layer.open({
+            type: 2,
+            title:'录入线下转账资金信息',
+            area: ['1000px', '750px'],
+            fixed: false, //不固定
+            maxmin: true,
+            content: ADMIN_URL+'Entering/addEntering.html',
+        });
+    });
+
+
+
+
+
+</script>

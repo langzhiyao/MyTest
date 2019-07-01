@@ -1,0 +1,113 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>举报管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <form id="search_form" method="get" name="formSearch">
+        <table class="search-form">
+            <tbody>
+            <tr>
+                <th> <label> {$Think.lang.inform_type}</label></th>
+                <td>
+                    <select name="inform_subject_type_id">
+                    <option value="">{$Think.lang.inform_text_select}</option>
+                    {volist name="type_list" id="type"}
+                    <option value="{$type.inform_type_id}"
+                    {eq name="Request.get.inform_subject_type_id" value="$type.inform_type_id"}selected=true{/eq}>
+                    {$type.inform_type_name} 
+                    </option>
+                    {/volist}
+                </select>
+                </td>
+                <td><a href="javascript:document.formSearch.submit();" class="btn-search " title="{$Think.lang.ds_query}"></a></td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+    
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+            <li>{$Think.lang.inform_help5}</li>
+        </ul>
+    </div>
+    
+    <form method='post' id="list_form" action="">
+        <input type="hidden" id="inform_subject_id" name="inform_subject_id" value="" />
+        <table class="ds-default-table">
+            <thead>
+            <tr class="thead">
+                <th></th>
+                <th>{$Think.lang.inform_subject}</th>
+                <th>{$Think.lang.inform_type}</th>
+                <th class="align-center">{$Think.lang.ds_handle}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {notempty name="list"}
+            {volist name="list" id="v"}
+            <tr class="hover">
+                <td class="w24"><input type="checkbox" name='voucher_price_checkbox' value="{$v.inform_subject_id}" class="checkitem"></td>
+                <td>{$v.inform_subject_content}</td>
+                <td>{$v.inform_subject_type_name}</td>
+                <td class="w72 align-center"><a href="JavaScript:void(0);" onclick="submit_delete('{$v.inform_subject_id}')">{$Think.lang.ds_del}</a></td>
+                {/volist}
+                {else /}
+            <tr class="no_data">
+                <td colspan="10">{$Think.lang.ds_no_record}</td>
+            </tr>
+            {/notempty}
+            </tbody>
+            <tfoot>
+            {notempty name="list"}
+            <tr class="tfoot">
+                <td>
+                    <input type="checkbox" class="checkall" id="checkall_1">
+                   </td>
+                <td colspan="16"><label for="checkall_1">{$Think.lang.ds_select_all}</label>
+                    &nbsp;&nbsp;<a href="JavaScript:void(0);" class="btn" onclick="submit_delete_batch()"><span>{$Think.lang.ds_del}</span></a>
+                    <div class="pagination">{$show_page}</div></td>
+            </tr>
+            {/notempty}
+            </tfoot>
+        </table>
+    </form>
+
+</div>
+
+<script type="text/javascript">
+
+
+    function submit_delete_batch(){
+        /* 获取选中的项 */
+        var items = '';
+        $('.checkitem:checked').each(function(){
+            items += this.value + ',';
+        });
+        if(items != '') {
+            items = items.substr(0, (items.length - 1));
+            submit_delete(items);
+        }
+    }
+    function submit_delete(inform_subject_id){
+        if(confirm('{$Think.lang.confirm_delete}')) {
+            $('#list_form').attr('method','post');
+            $('#list_form').attr('action','{:url('inform/inform_subject_drop')}');
+            $('#inform_subject_id').val(inform_subject_id);
+            $('#list_form').submit();
+        }
+    }
+
+</script> 

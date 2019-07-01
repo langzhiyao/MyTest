@@ -1,0 +1,5 @@
+{notempty name="goods_list"}
+{volist name="goods_list" id="val"}
+<li> <a href="{:url('Goods/index',['goods_id'=>$val.goods_id])}" target="_blank"> <span class="thumb size120"><i></i> <img src="{:thumb($val,240)}" onload="javascript:DrawImage(this,120,120);" title="{$val.goods_name}"/> </span> </a> </li>
+{/volist}
+{/notempty}

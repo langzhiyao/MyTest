@@ -1,0 +1,101 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+ <link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">       
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>{$Think.lang.schoolbus_manage}</h3>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    
+  <div class="fixed-empty"></div>
+    <?php if(session('admin_is_super') ==1 || in_array('1',$action)){ ?>
+            <th>
+                <!-- <button class="layui-btn" onclick="course_edit('add',false)"><i class="layui-icon">&#xe608;</i> 添加</button> -->
+            </th>
+    <?php } ?>
+
+  
+  
+  <div class="explanation" id="explanation">
+      <div class="title" id="checkZoom">
+          <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+          <span id="explanationZoom" title="收起提示" class="arrow"></span>
+      </div>
+      <ul>
+          <li>课程管理</li>
+          <li>学校类型：如‘语文’，‘数学’，‘英语’</li>
+          
+      </ul>
+  </div>
+          <button class="layui-btn add_foodlist" id="add_foodlist" pid="0"><i class="layui-icon">&#xe608;</i> 添加</button>
+  
+ <div class="foot_edits">
+  <form action="{:url('/Admin/Schoolfood/schoolfood_edit')}" id="form1" method="post">
+      <input type="hidden" name="action" value="add">
+      <div class="foot_inputs_box">
+          <label for="footinput">输入年级</label>
+          <input type="text" id="footinput" name="food_class" class="footinput" value="高一或10年级" placeholder="例如 高一或10年级" />
+
+      </div>
+      <div class="foot_list_box" id="foot_list_box">
+          <div class="foot_list foot_t clear clearfix">
+             <div class="foot_item foot_item1"><div><p class="foot_title">食谱分类</p></div></div>
+             <div class="foot_item foot_item2"><p class="foot_title">食谱内容</p></div>
+             <div class="foot_item foot_item3"><p class="foot_title">备注</p></div>
+         </div>
+
+
+      </div>
+  </form>
+
+   
+
+   
+   <div class="foot_submit_box clear">
+      
+      <button class="layui-btn" id="reset"> 重置</button>
+      <button class="layui-btn" id="subsss">提交</button>
+
+   </div>
+</div>
+<script type="text/javascript">
+  $('#subsss').click(function() {
+    $('#form1').submit();
+  });
+</script>
+ 
+
+
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/plugins/jquery.edit.js" charset="utf-8"></script>
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/plugins/js/dialog/dialog.js" id="dialog_js" charset="utf-8"></script>
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/plugins/js/jquery-ui/jquery-ui.min.js"></script>
+<script type="text/javascript">
+  $("#add_foodlist").click(function(){
+    var pid = $(this).attr('pid');
+
+    var footlist_str='<div class="foot_list foot_lists clear clearfix">'+
+         '<div class="foot_item foot_item1">'+
+          '<div>'+
+            '<input type="text" value="" name="food_content['+pid+'][]" placeholder="例如：早餐"/>'+
+          '</div>'+
+         '</div>'+
+         '<div class="foot_item foot_item2">'+
+            '<textarea id="" name="food_content['+pid+'][]" class="foot_info" rows="3"></textarea>'+
+         '</div>'+
+         '<div class="foot_item foot_item3">'+
+            '<textarea id="" name="food_content['+pid+'][]" class="foot_info" rows="3"></textarea>'+
+         '</div>'+
+       '</div>';
+    $('#foot_list_box').append(footlist_str);
+    pid++
+    $(this).attr('pid',pid);
+  })
+</script>
+
+

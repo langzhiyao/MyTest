@@ -1,0 +1,57 @@
+{include file="public/seller_top" /}
+<div class="seller_main w1200">
+    {include file="public/seller_left" /}
+    <div class="seller_right">
+        <div class="seller_items">
+            {include file="public/seller_items" /}
+        <a href="javascript:void(0)" class="dssc-btn dssc-btn-green" nc_type="dialog" dialog_title="{$Think.lang.store_goods_brand_apply}" dialog_id="my_goods_brand_apply" dialog_width="480" uri="{:url('sellerbrand/brand_add')}">{$Think.lang.store_goods_brand_apply}</a>
+             </div>
+
+        <table class="search-form">
+            <form method="get">
+                <tr>
+                    <td>&nbsp;</td>
+                    <th>{$Think.lang.store_goods_brand_name}</th>
+                    <td class="w160"><input type="text" class="text" name="brand_name" value="{$Request.param.brand_name}"/></td>
+                    <td class="w70 tc"><label class="submit-border"><input type="submit" class="submit" value="{$Think.lang.ds_search}" /></label></td>
+                </tr>
+            </form>
+        </table>
+        <table class="dssc-default-table">
+            <thead>
+            <tr>
+                <th class="w150">{$Think.lang.store_goods_brand_icon}</th>
+                <th>{$Think.lang.store_goods_brand_name}</th>
+                <th>{$Think.lang.store_goods_brand_belong_class}</th>
+                <th class="w100">{$Think.lang.ds_handle}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {notempty name="brand_list"}
+            {volist name="brand_list" id="val"}
+            <tr class="bd-line">
+                <td><img src="{:brandImage($val.brand_pic)}" onload="javascript:DrawImage(this,88,44);" /></td>
+                <td>{$val.brand_name}</td>
+                <td>{$val.brand_class}</td>
+                <td class="dssc-table-handle">
+                    {if $val.brand_apply == 0}
+                    <span><a href="javascript:void(0)" class="btn-blue" nc_type="dialog" dialog_title="{$Think.lang.store_goods_brand_edit}" dialog_id="my_goods_brand_edit" dialog_width="480" uri="{:url('sellerbrand/brand_add',['brand_id'=>$val.brand_id])}"><i class="icon-edit"></i><p>{$Think.lang.ds_edit}</p></a></span>
+                    <span><a href="javascript:void(0)" class="btn-red" onclick="ajax_get_confirm('{$Think.lang.ds_ensure_del}', '{:url('sellerbrand/drop_brand',['brand_id'=>$val.brand_id])}');"><i class="icon-trash"></i><p>{$Think.lang.ds_del}</p></a></span>{/if}</td>
+            </tr>
+           {/volist}
+           {else /}
+            <tr>
+                <td colspan="20" class="norecord"><div class="warning-option"><i class="icon-warning-sign"></i><span>{$Think.lang.no_record}</span></div></td>
+            </tr>
+            {/notempty}
+            </tbody>
+            <tfoot>
+            {notempty name="brand_list"}
+            <tr>
+                <td colspan="20"><div class="pagination">{$show_page}</div></td>
+            </tr>
+            {/notempty}
+            </tfoot>
+        </table>
+    </div>
+</div>

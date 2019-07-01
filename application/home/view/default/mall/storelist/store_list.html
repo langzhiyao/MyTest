@@ -1,0 +1,230 @@
+{include file="public/mall_top" /}
+{include file="public/mall_header" /}
+
+<script>
+var PURL = '{$purl}';
+
+$(document).ready(function(){
+    $('#area_info').nc_region();
+});
+</script>
+
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/home/css/store_list.css">
+<link href="{$Think.config.url_domain_root}static/plugins/js/jcarousel/skins/tango/skin.css" rel="stylesheet" type="text/css">
+
+<style type="text/css">
+.sticky #main-nav { width: 1198px;}
+/*.jcarousel-skin-tango .jcarousel-prev-horizontal, .jcarousel-skin-tango .jcarousel-next-horizontal { margin-top: -60px;}*/
+.jcarousel-skin-tango .jcarousel-clip-horizontal { width: 1000px !important; height: 225px !important;}
+.jcarousel-skin-tango .jcarousel-item { height: 225px !important;}
+.jcarousel-skin-tango .jcarousel-container-horizontal { width: 1000px !important;}
+</style>
+
+<script type="text/javascript">
+//<!CDATA[
+/* 替换参数 */
+function ss_replaceParam(key, value)
+{
+    location.assign($.query.set('key', key).set('order', value));
+}
+
+/* 替换参数 */
+function ss_dropParam(key1, key2)
+{
+	location.assign($.query.REMOVE(key1).REMOVE(key2));
+}
+
+/* 替换参数 */
+function ss_dropParam2(key1)
+{
+	location.assign($.query.REMOVE(key1));
+}
+
+/* 替换参数 */
+function ss_replaceParam2(key, value)
+{
+    location.assign($.query.set(key, value, value));
+}
+
+$(function (){
+    var order = '{$Think.param.order}';
+    var arrow = '';
+    var class_val = 'sort_desc';
+
+    switch (order){
+        case 'store_credit desc' : order = 'store_credit asc';  class_val = 'sort_desc'; break;
+        case 'store_credit asc'  : order = 'store_credit desc'; class_val = 'sort_asc' ; break;
+        default : order = 'store_credit asc';
+    }
+    $('#credit_grade').addClass(class_val);
+    $('#credit_grade').click(function(){query('order', order);return false;});
+}
+);
+
+function query(name, value){
+    $("input[name='"+name+"']").val(value);
+    $('#searchStore').submit();
+}
+
+//]]>
+</script>
+
+<div class="content">
+<div class="nc-store-class">
+  <?php if(!empty($class_list) && is_array($class_list)){?>
+  <dl>
+    <dt>店铺类目{$Think.lang.ds_colon}</dt>
+    <dd>
+      <a href="{:url('/Home/Storelist/index')}">全部</a>
+      <?php foreach($class_list as $k=>$v){?>
+              <a href="{:url('/Home/Storelist/index',['cate_id'=>$k])}"><?php echo $v['sc_name'];?></a>
+      <?php }?>
+    </dd>
+  </dl>
+  <?php }?>
+</div>
+
+<div class="sort-bar">
+  <div class="shop_con_list" id="main-nav-holder">
+    <nav class="nc-gl-sort-bar" id="main-nav">
+      <form id="store_list" method="GET" action="{:url('/Home/Storelist/index')}">
+        <input type="hidden" name="order" value="{$Think.param.order}"/>
+        <input type="hidden" name="cate_id" value="{$Think.param.cate_id}"/>
+        <div class="sort-bar"><!-- 排序方式S -->
+          <ul class="array">
+          <!-- 默认 -->
+            <li {if condition="$Think.param.key neq ''"}class="selected"{/if}><a href="javascript:void(0)" class="nobg" onclick="javascript:ss_dropParam('key','order');" title="{$Think.lang.goods_class_index_default_sort}">默认</a></li>
+            <!-- 销量 -->
+            <li {if condition="$Think.param.key eq 'store_sales'"}class="selected"{/if}><a href="javascript:void(0)" {if condition="$Think.param.key eq 'store_sales'"}{$Think.param.order}{/if} onclick="javascript:ss_replaceParam('store_sales','<?php echo (input('param.order') == 'desc' && input('param.key') == 'store_sales')?'asc':'desc' ?>');" >销量</a></li>
+            <!-- 信用 -->
+            <li {if condition="$Think.param.key eq 'store_credit'"}class="selected"{/if}><a href="javascript:void(0)" {if condition="$Think.param.key eq 'store_credit'"}{$Think.param.order}{/if} onclick="javascript:ss_replaceParam('store_credit','<?php  echo (input('param.order') == 'desc' && input('param.key') == 'store_credit')?'asc':'desc' ?>');" >信用</a></li>
+          </ul>
+          <!-- 排序方式E -->
+          <?php if (!config('fullindexer.open')){?>
+          <div class="sidebox">
+            <h5 class="title">店铺名称{$Think.lang.ds_colon}</h5>
+            <div class="selectbox">
+              <input class="text" type="text" name="keyword" value="{$Request.param.keyword}" style=" width:150px;"/>
+            </div>
+          </div>
+          <div class="sidebox">
+            <h5><label for="area_info">店铺所在地{$Think.lang.ds_colon}</label></h5>
+            <div class="selectbox">
+              <input id="area_info" name="area_info" type="hidden" value=""/>
+            </div>
+          </div>
+          <div class="sidebox width5" style=" background-image: none">
+            <div class="selectbox">
+              <input class="btn" type="submit" value="{$Think.lang.ds_search}" />
+            </div>
+          </div>
+          <?php }?>
+        </div>
+      </form>
+    </nav>
+  </div>
+</div>
+<ul class="nc-store-list">
+<?php if(!empty($store_list) && is_array($store_list)){?>
+<?php foreach($store_list as $skey => $store){?>
+    <li class="item">
+      <dl class="shop-info">
+        <dt class="shop-name"><a href="{:url('/Home/Store/index',['store_id'=>$store.store_id])}" target="_blank"><?php echo $store['store_name'];?></a></dt>
+        <dd class="shop-pic"><a href="{:url('/Home/Store/index',['store_id'=>$store.store_id])}" title="" target="_blank"><span class="size72"><img src="<?php echo getStoreLogo($store['store_avatar']);?>"  alt="<?php echo $store['store_name'];?>" title="<?php echo $store['store_name'];?>" class="size72" /></span></a></dd>
+        <dd class="main-runs" title="<?php echo $store['store_zy']?>">{$Think.lang.store_class_index_store_zy}{$Think.lang.ds_colon}<?php echo $store['store_zy']?></dd>
+        <dd class="shopkeeper">{$Think.lang.store_class_index_owner}{$Think.lang.ds_colon}<?php echo $store['member_name'];?><a target="_blank" class="message" href="{:url('/Home/Membermessage/sendmsg',['member_id'=>$store.member_id])}"></a><span>
+        <?php if(!empty($store['store_qq'])){?>
+          <a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=<?php echo $store['store_qq'];?>&site=qq&menu=yes" title="QQ: <?php echo $store['store_qq'];?>"><img border="0" src="http://wpa.qq.com/pa?p=2:<?php echo $store['store_qq'];?>:52" style=" vertical-align: middle;"/></a>
+        <?php }?>
+        <?php if(!empty($store['store_ww'])){?>
+          <a target="_blank" href="http://amos.im.alisoft.com/msg.aw?v=2&uid=<?php echo $store['store_ww'];?>&site=cntaobao&s=2" ><img border="0" src="http://amos.im.alisoft.com/online.aw?v=2&uid=<?php echo $store['store_ww'];?>&site=cntaobao&s=2" alt="Wang Wang" style=" vertical-align: middle;" /></a>
+        <?php }?></span></dd>
+      </dl>
+      <dl class="w200">
+        <dd><?php echo (isset($store['goods_count'])) ? lang('store_class_index_goods_amount').$store['goods_count'].lang('piece') : lang('ds_common_goods_null');?></dd>
+        <dd><?php echo (isset($store['num_sales_jq'])) ? lang('store_class_index_deal').$store['num_sales_jq'].lang('store_class_index_jian') : lang('ds_common_sell_null');?></dd>
+        <?php if (!empty($store['search_list_goods'])){?>
+        <dd class="more-on" attr='morep' nc_type='<?php echo $skey;?>'><span>{$Think.lang.store_class_index_goods_hiden}</span><i></i></dd>
+        <?php }?>
+      </dl>
+      <dl class="w150">
+      	<!-- 店铺信用度 -->
+        <dd><?php if (empty($store['store_credit_average'])){ echo lang('ds_common_credit_null'); }else {?>
+          {$Think.lang.store_class_index_credit_value}{$Think.lang.ds_colon}
+          <span class="seller-heart level-<?php echo $store['store_credit_average']; ?>"></span>
+          <?php }?>
+        </dd>
+        <!-- 店铺好评率 -->
+        <dd>
+        <?php if (empty($store['store_credit_percent'])){?>
+        	<?php echo lang('ds_common_rate_null');?>
+        <?php }else{?>	
+        	<?php echo lang('store_class_index_praise_rate').lang('ds_colon').$store['store_credit_percent'];?>%
+        <?php }?>
+        </dd>
+        <!-- 店铺动态评分 -->
+        <dd class="shop-rate" nc_type="shop-rate" store_id='<?php echo $store['store_id'];?>'>{$Think.lang.store_class_index_shop_rate}{$Think.lang.ds_colon}<span><i></i></span>
+          <div class="shop-rate-con">
+              <div class="arrow"></div>
+              <dl class="rate">
+                <?php  foreach ($store['store_credit'] as $key=>$value) {?>
+                  <dt><?php echo $value['text'];?>{$Think.lang.ds_colon}</dt>
+                  <dd class="rate-star"><em><i style=" width: <?php echo @round($value['credit']/5*100,2);?>%;"></i></em><span><?php echo $value['credit'];?>{$Think.lang.store_class_index_grade}</span></dd>
+                <?php } ?>
+              </dl>
+          </div>
+          </dd>
+      </dl>
+      <dl class="w120">
+        <dd class="tr"><?php echo $store['area_info'];?></dd>
+      </dl>
+      <?php if(!empty($store['search_list_goods']) && is_array($store['search_list_goods'])){?>
+      <div class="nc-shop-goodslist" nc_type='goods_<?php echo $skey;?>'>
+        <div class="arrow"></div>
+        <div class="bd">
+        <ul class="jcarousel-skin-tango" nc_type="jcarousel" >
+        <?php foreach($store['search_list_goods'] as $k=>$v){?>
+        <li style="margin-left: 30px">
+            <dl>
+              <dt class="goods-pic"><span class="thumb size160"> <i></i> <a href="{:url('/Home/Goods/index',['goods_id'=>$v.goods_id])}" target="_blank"> <img  onload="javascript:DrawImage(this,160,160);" alt="<?php echo $v['goods_name'];?>" src="<?php echo thumb($v,'small');?>" ></a></span></dt>
+              <dd class="goods-name"><a href="{:url('/Home/Goods/index',['store_id'=>$v.goods_id])}" title="<?php echo $v['goods_name'];?>" target="_blank"><?php echo $v['goods_name'];?></a></dd>
+              <dd class="goods-price"><em><?php echo $v['goods_price'];?></em></dd>
+              <dd class="goods-sales">{$Think.lang.store_class_index_deal}<?php echo $v['goods_salenum'];?>{$Think.lang.store_class_index_jian}</dd>
+            </dl>
+          </li>
+         <?php }?>
+        </ul>
+        </div>
+      </div>
+      <?php }?>
+    </li>
+
+<?php }?>
+
+<?php }else{?>
+<div id="no_results">{$Think.lang.store_class_index_no_record}</div>
+<?php }?>
+</ul>
+<div class="pagination">{$show_page} </div>
+</div>
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/home/js/waypoints.js"></script> 
+
+<script src="{$Think.config.url_domain_root}static/plugins/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript">
+$(function(){
+	//图片轮换
+
+    $('[attr="morep"]').click(function(){
+    	var id = $(this).attr('nc_type');
+    	if($(this).attr('class')=='more-off'){
+    		$(this).addClass('more-on').removeClass('more-off').html('{$Think.lang.store_class_index_goods_hiden}<i></i>');
+    		$('div[nc_type="goods_'+id+'"]').show();
+    	}else{
+    		$(this).addClass('more-off').removeClass('more-on').html('{$Think.lang.store_class_index_goods_show}<i></i>');
+    		$('div[nc_type="goods_'+id+'"]').hide();
+    	}
+    });
+    jQuery('.nc-shop-goodslist .bd').slide({mainCell:"ul",autoPlay:true,effect:"leftMarquee",vis:6,interTime:50,trigger:"click"});
+
+});
+</script>

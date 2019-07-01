@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>想见孩-绑定学生</title>
+    <meta name="author" content="想见孩" />
+    <meta name="copyright" content="想见孩" />
+    <meta name="description" content="想见孩" />
+    <meta id="viewport" name="viewport" content="width=750" />
+    <link rel="stylesheet" href="../content/style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/iconfonts/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/lib/weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/css/jquery-weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/user.css" type="text/css" />
+    <link rel="shortcut icon" href="../content/images/ico.ico" type="image/x-icon" />
+    <script src="../content/scripts/mobile-util.js"></script>
+</head>
+
+<body>
+<header class="head">
+    <div class="head0">
+        <div class="menu_bar_box">
+            <!--  <a href="javascript:;" class="back_btn" onClick="javascript :history.back(-1);">
+             <i class="icon iconfont icon-jiantou3"></i>
+             </a> -->
+            <a href="javascript:;" class="back_btn" onClick="historyback()">
+                <i class="icon iconfont icon-jiantou3"></i>
+            </a>
+        </div>
+        <div class="head_title">
+            <p>学生列表</p>
+        </div>
+        <div class="head_r">
+            <a href="javascript:;" class="add_student_bar" style="display:none;">
+                <i class="icon iconfont icon-jiahao"></i>
+            </a>
+        </div>
+    </div>
+</header>
+
+<!-- 主要内容 -->
+<div class="screen" id="screen"></div>
+<div class="main">
+    <!-- 暂无学生 -->
+    <div class="no_bounds">
+        <p class="no_bounds_p"><span>暂无绑定学生</span></p>
+    </div>
+
+    <!-- 有学生 -->
+    <div class="container2" style="display:none;">
+        <div class="student_tab_box">
+            <ul class="student_tab">
+
+            </ul>
+        </div>
+
+        <div class="bang_list">
+            <div class="name_box">
+                <label for="bang_name">姓名</label>
+            </div>
+            <div class="input_box">
+                <input class="input_txt" id="bang_name" onblur="this.blur()" readonly type="text" >
+            </div>
+        </div>
+
+        <div class="weui-cell bang_list">
+            <div class="weui-cell__hd name_box"><label for="sex" class="weui-label">性别</label></div>
+            <div class="weui-cell__bd">
+                <input class="input_txt" id="sex" onblur="this.blur()" type="text" readonly>
+            </div>
+        </div>
+
+        <div class="weui-cell bang_list">
+            <div class="weui-cell__hd name_box"><label for="date" class="weui-label">生日</label></div>
+            <div class="weui-cell__bd">
+                <input class="input_txt" id="date" onblur="this.blur()" type="text" readonly>
+            </div>
+        </div>
+        <div class="bang_list">
+            <div class="name_box">
+                <label for="bang_name">身份证号</label>
+            </div>
+            <div class="input_box">
+                <input class="input_txt" id="s_card" onblur="this.blur()" type="text" readonly>
+            </div>
+        </div>
+
+        <div class="weui-cell bang_list">
+            <div class="weui-cell__hd name_box"><label for="city" class="weui-label">所在地</label></div>
+            <div class="weui-cell__bd">
+                <input class="input_txt " id="city" onblur="this.blur()" type="text" readonly>
+            </div>
+        </div>
+
+        <div class="weui-cell bang_list">
+            <div class="weui-cell__hd name_box"><label for="school" class="weui-label">就读学校</label></div>
+            <div class="weui-cell__bd">
+                <input class="input_txt" id="school" onblur="this.blur()" type="text" readonly>
+            </div>
+        </div>
+
+        <div class="weui-cell bang_list">
+            <div class="weui-cell__hd name_box"><label for="classes" class="weui-label">所在年级</label></div>
+            <div class="weui-cell__bd">
+                <input class="input_txt" id="classes" onblur="this.blur()" type="text" readonly>
+            </div>
+        </div>
+
+        <div class="weui-cell bang_list">
+            <div class="weui-cell__hd name_box"><label for="banji" class="weui-label">所在班级</label></div>
+            <div class="weui-cell__bd">
+                <input class="input_txt" id="banji" onblur="this.blur()" type="text" readonly>
+            </div>
+        </div>
+
+        <div class="bang_list">
+            <div class="name_box">
+                <label for="shibiema">班级识别码</label>
+            </div>
+            <div class="input_box">
+                <input class="input_txt" id="shibiema" onblur="this.blur()" type="text" readonly>
+            </div>
+        </div>
+        <div class="bang_list">
+            <div class="name_box">
+                <label for="shibiema">看孩套餐</label>
+            </div>
+            <div class="input_box">
+                <input class="input_txt" id="see" onblur="this.blur()" type="text" readonly>
+                <input type="hidden" value="" name="s_id" id="s_id" />
+            </div>
+            <a href="javascript:;" class="scan_bar" onClick="see();" style="line-height: 90px;font-size: 24px;margin-left: 13px;display: none">
+                续费
+            </a>
+        </div>
+
+    </div>
+</div>
+
+
+<script src="../content/scripts/jquery.min.js"></script>
+<script src="../content/scripts/juqery.cookie.js"></script>
+<script src="../content/plugins/jqweui/js/jquery-weui.min.js"></script>
+<script src="../content/plugins/jqweui/js/city-picker.min.js"></script>
+<script src="../content/scripts/commom.js"></script>
+<script src="../content/scripts/API.js"></script>
+<script src="../content/scripts/regular.js"></script>
+
+<script>
+    /**
+     * @desc 判断是否为副账号
+     */
+    $.ajax({
+        type:'POST',
+        url:api+'/Member/isOwner.html',
+        data:{
+            key:user_token,
+            member_id:user_member_id,
+        },
+        dataType: "json",
+        success: function(response){
+            if(response['code'] == 200){
+                if(response.result[0]['is_owner'] == 0){
+                    $('.add_student_bar').show();
+                }else{
+                    $('.add_student_bar').hide();
+                }
+            }else if(response['code'] == 400){
+                $.toast(response['message'],'forbidden');return false;
+            }else{
+                $.toast(response['message'],'forbidden');return false;
+            }
+        }
+    });
+    var version = '';
+    //判断版本号
+    if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) { //判断iPhone|iPad|iPod|iOS
+         version = $.cookie('version');
+    }
+    
+    $.ajax({
+        type:'POST',
+        url:api+'/Member/getStudents.html',
+        data:{
+            key:user_token,
+            member_id:user_member_id,
+            version:version
+        },
+        dataType: "json",
+        success: function(response){
+            if(response['code'] == 200){
+                var data = response.result;
+                if(data.length >0){
+                    $('.no_bounds').hide();
+                    $('.container2').show();
+                    if(data.length > 1){
+                        var tab = '';
+                        for(var i=0;i<data.length;i++){
+                            if(i == 0){
+                                tab += '<li data-id="'+data[i]['s_id']+'" class="active">\n' +
+                                    '                    <a href="javascript:;">'+data[i]['s_name']+'</a>\n' +
+                                    '                </li>'
+                                $('#bang_name').val(data[0]['s_name']);
+                                if(data[0]['s_sex'] == 1){
+                                    $('#sex').val('男');
+                                }else{
+                                    $('#sex').val('女');
+                                }
+                                // data-id="'+data[i]['s_id']+'"
+                                $('#s_id').val(data[0]['s_id']);
+                                $('#date').val(data[0]['s_birthday']);
+                                $('#s_card').val(data[0]['s_card']);
+                                $('#city').val(data[0]['s_region']);
+                                $('#school').val(data[0]['name']);
+                                $('#classes').val(data[0]['sc_type']);
+                                $('#banji').val(data[0]['classname']);
+                                $('#shibiema').val(data[0]['classCard']);
+                                if(data[0]['is_version']){
+                                    if(data[0]['time'] != '请前往购买套餐'){
+                                        $('.scan_bar').show();
+                                    }else{
+                                        $('.scan_bar').hide();
+                                    }
+                                    $('#see').val(data[0]['time']);
+                                }else{
+                                    $('#see').val('暂无');
+                                }
+
+                            }else{
+                                tab += '<li data-id="'+data[i]['s_id']+'">\n' +
+                                    '                    <a href="javascript:;">'+data[i]['s_name']+'</a>\n' +
+                                    '                </li>'
+                            }
+
+                        }
+                        $('.student_tab').html(tab);
+                        $('.student_tab li').click(function(){
+                            $(this).addClass('active').siblings().removeClass('active');
+                            var sid = $(this).attr('data-id');
+                            $.ajax({
+                                type:'POST',
+                                url:api+'/Member/getStudent.html',
+                                data:{
+                                    key:user_token,
+                                    sid:sid,
+                                    version:version
+                                },
+                                dataType: "json",
+                                success: function(response){
+                                    if(response['code'] == 200){
+                                        $('#bang_name').val(response.result[0]['s_name']);
+                                        if(response.result[0]['s_sex'] == 1){
+                                            $('#sex').val('男');
+                                        }else{
+                                            $('#sex').val('女');
+                                        }
+                                        $('#s_id').val(response.result[0]['s_id']);
+                                        $('#date').val(response.result[0]['s_birthday']);
+                                        $('#s_card').val(response.result[0]['s_card']);
+                                        $('#city').val(response.result[0]['s_region']);
+                                        $('#school').val(response.result[0]['name']);
+                                        $('#classes').val(response.result[0]['sc_type']);
+                                        $('#banji').val(response.result[0]['classname']);
+                                        $('#shibiema').val(response.result[0]['classCard']);
+
+                                        if(response.result[0]['is_version']){
+                                            if(response.result[0]['time'] != '请前往购买套餐'){
+                                                $('.scan_bar').show();
+                                            }else{
+                                                $('.scan_bar').hide();
+                                            }
+                                            $('#see').val(response.result[0]['time']);
+                                        }else{
+                                            $('#see').val('暂无');
+                                        }
+                                    }else if(response['code'] == 400){
+                                        $('.no_bounds').show();
+                                        $('.container2').hide();
+                                        $.toast("请登陆",'forbidden');return false;
+                                    }else{
+                                        $('.no_bounds').show();
+                                        $('.container2').hide();
+                                        $.toast(response['message'],'forbidden');return false;
+                                    }
+                                }
+                            })
+
+                        })
+                    }else{
+                        $('#bang_name').val(data[0]['s_name']);
+                        if(data[0]['s_sex'] == 1){
+                            $('#sex').val('男');
+                        }else{
+                            $('#sex').val('女');
+                        }
+                        $('#s_id').val(data[0]['s_id']);
+                        $('#date').val(data[0]['s_birthday']);
+                        $('#s_card').val(data[0]['s_card']);
+                        $('#city').val(data[0]['s_region']);
+                        $('#school').val(data[0]['name']);
+                        $('#classes').val(data[0]['sc_type']);
+                        $('#banji').val(data[0]['classname']);
+                        $('#shibiema').val(data[0]['classCard']);
+                        if(data[0]['is_version']){
+                            if(data[0]['time'] != '请前往购买套餐'){
+                                $('.scan_bar').show();
+                            }else{
+                                $('.scan_bar').hide();
+                            }
+                            $('#see').val(data[0]['time']);
+                        }else{
+                            $('#see').val('暂无');
+                        }
+                    }
+                }else{
+                    $('.no_bounds').show();
+                    $('.container2').hide();
+                }
+            }else if(response['code'] == 400){
+                $('.no_bounds').show();
+                $('.container2').hide();
+                $.toast(response['message'],'forbidden');return false;
+            }else{
+                $('.no_bounds').show();
+                $('.container2').hide();
+                $.toast(response['message'],'forbidden');return false;
+            }
+        }
+    })
+
+
+
+
+    $('.add_student_bar').click(function(){
+        $.ajax({
+            type:'POST',
+            url:api+'/Member/isOwner.html',
+            data:{
+                key:user_token,
+                member_id:user_member_id,
+            },
+            dataType: "json",
+            success: function(response){
+                if(response['code'] == 200){
+                    if(response.result[0]['is_owner'] == 0){
+                        location.href='boundstudent.html';
+                    }else{
+                        $.toast("副账号不允许绑定孩子",'forbidden');return false;
+                    }
+                }else if(response['code'] == 400){
+                    $.toast("请登陆",'forbidden');return false;
+                }else{
+                    $.toast(response['message'],'forbidden');return false;
+                }
+            }
+        })
+    });
+    //购买套餐
+    $('#see').click(function(){
+        var sid = $('#s_id').val();
+        location.href=http_url+"app/user/chooselevel.html?pkg_type=1&child_id="+sid;
+
+    });
+    function see(){
+        var sid = $('#s_id').val();
+        location.href=http_url+"app/user/chooselevel.html?pkg_type=1&child_id="+sid;
+    }
+
+
+
+
+</script>
+</body>
+
+</html>

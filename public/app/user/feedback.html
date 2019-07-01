@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>想见孩-意见反馈</title>
+    <meta name="author" content="想见孩" />
+    <meta name="copyright" content="想见孩" />
+    <meta name="description" content="想见孩" />
+    <meta id="viewport" name="viewport" content="width=750" />
+    <link rel="stylesheet" href="../content/style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/iconfonts/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/lib/weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/css/jquery-weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/user.css" type="text/css" />
+    <link rel="shortcut icon" href="../content/images/ico.ico" type="image/x-icon" />
+    <script src="../content/scripts/mobile-util.js"></script>
+</head>
+
+<body class="infobody">
+    <header class="head">
+        <div class="head0">
+            <div class="menu_bar_box">
+                <a href="javascript:;" class="back_btn" onClick="historyback()">
+                    <i class="icon iconfont icon-jiantou3"></i>
+                </a>
+            </div>
+            <div class="head_title">
+                <p>意见反馈</p>
+            </div>
+            <div class="head_r">
+
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <div class="main">
+
+        <div class="cont margt30">
+            <div class="container2">
+                <div class="weui-cells weui-cells_form">
+                    <div class="weui-cell">
+                        <div class="weui-cell__bd">
+                            <textarea class="weui-textarea feedback_txt"   id="sizeStatistics" placeholder="请输入文本" rows="10"></textarea>
+                            <div class="weui-textarea-counter keepwatch"><span id="currentSize">0</span>/400</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bang_submit_box" style="padding-top: 200px;">
+            <input class="bang_submit" id="show-alert" type="button" value="发 送" />
+        </div>
+
+    </div>
+
+
+    <script src="../content/scripts/jquery.min.js"></script>
+    <script src="../content/scripts/juqery.cookie.js"></script>
+    <script src="../content/plugins/jqweui/js/jquery-weui.min.js"></script>
+    <script src="../content/scripts/commom.js"></script>
+    <script src="../content/scripts/API.js"></script>
+    <script>
+        $(function() {
+            // 反馈意见字数限制
+            $("#sizeStatistics").on("keyup", function() {
+                var size = $("#sizeStatistics").val().length;
+                if (size > 400) {
+                    size = 400;
+                    $("#sizeStatistics").val($("#sizeStatistics").val().substring(0, 400));
+                }
+                $("#currentSize").html(size);
+            })
+
+            // 验证提示
+            $(document).on("click", "#show-alert", function() {
+                /*if ($('.input_txt').val() == '' || !Tools.IsPhoneNum($('.input_txt').val())) {
+                    $.alert("请填写手机号！", "警告！");
+                }*/
+                $.ajax({
+                    type: "POST",
+                    url: api + '/Feedback/feedback_add.html',
+                    data: {
+                        key: user_token,
+                        feedback: $('#sizeStatistics').val()
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        if(response['code'] == 400){
+                            $.toast(response['message'],'forbidden',function(){
+                                layout();
+                            })
+                        }else if(response['code'] == 200){
+                            $.toast('提交成功','',function(){
+                                historyback();
+                            })
+                        }else{
+                            $.toast(response['message'],'forbidden')
+                        }
+                    }
+                });
+            });
+
+        })
+
+        var Tools = {
+            // 是否为空
+            IsNull: function(str) {
+                return str == null || typeof(str) == "undefined" || str == "";
+            },
+
+            //判断是否是手机号
+            IsPhoneNum: function(str) {
+                var myreg = /^1\d{10}$/;
+                return myreg.test(str);
+            }
+        }
+    </script>
+
+</body>
+
+</html>

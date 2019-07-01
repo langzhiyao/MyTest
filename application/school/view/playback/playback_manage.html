@@ -1,0 +1,227 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+ <link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">       
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>{$Think.lang.playback_manage}</h3>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+     <div class="explanation" id="explanation">
+          <div class="title" id="checkZoom">
+              <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+              <span id="explanationZoom" title="收起提示" class="arrow"></span>
+          </div>
+          <ul>
+              <li>1，此开启关闭时间会影响到所有设置为回放功能的摄像头</li>
+              <li>2，开启-关闭：默认0时0分，小时数字提供0，1，2..23;重复：可选择每天，也自定义星期几的这个时间段</li>
+              <li>3，切割范围：默认为30分钟，用户可以进行按需修改</li>
+              <li>4，同一时间只能有【一个】生效</li>
+          </ul>
+      </div> 
+  <div class="fixed-empty"></div>
+<form class="layui-form" action="{:url('Playback/playback_edit')}" method="post" id="form1">
+  <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+    <legend>回放时间设置</legend>
+  </fieldset>
+   
+  <div class="layui-form">
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">开启时间</label>
+        <div class="layui-input-inline">
+          <input type="text" class="layui-input" id="start_time" name="start_time" placeholder="HH:mm:ss" value="{$editInfo.start_time}">
+        </div>
+      </div>
+      <div class="layui-inline">
+        <label class="layui-form-label">关闭时间</label>
+        <div class="layui-input-inline">
+          <input type="text" class="layui-input" id="end_time" name="end_time" placeholder="HH:mm:ss" value="{$editInfo.end_time}">
+        </div>
+      </div>
+      <div class="layui-inline">
+        <label class="layui-form-label">每天重复</label>
+        <div class="layui-input-block">
+          <input type="checkbox" {if condition="$editInfo.replay neq 2 || $editInfo.replay eq 1"} checked="checked" {/if} lay-skin="switch" lay-filter="replay" lay-text="开|关" >
+        </div>
+      </div>
+    </div>
+    <div class="layui-form-item" style="display: none;" id="weeksItem">
+      <label class="layui-form-label">自定义</label>
+      <div class="layui-input-block">
+        {foreach name=":config('week')" item="w" key="k" }
+          <input type="checkbox" {in name="$k" value="$editInfo.week"} checked="checked" {/in} name="week[]" value="{$k}" lay-skin="primary" title="{$w}" >
+        {/foreach}
+      </div>
+    </div>
+  </div>
+
+  <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+    <legend>视频时长切割设置</legend>
+  </fieldset>
+   
+  <div class="layui-form">
+
+  <div class="layui-form-item">
+    <div class="layui-inline">
+      <label class="layui-form-label">切割范围</label>
+      <div class="layui-form-mid layui-word-aux">每</div>
+      <div class="layui-input-inline" style="width: 100px;">
+        <input id="cut_time" type="text" name="cut_time" placeholder="30" autocomplete="off" class="layui-input" value="{$editInfo.cut_time}">
+      </div>
+      <!-- <label class="layui-form-label">范围</label> -->
+      <div class="layui-form-mid layui-word-aux">分钟，切割为一段视频并存储</div>
+    </div>
+
+    <div class="layui-inline">
+      <div class="layui-input-block">
+        <a class="layui-btn" href="javascript:checksub()">立即提交</a>
+        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+      </div>
+    </div>
+    <script type="text/javascript">
+      function checksub(){
+        var start_time = $("#start_time").val();
+        var end_time = $("#end_time").val();
+        var cut_time = $("#cut_time").val();
+        if (!end_time || !start_time) {
+          alert('请选择正确的时间！');return false;
+        }else if(!cut_time){
+          alert('请输入合适的切割范围！');return false;
+        }else{
+          $("#form1").submit();
+        }
+      }
+    </script>
+  </div>
+  </div>
+  <input type="hidden" name="pid" value="{$editInfo.pid}" id="pid">
+  <input type="hidden" name="type" value="{$type}" id="ptype">
+  <input type="hidden" name="replay" value="1" id="replay">
+</form>
+<script> 
+layui.use(['form','laydate'], function(){
+  var form = layui.form
+  ,laydate = layui.laydate;
+  var replay = '{$editInfo.replay}';
+  if(replay == 2){
+    $('#weeksItem').css('display','block');
+  }
+  
+  //时间选择器
+  laydate.render({
+    elem: '#start_time'
+    ,type: 'time'
+  });
+  laydate.render({
+    elem: '#end_time'
+    ,type: 'time'
+  });
+  //监听指定开关
+  form.on('switch(replay)', function(data){
+    var replay = this.checked ? 'true' : 'false';
+    if (replay=='true') { //每天
+      $('#replay').val(1);
+      $('#weeksItem').css('display','none');
+    }else{ //自定义
+      $('#replay').val(2);
+      $('#weeksItem').css('display','block');
+    }
+    
+  });
+})
+$(function(){
+
+})
+</script>
+  
+  
+
+  
+  
+  <form method="post" id="store_form">
+    <input type="hidden" name="form_submit" value="ok" />
+    <table class="ds-default-table">
+      <thead>
+        <tr class="thead">
+          <th><input type="checkbox" class="checkall"/></th>
+          <th>ID</th>
+          <th class="align-center">开启时间</th>
+          <th class="align-center">关闭时间</th>
+          <th class="align-center">分段时间</th>
+          <th class="align-center">重复时间</th>
+          <th class="align-center">{$Think.lang.up_time}</th>
+          <th class="align-center">{$Think.lang.ds_handle}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php if(!empty($backList) && is_array($backList)){ ?>
+        <?php foreach($backList as $k => $v){ ?>
+        <tr class="hover" id="pid_<?php echo $v['pid'];?>">
+          <td class="w24"><input type="checkbox" class="checkitem" name="del_id[]" value="<?php echo $v['pid']; ?>" /></td>
+          <td class="align-center"><?php echo $v['pid'];?></td>
+          <td class="align-center"><?php echo date('H:i:s', $v['start_time']);?></td>
+          <td class="align-center"><?php echo date('H:i:s', $v['end_time']);?></td>
+          <td class="align-center"><?php echo $v['cut_time'].'分钟';?></td>
+          <td class="align-center"><?php echo $v['week'];?></td> 
+          
+          <td class="align-center"><?php echo date('Y-m-d H:i:s', $v['up_time']);?></td>        
+          <td class="align-center">
+              <a class="layui-btn layui-btn-sm" href="{:url('/Admin/Playback/playback_manage',['ptype'=>$type,'pid'=>$v.pid])}" >{$Think.lang.ds_edit}</a> 
+              <!-- <a class="layui-btn layui-btn-sm layui-btn-danger" href="{:url('/Admin/Playback/playback_del',['ptype'=>$type,'pid'=>$v.pid])}">{$Think.lang.ds_del}</a> -->
+                <a id="dp_{$v.pid}" class="layui-unselect layui-form-checkbox {if condition="$v.pl_enabled eq 1"} layui-form-checked {/if}" onclick="makedefault('<?php echo $v[pid];?>');" ><span>使用</span><i class="layui-icon layui-icon-ok"></i></a>
+          </td>
+        </tr>
+        <?php } ?>
+        <?php }else { ?>
+        <tr class="no_data">
+          <td colspan="15">{$Think.lang.ds_no_record}</td>
+        </tr>
+        <?php } ?>
+      </tbody>
+      <script type="text/javascript">
+        function makedefault(id){
+          var ptype = $('#ptype').val();
+            $.ajax({
+              url: "{:url('/Admin/Playback/makedefault')}",
+              type: 'POST',
+              dataType: 'json',
+              data: {'pid': id,'ptype':ptype},
+            })
+            .done(function(sb) {
+              $("a").removeClass("layui-form-checked");
+              console.log(sb);
+              $('#dp_'+sb.p).addClass('layui-form-checked');
+            })
+            
+            
+        }
+      </script>
+      <tfoot>
+        <!-- <tr class="tfoot">
+          <td><input type="checkbox" class="checkall" id="checkall"/></td>
+          <td id="batchAction" colspan="15"><span class="all_checkbox">
+            <label for="checkall">{$Think.lang.ds_select_all}</label>
+            </span>&nbsp;&nbsp;<a href="JavaScript:void(0);" class="btn" onclick="if(confirm('{$Think.lang.ap_del_sure}')){$('#store_form').submit();}"><span>{$Think.lang.ds_del}</span></a>
+          </td>
+        </tr> -->
+      </tfoot>
+    </table>
+    {$page}
+  </form>
+</div>
+
+ 
+
+
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/plugins/jquery.edit.js" charset="utf-8"></script>
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/plugins/js/dialog/dialog.js" id="dialog_js" charset="utf-8"></script>
+<script type="text/javascript" src="{$Think.config.url_domain_root}static/plugins/js/jquery-ui/jquery-ui.min.js"></script>
+<script type="text/javascript">
+  
+</script>

@@ -1,0 +1,105 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>结算管理</h3>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <div class="fixed-empty"></div>
+    <form method="get" action="" target="" name="formSearch" id="formSearch">
+        <table class="search-form">
+            <tbody>
+                <tr>
+                    <th>{$Think.lang.order_time_from}按年份搜索</th>
+                    <td>
+                        <select name="query_year" class="querySelect">
+                            <option value="">{$Think.lang.ds_please_choose}</option>
+                            <?php for($i = date('Y',TIMESTAMP)-5; $i <= date('Y',TIMESTAMP)+2; $i++) { ?>
+                            <option value="<?php echo $i;?>" {if condition="$Think.get.query_year eq $i"}selected{/if}><?php echo $i;?></option>
+                            <?php } ?>
+                        </select>
+                    </td>
+                    <td>
+                        <a href="javascript:document.formSearch.submit();" class="btn-search " title=""></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+    
+  <div class="explanation" id="explanation">
+      <div class="title" id="checkZoom">
+          <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+          <span id="explanationZoom" title="收起提示" class="arrow"></span>
+      </div>
+      <ul>
+          <li>此处列出了平台每月的结算信息汇总，点击查看可以查看本月详细的店铺账单信息列表</li>
+      </ul>
+  </div>
+    
+    
+    
+    <table class="ds-default-table">
+        <thead>
+            <tr class="thead">
+                <th>{$Think.lang.order_number}账单（月）</th>
+                <th class="align-center">开始日期</th>
+                <th class="align-center">结束日期</th>
+                <th class="align-center">订单金额</th>
+                <th class="align-center">运费</th>
+                <th class="align-center">收取佣金</th>
+                <th class="align-center">退单金额</th>
+                <th class="align-center">退还佣金</th>
+                <th class="align-center">店铺费用</th>
+                <th class="align-center">本期应结</th>
+                <th class="align-center">{$Think.lang.ds_handle}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if(is_array($bill_list) && !empty($bill_list)){?>
+            <?php foreach($bill_list as $bill){?>
+            <tr class="hover">
+                <td>
+                    <?php echo substr($bill['os_month'],0,4).'-'.substr($bill['os_month'],4);?>
+                </td>
+                <td class="nowrap align-center"><?php echo date('Y-m-d',$bill['os_start_date']);?></td>
+                <td class="nowrap align-center"><?php echo date('Y-m-d',$bill['os_end_date']);?></td>
+                <td class="align-center"><?php echo $bill['os_order_totals'];?></td>
+                <td class="align-center"><?php echo $bill['os_shipping_totals'];?></td>
+                <td class="align-center"><?php echo $bill['os_commis_totals'];?></td>
+                <td class="align-center"><?php echo $bill['os_order_return_totals'];?></td>
+                <td class="align-center"><?php echo $bill['os_commis_return_totals'];?></td>
+                <td class="align-center"><?php echo $bill['os_store_cost_totals'];?></td>
+                <td class="align-center"><?php echo $bill['os_result_totals'];?></td>
+                <td class="align-center">
+                    <a href="{:url('/Admin/Bill/show_statis',['os_month'=>$bill.os_month])}">{$Think.lang.ds_view}</a>
+                </td>
+            </tr>
+            <?php }?>
+            <?php }else{?>
+            <tr class="no_data">
+                <td colspan="15">{$Think.lang.ds_no_record}</td>
+            </tr>
+            <?php }?>
+        </tbody>
+        <?php if(is_array($bill_list) && !empty($bill_list)){?>
+        <tfoot>
+            <tr class="tfoot">
+                <td colspan="15" id="dataFuncs">{$show_page}</td>
+            </tr>
+        </tfoot>
+        <?php } ?>
+    </table>
+</div>
+<script type="text/javascript">
+    $(function() {
+        $('#add_time_from').datepicker({dateFormat: 'yy-mm-dd'});
+        $('#add_time_to').datepicker({dateFormat: 'yy-mm-dd'});
+    });
+</script>

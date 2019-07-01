@@ -1,0 +1,58 @@
+{include file="public/seller_top" /} 
+<div class="seller_main w1200">
+    {include file="public/seller_left" /}
+    <div class="seller_right">
+        <div class="seller_items">
+            {include file="public/seller_items" /}
+        </div>
+
+
+<ul class="add-goods-step">
+  <li><i class="icon icon-list-alt"></i>
+    <h6>STEP.1</h6>
+    <h2>选择商品分类</h2>
+    <i class="arrow icon-angle-right"></i> </li>
+  <li><i class="icon icon-edit"></i>
+    <h6>STEP.2</h6>
+    <h2>填写商品详情</h2>
+    <i class="arrow icon-angle-right"></i> </li>
+  <li><i class="icon icon-camera-retro "></i>
+    <h6>STEP.3</h6>
+    <h2>上传商品图片</h2>
+    <i class="arrow icon-angle-right"></i> </li>
+  <li class="current"><i class="icon icon-ok-circle"></i>
+    <h6>STEP.4</h6>
+    <h2>商品发布成功</h2>
+  </li>
+</ul>
+<div class="alert alert-block hr32">
+  <h2><i class="icon-ok-circle mr10"></i>{$Think.lang.store_goods_step3_goods_release_success}&nbsp;&nbsp;<?php if (config('goods_verify')) {?>等待管理员审核商品！<?php }?></h2>
+  <div class="hr16"></div>
+  <div>
+    <?php if ($allow_gift) {?>
+      <a class="dssc-btn dssc-btn-green ml30" href="{:url('/Home/Sellergoodsonline/add_gift',['commonid'=>$Request.param.commonid])}"><i class="icon-gift"></i>为该商品添加赠品捆绑</a>
+    <?php }?>
+    <?php if ($allow_combo) {?>
+    <a class="dssc-btn dssc-btn-orange ml10" href="{:url('/Home/Sellergoodsonline/add_combo',['commonid'=>$Request.param.commonid])}"><i class="icon-thumbs-up "></i>为该商品添加推荐组合</a></div>
+    <?php }?>
+  <div class="hr16"></div>
+  <strong>
+    <a class="ml30" href="{:url('/Home/Goods/index',['goods_id'=>$goods_id])}">{$Think.lang.store_goods_step3_viewed_product}&gt;&gt;</a>
+    <a class="ml30" href="{:url('/Home/Sellergoodsonline/edit_goods',['commonid'=>$Request.param.commonid])}">{$Think.lang.store_goods_step3_edit_product}&gt;&gt;</a>
+  </strong>  
+  <div class="hr16"></div>
+  <h4 class="ml10">{$Think.lang.store_goods_step3_more_actions}</h4>
+  <ul class="ml30">
+    <li>1.  {$Think.lang.store_goods_step3_continue}&quot; <a href="{:url('/Home/Sellergoodsadd/index')}">{$Think.lang.store_goods_step3_release_new_goods}</a>&quot;</li>
+    <li>2. {$Think.lang.store_goods_step3_access} &quot; {$Think.lang.ds_seller}&quot;  {$Think.lang.store_goods_step3_manage}&quot;<a href="{:url('/Home/Sellergoodsonline/index')}">{$Think.lang.ds_member_path_goods_list}</a>&quot;</li>
+    <li>3.  {$Think.lang.store_goods_step3_participation}&quot; <a href="{:url('/Home/Selleractivity/index')}">{$Think.lang.store_goods_step3_special_activities}</a> &quot;</li>
+  </ul>
+</div>
+
+        
+        
+        
+
+    </div>
+</div>
+{include file="public/mall_footer" /}

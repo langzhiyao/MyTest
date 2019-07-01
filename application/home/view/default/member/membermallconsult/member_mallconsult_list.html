@@ -1,0 +1,52 @@
+{include file="public/mall_top" /}
+{include file="public/mall_header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/home/css/member.css">
+<div class="dsm-container">
+    {include file="public/member_left" /}
+    <div class="right-layout">
+        <div class="tabmenu">
+            {include file="public/member_items" /}
+        </div>
+
+ <table class="dsm-default-table">
+    <thead>
+      <tr>
+        <th class="w10"></th>
+        <th class="tl">咨询内容</th>
+        <th class="w150">咨询时间</th>
+        <th class="w150">状态</th>
+        <th class="w110">操作</th>
+      </tr>
+    </thead>
+    <tbody>
+    {notempty name="consult_list"}
+     {volist name="consult_list" id="val"}
+      <tr class="bd-line">
+        <td></td>
+        <td class="tl">{$val.mc_content}</td>
+        <td>{:date('Y-m-d H:i:s',$val.mc_addtime)}</td>
+        <td class="">{$state[$val.is_reply]}</td>
+        <td class="dsm-table-handle">
+          <span><a href="{:url('membermallconsult/mallconsult_info',['id'=>$val.mc_id])}" class="btn-blue"><i class="icon-eye-open"></i><p>查看</p></a></span>
+          <span><a href="javascript:void(0);" onclick="ajax_get_confirm('{:lang('ds_common_op_confirm')}', '{:url('membermallconsult/del_mallconsult',['id'=>$val.mc_id])}');" class="btn-blue"><i class="icon-trash"></i><p>删除</p></a></span>
+        </td>
+      </tr>
+     {/volist}
+     {else /}
+      <tr>
+        <td colspan="20" class="norecord"><div class="warning-option"><i>&nbsp;</i><span>{:lang('no_record')}</span></div></td>
+      </tr>
+     {/notempty}
+    </tbody>
+    <tfoot>
+    {notempty name="consult_list"}
+      <tr>
+        <td colspan="20"><div class="pagination"> {$show_page}</div></td>
+      </tr>
+     {/notempty}
+    </tfoot>
+  </table>
+    </div>
+</div>
+{include file="public/mall_server" /}
+{include file="public/mall_footer" /}

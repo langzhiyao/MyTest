@@ -1,0 +1,99 @@
+{include file="public/header" /}
+<script src="{$Think.config.url_domain_root}static/common/js/mlselection_list.js"></script>
+<script src="{$Think.config.url_domain_root}static/home/js/common.js"></script>
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>视频管理</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+    <form method="post" enctype="multipart/form-data" name="form1" action="">
+        <div class="ncap-form-default">
+            <dl>
+                <dt>{$Think.lang.teacher_index_videoname}：{$teachinfo.t_title}</dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.teacher_index_videotype}：{$teachinfo.type}</dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.teacher_index_videoprice}：{$teachinfo.t_price}</dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.teacher_index_videodesc}：{$teachinfo.t_profile}</dt>
+            </dl>
+            <dl>
+                <dt>备注：{$teachinfo.t_desc}</dt>
+            </dl>
+            <dl>
+                <dt>作者：{$teachinfo.t_author}</dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.teacher_index_videoupload}：{$teachinfo.member_mobile}</dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.teacher_index_videoteacher}：{if condition="$teachinfo.member_mobile eq '后台'"}
+                    后台
+                    {/if}
+                    {$teachinfo.name}</dt>
+            </dl>
+            <dl>
+                <dt>{$Think.lang.teacher_index_uploadtime}：<?php echo date("Y-m-d H:i:s",$teachinfo['t_maketime']); ?></dt>
+            </dl>
+            {if condition="$teachinfo.t_audit eq 2"}
+            <dl>
+                <dt>审核不通过原因：{$teachinfo.t_failreason}</dt>
+            </dl>
+            {/if}
+            <!--<dl>-->
+                <!--<dt>提醒：请确定视频不存在违法及负面内容再通过！</dt>-->
+            <!--</dl>-->
+            <dl>
+                <dt>{$Think.lang.teacher_index_videoimg}：{$teachinfo.affiliat}</dt>
+            </dl>
+            <dl>
+                <dt>
+                <video width="350" height="260" controls="controls" src="{$teachinfo.t_url}"></video>
+                </dt>
+            </dl>
+            <dl>
+                <dt>说明：点击审核通过或拒绝审核，系统会发送短信给上传账号进行审核结果的通知。</dt>
+            </dl>
+            <a href="javascript:dd({$teachinfo.t_id})" class="layui-btn layui-btn-xs">{$Think.lang.teacher_index_pass}</a>
+        </div>
+    </form>
+    <form class="layui-form" onsubmit="return false;" style="display: none;" id="courForm">
+        <input type="hidden" id="role" value="">
+        &nbsp;&nbsp;&nbsp;&nbsp;拒绝原因：<input type="text" value="" name="fail_reason" id="fail_reason" class="txt">
+        <input type="hidden" id="mit"  value="{:url('/admin/teachvideo/drop',['t_id'=>$teachinfo.t_id,'t_audit'=>2,'phone'=>$teachinfo.member_mobile,'reason'=>''])}">
+        &nbsp;&nbsp;&nbsp;&nbsp;<a href="{:url('/admin/teachvideo/drop',['t_id'=>$teachinfo.t_id,'t_audit'=>3,'phone'=>$teachinfo.member_mobile])}" class="btn" id="submitBtn">审核通过</a>
+        <a href="javascript:da()" class="btn" id="">拒绝审核</a>
+
+    </form>
+</div>
+<script type="text/javascript">
+    function da(){
+        $a = $("#fail_reason").val();
+        var str = $("#mit").val()+   $("#fail_reason").val();
+        window.location.href=str;
+    }
+    function dd(role){
+        //多窗口模式，层叠置顶
+        layer.open({
+            type: 1,
+            title: '审核',
+            area: ['300px', '150px'],
+            fixed: false, //不固定
+            shadeClose: true,
+            shade: 0.4,
+            maxmin: false, //开启最大化最小化按钮
+            content: $("#courForm")
+        });
+    }
+</script>

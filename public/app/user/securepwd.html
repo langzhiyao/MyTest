@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>想见孩-交易密码</title>
+    <meta name="author" content="想见孩" />
+    <meta name="copyright" content="想见孩" />
+    <meta name="description" content="想见孩" />
+    <meta id="viewport" name="viewport" content="width=750" />
+    <link rel="stylesheet" href="../content/style/reset.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/iconfonts/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/lib/weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/plugins/jqweui/css/jquery-weui.min.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="../content/style/user.css" type="text/css" />
+    <link rel="shortcut icon" href="../content/images/ico.ico" type="image/x-icon" />
+
+    <script src="../content/scripts/mobile-util.js"></script>
+</head>
+
+<body class="infobody">
+    <header class="head">
+        <div class="head0">
+            <div class="menu_bar_box">
+                <a href="javascript:;" class="back_btn" onClick="historyback()">
+                    <i class="icon iconfont icon-jiantou3"></i>
+                </a>
+            </div>
+            <div class="head_title">
+                <p>交易密码</p>
+            </div>
+            <div class="head_r" style="width:130px;">
+                <a href="javascript:;" class="xiugaipwd_btn xiugaipwd hidden">修改密码</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <div class="main">
+
+        <div class="cont margt30">
+            <div class="container2">
+                <div class="shezhi_cont hidden">
+                    <div class="bang_list">
+                        <div class="name_box">
+                            <label for="nickname">设置6位交易密码：</label>
+                        </div>
+                        <div class="input_box">
+                            <input class="input_txt" id="pwd1"  onkeyup="maxLengths(event)" type="password" placeholder="请输入交易密码" value="" />
+                        </div>
+                    </div>
+
+                    <div class="bang_list">
+                        <div class="name_box">
+                            <label for="nickname">确认交易密码：</label>
+                        </div>
+                        <div class="input_box">
+                            <input class="input_txt" id="pwd2"   onkeyup="maxLengths(event)" type="password" placeholder="请再一次输入交易密码" value="" />
+                        </div>
+                    </div>
+
+                    <div class="bang_submit_box" style="padding-top: 300px;">
+                        <input class="bang_submit" type="button" value="完 成" onclick="" />
+                    </div>
+
+                </div>
+
+                <div class="bang_list xiugaipwd hidden">
+                    <div class="name_box">
+                        <label for="nickname">已成功设置交易密码</label>
+                    </div>
+                    <div class="input_box">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <script src="../content/scripts/jquery.min.js"></script>
+    <script src="../content/scripts/juqery.cookie.js"></script>
+
+    <script src="../content/plugins/jqweui/js/jquery-weui.min.js"></script>
+    <script src="../content/scripts/commom.js"></script>
+    <script src="../content/scripts/API.js"></script>
+    <script src="../content/scripts/regular.js"></script>
+    <script>
+        $(function() {
+
+            maxLengths = function(event) {
+                if (event.target.value.length > 6) {
+                    $.toast('交易密码只能有六位数字','forbidden');
+                    event.target.value = event.target.value.substring(0, 6);
+                }
+            }
+
+            $(".xiugaipwd_btn").click(function() {
+                $(".shezhi_cont").removeClass("hidden");
+                $(".xiugaipwd").addClass("hidden");
+            });
+
+            $.ajax({
+                type: "POST",
+                url: api + '/Member/payPwd.html',
+                data: {
+                    key: user_token,
+                    member_id: user_member_id
+                },
+                dataType: "json",
+                success: function(response) {
+                    if (!response.result[0]['member_paypwd']) {
+                        $(".shezhi_cont").removeClass("hidden");
+                    } else {
+                        $(".xiugaipwd").removeClass("hidden");
+                    }
+                }
+            });
+
+            $('.bang_submit').click('on', function() {
+                if ($('#pwd1').val() == '') {
+                    $.toast('请输入交易密码','forbidden');return false;
+                } else if ($('#pwd2').val() == '') {
+                    $.toast('请再一次输入交易密码','forbidden');return false;
+                }  else if ($('#pwd2').val() != $('#pwd1').val()) {
+                    $.toast('两次密码不一致，请重新输入','forbidden');return false;
+                } else {
+                    $.ajax({
+                        type: "POST",
+                        url: api + '/Member/editPayPwd.html',
+                        data: {
+                            key: user_token,
+                            member_id: user_member_id,
+                            payPwd: $('#pwd1').val(),
+                            rePayPwd: $('#pwd2').val()
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            if (response['code'] == 200) {
+                                $.toast('修改成功','',function(){
+                                    historyback();
+                                })
+                            }else if(response['code'] == 400){
+                                $.toast(response['message'],'forbidden',function(){
+                                    layout();
+                                })
+                            } else {
+                                $.toast(response['message'],'forbidden');return false;
+                            }
+                        }
+                    });
+                }
+            })
+        })
+    </script>
+
+</body>
+
+</html>

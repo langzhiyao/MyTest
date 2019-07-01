@@ -1,0 +1,392 @@
+{include file="public/header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<script src="{$Think.config.url_domain_root}static/ckplayer/ckplayer.js"></script>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>{$Think.lang.look_camera_title}</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+
+    <form method="get" id='form_admin' class="layui-form">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <input name="name"  autocomplete="off" placeholder="请输入摄像头名称搜索" value="<?php echo $_GET['name'];?>" class="layui-input" type="text">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <select  lay-filter="province"  class="select"  lay-verify="type" name="province" id="province">
+                        <option value="0" selected>{$Think.lang.look_address_province}</option>
+                        {volist name="province" id="vo"}
+                        <option value="{$vo.area_id}" <?php if($vo['area_id'] == $_GET['province']){echo 'selected';}?> >{$vo.area_name}</option>
+                        {/volist}
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="city" lay-filter="city"  class="select"  lay-verify="type"  id="city">
+                        <option value="0">{$Think.lang.look_address_city}</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="area" lay-filter="area"  class="select"  lay-verify="type"  id="area">
+                        <option value="0">{$Think.lang.look_address_area}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <select name="school" lay-filter="school"  class="select"  lay-verify="type"  id="school">
+                        <option value="0" selected="">{$Think.lang.look_address_school}</option>
+                        {volist name="school" id="vo"}
+                        <option value="{$vo.schoolid}" <?php if($vo['schoolid'] == $_GET['school']){echo 'selected';}?> >{$vo.name}</option>
+                        {/volist}
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="grade" lay-filter="grade"  class="select"  lay-verify="type"  id="grade">
+                        <option value="0">{$Think.lang.look_address_grade}</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="class" lay-filter="class"  class="select"  lay-verify="type"  id="class">
+                        <option value="0">{$Think.lang.look_address_class}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <button class="layui-btn" data-type="reload">{$Think.lang.look_camera_search}</button>
+            </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <div class="layui-inline">
+                <a href="javascript:update()" class="layui-btn" data-type="auto" data-method="offset">{$Think.lang.look_camera_update}</a>
+            </div>
+        </div>
+
+        <table class="layui-table">
+            <colgroup>
+                <col >
+                <col >
+                <col>
+            </colgroup>
+            <thead>
+            <tr class="thead">
+                <th colspan="12">
+                    <p class="layui-table-tool-temp" >{$Think.lang.look_camera_wait_an_number}：<span style="font-size: 24px;color: #D90909" id="count"></span> </p>
+                </th>
+            </tr>
+            </thead>
+            <thead>
+            <tr class="thead">
+                <th class="align-center">{$Think.lang.look_camera_name}</th>
+                <th class="align-center">{$Think.lang.look_camera_channelid}</th>
+                <th class="align-center">{$Think.lang.look_camera_deviceid}</th>
+                <th class="align-center">{$Think.lang.look_camera_id}</th>
+                <th class="align-center">{$Think.lang.look_camera_online}</th>
+                <th class="align-center">{$Think.lang.look_camera_parentid}</th>
+                <th class="align-center">{$Think.lang.look_camera_pimageurl}</th>
+                <th class="align-center">{$Think.lang.look_camera_rtmpplayurl}</th>
+                <th class="align-center">{$Think.lang.look_camera_classroom}</th>
+                <th class="align-center">{$Think.lang.look_camera_cstatus}</th>
+                <th class="align-center">{$Think.lang.look_camera_sqtime}</th>
+                <th class="align-center">{$Think.lang.look_camera_begintime}</th>
+                <!--<th class="align-center">{$Think.lang.look_camera_az_area}</th>-->
+                <!--<th class="align-center">{$Think.lang.look_camera_is_public_area}</th>-->
+                <!--<th class="align-center">{$Think.lang.look_camera_school}</th>-->
+                <!--<th class="align-center">{$Think.lang.look_camera_area}</th>-->
+                <!--<th class="align-center">{$Think.lang.look_camera_time}</th>-->
+                <!--<th class="align-center">{$Think.lang.look_camera_sn}</th>-->
+                <!--<th class="align-center">{$Think.lang.look_camera_key}</th>-->
+                <!--<th class="align-center">{$Think.lang.look_camera_company}</th>-->
+                <!--<th class="align-center">{$Think.lang.look_camera_text}</th>-->
+                <!--<th class="align-center">{$Think.lang.look_camera_status}</th>-->
+                <!--<th class="align-center">{$Think.lang.ds_handle}</th>-->
+            </tr>
+            </thead>
+            <tbody id="html">
+
+            </tbody>
+        </table>
+        <div style="float: right;">
+            <tr class="tfoot">
+                <div id="page"></div>
+            </tr>
+        </div>
+    </form>
+</div>
+<div class="layui-fluid layui-card-body" id="LAY" style="display: none;">
+    <div class="layui-row layui-col-space10 demo-list">
+        <div class="layui-col-sm4">
+            <!-- 填充内容 -->
+            <div class="layui-card">
+                <div id="video" style="width: 600px; height: 400px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function rtmplay(cid){
+        var rtmpInfo= $('#tr_'+cid).attr('datainfo');
+        rtmpInfo =$.parseJSON(rtmpInfo);
+        layer.open({
+            type: 1,
+            title: rtmpInfo.name,
+            shadeClose: true,
+            area: ['644px', '470px'],
+            skin: 'layui-layer-rim',
+            content: $('#LAY')
+        });
+        var videoObject = {
+            container: '#video', //容器的ID或className
+            variable: 'player',//播放函数名称
+            autoplay:false,
+            live:true,
+            debug:true,
+            video: rtmpInfo.rtmpplayurl,
+            poster:rtmpInfo.imageurl
+        };
+        var player = new ckplayer(videoObject);
+    }
+    layui.use(['form','laypage', 'layer'], function(){
+        var form = layui.form,
+            laypage = layui.laypage
+            ,layer = layui.layer;
+        //关键字搜索
+        var name = '<?php if(!empty($_GET["name"])){echo $_GET["name"];}?>';
+        //省 市 区
+        var province = '<?php if(!empty($_GET["province"])){echo $_GET["province"];}?>';
+        var city = '<?php if(!empty($_GET["city"])){echo $_GET["city"];}?>';
+        var area = '<?php if(!empty($_GET["area"])){echo $_GET["area"];}?>';
+        //学校 年级 班级
+        var school = '<?php if(!empty($_GET["school"])){echo $_GET["school"];}?>';
+        var grade = '<?php if(!empty($_GET["grade"])){echo $_GET["grade"];}?>';
+        var class_name = '<?php if(!empty($_GET["class"])){echo $_GET["class"];}?>';
+        if(province != 0){
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+province+'&city='+city+'&area='+area+'&school='+school,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变市区
+                    $('#city').html(data.city);
+                    //改变县区
+                    $('#area').html(data.area);
+                    //改变学校
+                    $('#school').html(data.school);
+                    //改变年级
+                    $('#grade').html(data.grade);
+                    //改变班级
+                    $('#class').html(data.class);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        }
+
+        if(school != 0){
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_school_info?school='+school+'&grade='+grade+'&class='+class_name,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变年级
+                    $('#grade').html(data.grade);
+                    //改变班级
+                    $('#class').html(data.class);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        }
+
+        //省
+        form.on('select(province)', function(data){
+            //改变市区
+            $('#city').html('<option value="0">{$Think.lang.look_address_city}</option>');
+            //改变县区
+            $('#area').html('<option value="0">{$Think.lang.look_address_area}</option>');
+            //改变年级
+            $('#grade').html('<option value="0">{$Think.lang.look_address_grade}</option>');
+            //改变班级
+            $('#class').html('<option value="0">{$Think.lang.look_address_class}</option>');
+
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变市区
+                    $('#city').html(data.city);
+                    //改变县区
+                    $('#area').html(data.area);
+                    //改变学校
+                    $('#school').html(data.school);
+                    //改变年级
+                    $('#grade').html(data.grade);
+                    //改变班级
+                    $('#class').html(data.class);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //市
+        form.on('select(city)', function(data){
+            //改变县区
+            $('#area').html('<option value="0">{$Think.lang.look_address_area}</option>');
+            //改变年级
+            $('#grade').html('<option value="0">{$Think.lang.look_address_grade}</option>');
+            //改变班级
+            $('#class').html('<option value="0">{$Think.lang.look_address_class}</option>');
+            var province = $('#province').find('option:selected').val();
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+province+'&city='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变县区
+                    $('#area').html(data.area);
+                    //改变学校
+                    $('#school').html(data.school);
+                    //改变年级
+                    $('#grade').html(data.grade);
+                    //改变班级
+                    $('#class').html(data.class);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //县/区
+        form.on('select(area)', function(data){
+            //改变年级
+            $('#grade').html('<option value="0">{$Think.lang.look_address_grade}</option>');
+            //改变班级
+            $('#class').html('<option value="0">{$Think.lang.look_address_class}</option>');
+            var province = $('#province').find('option:selected').val();
+            var city = $('#city').find('option:selected').val();
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_address_school?province='+province+'&city='+city+'&area='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变学校
+                    $('#school').html(data.school);
+                    //改变年级
+                    $('#grade').html(data.grade);
+                    //改变班级
+                    $('#class').html(data.class);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //学校
+        form.on('select(school)', function(data){
+            //改变年级
+            $('#grade').html('<option value="0">{$Think.lang.look_address_grade}</option>');
+            //改变班级
+            $('#class').html('<option value="0">{$Think.lang.look_address_class}</option>');
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_school_info?school='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变年级
+                    $('#grade').html(data.grade);
+                    //改变班级
+                    $('#class').html(data.class);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+        //年级
+        form.on('select(grade)', function(data){
+            //改变班级
+            $('#class').html('<option value="0">{$Think.lang.look_address_class}</option>');
+            var school = $('#school').find('option:selected').val();
+            $.ajax({
+                type:'POST',
+                url:ADMIN_URL+'Common/get_school_info?school='+school+'&grade='+data.value,
+                success:function(data){
+                    data = jQuery.parseJSON(data);
+                    //改变班级
+                    $('#class').html(data.class);
+                    form.render('select');//select是固定写法 不是选择器
+                }
+            })
+        });
+
+        //分页
+        laypage.render({
+            elem: 'page'
+            ,count: '<?php echo $list_count;?>'
+            ,limit:15
+            ,layout: ['count', 'prev', 'page', 'next',  'skip']
+            ,jump: function(obj){
+                // console.log(obj);
+                var page = obj.curr,
+                    page_count = obj.limit;
+                $.ajax({
+                    type:'POST',
+                    url:ADMIN_URL+'Camera/get_entered_list',
+                    data:{name:name,province:province,city:city,area:area,school:school,grade:grade,class:class_name,page:page,page_count:page_count},
+                    success:function(data){
+                        data = jQuery.parseJSON(data);
+
+                        // console.log(data.html);
+                        $('#html').html(data.html);
+                        $('#count').html(data.count+'个');
+                    }
+                })
+
+            }
+        });
+
+    });
+    function update(){
+        $.ajax({
+            url: "{:url('/Admin/camera/get_camera')}",
+            type: 'GET',
+            dataType: 'json',
+            success:function(sb){
+                if(sb.count !=0) {
+                    layer.open({
+                        type: 1,
+                        area: ['230px', '200px'],
+                        fixed: false, //不固定
+                        shadeClose: true,
+                        shade: 0.4,
+                        maxmin: false, //开启最大化最小化按钮
+                        content: "<div style='padding: 40px 50px;'>已更新" + sb.count + "个摄像头！</div>",
+                        btn: '确定',
+                        shade: 0,
+                        btnAlign: 'c',
+                        yes: function () {
+                            layer.closeAll();
+                            window.location.href = "{:url('/Admin/camera/entered')}";
+                        }
+                    });
+                }else{
+                    layer.open({
+                        type: 1,
+                        area: ['230px', '200px'],
+                        fixed: false, //不固定
+                        shadeClose: true,
+                        shade: 0.4,
+                        maxmin: false, //开启最大化最小化按钮
+                        content: "<div style='padding: 40px 80px;'>暂无更新！</div>",
+                        btn: '确定',
+                        shade: 0,
+                        btnAlign: 'c',
+                        yes: function () {
+                            layer.closeAll();
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+</script>

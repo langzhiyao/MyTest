@@ -1,0 +1,33 @@
+{include file="public/mall_top" /} 
+{include file="public/mall_header" /}
+
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/home/css/member.css">
+<div class="dsm-container">
+    {include file="public/member_left" /}
+
+    <div class="right-layout">
+        <div id="member_center_box" class="dsm-index-container">
+        </div>
+        <script type="text/javascript">
+            $(function() {
+                var INFO_TYPE = ['member_info', 'order_info', 'goods_info', 'sns_info'];
+                function _ajax_load(type) {
+                    $.ajax({
+                        url: SITE_URL+'index.php/Home/Member/ajax_load_' + type,
+                        success: function(html) {
+                            INFO_TYPE.shift();
+                            if (INFO_TYPE[0]) {
+                                _ajax_load(INFO_TYPE[0]);
+                            }
+                            $('#member_center_box').append(html);
+                        }
+                    });
+                }
+                _ajax_load(INFO_TYPE[0])
+            });
+        </script>
+    </div>
+</div>
+
+{include file="public/mall_server" /}
+{include file="public/mall_footer" /}

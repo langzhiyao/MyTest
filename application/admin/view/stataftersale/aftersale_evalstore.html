@@ -1,0 +1,117 @@
+{include file="public/header" /}
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>售后分析</h3>
+                <h5></h5>
+            </div>
+            {include file="public/admin_items" /}
+        </div>
+    </div>
+   <div class="fixed-empty"></div>
+<form method="get"  name="formSearch" id="formSearch">
+    <input type="hidden" id="exporttype" name="exporttype" value=""/>
+    <input type="hidden" id="orderby" name="orderby" value="{$orderby ?$orderby:'avgdesccredit desc'}"/>
+    <div class="w100pre" style="width: 100%;">
+        <table class="search-form">
+          <tbody>
+            <tr>
+              <td id="scategory">
+                <select class="querySelect" name="store_class">
+                  <option value="0">{:lang('ds_please_choose')}...</option>
+                  {notempty name="class_list"}
+                  {volist name="class_list" id="v"}
+                  <option {if $Request.param.store_class == $v.sc_id}selected="selected"{/if} value="{$v.sc_id}">{$v.sc_name}</option>
+                  {/volist}
+                  {/notempty}
+                </select>
+              </td>
+              <td>
+              	店铺名称<input type="text" name="storename" value="{present name="search_arr.storename"}{$search_arr.storename}{/present}"/>
+              </td>
+              <td>
+                <a href="javascript:void(0);" id="ncsubmit" class="btn-search tooltip" ></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+  </form>
+<div class="explanation" id="explanation">
+        <div class="title" id="checkZoom">
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示" class="arrow"></span>
+        </div>
+        <ul>
+           <li>统计列表为符合条件店铺的动态评分信息列表，并可以点击列表上方的“导出Excel”将列表数据导出为Excel文件</li>
+            <li>点击每列旁边的箭头对列表进行排序，默认按照“描述相符度”降序排列</li>
+        </ul>
+</div>
+<div class="w100pre close_float" style="text-align:right;">
+  	<a class="btns" href="javascript:void(0);" id="export_btn"><span>导出Excel</span></a>
+  </div>
+  <table class="ds-default-table">
+    <thead>
+      <tr class="thead sortbar-array">
+        <th class="align-center">店铺名称</th>
+        <th class="align-center">
+          <a href="javascript:void(0);" nc_type="orderitem" data-param='{"orderby":"avgdesccredit"}' class="">描述相符度<i></i></a>
+        </th>
+        <th class="align-center"><a href="javascript:void(0);" nc_type="orderitem" data-param='{"orderby":"avgservicecredit"}' class="">服务态度<i></i></a></th>
+        <th class="align-center"><a href="javascript:void(0);" nc_type="orderitem" data-param='{"orderby":"avgdeliverycredit"}' class="">发货速度<i></i></a></th>
+      </tr>
+    </thead>
+    <tbody id="datatable">
+    {notempty name="statlist"}
+    {volist name="statlist" id="v"}
+          <tr class="hover">
+            <td class="align-center">{$v.seval_storename}</td>
+            <td class="align-center">{$v.avgdesccredit}</td>
+            <td class="align-center">{$v.avgservicecredit}</td>
+            <td class="align-center">{$v.avgdeliverycredit}</td>
+          </tr>
+    {/volist}
+   {else /}
+    <tr class="no_data">
+        	<td colspan="4">{:lang('no_record')}</td>
+        </tr>
+   {/notempty}
+    </tbody>
+    {notempty name="statlist"}
+    <tfoot>
+      <tr class="tfoot">
+        <td colspan="15" id="dataFuncs"><div class="pagination"> {$show_page} </div></td>
+      </tr>
+    </tfoot>
+    {/notempty}
+  </table>
+</div>
+<script>
+$(function () {
+    $('#ncsubmit').click(function(){
+        $("#exporttype").val('');
+        $('#formSearch').submit();
+    });
+
+    //导出图表
+    $("#export_btn").click(function(){
+        $("#exporttype").val('excel');
+        $('#formSearch').submit();
+    });
+
+    $("[nc_type='orderitem']").click(function(){
+        $("#exporttype").val('');
+        var data_str = $(this).attr('data-param');
+        eval( "data_str = "+data_str);
+        if($(this).hasClass('desc')){
+            $("#orderby").val(data_str.orderby + ' asc');
+        } else {
+            $("#orderby").val(data_str.orderby + ' desc');
+        }
+        $('#formSearch').submit();
+    });
+});
+</script>

@@ -1,0 +1,116 @@
+{include file="public/mall_top" /}
+<div class="header-login clearfix">
+    <div class="w1200">
+        <div class="logo">
+            <a href="{$Think.config.url_domain_root}index.php"><img src="{$Think.config.url_attach_common}/{$Think.config.site_logo}"/></a>
+        </div>
+    </div>
+</div>
+
+
+<div class="page_login clearfix" style="background-image: url('{$Think.config.url_domain_root}/static/home/images/login/login-bg.jpg');background-position: center center;">
+    <div class="w1000">
+        <div class="fl">
+        </div>
+        <div class="fr login_form">
+            <div class="mt">
+                <h2>帐号登录</h2>
+                <a href="{:url('/Home/Login/register')}" title="注册">新用户注册</a>
+            </div>
+            <div class="mc">
+                <form id="login_form" method="post">
+                    <div class="item">
+                        <div class="text-area">
+                            <div class="i-name ico"></div>
+                            <input type="text" id="member_name" name="member_name" class="text" placeholder="用户名/手机号" tabindex="1"/>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="text-area">
+                            <div class="i-pass ico"></div>
+                            <input type="password" id="member_password" name="member_password" class="text" placeholder="密码" tabindex="2"/>
+                        </div>
+                    </div>
+                    {if $Think.config.captcha_status_login == '1'}
+                     <div class="item">
+                        <div class="text-area">
+                            <div class="i-pass ico"></div>
+                            <input type="text" id="captcha" name="login_captcha" class="text" style="width: 125px;float:left" placeholder="验证码" tabindex="2"/>
+                            <span class="span">
+                           <img style="position: absolute;top: 0;" src="{:url('Seccode/makecode')}" title="{$Think.lang.login_index_change_checkcode}" name="codeimage" id="codeimage">
+                                <a class="makecode" href="javascript:void(0);" onclick="javascript:document.getElementById('codeimage').src='{:url('Seccode/makecode')}';">{$Think.lang.login_password_change_code}</a>
+                            </span>
+                        </div>
+                    </div>
+                    {/if}
+                    <div class="item">
+                        <a href="{:url('Login/forget_password')}">忘记密码?</a>
+                    </div>
+                    <div class="item">
+                        <input type="submit" class="btn login-btn" value="登录"/>
+                    </div>    
+                </form>
+            </div>
+            <div class="partner-login clearfix">
+                <h3>你可以用合作伙伴账号登陆</h3>
+                <p>
+                    <a class="login_ico ico_qq" href="{:url('api/oa_qq')}"></a>
+                    <a class="login_ico ico_weibo" href="{:url('api/oa_sina')}"></a>
+                    <a class="login_ico ico_weixin" onclick="ajax_form('weixin_form', '微信账号登录', '<?php echo SHOP_SITE_URL;?>/connectwx/index', 360);" title="微信账号登录"></a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{$Think.config.url_domain_root}static/plugins/jquery.validate.min.js"></script>
+<script>
+$(function () {
+
+    $("#login_form").validate({
+        errorPlacement: function (error, element) {
+            var error_td = element.parent('.text-area');
+            error_td.append(error);
+            element.parents('.text-area:first').addClass('error');
+        },
+        success: function (label) {
+            label.parents('.text-area:first').removeClass('error').find('label').remove();
+        },
+        onkeyup: false,
+        rules: {
+            member_name: "required",
+            member_password: "required"
+            {if $Think.config.captcha_status_login == '1'},
+            login_captcha: {
+                required: true,
+                remote: {
+                    url: "{:url('Seccode/check')}",
+                    type: 'get',
+                    data: {
+                        captcha: function () {
+                            return $('#captcha').val();
+                        }
+                    },
+                    complete: function (data) {
+                        if (data.responseText == 'false') {
+                            document.getElementById('codeimage').src = '{:url('Seccode/makecode')}';
+                        }
+                    }
+                }
+            }
+            {/if}
+        },
+        messages: {
+            member_name: "<i class='icon-exclamation-sign'></i>请输入已注册的用户名或手机号",
+            member_password: "<i class='icon-exclamation-sign'></i>{$Think.lang.login_index_input_password}"
+            {if $Think.config.captcha_status_login == '1'},
+            login_captcha: {
+                required: '<i class="icon-remove-circle" title="{$Think.lang.login_index_input_checkcode}"></i>{$Think.lang.login_index_input_checkcode}',
+                remote: '<i class="icon-remove-circle" title="{$Think.lang.login_index_input_checkcode}"></i>{$Think.lang.login_index_input_checkcode}'
+            }
+            {/if}
+        }
+    });
+});
+</script>
+
+{include file="public/mall_footer" /}

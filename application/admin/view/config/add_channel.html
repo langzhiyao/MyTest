@@ -1,0 +1,211 @@
+{include file="public/header" /}
+<link rel="stylesheet" href="{$Think.config.url_domain_root}static/plugins/layer/css/layui.css">
+<style>
+    .layui-input{
+        width: 80%;
+    }
+    .layui-textarea{
+        width: 80%;
+    }
+    .layui-form-select .layui-edge{
+        right: 190px;
+    }
+    .layui-form-select dl{
+        min-width: 80%;
+    }
+    .layui-form-label{
+        width: 90px;
+    }
+    .layui-input-block{
+        margin-left: 115px;
+    }
+    .error{
+        color: red;
+        margin-top: 5px;
+        display: none;
+    }
+</style>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<!-- 操作说明 -->
+<div class="explanation" id="explanation" style="width:100%;box-sizing: border-box;">
+    <div class="title" id="checkZoom">
+        <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+        <span id="explanationZoom" title="收起提示" class="arrow"></span>
+    </div>
+    <ul>
+        <li>不要轻易修改渠道 标识及名称，会影响数据统计</li>
+    </ul>
+</div>
+<div style="margin-top: 20px;width: 100%;">
+    <form class="layui-form">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: #E00515;">*</span>渠道名称</label>
+            <div class="layui-input-block">
+                <input type="text" id="channel_name" name="channel_name"  lay-verify="channel_name" autocomplete="off" placeholder="请输入渠道名称" class="layui-input">
+                <p class="error"></p>
+            </div>
+
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: #E00515;">*</span>渠道标识</label>
+            <div class="layui-input-block">
+                <input type="text" id="channel" name="channel"  lay-verify="channel" autocomplete="off" placeholder="请输入渠道标识" class="layui-input">
+                <p class="error"></p>
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">备注</label>
+            <div class="layui-input-block">
+                <textarea placeholder="请输入备注内容" id="description" name="description" class="layui-textarea"></textarea>
+                <p class="error"></p>
+            </div>
+        </div>
+        <div style="margin: 20px;margin-left: 245px;">
+            <button type="button" class="layui-btn" id="true" >确认修改</button>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var index = parent.layer.getFrameIndex(window.name);
+
+
+    layui.use(['form'], function(){
+        var form = layui.form;
+
+        $('#channel_name').keyup(function(){
+            var value = $('#channel_name').val();
+            var id = "";
+            if(value == ''){
+                $(this).next().show();
+                $(this).next().html("渠道名称不能为空");
+                return false;
+            }else{
+                $.ajax({
+                    type:'POST',
+                    url:ADMIN_URL+'Common/is_channel_name?channel_name='+value+'&id='+id,
+                    data:{},
+                    success:function(data){
+                        if(data){
+                            $('#channel_name').next().show();
+                            $('#channel_name').next().html("渠道名称已存在");
+                            return false;
+                        }else{
+                            $('#channel_name').next().hide();
+                            $('#channel_name').next().html('');
+                        }
+                    }
+                })
+            }
+
+        });
+
+        $('#channel').keyup(function(){
+            var value = $('#channel').val();
+            var id = "";
+            if(value == ''){
+                $(this).focus();
+                $(this).next().show();
+                $(this).next().html("渠道标识不能为空");
+                return false;
+            }else{
+                $.ajax({
+                    type:'POST',
+                    url:ADMIN_URL+'Common/is_channel?channel='+value+'&id='+id,
+                    data:{},
+                    success:function(data){
+                        if(data){
+                            $('#channel').focus();
+                            $('#channel').next().show();
+                            $('#channel').next().html("渠道标识已存在");
+                            return false;
+                        }else{
+                            $('#channel').next().hide();
+                            $('#channel').next().html('');
+                        }
+                    }
+                })
+            }
+
+        });
+
+        $('#true').click(function(){
+            var flag = false;
+            var id = "";
+            var channel_name = $('#channel_name').val();
+            var channel = $('#channel').val();
+            var description = $('#description').val();
+
+            if(channel_name == ''){
+                $('#channel_name').next().show();
+                $('#channel_name').next().html("渠道名称不能为空");
+                flag = false;
+            }else{
+                $.ajax({
+                    type:'POST',
+                    url:ADMIN_URL+'Common/is_channel_name?channel_name='+channel_name+'&id='+id,
+                    data:{},
+                    async:false,
+                    success:function(data){
+                        if(data){
+                            $('#channel_name').next().show();
+                            $('#channel_name').next().html("渠道名称已存在");
+                            flag = false;
+                        }else{
+                            $('#channel_name').next().hide();
+                            $('#channel_name').next().html('');
+                            flag = true;
+                        }
+                    }
+                })
+            }
+            if(flag){
+                if(channel == ''){
+                    $('#channel').next().show();
+                    $('#channel').next().html("渠道标识不能为空");
+                    flag = false;
+                }else{
+                    $.ajax({
+                        type:'POST',
+                        url:ADMIN_URL+'Common/is_channel?channel='+channel+'&id='+id,
+                        data:{},
+                        async:false,
+                        success:function(data){
+                            if(data){
+                                $('#channel').next().show();
+                                $('#channel').next().html("渠道标识已存在");
+                                flag = false;
+                            }else{
+                                $('#channel').next().hide();
+                                $('#channel').next().html('');
+                                flag = true;
+                            }
+                        }
+                    })
+                }
+            }
+            if(flag){
+                $.ajax({
+                    type:'POST',
+                    url:ADMIN_URL+'Config/add_channel.html',
+                    data:{channel_name:channel_name,channel:channel,description:description},
+                    dataType: 'json',
+                    success: function(response){
+                        if(response['code'] == 200){
+                            layer.msg(response['msg'],{icon:1,time:2000},function(){
+                                parent.layer.close(index);
+                            })
+                        }else{
+                            layer.msg(response['msg'],{icon:2});return false;
+                        }
+                    }
+                });
+            }
+        });
+    });
+
+
+</script>
